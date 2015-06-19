@@ -3,8 +3,17 @@ classdef Diffraction <  LinOp
     %  Matlab Linear Operator Library
     %
     % Obj = Diffraction(lambda, n0, z,dxy,sz, pad)
-    % Fresnel transform operator
-    %
+    % Diffraction operator
+    % Compute the complex amplitude of plane wave scattered by the input X
+    % without multiple scattering:
+    % Y = sum_z Fresnel_z( X(:,:,z))
+    % Obj = Diffraction(lambda, n0, z,dxy,sz, pad)
+    %         lambda   wavelenght            [m]
+    %         n0       refractive index of the medium
+    %         z       % depth of propagation  [m]
+    %         pad     % size with padding  % NOT IMPLEMENTED
+    %         if the option 'FeitFleck' is set it use the Feit and Fleck model of propagation instead:
+    % M. D. Feit and J. A. Fleck, ?Bean nonparaxiality, filament formaform, and beam breakup in the self-focusing of optical beams,? J. Opt. Soc. Am. B, vol. 5, pp. 633? 640, March 1988.
     %
     % Please refer to the LINOP superclass for general documentation about
     % linear operators class
@@ -58,22 +67,23 @@ classdef Diffraction <  LinOp
             
             assert(isvector(z),'The propagation depth z should be a scalar');
             this.z = z;
-            Nz = length(this.z);
+            this.Nz = length(this.z);
             % Check whether z is equispaced
             if max(diff(this.z),2)<1e-10;
-                dz = mean(diff(this.z),1);
+                this.dz = mean(diff(this.z),1);
             else
-                dz = -1; % Not equispaced
+                this.dz = -1; % Not equispaced
             end
             
             assert(isPositiveScalar(dxy),'The pixel size dxy should be a positive scalar');
             this.dxy = dxy;
             
             assert(issize(sz) && (length(sz)==2),'The input size sz should be a conformable  to size(2D) ');
-            this.sizein = sz;
             this.sizeout = sz;
             this.Nx = sz(1);
             this.Ny = sz(2);
+            
+            this.sizein = [this.Nx this.Ny this.Nz];
             
             if (~isempty(pad))
                 assert( issize(pad)&& length(pad)==2,'The padding pad should be a conformable  to size(2D)');
@@ -94,10 +104,10 @@ classdef Diffraction <  LinOp
             this.u = 1./(this.Nx *this.dxy) * [0:this.Nx/2-1, -this.Nx/2:-1];
             this.v = 1./(this.Ny *this.dxy) * [0:this.Ny/2-1, -this.Ny/2:-1]';
             
-                [Ku, Kv] = meshgrid(this.u, this.v);
-                Dist2d = Ku.^2+Kv.^2; % 2D frequency meshgrid
+            [Ku, Kv] = meshgrid(this.u, this.v);
+            Dist2d = Ku.^2+Kv.^2; % 2D frequency meshgrid
             if this.FeitFleck
-                this.F =  -2* pi *   this.lambda * Dist2d ./ (1 + sqrt(1 + (this.lambda/this.n0)^2 *Dist2d));
+                this.F =  -2* pi *   this.lambda  / this.n0 * Dist2d ./ (1 + sqrt(1 + (this.lambda/this.n0)^2 *Dist2d));
             else
                 % Fresnel function
                 this.F = -pi * this.lambda / this.n0 * Dist2d;
@@ -105,17 +115,31 @@ classdef Diffraction <  LinOp
             
         end
         function y = Apply(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
-            for iz = 1:Nz
-            y = y+  ifft2( exp( 1i * this.z(iz) * this.F) .*  fft2(x(:,:,iz)));
-            end 
+            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d]',this.sizein);
+            y = complex(zeros(this.sizeout));
+            for iz = 1:this.Nz
+                y = y+     exp( complex(0.,this.z(iz) * this.F)) .*  fft2(x(:,:,iz));
+            end
+            y = ifft2(y);
         end
         function y = Adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
-            y = ifft2(  conj(this.F) .*  fft2(x));
+            y = zeros(this.sizein);
+            fx = fft2(x);
+            for iz = 1:this.Nz
+                y(:,:,iz) =   ifft2( exp( complex(0,-this.z(iz) * this.F)) .* fx );
+            end
         end
         function y = Gram(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
+            y = zeros(this.sizein);
+            fx = complex(zeros(this.sizeout));
+            for iz = 1:this.Nz
+                fx = fx+     exp( complex(0.,this.z(iz) * this.F)) .*  fft2(x(:,:,iz));
+            end
+            for iz = 1:this.Nz
+                y(:,:,iz) =   ifft2( exp( complex(0,-this.z(iz) * this.F)) .* fx );
+            end
         end
     end
 end

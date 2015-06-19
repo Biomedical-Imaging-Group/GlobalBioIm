@@ -29,12 +29,20 @@ else
     sizein = input('What is the input size of the LinOp?');
 end
 
-In = rand(sizein);
-HIn = LinOp.Apply(In);
-sizeout = LinOp.sizeout;
-Out = rand(sizeout);
-HtOut = LinOp.Adjoint(Out);
-
+if LinOp.iscomplex
+    disp('Complex LinOp');
+    In = complex(rand(sizein),rand(sizein));
+    HIn = LinOp.Apply(In);
+    sizeout = LinOp.sizeout;
+    Out = complex(rand(sizeout),rand(sizeout));
+    HtOut = LinOp.Adjoint(Out);
+else
+    In = rand(sizein);
+    HIn = LinOp.Apply(In);
+    sizeout = LinOp.sizeout;
+    Out = rand(sizeout);
+    HtOut = LinOp.Adjoint(Out);
+end
 tol = 1e-8*max( max(max(In(:)),max(HIn(:))),max(max(Out(:)),max(HtOut(:)))); % Tolerance for numerical equality
 
 if abs(dot(In(:) ,HtOut(:)) - dot(HIn(:) , Out(:)))<tol

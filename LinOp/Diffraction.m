@@ -1,8 +1,8 @@
-classdef Fresnel <  LinOp
-    %% Fresnel : Discrete Fresnel operator
+classdef Diffraction <  LinOp
+    %% Diffraction : Diiffraction operator
     %  Matlab Linear Operator Library
     %
-    % Obj = Fresnel(lambda, n0, z,dxy,sz, pad)
+    % Obj = Diffraction(lambda, n0, z,dxy,sz, pad)
     % Fresnel transform operator
     %
     %
@@ -31,24 +31,24 @@ classdef Fresnel <  LinOp
         k0      % wavenumber in vaccum  [m-1]
         k       % wavenumber in the medium [m-1]
         z       % depth of propagation  [m]
+        dz      % depth of one layer    [m]
         dxy     % pixel size            [m]
         Nx      % number of pixels along X
         Ny      % number of pixels along Y
+        Nz      % number of layer
         pad     % size with padding  % NOT IMPLEMENTED
         u       % u frequency grid
         v       % v frequency grid
-        Fu      % Fresnel function along the u axis
-        Fv      % Fresnel function along the v axis
-        F       % Fresnel function
+        F       % phase of the Fresnel function
         FeitFleck = false; % if true use the Feit and Fleck model of propagation instead:
         % M. D. Feit and J. A. Fleck, ?Bean nonparaxiality, filament formaform, and beam breakup in the self-focusing of optical beams,? J. Opt. Soc. Am. B, vol. 5, pp. 633? 640, March 1988.
     end
     methods
-        function this = Fresnel(lambda, n0, z,dxy,sz, pad, varargin)
+        function this = Diffraction(lambda, n0, z,dxy,sz, pad, varargin)
             
-            this.name ='Fresnel';
+            this.name ='Diffraction';
             this.iscomplex= true;
-            this.isinvertible=true;
+            this.isinvertible=false;
             
             assert(isPositiveScalar(lambda),'The wavelenght lambda should be a positive scalar');
             this.lambda = lambda;
@@ -56,8 +56,15 @@ classdef Fresnel <  LinOp
             assert(isPositiveScalar(n0),'The refractive index n0 should be a positive scalar');
             this.n0 = n0;
             
-            assert(isscalar(z),'The propagation depth z should be a scalar');
+            assert(isvector(z),'The propagation depth z should be a scalar');
             this.z = z;
+            Nz = length(this.z);
+            % Check whether z is equispaced
+            if max(diff(this.z),2)<1e-10;
+                dz = mean(diff(this.z),1);
+            else
+                dz = -1; % Not equispaced
+            end
             
             assert(isPositiveScalar(dxy),'The pixel size dxy should be a positive scalar');
             this.dxy = dxy;
@@ -87,37 +94,28 @@ classdef Fresnel <  LinOp
             this.u = 1./(this.Nx *this.dxy) * [0:this.Nx/2-1, -this.Nx/2:-1];
             this.v = 1./(this.Ny *this.dxy) * [0:this.Ny/2-1, -this.Ny/2:-1]';
             
+                [Ku, Kv] = meshgrid(this.u, this.v);
+                Dist2d = Ku.^2+Kv.^2; % 2D frequency meshgrid
             if this.FeitFleck
-                Mesh = kron(this.u.^2, this.v.^2);
-                this.F =  exp(-2i* pi * this.z.*this.lambda * Mesh ./ (1 + sqrt(1 + (this.lambda/this.n0)^2 *Mesh)));
+                this.F =  -2* pi *   this.lambda * Dist2d ./ (1 + sqrt(1 + (this.lambda/this.n0)^2 *Dist2d));
             else
-                % separable Fresnel function
-                this.Fu = exp(-1i* pi *  this.z.* this.lambda / this.n0 * this.u.^2);
-                this.Fv = exp(-1i* pi *  this.z.* this.lambda / this.n0 * this.v.^2);
-                
-                this.F = kron(this.Fu, this.Fv);
+                % Fresnel function
+                this.F = -pi * this.lambda / this.n0 * Dist2d;
             end
             
         end
         function y = Apply(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
-            y = ifft2( this.F .*  fft2(x));
+            for iz = 1:Nz
+            y = y+  ifft2( exp( 1i * this.z(iz) * this.F) .*  fft2(x(:,:,iz)));
+            end 
         end
         function y = Adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
             y = ifft2(  conj(this.F) .*  fft2(x));
         end
-        function y = Gram(this,x) %  Apply the Gram matrix
+        function y = Gram(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
-            y = x;
-        end
-        function y = Inverse(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
-            y = ifft2(  conj(this.F) .*  fft2(x));
-        end
-        function y = AdjointInverse(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
-            y = ifft2( this.F .*  fft2(x));
         end
     end
 end

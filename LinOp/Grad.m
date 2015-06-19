@@ -6,8 +6,8 @@ classdef Grad <  LinOp
     % Finite operator operator
     % Compute finite differences of a vector of size SZ along the dimension
     % indexed in INDEX (all by default)
+    % the output is zero padded to have size conformable with the input
     % The output is then of size SZ x lenght(index)
-    % To 
     %
     % Please refer to the LINOP superclass for general documentation about
     % linear operators class
@@ -38,7 +38,7 @@ classdef Grad <  LinOp
             if nargin == 1
                 index = [];
             end
-             this.name ='Grad';
+            this.name ='Grad';
             this.iscomplex= false;
             this.isinvertible=false;
             
@@ -46,7 +46,7 @@ classdef Grad <  LinOp
             assert(issize(sz),'The input size sz should be a conformable  to a size ');
             this.sizein = sz;
             this.ndms = length(this.sizein);
-            % Special case for vectors as matlab thought it is matrix ;-( 
+            % Special case for vectors as matlab thought it is matrix ;-(
             if this.sizein(2) ==1
                 this.ndms = 1;
             end
@@ -59,11 +59,11 @@ classdef Grad <  LinOp
             end
             this.lgthidx = length(this.index);
             %size of the output = size of the input x length of the index
-            % Special case for vectors as matlab thought it is matrix ;-( 
+            % Special case for vectors as matlab thought it is matrix ;-(
             if this.sizein(2) ==1
-                 this.sizeout= [this.sizein(1),this.lgthidx];                
+                this.sizeout= [this.sizein(1),this.lgthidx];
             else
-                 this.sizeout= [this.sizein,this.lgthidx];
+                this.sizeout= [this.sizein,this.lgthidx];
             end
         end
         function y = Apply(this,x)
@@ -74,44 +74,45 @@ classdef Grad <  LinOp
             switch(this.ndms)
                 % 1 dimension
                 case(1)
-                    y(:,1) = padarray(x(1:end-1,1) - x(2:end,1),1,'post');
-                % 2 dimensions
+                    % y(:,1) = padarray(x(1:end-1,1) - x(2:end,1),1,'post');
+                    y(:,1) = padarray(diff(x,1,1),1,'post');
+                    % 2 dimensions
                 case(2)
                     for n=this.index
                         nidx = nidx +1;
                         switch(n)
                             case(1)
-                                y(:,:,nidx) = padarray(x(1:end-1,:)- x(2:end,:),1,'post');
+                                y(:,:,nidx) = padarray(diff(x,1,1),1,'post');
                             case(2)
-                                y(:,:,nidx) = padarray(x(:,1:end-1)- x(:,2:end),[0 1],'post');
+                                y(:,:,nidx) = padarray(diff(x,1,2),[0 1],'post');
                         end
                     end
-                % 3 dimensions
+                    % 3 dimensions
                 case(3)
                     for n=this.index
                         nidx = nidx +1;
                         switch(n)
                             case(1)
-                                y(:,:,:,nidx) = padarray(x(1:end-1,:,:)- x(2:end,:,:),1,'post');
+                                y(:,:,:,nidx) = padarray(diff(x,1,1),1,'post');
                             case(2)
-                                y(:,:,:,nidx) = padarray(x(:,1:end-1,:)- x(:,2:end,:),[0 1],'post');
+                                y(:,:,:,nidx) = padarray(diff(x,1,2),[0 1],'post');
                             case(3)
-                                y(:,:,:,nidx) = padarray(x(:,:,1:end-1)- x(:,:,2:end),[0 0 1],'post');
+                                y(:,:,:,nidx) = padarray(diff(x,1,3),[0 0 1],'post');
                         end
                     end
-                % 4 dimensions
-                case(4) 
+                    % 4 dimensions
+                case(4)
                     for n=this.index
                         nidx = nidx +1;
                         switch(n)
                             case(1)
-                                y(:,:,:,:,nidx) = padarray(x(1:end-1,:,:,:)- x(2:end,:,:,:),1,'post');
+                                y(:,:,:,:,nidx) =  padarray(diff(x,1,1),1,'post');
                             case(2)
-                                y(:,:,:,:,nidx) = padarray(x(:,1:end-1,:,:)- x(:,2:end,:,:),[0 1],'post');
+                                y(:,:,:,:,nidx) = padarray(diff(x,1,2),[0 1],'post');
                             case(3)
-                                y(:,:,:,:,nidx) = padarray(x(:,:,1:end-1,:)- x(:,:,2:end,:),[0 0 1],'post');
+                                y(:,:,:,:,nidx) = padarray(diff(x,1,3),[0 0 1],'post');
                             case(4)
-                                y(:,:,:,:,nidx) = padarray(x(:,:,:,1:end-1)- x(:,:,:,2:end),[0 0 0 1],'post');
+                                y(:,:,:,:,nidx) = padarray(diff(x,1,4),[0 0  0 1],'post');
                         end
                     end
             end
@@ -119,54 +120,111 @@ classdef Grad <  LinOp
         function y = Adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
             nidx = 0;
-             y = zeros(this.sizein);
+            y = zeros(this.sizein);
             % switch according to the number of dimension of the input
             switch(this.ndms)
                 % 1 dimension
                 case(1)
-                    y =  padarray(  x(1:end-1),1,'post') - padarray( x(1:end-1),1,'pre');
-                % 2 dimensions
+                    y =  padarray( x(1:end-1),1,'pre') -  padarray(  x(1:end-1),1,'post');
+                    % 2 dimensions
                 case(2)
                     for n=this.index
                         nidx = nidx +1;
                         switch(n)
                             case(1)
-                                y = y + padarray(  x(1:end-1,:,nidx),1,'post') - padarray( x(1:end-1,:,nidx),1,'pre');
+                                y = y +  padarray( x(1:end-1,:,nidx),1,'pre') - padarray(  x(1:end-1,:,nidx),1,'post');
                             case(2)
-                                y = y + padarray(  x(:,1:end-1,nidx),[0 1],'post') - padarray( x(:,1:end-1,nidx),[0 1],'pre');
+                                y = y +  padarray( x(:,1:end-1,nidx),[0 1],'pre')- padarray(  x(:,1:end-1,nidx),[0 1],'post');
                         end
                     end
-                % 3 dimensions
+                    % 3 dimensions
                 case(3)
                     for n=this.index
                         nidx = nidx +1;
                         switch(n)
                             case(1)
-                                y = y + padarray(  x(1:end-1,:,:,nidx),1,'post') - padarray( x(1:end-1,:,:,nidx),1,'pre');
+                                y = y - padarray(  x(1:end-1,:,:,nidx),1,'post') + padarray( x(1:end-1,:,:,nidx),1,'pre');
                             case(2)
-                                y = y + padarray(  x(:,1:end-1,:,nidx),[0 1],'post') - padarray( x(:,1:end-1,:,nidx),[0 1],'pre');
+                                y = y- padarray(  x(:,1:end-1,:,nidx),[0 1],'post') + padarray( x(:,1:end-1,:,nidx),[0 1],'pre');
                             case(3)
-                                y = y + padarray(  x(:,:,1:end-1,nidx),[0  0 1],'post') - padarray( x(:,:,1:end-1,nidx),[0 0 1],'pre');
+                                y = y - padarray(  x(:,:,1:end-1,nidx),[0  0 1],'post') + padarray( x(:,:,1:end-1,nidx),[0 0 1],'pre');
                         end
                     end
-                % 4 dimensions
-                case(4) 
+                    % 4 dimensions
+                case(4)
                     for n=this.index
                         nidx = nidx +1;
                         switch(n)
                             case(1)
-                                y = y + padarray(  x(1:end-1,:,:,:,nidx),1,'post') - padarray( x(1:end-1,:,:,:,nidx),1,'pre');
+                                y = y - padarray(  x(1:end-1,:,:,:,nidx),1,'post') + padarray( x(1:end-1,:,:,:,nidx),1,'pre');
                             case(2)
-                                y = y + padarray(  x(:,1:end-1,:,:,nidx),[0 1],'post') - padarray( x(:,1:end-1,:,:,nidx),[0 1],'pre');
+                                y = y - padarray(  x(:,1:end-1,:,:,nidx),[0 1],'post') + padarray( x(:,1:end-1,:,:,nidx),[0 1],'pre');
                             case(3)
-                                y = y + padarray(  x(:,:,1:end-1,:,nidx),[0  0 1],'post') - padarray( x(:,:,1:end-1,:,nidx),[0 0 1],'pre');
+                                y = y - padarray(  x(:,:,1:end-1,:,nidx),[0  0 1],'post') + padarray( x(:,:,1:end-1,:,nidx),[0 0 1],'pre');
                             case(4)
-                                y = y + padarray(  x(:,:,:,1:end-1,nidx),[0  0 0 1],'post') - padarray( x(:,:,:,1:end-1,nidx),[0 0 0 1],'pre');
+                                y = y - padarray(  x(:,:,:,1:end-1,nidx),[0  0 0 1],'post') + padarray( x(:,:,:,1:end-1,nidx),[0 0 0 1],'pre');
                         end
                     end
             end
-        
+            
+            
+        end
+        function y = Gram(this,x) %  Apply the Gram matrix
+            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizein);
+            nidx = 0;
+            y = zeros(this.sizein);
+            % switch according to the number of dimension of the input
+            switch(this.ndms)
+                % 1 dimension
+                case(1)
+                    y = - padarray( x(1:end-1),1,-x(1),'pre') -  padarray(  x(2:end),1,-x(end),'post') + 2*padarray(  x(2:end-1),1,'both');
+                    % 2 dimensions
+                case(2)
+                    for n=this.index
+                        nidx = nidx +1;
+                        switch(n)
+                            case(1)
+                                y = y + padarray( x(1:end-1,:),1,'post') -  padarray(  x(2:end,:),1,'post')  - padarray( x(1:end-1,:),1,'pre') +  padarray(  x(2:end,:),1,'pre');
+                            case(2)
+                                y = y + padarray( x(:,1:end-1),[0 1],'post') -  padarray(  x(:,2:end),[0 1],'post')  - padarray( x(:,1:end-1),[0 1],'pre') +  padarray(  x(:,2:end),[0 1],'pre');
+                        end
+                    end
+                    % 3 dimensions
+                case(3)
+                    for n=this.index
+                        nidx = nidx +1;
+                        switch(n)
+                            case(1)
+                                y = y + padarray( x(1:end-1,:,:),1,'post') -  padarray(  x(2:end,:,:),1,'post')  - padarray( x(1:end-1,:,:),1,'pre') +  padarray(  x(2:end,:,:),1,'pre');
+                            case(2)
+                                y = y + padarray( x(:,1:end-1,:),[0 1],'post') -  padarray(  x(:,2:end,:),[0 1],'post')  - padarray( x(:,1:end-1,:),[0 1],'pre') +  padarray(  x(:,2:end,:),[0 1],'pre');
+                            case(3)
+                                y = y + padarray( x(:,:,1:end-1),[0 0 1],'post') -  padarray(  x(:,:,2:end),[0 0 1],'post')  - padarray( x(:,:,1:end-1),[0 0 1],'pre') +  padarray(  x(:,:,2:end),[0 0 1],'pre');
+                        end
+                    end
+                    % 4 dimensions
+                case(4)
+                    for n=this.index
+                        nidx = nidx +1;
+                        switch(n)
+                            case(1)
+                                y = y + padarray( x(1:end-1,:,:,:),1,'post') -  padarray(  x(2:end,:,:,:),1,'post')  - padarray( x(1:end-1,:,:,:),1,'pre') +  padarray(  x(2:end,:,:,:),1,'pre');
+                            case(2)
+                                y = y + padarray( x(:,1:end-1,:,:),[0 1],'post') -  padarray(  x(:,2:end,:,:),[0 1],'post')  - padarray( x(:,1:end-1,:,:),[0 1],'pre') +  padarray(  x(:,2:end,:,:),[0 1],'pre');
+                            case(3)
+                                y = y + padarray( x(:,:,1:end-1,:),[0 0 1],'post') -  padarray(  x(:,:,2:end,:),[0 0 1],'post')  - padarray( x(:,:,1:end-1,:),[0 0 1],'pre') +  padarray(  x(:,:,2:end,:),[0 0 1],'pre');
+                            case(4)
+                                y = y + padarray( x(:,:,:,1:end-1),[0 0 0 1],'post') -  padarray(  x(:,:,:,2:end),[0 0 0 1],'post')  - padarray( x(:,:,:,1:end-1),[0 0 0 1],'pre') +  padarray(  x(:,:,:,2:end),[0 0 0 1],'pre');
+                                
+                        end
+                    end
+            end
+            
+            
+            
+            
             
         end
     end
+    
 end

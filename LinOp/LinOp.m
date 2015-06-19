@@ -1,6 +1,6 @@
 classdef LinOp < handle
     %% LinOP : Linear Operator generic class
-    %  Matlab Linear Operator Library 
+    %  Matlab Linear Operator Library
     % The LinOp meta class implement generic methods for all linear
     % operators $\mathbf{H}$: $\mathcal{X}\rightarrow\mathcal{Y}$
     %
@@ -27,26 +27,26 @@ classdef LinOp < handle
     %%
     
     
-%     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
-% 
-%     This program is free software: you can redistribute it and/or modify
-%     it under the terms of the GNU General Public License as published by
-%     the Free Software Foundation, either version 3 of the License, or
-%     (at your option) any later version.
-% 
-%     This program is distributed in the hope that it will be useful,
-%     but WITHOUT ANY WARRANTY; without even the implied warranty of
-%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%     GNU General Public License for more details.
-% 
-%     You should have received a copy of the GNU General Public License
-%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+    %
+    %     This program is free software: you can redistribute it and/or modify
+    %     it under the terms of the GNU General Public License as published by
+    %     the Free Software Foundation, either version 3 of the License, or
+    %     (at your option) any later version.
+    %
+    %     This program is distributed in the hope that it will be useful,
+    %     but WITHOUT ANY WARRANTY; without even the implied warranty of
+    %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    %     GNU General Public License for more details.
+    %
+    %     You should have received a copy of the GNU General Public License
+    %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
     properties (SetAccess = protected,GetAccess = public)
         name = 'none'   % name of the linear operator
         sizein;         % dimension of the right hand side vector space
         sizeout;        % dimension of the left hand side vector space
-        isinvertible = true; % true if the operator is invertible
+        isinvertible = false; % true if the operator is invertible
         iscomplex;      % true is the operator is complex
     end
     
@@ -60,11 +60,19 @@ classdef LinOp < handle
         function y = Gram(this,x) %  Apply the Gram matrix
             y = this.Adjoint(this.Apply(x));
         end
-        function Inverse(~,~) % Apply the inverse
-            error('Inverse not implemented or not defined')
+        function Inverse(this,~) % Apply the inverse
+            if this.isinvertible
+                error('Inverse not implemented');
+            else
+                error('Operator not invertible');
+            end
         end
         function AdjointInverse(~,~) % Apply the inverse
-            error('AdjointInverse not implemented or not defined')
+            if this.isinvertible
+                error('AdjointInverse not implemented');
+            else
+                error('Operator not invertible');
+            end
         end
     end
 end

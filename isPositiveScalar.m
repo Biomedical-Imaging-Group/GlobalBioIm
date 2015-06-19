@@ -17,7 +17,8 @@ function out = isPositiveScalar(in)
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-if issacalar(in)&& in>0
+if isscalar(in)&& in>0
+    out = true;
 else
     out = false;
 end

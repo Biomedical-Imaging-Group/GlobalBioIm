@@ -55,6 +55,9 @@ classdef DFT <  LinOp
         function y = Inverse(this,x)
             y = ifftn(x,this.pad);
         end
+        function y = Gram(~,x)
+            y =x;
+        end
         function y = AdjointInverse(this,x)
             y = fftn(x,this.pad);
         end

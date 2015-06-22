@@ -43,15 +43,15 @@ else
     Out = rand(sizeout);
     HtOut = LinOp.Adjoint(Out);
 end
-tol = 1e-8*max( max(max(In(:)),max(HIn(:))),max(max(Out(:)),max(HtOut(:)))); % Tolerance for numerical equality
+tol = 1e-3*max( max(max(abs(In(:))),max(abs(HIn(:)))),max(max(abs(Out(:))),max(abs(HtOut(:))))); % Tolerance for numerical equality
 
-if abs(dot(In(:) ,HtOut(:)) - dot(HIn(:) , Out(:)))<tol
+if (dot(In(:) ,HtOut(:)) - dot(HIn(:) , Out(:)))<tol
     disp('Adjoint OK');
 else
-    error('Adjoint error: <Hx.y> ~= <x.H^*y>');
+    error('Adjoint error: <Hx.y> ~= <x.H^*y> : diff = %d', (dot(In(:) ,HtOut(:)) - dot(HIn(:) , Out(:))));
 end
 
-if abs( (LinOp.Adjoint(HIn) - LinOp.Gram(In)))<tol
+if norm( (LinOp.Adjoint(HIn) - LinOp.Gram(In)))<tol
     disp('Gram matrix OK');
 else
     error('Error in Gram matrix computation');

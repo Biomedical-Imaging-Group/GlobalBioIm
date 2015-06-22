@@ -1,9 +1,9 @@
 classdef Diffraction <  LinOp
-    %% Diffraction : Diiffraction operator
+    %% Diffraction : Diffraction operator
     %  Matlab Linear Operator Library
     %
-    % Obj = Diffraction(lambda, n0, z,dxy,sz, pad)
-    % Diffraction operator
+    % Obj = Diffraction(lambda, n0, z,dxy,sz, pad
+    %
     % Compute the complex amplitude of plane wave scattered by the input X
     % without multiple scattering:
     % Y = sum_z Fresnel_z( X(:,:,z))
@@ -11,6 +11,7 @@ classdef Diffraction <  LinOp
     %         lambda   wavelenght            [m]
     %         n0       refractive index of the medium
     %         z       % depth of propagation  [m]
+    %         sz      size of the output if a vector of 2 elements OR incident complex qmplitude a z=0;
     %         pad     % size with padding  % NOT IMPLEMENTED
     %         if the option 'FeitFleck' is set it use the Feit and Fleck model of propagation instead:
     % M. D. Feit and J. A. Fleck, ?Bean nonparaxiality, filament formaform, and beam breakup in the self-focusing of optical beams,? J. Opt. Soc. Am. B, vol. 5, pp. 633? 640, March 1988.
@@ -49,6 +50,9 @@ classdef Diffraction <  LinOp
         u       % u frequency grid
         v       % v frequency grid
         F       % phase of the Fresnel function
+        useincident  = false;
+        incident % complex amplitude of the incident wave at z=0
+        Fincident % complex amplitude of the incident wave for each z
         FeitFleck = false; % if true use the Feit and Fleck model of propagation instead:
         % M. D. Feit and J. A. Fleck, ?Bean nonparaxiality, filament formaform, and beam breakup in the self-focusing of optical beams,? J. Opt. Soc. Am. B, vol. 5, pp. 633? 640, March 1988.
     end
@@ -78,10 +82,19 @@ classdef Diffraction <  LinOp
             assert(isPositiveScalar(dxy),'The pixel size dxy should be a positive scalar');
             this.dxy = dxy;
             
-            assert(issize(sz) && (length(sz)==2),'The input size sz should be a conformable  to size(2D) ');
-            this.sizeout = sz;
-            this.Nx = sz(1);
-            this.Ny = sz(2);
+            assert(ismatrix(sz),'The input size sz should be numeric: a 2D incident wave or a 2D size ');
+            if  numel(sz)==2
+                assert(issize(sz),'The input size sz should be a conformable  to size(2D) ');
+                this.sizeout = sz;
+                this.useincident = false;
+            else
+                assert(ndims(sz)==2 && isequal(size(sz)>1,[1 1]),'The incidence wave should be a 2D ');
+                this.incident = sz;
+                this.sizeout =size( this.incident);
+                this.useincident = true;
+            end
+            this.Nx = this.sizeout(1);
+            this.Ny = this.sizeout(2);
             
             this.sizein = [this.Nx this.Ny this.Nz];
             
@@ -96,6 +109,9 @@ classdef Diffraction <  LinOp
                         this.FeitFleck = true;
                 end
             end
+            
+            
+            
             
             this.k0 = 2*pi/this.lambda;
             this.k = this.n0*this.k0;
@@ -113,12 +129,24 @@ classdef Diffraction <  LinOp
                 this.F = -pi * this.lambda / this.n0 * Dist2d;
             end
             
+            if this.useincident
+                fi = fft2(this.incident);
+                for iz = 1:this.Nz
+                    this.Fincident(:,:,iz) =   ifft2( exp( complex(0,-this.z(iz) * this.F)) .* fi );
+                end
+            end
         end
         function y = Apply(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d]',this.sizein);
             y = complex(zeros(this.sizeout));
-            for iz = 1:this.Nz
-                y = y+     exp( complex(0.,this.z(iz) * this.F)) .*  fft2(x(:,:,iz));
+            if this.useincident
+                for iz = 1:this.Nz
+                    y = y+     exp( complex(0.,this.z(iz) .* this.F)) .*  fft2(x(:,:,iz).* this.Fincident(:,:,iz));
+                end
+            else
+                for iz = 1:this.Nz
+                    y = y+     exp( complex(0.,this.z(iz) .* this.F)) .*  fft2(x(:,:,iz));
+                end
             end
             y = ifft2(y);
         end
@@ -126,19 +154,35 @@ classdef Diffraction <  LinOp
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
             y = zeros(this.sizein);
             fx = fft2(x);
-            for iz = 1:this.Nz
-                y(:,:,iz) =   ifft2( exp( complex(0,-this.z(iz) * this.F)) .* fx );
+            
+            if this.useincident
+                for iz = 1:this.Nz
+                    y(:,:,iz) =   conj(this.Fincident(:,:,iz)) .* ifft2( exp( complex(0,-this.z(iz) .* this.F)) .* fx );
+                end
+            else
+                for iz = 1:this.Nz
+                    y(:,:,iz) =   ifft2( exp( complex(0,-this.z(iz) .* this.F)) .* fx );
+                end
             end
         end
         function y = Gram(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
             y = zeros(this.sizein);
             fx = complex(zeros(this.sizeout));
-            for iz = 1:this.Nz
-                fx = fx+     exp( complex(0.,this.z(iz) * this.F)) .*  fft2(x(:,:,iz));
-            end
-            for iz = 1:this.Nz
-                y(:,:,iz) =   ifft2( exp( complex(0,-this.z(iz) * this.F)) .* fx );
+            if this.useincident
+                for iz = 1:this.Nz
+                    fx = fx+     exp( complex(0.,this.z(iz) .* this.F)) .*  fft2(x(:,:,iz).* this.Fincident(:,:,iz));
+                end
+                for iz = 1:this.Nz
+                    y(:,:,iz) =   conj(this.Fincident(:,:,iz)) .* ifft2( exp( complex(0,-this.z(iz) .* this.F)) .* fx );
+                end
+            else
+                for iz = 1:this.Nz
+                    fx = fx+     exp( complex(0.,this.z(iz) * this.F)) .*  fft2(x(:,:,iz));
+                end
+                for iz = 1:this.Nz
+                    y(:,:,iz) =   ifft2( exp( complex(0,-this.z(iz) .* this.F)) .* fx );
+                end
             end
         end
     end

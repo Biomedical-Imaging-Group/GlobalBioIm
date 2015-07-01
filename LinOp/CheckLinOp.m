@@ -4,7 +4,11 @@ function CheckLinOp(LinOp)
 % Function checking the correctness of Adjoint and Inverse implementation
 % of the linear operator LinOp
 %
-% see also LinOp
+% Example:
+% I = Identity()
+% CheckLinop(I) % will check if adjoint gram and inverse gives coherent results 
+%
+% See also LinOp
 
 
 %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
@@ -45,13 +49,13 @@ else
 end
 tol = 1e-3*max( max(max(abs(In(:))),max(abs(HIn(:)))),max(max(abs(Out(:))),max(abs(HtOut(:))))); % Tolerance for numerical equality
 
-if (dot(In(:) ,HtOut(:)) - dot(HIn(:) , Out(:)))<tol
+if abs(dot(In(:) ,HtOut(:)) - dot(HIn(:) , Out(:)))<tol
     disp('Adjoint OK');
 else
     error('Adjoint error: <Hx.y> ~= <x.H^*y> : diff = %d', (dot(In(:) ,HtOut(:)) - dot(HIn(:) , Out(:))));
 end
 
-if norm( (LinOp.Adjoint(HIn) - LinOp.Gram(In)))<tol
+if  dot((LinOp.Adjoint(HIn) - LinOp.Gram(In)),conj(LinOp.Adjoint(HIn) - LinOp.Gram(In)))<tol
     disp('Gram matrix OK');
 else
     error('Error in Gram matrix computation');
@@ -65,7 +69,7 @@ if LinOp.isinvertible
     end
     HItOut = LinOp.AdjointInverse(Out);
     HIIn = LinOp.Inverse(In);
-    if abs(dot(In(:) ,HItOut(:) ) - dot(HIIn(:) , Out(:)))<tol
+    if abs(dot(In(:) ,HItOut(:) ) - dot(HIIn(:) , Out(:)))<10*tol
         disp('Adjoint Inverse  OK');
     else
         error('Adjoint Inverse error: <H^-1 x.y> ~= <x.H^-* y>');

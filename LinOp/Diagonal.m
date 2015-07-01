@@ -1,14 +1,15 @@
 classdef Diagonal <  LinOp
-    %% Scaling : scaling operator
+    %% Diagonal : Diagonal operator
     %  Matlab Linear Operator Library 
     %
+    % Example:
     % Obj = Diagonal(diag)
     %
     % Build the diagonal operator that multiply element wise the input by
     % the vector diag
     %
     % Please refer to the LinOp superclass for documentation
-    % see also LinOp
+    % See also LinOp
     
     
     

@@ -1,14 +1,16 @@
 classdef DFT <  LinOp
     %% DFT : Discrete Fourier operator
     %  Matlab Linear Operator Library 
-    %
-    % Obj = FourierTransform(pad,dim, real)
-    % Discrete Fourier transform operator
+    % 
+    % Example
+    % Obj = DFT(pad)
+    % Compute the dicrete fourier transfom padded by PAD (optionnal) such
+    % y = Obj.Apply(x)  <=> y = fftn(x,pad)
     % 
     %
     % Please refer to the LINOP superclass for general documentation about
     % linear operators class
-    % see also LinOp
+    % See also LinOp fftn SDFT ifftn
     
 %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
 %
@@ -26,14 +28,14 @@ classdef DFT <  LinOp
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     properties (SetAccess = protected,GetAccess = public)
+        N
         pad  % size of of the fourier (default all)
-        dim  % Fourier transform will be apply across the dimension DIM (default all). NOT IMPLEMENTED
-        real % 1 if real complex Fourier transform (default 0). NOT IMPLEMENTED
+        real % 1 if real complex Fourier transform (default 0).  FIXME: NOT IMPLEMENTED
     end
     methods
-        function this = Fourier(varargin)
+        function this = DFT(varargin)
             
-            this.name ='FourierTransform';
+            this.name ='DFT';
             this.iscomplex= true;   
             this.isinvertible=true;
             for n=1:length(varargin)
@@ -47,19 +49,25 @@ classdef DFT <  LinOp
             end
         end
         function y = Apply(this,x)
+            this.sizein = size(x);
+            this.sizeout = size(x);
+            this.N=numel(x);
             y = fftn(x,this.pad);
         end
         function y = Adjoint(this,x)
-            y = ifftn(x,this.pad);
+            this.N=numel(x);
+            y = this.N * ifftn(x,this.pad); %Beware of unitary fft of Matlab :-(
         end
         function y = Inverse(this,x)
             y = ifftn(x,this.pad);
         end
-        function y = Gram(~,x)
-            y =x;
+        function y = Gram(this,x)%Beware of unitary fft of Matlab :-(
+            this.N=numel(x);
+            y =this.N *x;
         end
-        function y = AdjointInverse(this,x)
-            y = fftn(x,this.pad);
+        function y = AdjointInverse(this,x)%Beware of unitary fft of Matlab :-(
+            this.N=numel(x);
+            y = 1/this.N *fftn(x,this.pad);
         end
     end
 end

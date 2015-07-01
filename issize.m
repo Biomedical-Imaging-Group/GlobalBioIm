@@ -2,6 +2,7 @@ function out = issize(in)
 %% ISSIZE function
 % Determine whether the input describe a size (nameley a vector of strictly
 % positive integers).
+%
 
 %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
 %

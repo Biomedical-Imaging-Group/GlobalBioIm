@@ -7,18 +7,20 @@ classdef Diffraction <  LinOp
     % Compute the complex amplitude of plane wave scattered by the input X
     % without multiple scattering:
     % Y = sum_z Fresnel_z( X(:,:,z))
+    %
+    % Example:
     % Obj = Diffraction(lambda, n0, z,dxy,sz, pad)
     %         lambda   wavelenght            [m]
     %         n0       refractive index of the medium
     %         z       % depth of propagation  [m]
-    %         sz      size of the output if a vector of 2 elements OR incident complex qmplitude a z=0;
+    %         sz      size of the output if a vector of 2 elements OR incident complex amplitude a z=0;
     %         pad     % size with padding  % NOT IMPLEMENTED
     %         if the option 'FeitFleck' is set it use the Feit and Fleck model of propagation instead:
     % M. D. Feit and J. A. Fleck, ?Bean nonparaxiality, filament formaform, and beam breakup in the self-focusing of optical beams,? J. Opt. Soc. Am. B, vol. 5, pp. 633? 640, March 1988.
     %
     % Please refer to the LINOP superclass for general documentation about
     % linear operators class
-    % see also LinOp
+    % See also LinOp Fresnel
     
     %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
     %

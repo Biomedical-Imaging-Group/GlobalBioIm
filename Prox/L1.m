@@ -1,4 +1,4 @@
-classdef L1 < handle
+classdef L1 < Prox
     %% L1 : L1 norm Proximity Operator 
     %  Matlab Inverse Problems Library
     % 
@@ -32,6 +32,7 @@ classdef L1 < handle
     
     methods 
         function this = L1(varargin)
+            this.name='L1';
             for c=1:length(varargin)
                 switch varargin{c}
                     case('NonNegativity')

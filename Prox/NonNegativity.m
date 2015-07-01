@@ -1,4 +1,4 @@
-classdef NonNegativity < handle
+classdef NonNegativity < Prox
     %% NonNegativity : NonNegative Proximity Operator 
     %  Matlab Inverse Problems Library
     % 
@@ -30,6 +30,9 @@ classdef NonNegativity < handle
     end
     
     methods
+        function this= NonNegativity()
+            this.name='NonNegativity';
+        end
         function y = Apply(~,x,~) % Apply the operator
             y = max(x,0.);
         end

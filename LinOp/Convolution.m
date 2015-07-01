@@ -1,13 +1,15 @@
 classdef Convolution <  LinOp
-    %% Diffraction : Diffraction operator
+    %% Convolution : Convolution operator
     %  Matlab Linear Operator Library
     %
+    % Example:
     % Obj = Convolution(psf, index)
-    %
+    % Convolution operator with  PSF psf along the dimension
+    % indexed in INDEX (all by default)
     %
     % Please refer to the LINOP superclass for general documentation about
     % linear operators class
-    % see also LinOp
+    % See also LinOp DFT Sfft iSFFT
     
     %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
     %

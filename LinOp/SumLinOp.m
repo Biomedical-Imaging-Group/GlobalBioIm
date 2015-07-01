@@ -2,6 +2,7 @@ classdef SumLinOp < LinOp
     %% SumLinop : Summation of linear operator
     %  Matlab Linear Operator Library
     %
+    % Example
     % Obj = SumLinop(LinOp1,LinOp2,alpha1, alpha2)
     % Element wise sum  of LinOps:
     % Obj = alpha1 LinOp1 + alpha2 LinOp2
@@ -10,7 +11,7 @@ classdef SumLinOp < LinOp
     %
     % Please refer to the LINOP superclass for general documentation about
     % linear operators class
-    % see also LinOp
+    % See also LinOp
     
     %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
     %

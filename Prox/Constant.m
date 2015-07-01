@@ -1,4 +1,4 @@
-classdef Constant < handle
+classdef Constant < Prox
     %% Constant : Constant Proximity Operator 
     %  Matlab Inverse Problems Library
     % 
@@ -33,6 +33,8 @@ classdef Constant < handle
     
     methods
         function this = Constant(cst)
+          
+            this.name='Constant';
             if nargin==0
                 cst =0;
             end

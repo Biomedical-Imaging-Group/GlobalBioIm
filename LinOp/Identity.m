@@ -4,8 +4,11 @@ classdef Identity <  LinOp
     %  Matlab Linear Operator Library 
     % Build the identity operator such that x = Id.apply(x)
     %
+    % Example
+    % Id = Identity()
+    %
     % Please refer to the LinOp superclass for documentation
-    % see also LinOp
+    % See also LinOp
      
 %     Copyright (C) 2015 F. Soulez  ferreol.soulez@epfl.ch
 % 

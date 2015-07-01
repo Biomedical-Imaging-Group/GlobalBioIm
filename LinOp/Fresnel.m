@@ -2,13 +2,21 @@ classdef Fresnel <  LinOp
     %% Fresnel : Discrete Fresnel operator
     %  Matlab Linear Operator Library
     %
+    % Example
     % Obj = Fresnel(lambda, n0, z,dxy,sz, pad)
-    % Fresnel transform operator
+    % Fresnel transform operator with
+%           lambda   wavelenght            [m]
+%         n0      % refractive index of the medium
+%         z       % depth of propagation  [m]
+%         dxy     % pixel size            [m]
+%         pad     % size with padding  % FIX ME: NOT IMPLEMENTED
+%         if the option 'FeitFleck' is set then it will use the Feit and Fleck model of propagation instead:
+%         M. D. Feit and J. A. Fleck, ?Bean nonparaxiality, filament formaform, and beam breakup in the self-focusing of optical beams,? J. Opt. Soc. Am. B, vol. 5, pp. 633? 640, March 1988.
     %
     %
     % Please refer to the LINOP superclass for general documentation about
     % linear operators class
-    % see also LinOp
+    % See also LinOp
     
     %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
     %

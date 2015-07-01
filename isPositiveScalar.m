@@ -1,6 +1,8 @@
 function out = isPositiveScalar(in)
 %% ISPOSITIVESSCALAR function
 % Determine whether the input is a scalar belonging to R^+
+%
+% See also isscalar
 
 %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
 %

@@ -2,6 +2,7 @@ classdef Grad <  LinOp
     %% Grad :  Finite difference operator
     %  Matlab Linear Operator Library
     %
+    % Example
     % Obj = Grad(sz,index)
     % Finite operator operator
     % Compute finite differences of a vector of size SZ along the dimension
@@ -11,7 +12,7 @@ classdef Grad <  LinOp
     %
     % Please refer to the LINOP superclass for general documentation about
     % linear operators class
-    % see also LinOp
+    % See also LinOp
     
     %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
     %

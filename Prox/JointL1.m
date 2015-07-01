@@ -35,6 +35,7 @@ classdef JointL1 < Prox
     
     methods
         function this = JointL1(index,varargin)
+            this.name='JointL1';
             
             assert(isvector(index),'The index should be a conformable  to sz');
             this.index = index;
@@ -67,7 +68,7 @@ classdef JointL1 < Prox
                 x =  max(x,0);
             end
             index = this.index;
-            sx = x.*x;
+            sx = abs(x).^2;
             while ~isempty(index)
                 sx = sum(sx,index(1));
                 index = index(2:end);

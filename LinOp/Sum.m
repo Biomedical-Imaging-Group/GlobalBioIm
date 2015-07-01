@@ -1,16 +1,17 @@
 classdef Sum <  LinOp
-    %% Sum : Sumation operator
+    %% Sum : Summation operator
     %  Matlab Linear Operator Library
     %
+    % Example
     % Obj = Sum(sz,index)
-    % Sumation operator
+    % Sum operator
     % Sum the any vector of size SZ along the dimension
     % indexed in INDEX (all by default)
     % 
     %
     % Please refer to the LINOP superclass for general documentation about
     % linear operators class
-    % see also LinOp
+    % See also LinOp
     
     %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
     %

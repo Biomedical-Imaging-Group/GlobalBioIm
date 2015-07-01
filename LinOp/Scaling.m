@@ -2,13 +2,14 @@ classdef Scaling <  LinOp
     %% Scaling : scaling operator
     %  Matlab Linear Operator Library 
     %
+    % Example
     % Obj = Scaling(scale)
     %
     % Build the scaling operator that scale the input by the scalar factor
     % scale
     %
     % Please refer to the LinOp superclass for documentation
-    % see also LinOp
+    % See also LinOp
         
 %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
 %

@@ -1,4 +1,4 @@
-classdef L2 < handle
+classdef L2 < Prox
     %% L2 : L2 norm Proximity Operator 
     %  Matlab Inverse Problems Library
     % 
@@ -30,6 +30,7 @@ classdef L2 < handle
     
     methods 
         function this = L2(a)
+            this.name='L2';
             if isempty(a)
                 a =0;
             end

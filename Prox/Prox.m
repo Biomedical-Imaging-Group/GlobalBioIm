@@ -9,6 +9,7 @@ classdef Prox < handle
     %% Properties
     % * |name|          - name of the function  $\phi$ 
     % * |alpha|         - hyperparameter $\alpha$
+    % * |sz|            - size of x
     %
     %% Methods
     % * |Apply|    - Apply the proximity operator of $\phi$

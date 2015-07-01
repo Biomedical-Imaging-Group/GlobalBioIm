@@ -67,7 +67,7 @@ classdef LinOp < handle
                 error('Operator not invertible');
             end
         end
-        function AdjointInverse(~,~) % Apply the inverse
+        function AdjointInverse(this,~) % Apply the inverse
             if this.isinvertible
                 error('AdjointInverse not implemented');
             else

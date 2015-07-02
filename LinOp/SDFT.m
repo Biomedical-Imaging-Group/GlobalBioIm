@@ -45,6 +45,7 @@ classdef SDFT <  LinOp
             this.name ='SDFT';
             this.iscomplex= true;
             this.isinvertible=true;
+            this.issquare = true;
         end
         function y = Apply(this,x)
              if (~isempty(this.index))
@@ -68,7 +69,7 @@ classdef SDFT <  LinOp
         function y = Inverse(this,x)
             y =  iSfft(x, this.Notindex);
         end
-        function y = Gram(this,x)
+        function y = HtH(this,x)
             y = this.N * x;
         end
         function y = AdjointInverse(this,x)
@@ -76,14 +77,14 @@ classdef SDFT <  LinOp
         end
     end
 end
-
-function Notindex = buildNotindex(Ndims, Index)
-% Build notindex such index+ notindex span the whole dimension Ndims
-Notindex= 1:Ndims;
-if ~isempty(Index)
-    for n = Index
-        Notindex(n==Index)= 0;
-    end
-    Notindex = Notindex(Notindex~=0);
-end
-end
+% 
+% function Notindex = buildNotindex(Ndims, Index)
+% % Build notindex such index+ notindex span the whole dimension Ndims
+% Notindex= 1:Ndims;
+% if ~isempty(Index)
+%     for n = Index
+%         Notindex(n==Index)= 0;
+%     end
+%     Notindex = Notindex(Notindex~=0);
+% end
+% end

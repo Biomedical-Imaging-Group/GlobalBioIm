@@ -55,10 +55,18 @@ else
     error('Adjoint error: <Hx.y> ~= <x.H^*y> : diff = %d', (dot(In(:) ,HtOut(:)) - dot(HIn(:) , Out(:))));
 end
 
-if  dot((LinOp.Adjoint(HIn) - LinOp.Gram(In)),conj(LinOp.Adjoint(HIn) - LinOp.Gram(In)))<tol
-    disp('Gram matrix OK');
+if  (dot((LinOp.Adjoint(HIn) - LinOp.HtH(In)),conj(LinOp.Adjoint(HIn) - LinOp.HtH(In)))<tol)
+    disp('HtH matrix OK');
 else
-    error('Error in Gram matrix computation');
+    error('Error in HtH matrix computation');
+end
+
+if ~LinOp.issquare
+    if  (dot((LinOp.Apply(HtOut) - LinOp.HHt(HtOut)),conj(LinOp.Apply(HtOut) - LinOp.HHt(HtOut)))<tol)
+        disp('HHt matrix OK');
+    else
+        error('Error in HtH matrix computation');
+    end
 end
 
 if LinOp.isinvertible

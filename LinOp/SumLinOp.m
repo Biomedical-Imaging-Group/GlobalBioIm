@@ -1,11 +1,13 @@
 classdef SumLinOp < LinOp
-    %% SumLinop : Summation of linear operator
+    %% SumLinop : Sum of linear operators
     %  Matlab Linear Operator Library
     %
     % Example
-    % Obj = SumLinop(LinOp1,LinOp2,alpha1, alpha2)
+    % Obj = SumLinop(ALinOp,alpha)
     % Element wise sum  of LinOps:
-    % Obj = alpha1 LinOp1 + alpha2 LinOp2
+    % Sum the all linop contained in vector ALINOP weighted by ALPHA
+    % (default 1)
+    % Obj  sum_n alpha(n) * ALinOp(n)
     %
     %
     %
@@ -29,49 +31,54 @@ classdef SumLinOp < LinOp
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     properties (SetAccess = protected,GetAccess = public)
-        LinOp1
-        LinOp2
-        alpha1
-        alpha2
+        ALinOp     % Array of linop
+        numLinOp   % number of linop
+        alpha      % scalar factor
     end
     
     methods
-        function this = SumLinOp(LinOp1, LinOp2, alpha1, alpha2)
+        function this = SumLinOp(ALinOp,alpha)
             this.name ='SumLinOp';
-            if nargin == 2
-                alpha1 = 1;
-                alpha2 = 1;
-            end
-            if nargin == 3
-                alpha2 = 1;
+            if nargin == 1
+                alpha = 1;
             end
             
             
-            assert(isa(LinOp1,'LinOp'),'First input should be a LinOp');
-            assert(isa(LinOp2,'LinOp'),'Second input should be a LinOp');
-            assert(isscalar(alpha1),'Third input should be a scalar');
-            assert(isscalar(alpha2),'Fourth input should be a scalar');
-            
-            this.alpha1 = alpha1;
-            this.LinOp1 = LinOp1;
-            this.alpha2 = alpha2;
-            this.LinOp2 = LinOp2;
-            if LinOp1.iscomplex || LinOp2.iscomplex
-                this.iscomplex= true;
+            assert(isvector(ALinOp) && isa(ALinOp,'LinOp'),'First input should be an array LinOp');
+            this.ALinOp = ALinOp;
+            this.numLinOp = numel(ALinOp);
+            assert(isnumeric(alpha)&& ( isscalar(alpha) || ( isvector(alpha) && (numel(alpha)== this.numLinOp))),'second input should be a scalar or an array of scalar of the same size as the first input');
+            if  isscalar(alpha)
+            this.alpha = repmat(alpha,this.numLinOp,1) ;
             else
-                this.iscomplex= false;
+            this.alpha = alpha;
+            end
+            this.iscomplex= this.ALinOp(1).iscomplex;
+            this.issquare = this.ALinOp(1).issquare;
+            this.isinvertible=false;
+            this.sizein =  this.ALinOp(1).sizein;
+            this.sizeout =  this.ALinOp(1).sizeout;
+            for n =2:this.numLinOp
+                assert(isequal(this.sizein,this.ALinOp(n).sizein),'%d-th input does not have the right hand side size ') ;
+                assert(isequal(this.sizeout,this.ALinOp(n).sizeout),'%d-th input does not have the left hand side size ');
+                this.iscomplex= this.ALinOp(n).iscomplex ||  this.iscomplex ;
             end
             
-            this.isinvertible=false;
             
             
         end
         
         function y = Apply(this,x) % Apply the operator
-            y = this.alpha1 * this.LinOp1.Apply(x) + this.alpha2 * this.LinOp2.Apply(x);
+            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizein);
+             for n =1:this.numLinOp
+                 y = this.alpha(n) .* this.ALinOp(n).Apply(x);
+             end
         end
         function y = Adjoint(this,x) % Apply the adjoint
-            y = this.alpha1 * this.LinOp1.Adjoint(x) + this.alpha2 * this.LinOp2.Adjoint(x);
+            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizeout);
+             for n =1:this.numLinOp
+                 y = this.alpha(n) .* this.ALinOp(n).Adjoint(x);
+             end
         end
     end
 end

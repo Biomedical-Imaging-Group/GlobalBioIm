@@ -57,6 +57,7 @@ classdef Fresnel <  LinOp
             this.name ='Fresnel';
             this.iscomplex= true;
             this.isinvertible=true;
+            this.issquare = true;
             
             assert(isPositiveScalar(lambda),'The wavelenght lambda should be a positive scalar');
             this.lambda = lambda;
@@ -115,7 +116,7 @@ classdef Fresnel <  LinOp
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
             y = ifft2(  conj(this.F) .*  fft2(x));
         end
-        function y = Gram(this,x) %  Apply the Gram matrix
+        function y = HtH(this,x) %  Apply the HtH matrix
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
             y = x;
         end

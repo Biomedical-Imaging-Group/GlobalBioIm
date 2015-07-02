@@ -40,6 +40,7 @@ classdef Convolution <  LinOp
             end
             this.name ='Convolution';
             this.isinvertible=false;
+            this.issquare = true;
             
             assert(isnumeric(psf),'The psf should be a');
             this.psf = psf;
@@ -70,6 +71,11 @@ classdef Convolution <  LinOp
             
             this.mtf = Sfft(this.psf, this.Notindex);
             
+                if all(this.mtf)
+                    this.isinvertible=true;
+                else
+                    this.isinvertible=false;
+                end
             
             
         end
@@ -87,11 +93,27 @@ classdef Convolution <  LinOp
                 y = real(y);
             end
         end
-        function y = Gram(this,x)
+        function y = HtH(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
             y = iSfft( (real(this.mtf).^2 + imag(this.mtf).^2) .* Sfft(x, this.Notindex), this.Notindex );
             if (~this.iscomplex)&&isreal(x)
                 y = real(y);
+            end
+        end
+        function y=Inverse(this,x) % Apply the inverse
+            if this.isinvertible
+            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d]',this.sizein);
+            y = iSfft( 1./this.mtf .* Sfft(x, this.Notindex), this.Notindex );       
+            else
+                error('Operator not invertible');
+            end
+        end
+        function AdjointInverse(this,~) % Apply the inverse
+            if this.isinvertible
+            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
+            y = iSfft( 1./conj(this.mtf) .* Sfft(x, this.Notindex), this.Notindex );
+            else
+                error('Operator not invertible');
             end
         end
     end

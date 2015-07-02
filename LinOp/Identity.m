@@ -29,6 +29,7 @@ classdef Identity <  LinOp
         function this = Identity()
             this.name='Identity';
             this.iscomplex=false;
+            this.issquare = true;
         end
         function y = Apply(this,x)
             this.sizeout=size(x);
@@ -40,7 +41,7 @@ classdef Identity <  LinOp
             this.sizein=size(x);
             y =x;
         end
-        function y = Gram(~,x)
+        function y = HtH(~,x)
             y =x;
         end
         function y = Inverse(~,x)

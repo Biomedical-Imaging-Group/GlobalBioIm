@@ -18,14 +18,16 @@ classdef LinOp < handle
     % * |Adjoint|  - Apply the adjoint  $\mathbf{H}^{\mathrm{*}}$ defined
     % such  $<\mathbf{H} \mathbf{x} . \mathbf{y} > = <\mathbf{x} .
     % \mathbf{H}^{\mathrm{*}} \mathbf{y} >$
-    % * |Gram|      - Apply the Gram matrix: the operator followed by its adjoint
-    % $\mathbf{H}^{\mathrm{*}} \cdot \mathbf{H}$
+    % * |HtH|      - Apply the HtH matrix: the operator followed by its adjoint
+    % $\mathbf{H}^{\mathrm{*}} \cdot \mathbf{H}$    
+    % * |HHt|      - Apply the HHt matrix: the adjoint operator followed by its 
+    % $ \mathbf{H} \cdot \mathbf{H}^{\mathrm{*}} $
     % * |Inverse|  - Apply the inverse  $\mathbf{H}^{\mathrm{-1}}$ of the
     % operator if it exist
     % * |AdjointInverse|  - Apply the adjoint of the inverse  $\mathbf{H}^{\mathrm{-*}}$ of the
     % operator if it exist
     %%
-    
+     
     
     %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
     %
@@ -47,6 +49,7 @@ classdef LinOp < handle
         sizein;         % dimension of the right hand side vector space
         sizeout;        % dimension of the left hand side vector space
         isinvertible = false; % true if the operator is invertible
+        issquare = false; % true if the operator is invertible
         iscomplex;      % true is the operator is complex
     end
     
@@ -57,8 +60,15 @@ classdef LinOp < handle
         function Adjoint(~,~) % Apply the adjoint
             error('Adjoint not implemented');
         end
-        function y = Gram(this,x) %  Apply the Gram matrix
+        function y = HtH(this,x) %  Apply the HtH matrix
             y = this.Adjoint(this.Apply(x));
+        end
+        function y = HHt(this,x) %  Apply the HHt matrix
+            if this.issquare   % HtH =HHt
+                y = this.HtH(x);
+            else
+            y = this.Apply(this.Ajoint(x));
+            end
         end
         function Inverse(this,~) % Apply the inverse
             if this.isinvertible
@@ -73,6 +83,15 @@ classdef LinOp < handle
             else
                 error('Operator not invertible');
             end
+        end
+        function this = transpose(this) % Overloading for transpose 
+            if this.iscomplex
+            warning('Warning: You mean adjoint? For LinOp transpose is an alias of adjoint');
+            end
+           this = adjoint(this);
+        end
+        function this = ctranspose(this) % Overloading for ctranspose 
+           this = adjoint(this);
         end
     end
 end

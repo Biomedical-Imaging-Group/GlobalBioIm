@@ -51,6 +51,11 @@ classdef MulLinOp < LinOp
             else
                 this.isinvertible= false;
             end
+            if LinOp1.issquare && LinOp2.issquare
+                this.issquare= true;
+            else
+                this.issquare= false;
+            end
             
             
         end
@@ -60,6 +65,12 @@ classdef MulLinOp < LinOp
         end
         function y = Adjoint(this,x) % Apply the adjoint
             y = this.LinOp2.Adjoint(this.LinOp1.Adjoint(x));
+        end
+        function y = HtH(this,x)
+            y = this.LinOp2.Adjoint(this.LinOp1.HtH( this.LinOp2.Apply(x)));
+        end
+        function y = HHt(this,x)
+            y = this.LinOp1.Apply(this.LinOp2.HHt( this.LinOp1.Adjoint(x)));
         end
         function y = Inverse(this,x) % Apply the inverse
             if this.isinvertible

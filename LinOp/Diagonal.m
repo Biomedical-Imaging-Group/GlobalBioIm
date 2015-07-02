@@ -34,6 +34,7 @@ classdef Diagonal <  LinOp
     methods
         function this = Diagonal(diag)
             this.name ='Diagonal';
+            this.issquare = true;
             if isnumeric(diag)
                 this.diag = diag;
                 this.sizeout=size(diag);

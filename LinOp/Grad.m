@@ -42,6 +42,7 @@ classdef Grad <  LinOp
             this.name ='Grad';
             this.iscomplex= false;
             this.isinvertible=false;
+            this.issquare = false;
             
             
             assert(issize(sz),'The input size sz should be a conformable  to a size ');
@@ -170,7 +171,7 @@ classdef Grad <  LinOp
             
             
         end
-        function y = Gram(this,x) %  Apply the Gram matrix
+        function y = HtH(this,x) %  Apply the HtH matrix
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizein);
             nidx = 0;
             y = zeros(this.sizein);

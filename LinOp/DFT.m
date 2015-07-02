@@ -38,6 +38,7 @@ classdef DFT <  LinOp
             this.name ='DFT';
             this.iscomplex= true;   
             this.isinvertible=true;
+            this.issquare = true;
             for n=1:length(varargin)
                 if n<2
                     if issize(varargin{n})
@@ -61,7 +62,7 @@ classdef DFT <  LinOp
         function y = Inverse(this,x)
             y = ifftn(x,this.pad);
         end
-        function y = Gram(this,x)%Beware of unitary fft of Matlab :-(
+        function y = HtH(this,x)%Beware of unitary fft of Matlab :-(
             this.N=numel(x);
             y =this.N *x;
         end

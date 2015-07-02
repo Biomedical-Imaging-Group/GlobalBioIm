@@ -42,6 +42,7 @@ classdef Sum <  LinOp
             this.name ='Sum';
             this.iscomplex= true;
             this.isinvertible=false;
+            this.issquare = false;
             
             assert(issize(sz),'The input size sz should be a conformable  to a size ');
             this.sizein = sz;
@@ -88,6 +89,12 @@ classdef Sum <  LinOp
         function y = Adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
             y = reshape(repmat(reshape(x,this.imdims),this.kerdims),this.sizein);
+        end
+        function y = HHt(this,x)
+            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
+            a = cumprod(this.kerdims);
+            a = a(end);
+            y = x.*a;
         end
     end
 end

@@ -64,6 +64,7 @@ classdef Diffraction <  LinOp
             this.name ='Diffraction';
             this.iscomplex= true;
             this.isinvertible=false;
+            this.issquare = false;
             
             assert(isPositiveScalar(lambda),'The wavelenght lambda should be a positive scalar');
             this.lambda = lambda;
@@ -167,7 +168,7 @@ classdef Diffraction <  LinOp
                 end
             end
         end
-        function y = Gram(this,x)
+        function y = HtH(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
             y = zeros(this.sizein);
             fx = complex(zeros(this.sizeout));

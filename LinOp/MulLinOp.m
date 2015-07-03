@@ -40,6 +40,9 @@ classdef MulLinOp < LinOp
             assert(isa(LinOp2,'LinOp'),'Second input should be a LinOp');
             this.LinOp1 = LinOp1;
             this.LinOp2 = LinOp2;
+            assert(isequal(LinOp1.sizein, LinOp2.sizeout),'size of LinOp not conformable');
+            this.sizein = LinOp2.sizein;
+            this.sizeout = LinOp1.sizeout;
             if LinOp1.iscomplex || LinOp2.iscomplex
                 this.iscomplex= true;
             else

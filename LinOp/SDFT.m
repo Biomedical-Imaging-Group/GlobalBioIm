@@ -59,8 +59,7 @@ classdef SDFT <  LinOp
              end
             this.sizein = size(x);
             this.sizeout = size(x);
-            cmprd = cumprod(this.sizein(this.index));
-            this.N= cmprd(end);
+            this.N= prod(this.sizein(this.index));
             y =  Sfft(x, this.Notindex);
         end
         function y = Adjoint(this,x)

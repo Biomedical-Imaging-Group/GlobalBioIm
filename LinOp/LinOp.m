@@ -70,6 +70,10 @@ classdef LinOp < handle
             y = this.Apply(this.Ajoint(x));
             end
         end
+        function y = HtWH(this,x,W) %  Apply the HtH matrix
+            assert(isa(W,'LinOp'),'W must be a LinOp');
+            y = this.Adjoint(W.Apply(this.Apply(x)));
+        end
         function Inverse(this,~) % Apply the inverse
             if this.isinvertible
                 error('Inverse not implemented');
@@ -86,12 +90,23 @@ classdef LinOp < handle
         end
         function this = transpose(this) % Overloading for transpose 
             if this.iscomplex
-            warning('Warning: You mean adjoint? For LinOp transpose is an alias of adjoint');
+            warning('Warning: Do you mean adjoint? For LinOp object transpose() is an alias of Adjoint method');
             end
            this = adjoint(this);
         end
         function this = ctranspose(this) % Overloading for ctranspose 
            this = adjoint(this);
+        end
+        function y =	mtimes(this,x)% Overloading for *
+            if isa(x,'LinOp')
+            y = MulLinOp(this, x);
+            else
+                y = this.Apply(x);
+            end
+        end
+        function y =	plus(this,x)% Overloading for +
+            assert(isa(x,'LinOp'),'addition of LinOp is only define with other LinOp');
+            y = SumLinOp({this,x});
         end
     end
 end

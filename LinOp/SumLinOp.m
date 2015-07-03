@@ -44,7 +44,7 @@ classdef SumLinOp < LinOp
             end
             
             
-            assert(isvector(ALinOp) && isa(ALinOp,'LinOp'),'First input should be an array LinOp');
+            assert(iscell(ALinOp) && isa(ALinOp{1}(1),'LinOp'),'First input should be a cell array LinOp');
             this.ALinOp = ALinOp;
             this.numLinOp = numel(ALinOp);
             assert(isnumeric(alpha)&& ( isscalar(alpha) || ( isvector(alpha) && (numel(alpha)== this.numLinOp))),'second input should be a scalar or an array of scalar of the same size as the first input');
@@ -53,15 +53,15 @@ classdef SumLinOp < LinOp
             else
             this.alpha = alpha;
             end
-            this.iscomplex= this.ALinOp(1).iscomplex;
-            this.issquare = this.ALinOp(1).issquare;
+            this.iscomplex= this.ALinOp{1}(1).iscomplex;
+            this.issquare = this.ALinOp{1}(1).issquare;
             this.isinvertible=false;
-            this.sizein =  this.ALinOp(1).sizein;
-            this.sizeout =  this.ALinOp(1).sizeout;
+            this.sizein =  this.ALinOp{1}(1).sizein;
+            this.sizeout =  this.ALinOp{1}(1).sizeout;
             for n =2:this.numLinOp
-                assert(isequal(this.sizein,this.ALinOp(n).sizein),'%d-th input does not have the right hand side size ') ;
-                assert(isequal(this.sizeout,this.ALinOp(n).sizeout),'%d-th input does not have the left hand side size ');
-                this.iscomplex= this.ALinOp(n).iscomplex ||  this.iscomplex ;
+                assert(isequal(this.sizein,this.ALinOp{n}(1).sizein),'%d-th input does not have the right hand side size ') ;
+                assert(isequal(this.sizeout,this.ALinOp{n}(1).sizeout),'%d-th input does not have the left hand side size ');
+                this.iscomplex= this.ALinOp{n}(1).iscomplex ||  this.iscomplex ;
             end
             
             

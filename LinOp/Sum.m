@@ -53,7 +53,6 @@ classdef Sum <  LinOp
                 this.ndms = 1;
             end
             
-            T = true(this.ndms,1);
             
             if (~isempty(index))
                 assert(isvector(index) && length(index)<= this.ndms && max(index)<= this.ndms,'The index should be a conformable  to sz');
@@ -61,6 +60,7 @@ classdef Sum <  LinOp
             else
                 this.index = 1:this.ndms;
             end
+            T = true(this.ndms,1);
             T(this.index)=false;
             
             %size of the output = size of the input x length of the index
@@ -92,8 +92,7 @@ classdef Sum <  LinOp
         end
         function y = HHt(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
-            a = cumprod(this.kerdims);
-            a = a(end);
+            a = prod(this.kerdims);
             y = x.*a;
         end
     end

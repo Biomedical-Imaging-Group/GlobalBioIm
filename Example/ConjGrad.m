@@ -27,7 +27,7 @@ k = 0;
 while k< maxiter
     rho = dot(r(:), r(:));
     if k == 0
-        tol = epsilon*rho;
+        tol = eps*rho;
         p = r;
     elseif rho <= tol
         break

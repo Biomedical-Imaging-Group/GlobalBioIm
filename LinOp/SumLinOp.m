@@ -59,8 +59,8 @@ classdef SumLinOp < LinOp
             this.sizein =  this.ALinOp{1}(1).sizein;
             this.sizeout =  this.ALinOp{1}(1).sizeout;
             for n =2:this.numLinOp
-                assert(isequal(this.sizein,this.ALinOp{n}(1).sizein),'%d-th input does not have the right hand side size ') ;
-                assert(isequal(this.sizeout,this.ALinOp{n}(1).sizeout),'%d-th input does not have the left hand side size ');
+                assert(isempty(this.ALinOp{n}(1).sizeout) ||isequal(this.sizein,this.ALinOp{n}(1).sizein),'%d-th input does not have the right hand side size ') ;
+                assert(isempty(this.ALinOp{n}(1).sizeout) ||isequal(this.sizeout,this.ALinOp{n}(1).sizeout),'%d-th input does not have the left hand side size ');
                 this.iscomplex= this.ALinOp{n}(1).iscomplex ||  this.iscomplex ;
             end
             
@@ -69,15 +69,17 @@ classdef SumLinOp < LinOp
         end
         
         function y = Apply(this,x) % Apply the operator
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizein);
-             for n =1:this.numLinOp
-                 y = this.alpha(n) .* this.ALinOp(n).Apply(x);
+         %   assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizein);
+         y = this.alpha(1) .* this.ALinOp{1}(1).Apply(x);    
+         for n =2:this.numLinOp
+                 y = y + this.alpha(n) .* this.ALinOp{n}(1).Apply(x);
              end
         end
         function y = Adjoint(this,x) % Apply the adjoint
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizeout);
-             for n =1:this.numLinOp
-                 y = this.alpha(n) .* this.ALinOp(n).Adjoint(x);
+                 y =  this.alpha(1) .* this.ALinOp{1}(1).Adjoint(x);
+                 for n =2:this.numLinOp
+                 y = y + this.alpha(n) .* this.ALinOp{n}(1).Adjoint(x);
              end
         end
     end

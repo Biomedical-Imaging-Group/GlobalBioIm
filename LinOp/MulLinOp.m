@@ -35,12 +35,22 @@ classdef MulLinOp < LinOp
     
     methods
         function this = MulLinOp(LinOp1, LinOp2)
+            
+            if isnumeric(LinOp1)
+                if isscalar(LinOp1)
+             LinOp1 = Scaling(LinOp1);
+                else
+             LinOp1 = Diagonal(LinOp1);                    
+                end
+            end
+            assert(isa(LinOp1,'LinOp'),'MulLinOp: First input should be a LinOp');
+            assert(isa(LinOp2,'LinOp'),'MulLinOp: Second input should be a LinOp');
+            
+            
             this.name ='MulLinOp';
-            assert(isa(LinOp1,'LinOp'),'First input should be a LinOp');
-            assert(isa(LinOp2,'LinOp'),'Second input should be a LinOp');
             this.LinOp1 = LinOp1;
             this.LinOp2 = LinOp2;
-            assert(isequal(LinOp1.sizein, LinOp2.sizeout),'size of LinOp not conformable');
+            assert(isempty(LinOp1.sizein) || isequal(LinOp1.sizein, LinOp2.sizeout),'size of LinOp not conformable');
             this.sizein = LinOp2.sizein;
             this.sizeout = LinOp1.sizeout;
             if LinOp1.iscomplex || LinOp2.iscomplex

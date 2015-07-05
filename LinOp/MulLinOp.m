@@ -31,25 +31,43 @@ classdef MulLinOp < LinOp
     properties (SetAccess = protected,GetAccess = public)
         LinOp1
         LinOp2
+        isnum
     end
     
     methods
         function this = MulLinOp(LinOp1, LinOp2)
             
-            if isnumeric(LinOp1)
-                if isscalar(LinOp1)
-             LinOp1 = Scaling(LinOp1);
-                else
-             LinOp1 = Diagonal(LinOp1);                    
-                end
-            end
-            assert(isa(LinOp1,'LinOp'),'MulLinOp: First input should be a LinOp');
-            assert(isa(LinOp2,'LinOp'),'MulLinOp: Second input should be a LinOp');
-            
-            
             this.name ='MulLinOp';
             this.LinOp1 = LinOp1;
             this.LinOp2 = LinOp2;
+            
+            if isnumeric(LinOp1)
+             this.isnum =1;
+             if (~isreal(LinOp1)) || LinOp2.iscomplex
+                this.iscomplex= true;
+            else
+                this.iscomplex= false;
+            end
+            
+            if all(LinOp1) && LinOp2.isinvertible
+                this.isinvertible= true;
+            else
+                this.isinvertible= false;
+            end
+            
+                this.issquare= LinOp2.issquare;
+            
+             
+             
+%                 if isscalar(LinOp1)
+%              LinOp1 = Scaling(LinOp1);
+%                 else
+%              LinOp1 = Diagonal(LinOp1);                    
+%                 end
+            else
+            assert(isa(LinOp1,'LinOp'),'MulLinOp: First input should be a LinOp');
+            assert(isa(LinOp2,'LinOp'),'MulLinOp: Second input should be a LinOp');
+            
             assert(isempty(LinOp1.sizein) || isequal(LinOp1.sizein, LinOp2.sizeout),'size of LinOp not conformable');
             this.sizein = LinOp2.sizein;
             this.sizeout = LinOp1.sizeout;
@@ -64,26 +82,45 @@ classdef MulLinOp < LinOp
             else
                 this.isinvertible= false;
             end
+            
             if LinOp1.issquare && LinOp2.issquare
                 this.issquare= true;
             else
                 this.issquare= false;
             end
             
+            end
+            
             
         end
         
         function y = Apply(this,x) % Apply the operator
+            if this.isnum
+                y = this.LinOp1.*this.LinOp2.Apply(x);
+            else 
             y = this.LinOp1.Apply( this.LinOp2.Apply(x));
+            end
         end
         function y = Adjoint(this,x) % Apply the adjoint
+            if this.isnum
+                y = this.LinOp2.Adjoint(this.LinOp1.*x);
+            else
             y = this.LinOp2.Adjoint(this.LinOp1.Adjoint(x));
+            end
         end
         function y = HtH(this,x)
+            if this.isnum
+            y = this.LinOp2.Adjoint(this.LinOp1.^2.*( this.LinOp2.Apply(x)));
+            else
             y = this.LinOp2.Adjoint(this.LinOp1.HtH( this.LinOp2.Apply(x)));
+            end
         end
         function y = HHt(this,x)
+            if this.isnum
+            y = this.LinOp1.*(this.LinOp2.HHt( this.LinOp1.*x));
+            else
             y = this.LinOp1.Apply(this.LinOp2.HHt( this.LinOp1.Adjoint(x)));
+            end
         end
         function y = Inverse(this,x) % Apply the inverse
             if this.isinvertible
@@ -94,7 +131,7 @@ classdef MulLinOp < LinOp
         end
         function y = AdjointInverse(this,x) % Apply the inverse
             if this.isinvertible             
-                y = this.LinOp1.AdjointInverse(this.LinOp1.AdjointInverse(x));
+                y = this.LinOp2.AdjointInverse(this.LinOp1.AdjointInverse(x));
             else
                 error('Operator not invertible');
             end

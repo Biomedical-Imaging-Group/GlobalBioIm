@@ -1,9 +1,11 @@
-%% Conjugate gradient 
+%% Conjugate gradient
 %
-% Example 
-% x = ConjGrad(A,b,  x0,maxiter)
+% Example
+% x = ConjGrad(A,b,  x0,maxiter,W)
 % Estimate the solution of the eqution A*x = b with XO the initilization
-% and maxiter the maximum number of iteration 
+% and maxiter the maximum number of iteration.
+% if parameters W is given (  x = ConjGrad(A,b,  x0,maxiter, W)
+% it solves  A.HtWH(x) = b
 
 %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
 %
@@ -20,9 +22,17 @@
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function x = ConjGrad(A,b,  x0,maxiter)
+function x = ConjGrad(A,b,  x0,maxiter,W)
+HtH = false;
+if (nargin>4)&&(~isempty(W))
+    HtH = true;
+end
 x = x0;% starting point
-r = b - A*x;
+if HtH
+    r = b - A.HtWH(x,W);
+else
+    r = b - A*x;
+end
 k = 0;
 while k< maxiter
     rho = dot(r(:), r(:));
@@ -35,18 +45,15 @@ while k< maxiter
         beta = rho/rho_prec;
         p = r + beta*p;
     end
-    q = A*p;
+    if HtH
+        q = A.HtWH(p,W);
+    else
+        q = A*p;
+    end
+    
     alpha = rho/dot(p(:), q(:));
     x = x + alpha*p;
     r = r - alpha*q;
     rho_prec = rho;
     k = k + 1;
 end
-
-%------------------------------------------------------------------------------
-% Local Variables:
-% mode: Matlab
-% tab-width: 8
-% fill-column: 78
-% coding: utf-8
-% End:

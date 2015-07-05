@@ -71,8 +71,12 @@ classdef LinOp < handle
             end
         end
         function y = HtWH(this,x,W) %  Apply the HtH matrix
-            assert(isa(W,'LinOp'),'W must be a LinOp');
-            y = this.Adjoint(W.Apply(this.Apply(x)));
+            if (isscalar(W) && isreal(W))
+                y = this.HtH(x);
+            else
+                assert(isa(W,'LinOp'),'W must be a LinOp');
+                y = this.Adjoint(W.Apply(this.Apply(x)));
+            end
         end
         function Inverse(this,~) % Apply the inverse
             if this.isinvertible

@@ -38,12 +38,16 @@ mu =1e-2; %hyperparameter
 % normal equation  (H'H + mu D'D) x = H'.y
 %                               A x = b
 
-A = H'*H + mu * D'*D;
-
-A = OneToMany({H,D},[1, mu]);
 
 b = H'* saturn;
-x = ConjGrad(A,b,  zeros(size(saturn)),100,{1,1});
+
+A = H'*H + mu * D'*D;
+x = ConjGrad(A,b,  zeros(size(saturn)),100);
+ 
+% Equivalent 
+% A = OneToMany({H,D},[1, mu]);
+% x = ConjGrad(A,b,  zeros(size(saturn)),100,{1,1});
+
 
 figure;
 subplot(1, 2, 1);
@@ -65,9 +69,9 @@ W = Diagonal(double(Missing));
 
 mu =1e-1; %hyperparameter
 
-A = H'*W*H + mu * D'*D;
+A = OneToMany({H,D},[1, mu]);
 b = H'* W*data;
-x = ConjGrad(A,b,  zeros(size(saturn)),100);
+x = ConjGrad(A,b,  zeros(size(saturn)),100,{W,1});
 
 figure;
 subplot(1, 2, 1);

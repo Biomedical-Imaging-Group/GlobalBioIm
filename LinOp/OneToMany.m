@@ -92,6 +92,7 @@ classdef OneToMany < LinOp
             end
         end
         function y = HtWH(this,x,W) % Apply the operator 
+           
             assert( iscell(W), 'W in OneToMany.HtWH must be a cell array',this.sizeout);
            assert( numel(W)==this.numLinOp, 'OneToMany W does not have the right number of cell: %d',this.numLinOp);
                assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizein);

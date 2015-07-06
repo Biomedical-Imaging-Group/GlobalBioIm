@@ -47,7 +47,7 @@ classdef L1 < Prox
             if this.nonneg
                 y =  max( x - alpha,0);
             else
-                y = sign(x) * max( abs(x) - alpha,0);
+                y = sign(x) .* max( abs(x) - alpha,0);
             end
         end
     end

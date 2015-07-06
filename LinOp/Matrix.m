@@ -66,7 +66,7 @@ end
             switch(length(this.index))
                 case(this.ndms)
                 this.sizeout= [1 1];
-                this.sizein = sz;
+                this.sizein = this.sz;
                 case(this.ndms-1)
                 this.sizeout= [this.sz(T) 1];
                  this.sizein= [this.sz(~T) 1];

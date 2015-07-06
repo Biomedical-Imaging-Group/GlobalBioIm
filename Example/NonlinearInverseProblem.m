@@ -14,7 +14,7 @@
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-clear; close all; clc;
+clear; close all; 
 
 disp('DECONVOLUTION');
 % Data 
@@ -26,52 +26,34 @@ psf = padarray(psf,[230,230]);
 psf = psf(1:end-1, 1:end-1);
 psf = psf/ sum(sum(psf));
 
+
+% DECONVOLUTION with missing pixels
+% x =argmin_x || H.x - y||_W^2 + mu  || D.x||_2^2  
+% normal equation  (H'WH + mu D'D) x = H'.y
+%                               A x = b
+MissingFraction = 0.9;
+Missing = (saturn>0)&(rand(size(saturn))>MissingFraction); 
+data = saturn .* Missing;
+W = Diagonal(double(Missing));
+
 % convolution operator
 H = Convolution(fftshift(psf));
 % Finite difference operator
 D = Grad(size(saturn));
 
-mu =1e-2; %hyperparameter
+B = Identity(size(data));
+zProx = JointL1(3); % JointL!( D*x)  == Total variation 
+%zProx = L2();
+tProx = NonNegativity();
+rho1 = 1;
+rho2 =1e-1;
 
-% DECONVOLUTION
-% x =argmin_x || H.x - y||_2^2 + mu  || D.x||_2^2  
-% normal equation  (H'H + mu D'D) x = H'.y
-%                               A x = b
+mu =.5; %hyperparameter
+x0 = zeros(size(data));
+cgmaxiter = 5;
+maxiter = 50;
+x=ADMM_Restore(H,D,B,W,data, zProx, tProx,mu, rho1, rho2,x0,maxiter,cgmaxiter);
 
-
-b = H'* saturn;
-
-A = H'*H + mu * D'*D;
-x = ConjGrad(A,b,  zeros(size(saturn)),100);
- 
-% Equivalent but maybe faster  
-% A = OneToMany({H,D},[1, mu]);
-% x = ConjGrad(A,b,  zeros(size(saturn)),100,{1,1});
-
-
-figure;
-subplot(1, 2, 1);
-imagesc(saturn,[0,max(max(saturn))]);
-title('Data');
-subplot(1, 2, 2);
-imagesc(x,[0,max(max(x))]);
-title('Deconvolution');
-
-input('DECONVOLUTION with missing pixels');
-% DECONVOLUTION with missing pixels
-% x =argmin_x || H.x - y||_W^2 + mu  || D.x||_2^2  
-% normal equation  (H'WH + mu D'D) x = H'.y
-%                               A x = b
-MissingFraction = 0.99;
-Missing = (saturn>0)&(rand(size(saturn))>MissingFraction); 
-data = saturn .* Missing;
-W = Diagonal(double(Missing));
-
-mu =1e-1; %hyperparameter
-
-A = OneToMany({H,D},[1, mu]);
-b = H'* W*data;
-x = ConjGrad(A,b,  zeros(size(saturn)),100,{W,1});
 
 figure;
 subplot(1, 2, 1);

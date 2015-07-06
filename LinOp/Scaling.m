@@ -30,7 +30,7 @@ classdef Scaling <  LinOp
         scale % scale factor
     end
     methods
-        function this = Scaling(scale)
+        function this = Scaling(scale,sz)
             this.name ='Scaling';
             this.issquare = true;
             if isscalar(scale)
@@ -46,6 +46,12 @@ classdef Scaling <  LinOp
             else
                 error('Scale value must be a scalar');
             end
+            
+            if nargin>1
+            this.sizeout=sz;
+            this.sizein=sz;
+            end
+            
         end
         function y = Apply(this,x)
             this.sizeout=size(x);

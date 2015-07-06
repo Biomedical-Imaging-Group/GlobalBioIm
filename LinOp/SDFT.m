@@ -35,12 +35,17 @@ classdef SDFT <  LinOp
         N % Number of element
     end
     methods
-        function this = SDFT(index)
+        function this = SDFT(index,sz)
             if (~isempty(index))
                 assert(issize(index),'The index should be a conformable  to sz');
                 this.index = index;
             else
                 this.index = 1:this.ndms;
+            end
+            
+            if nargin>1
+            this.sizeout=sz;
+            this.sizein=sz;
             end
             this.name ='SDFT';
             this.iscomplex= true;

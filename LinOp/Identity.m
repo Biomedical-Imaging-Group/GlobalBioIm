@@ -26,10 +26,14 @@ classdef Identity <  LinOp
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     methods
-        function this = Identity()
+        function this = Identity(sz)
             this.name='Identity';
             this.iscomplex=false;
             this.issquare = true;
+            if nargin>0
+            this.sizeout=sz;
+            this.sizein=sz;
+            end
         end
         function y = Apply(this,x)
             this.sizeout=size(x);

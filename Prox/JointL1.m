@@ -3,11 +3,12 @@ classdef JointL1 < Prox
     %  Matlab Inverse Problems Library
     %
     %
-    % Obj = L1(index):
+    % Obj = JointL1(index):
     % Implement the proximity operator for the jointL1 norm aka L21 aka
     % group LASSO aka structured L1 aka group L1 ...
     % $$ \phi(x) = \sum_k \sqrt( \sum_l x^2_{k,l} ) $$
-    %
+    % INDEX with indicate on which dimensions will the inner sum (l is the
+    % example)
     % The option 'NonNegativity' add the non negativity constraint (default
     % false)
     
@@ -73,9 +74,11 @@ classdef JointL1 < Prox
                 sx = sum(sx,index(1));
                 index = index(2:end);
             end
+            sx = sqrt(sx);
             t = sx > this.alpha;
             b = zeros(size(sx));
-            b(t) = 1-this.alpha.*sx(t);
+            
+            b(t) = 1-this.alpha./sx(t);
             y = reshape(repmat(reshape(b ,imdims),kerdims),sz).*x;
             
             

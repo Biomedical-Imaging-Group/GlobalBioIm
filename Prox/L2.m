@@ -29,12 +29,14 @@ classdef L2 < Prox
     end
     
     methods 
-        function this = L2(a)
+        function this = L2(varargin)
             this.name='L2';
-            if isempty(a)
+            if nargin==0;
                 a =0;
+            else
+            assert(isnumeric(varargin),'a must be a numeric');
+            a = varargin;
             end
-            assert(isnumeric(a),'alpha must be a numeric');
             if isscalar(a)
                 this.a = a;
             else

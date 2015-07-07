@@ -81,7 +81,7 @@ classdef OneToMany < LinOp
             y =  this.alpha(1) .* this.ALinOp{1}(1).Adjoint(x{1});
             for n =2:this.numLinOp
             assert( isequal(size(x{n}),this.ALinOp{n}.sizeout),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizeout);
-                y = y + this.alpha(n) .* this.ALinOp{n}(1).Adjoint(x);
+                y = y + this.alpha(n) .* this.ALinOp{n}(1).Adjoint(x{n});
             end
         end
         function y = HtH(this,x) % Apply the operator

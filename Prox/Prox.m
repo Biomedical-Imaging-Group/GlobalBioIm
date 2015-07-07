@@ -41,7 +41,7 @@ classdef Prox < handle
     end
     
     methods
-        function Apply(~,~,~) % Apply the operator
+        function Apply(~,~,~) % Apply the prox
             error('Operator not implemented');
         end
         function Cost(~,~) % Get the global cost

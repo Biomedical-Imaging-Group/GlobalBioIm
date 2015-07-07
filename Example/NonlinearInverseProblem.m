@@ -31,7 +31,7 @@ psf = psf/ sum(sum(psf));
 % x =argmin_x || H.x - y||_W^2 + mu  || D.x||_2^2  
 % normal equation  (H'WH + mu D'D) x = H'.y
 %                               A x = b
-MissingFraction = 0.9;
+MissingFraction = 0.95;
 Missing = (saturn>0)&(rand(size(saturn))>MissingFraction); 
 data = saturn .* Missing;
 W = Diagonal(double(Missing));
@@ -48,10 +48,10 @@ tProx = NonNegativity();
 rho1 = 1;
 rho2 =1e-1;
 
-mu =.5; %hyperparameter
+mu =1; %hyperparameter
 x0 = zeros(size(data));
 cgmaxiter = 5;
-maxiter = 50;
+maxiter = 100;
 x=ADMM_Restore(H,D,B,W,data, zProx, tProx,mu, rho1, rho2,x0,maxiter,cgmaxiter);
 
 

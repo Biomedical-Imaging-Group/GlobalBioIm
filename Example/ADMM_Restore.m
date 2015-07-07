@@ -12,13 +12,15 @@ u2 = zeros(B.sizeout);
     fprintf('#iter  Likelihood   \t primal norm z    dual norm z \t primal norm t    dual norm t    \n')
     fprintf('====================================================================\n');
 
+A = OneToMany({H,D,B},[1, rho1, rho2]);
+Wy = W*y;
 for k=1:maxiter
 % Sub problem 1
 % || Hx - y||_w^2 + rho1/2 || Dx - z + u1/rho1 ||_2^2 + rho2/2 || x - t + u2/rho2 ||_2^2
-A = OneToMany({H,D,B},[1, rho1, rho2]);
 zu1 = z - u1/rho1;
 tu2 = t - u2/rho2;
-b = H'* W*y + rho1*D'*zu1 + rho2 *B'*tu2;
+%b = H'* wy + rho1*D'*zu1 + rho2 *B'*tu2;
+b = A.Adjoint({Wy, zu1,tu2});
 x = ConjGrad(A,b,  x,cgmaxiter,{W,1,1}); 
 
 lkl = norm( reshape(W*(H*x - y),numel(y),1)); % likelihood

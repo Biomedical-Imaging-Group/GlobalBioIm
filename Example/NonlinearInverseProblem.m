@@ -1,4 +1,4 @@
-
+%% Non linear inverse problem example for InvPbLib
 %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
 %
 %     This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 clear; %close all; 
-
+%% Deconvolution with TV regularization and non negativity constraints
 disp('DECONVOLUTION');
 % Data 
 saturn = fitsread('saturn.fits');

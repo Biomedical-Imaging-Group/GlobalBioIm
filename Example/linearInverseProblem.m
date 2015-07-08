@@ -1,4 +1,4 @@
-
+%% Linear inverse problem example for InvPbLib
 %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
 %
 %     This program is free software: you can redistribute it and/or modify
@@ -16,6 +16,7 @@
 
 clear;
 
+%% Tikhonov deconvolution 
 disp('DECONVOLUTION');
 % Data 
 saturn = fitsread('saturn.fits');
@@ -57,6 +58,8 @@ title('Data');
 subplot(1, 2, 2);
 imagesc(x,[0,max(max(x))]);
 title('Deconvolution');
+
+%% Deconvolution with missing data
 
 input('DECONVOLUTION with missing pixels');
 % DECONVOLUTION with missing pixels

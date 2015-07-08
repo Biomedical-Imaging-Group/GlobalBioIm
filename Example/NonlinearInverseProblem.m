@@ -14,7 +14,7 @@
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-clear; close all; 
+clear; %close all; 
 
 disp('DECONVOLUTION');
 % Data 
@@ -31,10 +31,17 @@ psf = psf/ sum(sum(psf));
 % x =argmin_x || H.x - y||_W^2 + mu  || D.x||_2^2  
 % normal equation  (H'WH + mu D'D) x = H'.y
 %                               A x = b
-MissingFraction = 0.95;
+MissingFraction = 0.99;
 Missing = (saturn>0)&(rand(size(saturn))>MissingFraction); 
 data = saturn .* Missing;
 W = Diagonal(double(Missing));
+
+% Non stationnary gaussian noise accounting for photon noise
+% w = zeros(size(saturn));
+% w(Missing) = 100./(saturn(Missing) + 100);
+% w(Missing) = w(Missing)./ mean(mean(w(Missing)));
+% W = Diagonal(double(w));
+
 
 % convolution operator
 H = Convolution(fftshift(psf));
@@ -42,16 +49,16 @@ H = Convolution(fftshift(psf));
 D = Grad(size(saturn));
 
 B = Identity(size(data));
-zProx = JointL1(3); % JointL!( D*x)  == Total variation 
+zProx = JointL1(3); % JointL1( D*x)  == Total variation 
 %zProx = L2();
 tProx = NonNegativity();
-rho1 = 1;
-rho2 =1e-1;
+rho1 = 1e-3;
+rho2 =1e-3;
 
-mu =1; %hyperparameter
+mu =.1; %hyperparameter
 x0 = zeros(size(data));
 cgmaxiter = 5;
-maxiter = 100;
+maxiter =100;
 x=ADMM_Restore(H,D,B,W,data, zProx, tProx,mu, rho1, rho2,x0,maxiter,cgmaxiter);
 
 

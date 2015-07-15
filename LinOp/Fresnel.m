@@ -11,7 +11,8 @@ classdef Fresnel <  LinOp
 %         dxy     % pixel size            [m]
 %         pad     % size with padding  % FIX ME: NOT IMPLEMENTED
 %         if the option 'FeitFleck' is set then it will use the Feit and Fleck model of propagation instead:
-%         M. D. Feit and J. A. Fleck, ?Bean nonparaxiality, filament formaform, and beam breakup in the self-focusing of optical beams,? J. Opt. Soc. Am. B, vol. 5, pp. 633? 640, March 1988.
+%           M. D. Feit and J. A. Fleck, ?Bean nonparaxiality, filament formaform, and beam breakup in the self-focusing of optical beams,? J. Opt. Soc. Am. B, vol. 5, pp. 633? 640, March 1988.
+%         if the option 'DontUseComplex' is set, complex are repsented as    an extra dimension of size 2 containning Real and imagenary parts of x
     %
     %
     % Please refer to the LINOP superclass for general documentation about
@@ -50,10 +51,13 @@ classdef Fresnel <  LinOp
         F       % Fresnel function
         FeitFleck = false; % if true use the Feit and Fleck model of propagation instead:
         % M. D. Feit and J. A. Fleck, ?Bean nonparaxiality, filament formaform, and beam breakup in the self-focusing of optical beams,? J. Opt. Soc. Am. B, vol. 5, pp. 633? 640, March 1988.
+        usecomplex = true; % if false complex are represented as an extra dimension of size 2 containning Real and imagenary parts of x
     end
     methods
-        function this = Fresnel(lambda, n0, z,dxy,sz, pad, varargin)
-            
+        function this = Fresnel(lambda, n0, z,dxy,sz,  varargin)
+          %  if nargin<6
+                pad = [];
+           % end
             this.name ='Fresnel';
             this.iscomplex= true;
             this.isinvertible=true;
@@ -86,6 +90,8 @@ classdef Fresnel <  LinOp
                 switch varargin{c}
                     case('FeitFleck')
                         this.FeitFleck = true;
+                    case('DontUseComplex')
+                        this.usecomplex = false;
                 end
             end
             
@@ -109,24 +115,48 @@ classdef Fresnel <  LinOp
             
         end
         function y = Apply(this,x)
+            if ~this.usecomplex
+                x = complex(x(:,:,1),x(:,:,2));
+            end
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
             y = ifft2( this.F .*  fft2(x));
+            if ~this.usecomplex
+                 y = cat(3,real(y),imag(y));
+            end
         end
         function y = Adjoint(this,x)
+            if ~this.usecomplex
+                x = complex(x(:,:,1),x(:,:,2));
+            end
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
             y = ifft2(  conj(this.F) .*  fft2(x));
+            if ~this.usecomplex
+                 y = cat(3,real(y),imag(y));
+            end
         end
         function y = HtH(this,x) %  Apply the HtH matrix
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
             y = x;
         end
         function y = Inverse(this,x)
+            if ~this.usecomplex
+                x = complex(x(:,:,1),x(:,:,2));
+            end
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
             y = ifft2(  conj(this.F) .*  fft2(x));
+            if ~this.usecomplex
+                 y = cat(3,real(y),imag(y));
+            end
         end
         function y = AdjointInverse(this,x)
+            if ~this.usecomplex
+                x = complex(x(:,:,1),x(:,:,2));
+            end
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
             y = ifft2( this.F .*  fft2(x));
+            if ~this.usecomplex
+                 y = cat(3,real(y),imag(y));
+            end
         end
     end
 end

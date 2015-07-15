@@ -3,7 +3,7 @@ classdef JointL1 < Prox
     %  Matlab Inverse Problems Library
     %
     %
-    % Obj = JointL1(index):
+    % Obj = JointL1(index);
     % Implement the proximity operator for the jointL1 norm aka L21 aka
     % group LASSO aka structured L1 aka group L1 ...
     % $$ \phi(x) = \sum_k \sqrt( \sum_l x^2_{k,l} ) $$

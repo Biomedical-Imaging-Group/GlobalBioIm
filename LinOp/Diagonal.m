@@ -64,9 +64,9 @@ classdef Diagonal <  LinOp
             
             if isequal(size(x),this.sizeout)
                 if this.iscomplex
-                    y =this.diag .*x;
-                else
                     y =conj(this.diag) .*x;
+                else
+                    y =this.diag .*x;
                 end
             else
                 error('x should be the same size as diag: [%d, %d, %d, %d]',this.sizein);
@@ -83,9 +83,9 @@ classdef Diagonal <  LinOp
                 error('Operator non invertible');
             end
             if this.iscomplex
-                y = (1./this.diag) .*x;
-            else
                 y =conj(1./this.diag) .*x;
+            else
+                y = (1./this.diag) .*x;
             end
         end
     end

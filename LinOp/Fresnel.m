@@ -49,15 +49,14 @@ classdef Fresnel <  LinOp
         Fu      % Fresnel function along the u axis
         Fv      % Fresnel function along the v axis
         F       % Fresnel function
+% FIXME     FeitFleck not working  
         FeitFleck = false; % if true use the Feit and Fleck model of propagation instead:
         % M. D. Feit and J. A. Fleck, ?Bean nonparaxiality, filament formaform, and beam breakup in the self-focusing of optical beams,? J. Opt. Soc. Am. B, vol. 5, pp. 633? 640, March 1988.
         usecomplex = true; % if false complex are represented as an extra dimension of size 2 containning Real and imagenary parts of x
     end
     methods
-        function this = Fresnel(lambda, n0, z,dxy,sz,  varargin)
-          %  if nargin<6
-                pad = [];
-           % end
+        function this = Fresnel(lambda, n0, z,dxy,sz, pad, varargin)
+   
             this.name ='Fresnel';
             this.iscomplex= true;
             this.isinvertible=true;
@@ -76,14 +75,15 @@ classdef Fresnel <  LinOp
             this.dxy = dxy;
             
             assert(issize(sz) && (length(sz)==2),'The input size sz should be a conformable  to size(2D) ');
+          
+            if (~isempty(pad))
+                assert( issize(pad)&& length(pad)==2,'The padding pad should be a conformable  to size(2D)');
+            end
             this.sizein = sz;
             this.sizeout = sz;
             this.Nx = sz(1);
             this.Ny = sz(2);
-            
-            if (~isempty(pad))
-                assert( issize(pad)&& length(pad)==2,'The padding pad should be a conformable  to size(2D)');
-            end
+           
             this.pad = pad;
             
             for c=1:length(varargin)
@@ -104,7 +104,7 @@ classdef Fresnel <  LinOp
             
             if this.FeitFleck
                 Mesh = kron(this.u.^2, this.v.^2);
-                this.F =  exp(-2i* pi * this.z.*this.lambda * Mesh ./ (1 + sqrt(1 + (this.lambda/this.n0)^2 *Mesh)));
+                this.F =  exp(-2i* pi * this.z.*this.lambda / this.n0 * Mesh ./ real(1 + sqrt(1 - (this.lambda/this.n0)^2 *Mesh)));
             else
                 % separable Fresnel function
                 this.Fu = exp(-1i* pi *  this.z.* this.lambda / this.n0 * this.u.^2);
@@ -113,6 +113,14 @@ classdef Fresnel <  LinOp
                 this.F = kron(this.Fu, this.Fv);
             end
             
+            if (~isempty(pad))
+                this.F = padarray(this.F,pad);
+            this.sizein = sz+2*pad;
+            this.sizeout = sz+2*pad;
+            this.Nx = sz(1);
+            this.Ny = sz(2);
+           
+            end            
         end
         function y = Apply(this,x)
             if ~this.usecomplex

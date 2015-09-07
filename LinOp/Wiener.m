@@ -73,6 +73,11 @@ classdef Wiener <  LinOp
                  this.alpha =cat(2, this.alpha,varargin{c+1});
                  this.nlinop =  this.nlinop + 1;
                         c = c+2;
+                    case('DFT')
+                this.ALinOp =cat(2, this.ALinOp,num2cell(varargin{c}));
+                 this.alpha =cat(2, this.alpha,varargin{c+1});
+                 this.nlinop =  this.nlinop + 1;
+                        c = c+2;
                     otherwise
                         error('LinOp should only be OneToMany, Convolution, Identity and Fresnel');
                 end
@@ -92,6 +97,8 @@ classdef Wiener <  LinOp
                         mtf2 = mtf2 + this.alpha(n) ;
                     case('Fresnel')
                         mtf2 = mtf2 + this.alpha(n) .* ( real(this.ALinOp{n}{1}.F).^2 + imag(this.ALinOp{n}{1}.F).^2);
+                    case('DFT')
+                        mtf2 = mtf2 + this.alpha(n) .* this.ALinOp{n}{1}.N ;
                     end
             end
             this.imtf2 = 1./mtf2;

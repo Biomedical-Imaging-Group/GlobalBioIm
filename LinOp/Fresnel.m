@@ -79,12 +79,19 @@ classdef Fresnel <  LinOp
             if (~isempty(pad))
                 assert( issize(pad)&& length(pad)==2,'The padding pad should be a conformable  to size(2D)');
             end
-            this.sizein = sz;
-            this.sizeout = sz;
+            this.pad = pad;
+            
+            if (~isempty(pad))
+                this.F = ifft2(padarray(fft2(this.F),pad));
+                this.sizein = sz+2*pad;
+                this.sizeout = sz+2*pad;
+            else
+                this.sizein = sz;
+                this.sizeout = sz;
+            end
             this.Nx = sz(1);
             this.Ny = sz(2);
-           
-            this.pad = pad;
+            
             
             for c=1:length(varargin)
                 switch varargin{c}
@@ -113,14 +120,6 @@ classdef Fresnel <  LinOp
                 this.F = kron(this.Fu, this.Fv);
             end
             
-            if (~isempty(pad))
-                this.F = padarray(this.F,pad);
-            this.sizein = sz+2*pad;
-            this.sizeout = sz+2*pad;
-            this.Nx = sz(1);
-            this.Ny = sz(2);
-           
-            end            
         end
         function y = Apply(this,x)
             if ~this.usecomplex

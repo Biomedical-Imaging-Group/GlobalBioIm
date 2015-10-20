@@ -2,9 +2,9 @@ classdef L2 < Prox
     %% L2 : L2 norm Proximity Operator 
     %  Matlab Inverse Problems Library
     % 
-    % Obj = L2(a):
-    % Implement the proximity operator for the L2 norm
-    % $$ \phi(x) = ||x - a||^2 $$
+    % Obj = L2(a,wght):
+    % Implement the proximity operator for the weighted L2 norm
+    % $$ \phi(x) = 1/2||x - a||^2_wght $$
     % 
    
     %  
@@ -25,23 +25,32 @@ classdef L2 < Prox
     %%
     
     properties (SetAccess = protected,GetAccess = public)
-        a
+        a     % 
+        wght  % weight
     end
     
     methods 
-        function this = L2(varargin)
+        function this = L2(a,wght)
             this.name='L2';
-            if nargin==0;
-                a =0;
-            else
-            assert(isnumeric(varargin),'a must be a numeric');
-            a = varargin;
+            switch nargin
+                case 0
+                    a =0;
+                    wght=1;
+                case 1
+                    wght=1;
             end
             if isscalar(a)
                 this.a = a;
             else
                 this.a = a;
                 this.sz = size(a);
+            end
+            if isscalar(wght)
+                this.wght = wght;
+            else
+                assert( (~isscalar(a))&&(isequal(size(wght),this.sz)),  'x does not have the right size: [%d, %d]',this.sz);
+                this.wght = wght;
+                this.sz = size(wght);
             end
         end
         function y = Apply(this,x,alpha) % Apply the operator
@@ -50,7 +59,7 @@ classdef L2 < Prox
             if ~isscalar(this.a)
                assert( isequal(size(x),this.size),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein); 
             end
-            y = 1./(2.*this.alpha + 1) * (2.*this.alpha.* x - this.a);
+            y = 1./(this.alpha + this.wght) .* (this.alpha.* x + this.wght .* this.a);
         end
     end
 end

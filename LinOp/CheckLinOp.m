@@ -62,10 +62,10 @@ else
 end
 
 if ~LinOp.issquare
-    if  (dot((LinOp.Apply(HtOut) - LinOp.HHt(HtOut)),conj(LinOp.Apply(HtOut) - LinOp.HHt(HtOut)))<tol)
+    if  (dot((LinOp.Apply(HtOut) - LinOp.HHt(Out)),conj(LinOp.Apply(HtOut) - LinOp.HHt(Out)))<tol)
         disp('HHt matrix OK');
     else
-        error('Error in HtH matrix computation');
+        error('Error in HHt matrix computation');
     end
 end
 

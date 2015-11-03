@@ -106,8 +106,8 @@ classdef Fresnel <  LinOp
             this.k = this.n0*this.k0;
             
             %  frequency grid
-            this.u = 1./(this.Nx *this.dxy) * [0:this.Nx/2-1, -this.Nx/2:-1];
-            this.v = 1./(this.Ny *this.dxy) * [0:this.Ny/2-1, -this.Ny/2:-1]';
+            this.v = 1./(this.Nx *this.dxy) * [0:this.Nx/2-1, -this.Nx/2:-1]';
+            this.u = 1./(this.Ny *this.dxy) * [0:this.Ny/2-1, -this.Ny/2:-1];
             
             if this.FeitFleck
                 Mesh = kron(this.u.^2, this.v.^2);

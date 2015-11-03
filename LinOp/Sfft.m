@@ -2,10 +2,10 @@ function y = Sfft(x, Notindex)
 %% Sfft function
 % Recursive function for sliced FFT. Computed the FFT along all dimension
 % of x but those indexed by Notindex;
-% 
+%
 % Example:
-% y = Sfft(x,[3,4]) 
-% will compute 2D FFTs along dims 1 and 2 only such 
+% y = Sfft(x,[3,4])
+% will compute 2D FFTs along dims 1 and 2 only such
 %  y(:,:,m,n) = fftn(x(:,:,m,n} for all (m,n)
 %
 % See also iSfft fftn
@@ -29,7 +29,7 @@ function y = Sfft(x, Notindex)
 
 
 if numel(Notindex)~=0
-    y = complex(zeros(size(x))); 
+    y = complex(zeros(size(x)));
     switch Notindex(1)
         case(1)
             for n=1:size(x,1)
@@ -38,22 +38,22 @@ if numel(Notindex)~=0
         case(2)
             for n=1:size(x,2)
                 y(:,n,:,:,:,:,:,:) = Sfft(x(:,n,:,:,:,:,:,:),Notindex(2:end));
-            end            
+            end
         case(3)
             for n=1:size(x,3)
                 y(:,:,n,:,:,:,:,:) = Sfft(x(:,:,n,:,:,:,:,:),Notindex(2:end));
-            end            
+            end
         case(4)
             for n=1:size(x,4)
                 y(:,:,:,n,:,:,:,:) = Sfft(x(:,:,:,n,:,:,:,:),Notindex(2:end));
-            end            
+            end
         case(5)
             for n=1:size(x,5)
                 y(:,:,:,:,n,:,:,:) = Sfft(x(:,:,:,:,n,:,:,:),Notindex(2:end));
-            end            
+            end
         otherwise
-                error('Slice FFT not implemented for number of dimensions >5')
+            error('Slice FFT not implemented for number of dimensions >5')
     end
 else
-y = fftn(x);
+    y = fftn(x);
 end

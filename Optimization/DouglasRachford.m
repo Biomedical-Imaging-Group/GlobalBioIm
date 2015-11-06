@@ -1,4 +1,4 @@
-function x = DouglasRachford(Prox1, Prox2,L,y0,maxiter,gamma, lambda)
+function [lkl,RMS,x] = DouglasRachford(Prox1, Prox2,L,y0,maxiter,gamma, lambda,Ref)
 % Implement the Douglas Rachford splitting algorithm that solves:
 % x^+ = argmin_x( f1(x) + f2(L x))
 % with Prox1 and Prox2 the proximal operator of f1 and f2 respectively
@@ -10,6 +10,8 @@ function x = DouglasRachford(Prox1, Prox2,L,y0,maxiter,gamma, lambda)
 %
 nu =1;
 useL = 0;
+lkl = zeros([maxiter,1]);
+RMS = zeros([maxiter,1]);
 if isa(L,'LinOp')
     useL = 1;
     r = randn(L.sizeout);
@@ -21,7 +23,10 @@ if isa(L,'LinOp')
     end
 end
 y = y0;
+x= y0;
 for n=1:maxiter
+    x_prev = x;
+    y_prev = y;
     if useL
         Ly = L*y;
        if useL==2
@@ -33,5 +38,8 @@ for n=1:maxiter
         x = Prox1.Apply(y, gamma);
     end
     y = y + lambda .* ( Prox2.Apply(2.*x- y,gamma) - x);
+    tmp =  Prox2.Apply(x,gamma) - x;
+    lkl(n) = sum(abs(x(:) - x_prev(:)).^2 +abs(tmp(:)).^2);
+    RMS(n) = sqrt(sum(abs(Ref(:) - x(:)).^2));
 end
 end

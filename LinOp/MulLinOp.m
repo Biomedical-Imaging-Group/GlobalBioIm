@@ -32,6 +32,7 @@ classdef MulLinOp < LinOp
         LinOp1
         LinOp2
         isnum
+		isHTH
     end
     
     methods
@@ -41,6 +42,14 @@ classdef MulLinOp < LinOp
             this.LinOp1 = LinOp1;
             this.LinOp2 = LinOp2;
             
+			% strcmp is different than isa because it doesn't check all
+			% superclasses as well
+			if strcmp(class(LinOp1), 'adjoint') && LinOp1.TLinOp == LinOp2
+				this.isHTH = true;
+				this.issquare = true;
+			end
+					
+			
             if isnumeric(LinOp1)
              this.isnum =1;
              if (~isreal(LinOp1)) || LinOp2.iscomplex
@@ -95,21 +104,27 @@ classdef MulLinOp < LinOp
         end
         
         function y = Apply(this,x) % Apply the operator
-            if this.isnum
+            if this.isHTH
+				y = this.LinOp2.HtH(x);
+			elseif this.isnum
                 y = this.LinOp1.*this.LinOp2.Apply(x);
             else 
             y = this.LinOp1.Apply( this.LinOp2.Apply(x));
             end
         end
         function y = Adjoint(this,x) % Apply the adjoint
-            if this.isnum
+            if this.isHTH
+				y = this.Apply(x);
+			elseif this.isnum
                 y = this.LinOp2.Adjoint(this.LinOp1.*x);
             else
             y = this.LinOp2.Adjoint(this.LinOp1.Adjoint(x));
             end
         end
         function y = HtH(this,x)
-            if this.isnum
+			if this.isHTH
+				y = this.Apply(this.Apply(x));
+			elseif this.isnum
             y = this.LinOp2.Adjoint(this.LinOp1.^2.*( this.LinOp2.Apply(x)));
             else
             y = this.LinOp2.Adjoint(this.LinOp1.HtH( this.LinOp2.Apply(x)));

@@ -50,7 +50,7 @@ classdef LinOp < handle
         sizeout;        % dimension of the left hand side vector space
         isinvertible = false; % true if the operator is invertible
         issquare = false; % true if the operator is invertible
-        iscomplex;      % true is the operator is complex
+        iscomplex = false;      % true is the operator is complex
     end
     
     methods

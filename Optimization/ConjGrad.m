@@ -24,7 +24,7 @@
 
 function x = ConjGrad(A,b,  x0,maxiter,W)
 HtH = false;
-if (nargin>4)&&(~isempty(W))
+if (nargin>4) && (~isempty(W))
     HtH = true;
 end
 x = x0;% starting point

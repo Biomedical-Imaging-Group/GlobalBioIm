@@ -1,4 +1,3 @@
-
 function x=ADMM_Restore(H,D,B,W,y, zProx, tProx,mu, rho1, rho2,x0,maxiter,cgmaxiter)
 x = x0;
 z = zeros(D.sizeout);
@@ -16,7 +15,7 @@ A = OneToMany({H,D,B},[1, rho1, rho2]);
 Wy = W*y;
 for k=1:maxiter
 % Sub problem 1
-% || Hx - y||_w^2 + rho1/2 || Dx - z + u1/rho1 ||_2^2 + rho2/2 || x - t + u2/rho2 ||_2^2
+% || Hx - y||_w^2 + rho1/2 || Dx - z + u1/rho1 ||_2^2 + rho2/2 || Bx - t + u2/rho2 ||_2^2
 zu1 = z - u1/rho1;
 tu2 = t - u2/rho2;
 %b = H'* wy + rho1*D'*zu1 + rho2 *B'*tu2;
@@ -38,12 +37,12 @@ xu2 = Bx + u2/rho2;
 t = tProx.Apply(xu2, 1./rho2);
 
 % Residuals of the constraints
-res1 =  Dx - z;
+res1 = Dx - z;
 res2 = Bx - t;
 
 % Lagrange parameters update
 u1 = u1 + rho1 * res1;
-u2 = u2 + rho2 *  res2;
+u2 = u2 + rho2 * res2;
 
 % First constraints
 rnorm1 = norm( reshape(res1,numel(z),1));% Primal residual norm
@@ -53,6 +52,6 @@ snorm1 = norm( reshape(rho1 * D'*(z - z_prev),numel(x),1));% Dual residual norm
 rnorm2 = norm( reshape(Bx - t,numel(t),1));
 snorm2 = norm( reshape(rho2 * B'*(t - t_prev),numel(x),1));
 
-  fprintf('%3d \t %g\t %g \t %g\t %g \t %g\n',k,lkl,rnorm1,snorm1,rnorm2,snorm2);
+  fprintf('%3d \t%12.6g \t%12.6g \t%12.6g \t%12.6g \t%12.6g\n',k,lkl,rnorm1,snorm1,rnorm2,snorm2);
 end
 end

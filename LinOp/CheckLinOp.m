@@ -32,41 +32,49 @@ if isnumeric(LinOp.sizein)
 else
     sizein = input('What is the input size of the LinOp?');
 end
+sizeout = LinOp.sizeout;
+
+
+In = rand(sizein);
+Out = rand(sizeout);
 
 if LinOp.iscomplex
-    disp('Complex LinOp');
-    In = complex(rand(sizein),rand(sizein));
-    HIn = LinOp.Apply(In);
-    sizeout = LinOp.sizeout;
-    Out = complex(rand(sizeout),rand(sizeout));
-    HtOut = LinOp.Adjoint(Out);
-else
-    In = rand(sizein);
-    HIn = LinOp.Apply(In);
-    sizeout = LinOp.sizeout;
-    Out = rand(sizeout);
-    HtOut = LinOp.Adjoint(Out);
+	disp('Complex LinOp');
+	In = In + 1i * rand(sizein);
+	Out = Out + 1i * rand(sizeout);	
 end
+
+HIn = LinOp.Apply(In);
+HtOut = LinOp.Adjoint(Out);
+
+
 tol = 1e-3*max( max(max(abs(In(:))),max(abs(HIn(:)))),max(max(abs(Out(:))),max(abs(HtOut(:))))); % Tolerance for numerical equality
 
-if abs(dot(In(:) ,HtOut(:)) - dot(HIn(:) , Out(:)))<tol
+diff = dot(In(:) ,HtOut(:)) - dot(HIn(:) , Out(:));
+normDiff = diff(:)' * diff(:);
+if normDiff < tol
     disp('Adjoint OK');
 else
-    error('Adjoint error: <Hx.y> ~= <x.H^*y> : diff = %d', (dot(In(:) ,HtOut(:)) - dot(HIn(:) , Out(:))));
+    error('Adjoint error: <Hx.y> ~= <x.H^*y> : diff = %d', normDiff);
 end
 
-if  (dot((LinOp.Adjoint(HIn) - LinOp.HtH(In)),conj(LinOp.Adjoint(HIn) - LinOp.HtH(In)))<tol)
+diff = LinOp.Adjoint(HIn) - LinOp.HtH(In);
+normDiff = diff(:)' * diff(:);
+if  normDiff < tol
     disp('HtH matrix OK');
 else
-    error('Error in HtH matrix computation');
+    error('Error in HtH matrix computation: diff = %d', normDiff);
 end
 
-if ~LinOp.issquare
-    if  (dot((LinOp.Apply(HtOut) - LinOp.HHt(HtOut)),conj(LinOp.Apply(HtOut) - LinOp.HHt(HtOut)))<tol)
-        disp('HHt matrix OK');
-    else
-        error('Error in HtH matrix computation');
-    end
+if LinOp.issquare
+	diff = LinOp.Apply(HtOut) - LinOp.HHt(HtOut);
+	if  diff(:)' * diff(:) < tol
+		disp('HHt matrix OK');
+	else
+		error('Error in HtH matrix computation');
+	end
+else
+	disp('LinOp non square');
 end
 
 if LinOp.isinvertible

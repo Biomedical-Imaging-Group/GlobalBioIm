@@ -1,4 +1,4 @@
-function [lkl,RMS,x] = DouglasRachford(Prox1, Prox2,L,y0,maxiter,gamma, lambda,Ref)
+function [lkl,RMS,cost,x] = DouglasRachford(Prox1, Prox2,L,y0,maxiter,gamma, lambda,Ref1,Ref2)
 % Implement the Douglas Rachford splitting algorithm that solves:
 % x^+ = argmin_x( f1(x) + f2(L x))
 % with Prox1 and Prox2 the proximal operator of f1 and f2 respectively
@@ -12,6 +12,7 @@ nu =1;
 useL = 0;
 lkl = zeros([maxiter,1]);
 RMS = zeros([maxiter,1]);
+cost = zeros([maxiter,1]);
 if isa(L,'LinOp')
     useL = 1;
     r = randn(L.sizeout);
@@ -30,16 +31,19 @@ for n=1:maxiter
     if useL
         Ly = L*y;
        if useL==2
-        x = L.Adjoint( Prox1.Apply(Ly, gamma));
+        x = L.Adjoint( Prox2.Apply(Ly, gamma));
        else
-        x = y + 1./nu.* L.Adjoint( Prox1.Apply(Ly, nu.*gamma) - Ly);
+        x = y + 1./nu.* L.Adjoint( Prox2.Apply(Ly, nu.*gamma) - Ly);
        end
     else
-        x = Prox1.Apply(y, gamma);
+        x = Prox2.Apply(y, gamma);
     end
-    y = y + lambda .* ( Prox2.Apply(2.*x- y,gamma) - x);
-    tmp =  Prox2.Apply(x,gamma) - x;
-    lkl(n) = sum(abs(x(:) - x_prev(:)).^2 +abs(tmp(:)).^2);
-    RMS(n) = sqrt(sum(abs(Ref(:) - x(:)).^2));
+    y = y + lambda .* ( Prox1.Apply(2.*x- y,gamma) - x);
+    tmp1 =  Prox1.Apply(x,gamma) - x;
+    Lx = L*x;
+    tmp2 =  Prox2.Apply(Lx,gamma) - Lx;
+    lkl(n) = sum(abs(tmp1(:)).^2 + abs(tmp2(:)).^2);
+    RMS(n) = sqrt(sum(abs(Ref1(:) - x(:)).^2) + sum(abs(Ref2(:) - Lx(:)).^2));
+    cost(n) = Prox1.FCost(x) + Prox2.FCost(Lx);
 end
 end

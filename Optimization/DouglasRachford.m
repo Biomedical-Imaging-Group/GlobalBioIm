@@ -1,4 +1,4 @@
-function [lkl,RMS,cost,x] = DouglasRachford(Prox1, Prox2,L,y0,maxiter,gamma, lambda,Ref1,Ref2)
+function [lkl,RMS,cost,bestx] = DouglasRachford(Prox1, Prox2,L,y0,maxiter,gamma, lambda,Ref1,Ref2)
 % Implement the Douglas Rachford splitting algorithm that solves:
 % x^+ = argmin_x( f1(x) + f2(L x))
 % with Prox1 and Prox2 the proximal operator of f1 and f2 respectively
@@ -10,6 +10,10 @@ function [lkl,RMS,cost,x] = DouglasRachford(Prox1, Prox2,L,y0,maxiter,gamma, lam
 %
 nu =1;
 useL = 0;
+bestx = y0;
+Lx = L*y0;
+bestrms = sqrt(sum(abs(Ref1(:) - y0(:)).^2) + sum(abs(Ref2(:) - Lx(:)).^2));
+
 lkl = zeros([maxiter,1]);
 RMS = zeros([maxiter,1]);
 cost = zeros([maxiter,1]);
@@ -45,5 +49,9 @@ for n=1:maxiter
     lkl(n) = sum(abs(tmp1(:)).^2 + abs(tmp2(:)).^2);
     RMS(n) = sqrt(sum(abs(Ref1(:) - x(:)).^2) + sum(abs(Ref2(:) - Lx(:)).^2));
     cost(n) = Prox1.FCost(x) + Prox2.FCost(Lx);
+    if RMS(n) < bestrms
+        bestrms =RMS(n);
+        bestx = x;
+    end
 end
 end

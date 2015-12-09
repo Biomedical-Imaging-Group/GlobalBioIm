@@ -57,7 +57,7 @@ classdef L2 < Prox
             assert(isscalar(alpha),'alpha must be a scalar');
             this.alpha = alpha;
             if ~isscalar(this.a)
-               assert( isequal(size(x),this.size),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein); 
+               assert( isequal(size(x),this.sz),  'x does not have the right size: [%d, %d, %d,%d]',this.sz); 
             end
             y = 1./(this.alpha + this.wght) .* (this.alpha.* x + this.wght .* this.a);
         end

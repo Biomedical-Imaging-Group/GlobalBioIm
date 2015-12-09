@@ -44,6 +44,7 @@ classdef L1 < Prox
         function y = Apply(this,x,alpha) % Apply the operator
             assert(isscalar(alpha),'alpha must be a scalar');
             this.alpha = alpha;
+            x = real(x);
             if this.nonneg
                 y =  max( x - alpha,0);
             else

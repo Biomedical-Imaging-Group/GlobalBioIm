@@ -31,6 +31,7 @@ classdef DFT <  LinOp
         N
         pad  % size of of the fourier (default all)
         real % 1 if real complex Fourier transform (default 0).  FIXME: NOT IMPLEMENTED
+        unitary = false
     end
     methods
         function this = DFT(varargin)
@@ -53,18 +54,32 @@ classdef DFT <  LinOp
             this.sizein = size(x);
             this.sizeout = size(x);
             this.N=numel(x);
-            y = fftn(x,this.pad);
+            if this.unitary               
+            y = 1./sqrt(this.N) * fftn(x,this.pad); 
+            else
+            y =  fftn(x,this.pad); 
+            
+            end
         end
         function y = Adjoint(this,x)
             this.N=numel(x);
-            y = this.N * ifftn(x,this.pad); %Beware of unitary fft of Matlab :-(
+            if this.unitary
+            y = sqrt(this.N) * ifftn(x,this.pad); 
+            else
+            y = this.N * ifftn(x,this.pad); 
+            end
         end
         function y = Inverse(this,x)
             y = ifftn(x,this.pad);
         end
         function y = HtH(this,x)%Beware of unitary fft of Matlab :-(
             this.N=numel(x);
+            
+            if this.unitary
+                y = x;
+            else
             y =this.N *x;
+            end
         end
         function y = AdjointInverse(this,x)%Beware of unitary fft of Matlab :-(
             this.N=numel(x);

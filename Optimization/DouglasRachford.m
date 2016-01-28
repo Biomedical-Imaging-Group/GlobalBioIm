@@ -22,7 +22,7 @@ if isa(L,'LinOp')
     r = randn(L.sizeout);
     nu = r ./ L.HHt(r);
     assert(std(nu(:)) <1e-6, 'LLt != nu I');
-    nu = mean(nu(:));
+    nu = real(mean(nu(:)));
     if nu==1
         useL = 2;
     end

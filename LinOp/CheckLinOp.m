@@ -75,8 +75,8 @@ if LinOp.isinvertible
     else
         error('Error in inverse computation: H^-1 H ~= I');
     end
-    HItOut = LinOp.AdjointInverse(Out);
-    HIIn = LinOp.Inverse(In);
+    HIIn = LinOp.AdjointInverse(In);
+    HItOut = LinOp.Inverse(Out);
     if abs(dot(In(:) ,HItOut(:) ) - dot(HIIn(:) , Out(:)))<10*tol
         disp('Adjoint Inverse  OK');
     else

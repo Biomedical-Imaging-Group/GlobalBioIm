@@ -10,12 +10,15 @@ function x = DouglasRachford(Prox1, Prox2,L,y0,maxiter,gamma, lambda)
 %
 nu =1;
 useL = 0;
+if numel(gamma)==1
+    gamma = [gamma, gamma];
+end
 if isa(L,'LinOp')
     useL = 1;
     r = randn(L.sizeout);
     nu = r ./ L.HHt(r);
     assert(std(nu(:)) <1e-6, 'LLt != nu I');
-    nu = mean(nu(:));
+    nu = real(mean(nu(:)));
     if nu==1
         useL = 2;
     end

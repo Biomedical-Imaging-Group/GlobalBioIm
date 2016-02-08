@@ -111,7 +111,15 @@ classdef LinOp < handle
         function y =	plus(this,x)% Overloading for +
             assert(isa(x,'LinOp'),'addition of LinOp is only define with other LinOp');
             y = SumLinOp({this,x});
-        end
-    end
+		end
+	end
+	
+	
+	methods (Static, Access=protected)
+		function checkSize(x, sz)
+			assert( isequal(size(x),sz),  'x does not have the correct size, [%s]', num2str(sz));
+			
+		end
+	end
 end
 

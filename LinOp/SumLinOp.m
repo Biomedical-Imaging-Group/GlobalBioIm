@@ -39,21 +39,39 @@ classdef SumLinOp < LinOp
     methods
         function this = SumLinOp(ALinOp,alpha)
             this.name ='SumLinOp';
-            if nargin == 1
-                alpha = 1;
-            end
-            
-            
-            assert(iscell(ALinOp) && isa(ALinOp{1}(1),'LinOp'),'First input should be a cell array LinOp');
-            this.ALinOp = ALinOp;
-            this.numLinOp = numel(ALinOp);
-            assert(isnumeric(alpha)&& ( isscalar(alpha) || ( isvector(alpha) && (numel(alpha)== this.numLinOp))),'second input should be a scalar or an array of scalar of the same size as the first input');
-            if  isscalar(alpha)
-                this.alpha = repmat(alpha,this.numLinOp,1) ;
-            else
-                this.alpha = alpha;
-            end
-            this.iscomplex= this.ALinOp{1}(1).iscomplex;
+			
+			if nargin == 1
+				alpha = 1;
+			end
+			
+			this.numLinOp = numel(ALinOp);
+			assert(isnumeric(alpha)&& ( isscalar(alpha) || ( isvector(alpha) && (numel(alpha)== this.numLinOp))),'second input should be a scalar or an array of scalar of the same size as the first input');
+			if  isscalar(alpha)
+				this.alpha = repmat(alpha, 1, this.numLinOp) ;
+			else
+				this.alpha = alpha;
+			end
+			
+			allLinOps = all( cellfun(@(x)(isa(x, 'LinOp')), ALinOp) );
+			assert(iscell(ALinOp) && allLinOps, 'First input should be a cell array LinOp');
+			
+			% if any of the inputs is itself a sum, expand it
+			eLinOp = []; % expanded LinOp list
+			newAlphas = [];
+			for i = 1:length(ALinOp)
+				if isa(ALinOp{i}, 'SumLinOp')
+					eLinOp = [eLinOp ALinOp{i}.ALinOp];
+					newAlphas = [newAlphas  ALinOp{i}.alpha];
+				else
+					eLinOp = [eLinOp ALinOp(i)];
+					newAlphas = [newAlphas this.alpha(i)];
+				end
+			end
+			this.alpha = newAlphas;
+			ALinOp = eLinOp;
+			
+			this.ALinOp = ALinOp;
+			this.iscomplex= this.ALinOp{1}(1).iscomplex;
             this.issquare = this.ALinOp{1}(1).issquare;
             this.isinvertible=false;
             this.sizein =  this.ALinOp{1}(1).sizein;
@@ -61,24 +79,23 @@ classdef SumLinOp < LinOp
             for n =2:this.numLinOp
                 assert(isempty(this.ALinOp{n}(1).sizein) ||isequal(this.sizein,this.ALinOp{n}(1).sizein),'%d-th input does not have the right hand side size ') ;
                 assert(isempty(this.ALinOp{n}(1).sizeout) ||isequal(this.sizeout,this.ALinOp{n}(1).sizeout),'%d-th input does not have the left hand side size ');
-                this.iscomplex= this.ALinOp{n}(1).iscomplex ||  this.iscomplex ;
+                this.iscomplex= this.ALinOp{n}(1).iscomplex || this.iscomplex ;
             end
             
-            
-            
+                 
         end
         
         function y = Apply(this,x) % Apply the operator
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizein);
-            y = this.alpha(1) .* this.ALinOp{1}(1).Apply(x);
-            for n =2:this.numLinOp
+			LinOp.checkSize(x, this.sizein)
+            y = zeros(this.sizeout);
+            for n = 1:this.numLinOp
                 y = y + this.alpha(n) .* this.ALinOp{n}(1).Apply(x);
             end
         end
         function y = Adjoint(this,x) % Apply the adjoint
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizeout);
-            y =  this.alpha(1) .* this.ALinOp{1}(1).Adjoint(x);
-            for n =2:this.numLinOp
+			LinOp.checkSize(x, this.sizeout);
+            y =  zeros(this.sizein);
+            for n = 1:this.numLinOp
                 y = y + this.alpha(n) .* this.ALinOp{n}(1).Adjoint(x);
             end
         end

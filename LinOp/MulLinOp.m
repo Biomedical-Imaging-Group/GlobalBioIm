@@ -33,6 +33,7 @@ classdef MulLinOp < LinOp
         LinOp2
         isnum
 		isHTH
+		isHHt
     end
     
     methods
@@ -46,6 +47,9 @@ classdef MulLinOp < LinOp
 			% superclasses as well
 			if strcmp(class(LinOp1), 'adjoint') && LinOp1.TLinOp == LinOp2
 				this.isHTH = true;
+				this.issquare = true;
+			elseif strcmp(class(LinOp2), 'adjoint') && LinOp2.TLinOp == LinOp1
+				this.isHHt = true;
 				this.issquare = true;
 			end
 					
@@ -103,47 +107,51 @@ classdef MulLinOp < LinOp
             
         end
         
-        function y = Apply(this,x) % Apply the operator
-            if this.isHTH
-				y = this.LinOp2.HtH(x);
-			elseif this.isnum
-                y = this.LinOp1.*this.LinOp2.Apply(x);
-            else 
-            y = this.LinOp1.Apply( this.LinOp2.Apply(x));
-            end
-        end
-        function y = Adjoint(this,x) % Apply the adjoint
-            if this.isHTH
-				y = this.Apply(x);
-			elseif this.isnum
-                y = this.LinOp2.Adjoint(this.LinOp1.*x);
-            else
-            y = this.LinOp2.Adjoint(this.LinOp1.Adjoint(x));
-            end
-        end
-        function y = HtH(this,x)
+		function y = Apply(this,x) % Apply the operator
 			if this.isHTH
-				y = this.Apply(this.Apply(x));
+				y = this.LinOp2.HtH(x);
+			elseif this.isHHt
+				y = this.LinOp1.HHt(x);
 			elseif this.isnum
-            y = this.LinOp2.Adjoint(this.LinOp1.^2.*( this.LinOp2.Apply(x)));
-            else
-            y = this.LinOp2.Adjoint(this.LinOp1.HtH( this.LinOp2.Apply(x)));
-            end
+				y = this.LinOp1.*this.LinOp2.Apply(x);
+			else
+				y = this.LinOp1.Apply( this.LinOp2.Apply(x));
+			end
+		end
+		function y = Adjoint(this,x) % Apply the adjoint
+			if this.isHTH || this.isHHt
+				y = this.Apply(x); % because self-adjoint
+			elseif this.isnum
+				y = this.LinOp2.Adjoint(this.LinOp1.*x);
+			else
+				y = this.LinOp2.Adjoint(this.LinOp1.Adjoint(x));
+			end
+		end
+		function y = HtH(this,x)
+			if this.isHTH || this.isHTH 
+				y = this.Apply(this.Apply(x)); % because self-adjoint
+			elseif this.isnum
+				y = this.LinOp2.Adjoint(this.LinOp1.^2.*( this.LinOp2.Apply(x)));
+			else
+				y = this.LinOp2.Adjoint(this.LinOp1.HtH( this.LinOp2.Apply(x)));
+			end
         end
-        function y = HHt(this,x)
-            if this.isnum
-            y = this.LinOp1.*(this.LinOp2.HHt( this.LinOp1.*x));
-            else
-            y = this.LinOp1.Apply(this.LinOp2.HHt( this.LinOp1.Adjoint(x)));
-            end
-        end
-        function y = Inverse(this,x) % Apply the inverse
-            if this.isinvertible
-                y = this.LinOp2.Inverse(this.LinOp1.Inverse(x));
-            else
-                error('Operator not invertible');
-            end
-        end
+		function y = HHt(this,x)
+			if this.isHTH || this.isHTH 
+				y = this.Apply(this.Apply(x)); % because self-adjoint
+			elseif this.isnum
+				y = this.LinOp1.*(this.LinOp2.HHt( this.LinOp1.*x));
+			else
+				y = this.LinOp1.Apply(this.LinOp2.HHt( this.LinOp1.Adjoint(x)));
+			end
+		end
+		function y = Inverse(this,x) % Apply the inverse
+			if this.isinvertible
+				y = this.LinOp2.Inverse(this.LinOp1.Inverse(x));
+			else
+				error('Operator not invertible');
+			end
+		end
         function y = AdjointInverse(this,x) % Apply the inverse
             if this.isinvertible             
                 y = this.LinOp2.AdjointInverse(this.LinOp1.AdjointInverse(x));

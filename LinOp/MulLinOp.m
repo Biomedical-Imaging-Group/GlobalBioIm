@@ -32,8 +32,8 @@ classdef MulLinOp < LinOp
         LinOp1
         LinOp2
         isnum
-		isHTH
-		isHHt
+		isHTH = 0;
+		isHHt = 0;
     end
     
     methods

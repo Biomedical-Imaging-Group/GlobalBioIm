@@ -65,8 +65,13 @@ classdef Grad <  LinOp
             if this.sizein(2) ==1
                 this.sizeout= [this.sizein(1),this.lgthidx];
             else
-                this.sizeout= [this.sizein,this.lgthidx];
-            end
+                this.sizeout= this.sizein
+			end
+			
+			if this.lgthidx > 1
+				this.sizeout(end+1) = this.lgthidx
+			end
+			
         end
         function y = Apply(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);

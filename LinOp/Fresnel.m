@@ -33,7 +33,11 @@ classdef Fresnel <  LinOp
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+    properties (Constant=true)
+        FEITFLECK = 2 % use the Feit and Fleck model of propagation instead:
+        % M. D. Feit and J. A. Fleck, ?Bean nonparaxiality, filament formaform, and beam breakup in the self-focusing of optical beams,? J. Opt. Soc. Am. B, vol. 5, pp. 633? 640, March 1988.
+        AS = 1 % Use Angular Spectrum method
+    end
     properties (SetAccess = protected,GetAccess = public)
         lambda  % wavelenght            [m]
         n0      % refractive index of the medium
@@ -50,8 +54,7 @@ classdef Fresnel <  LinOp
         Fv      % Fresnel function along the v axis
         F       % Fresnel function
 % FIXME     FeitFleck not working  
-        FeitFleck = false; % if true use the Feit and Fleck model of propagation instead:
-        % M. D. Feit and J. A. Fleck, ?Bean nonparaxiality, filament formaform, and beam breakup in the self-focusing of optical beams,? J. Opt. Soc. Am. B, vol. 5, pp. 633? 640, March 1988.
+        type = 0; % if true 
         usecomplex = true; % if false complex are represented as an extra dimension of size 2 containning Real and imagenary parts of x
     end
     methods
@@ -79,17 +82,26 @@ classdef Fresnel <  LinOp
             if (~isempty(pad))
                 assert( issize(pad)&& length(pad)==2,'The padding pad should be a conformable  to size(2D)');
             end
-            this.sizein = sz;
-            this.sizeout = sz;
+            this.pad = pad;
+            
+            if (~isempty(pad))
+                this.F = ifft2(padarray(fft2(this.F),pad));
+                this.sizein = sz+2*pad;
+                this.sizeout = sz+2*pad;
+            else
+                this.sizein = sz;
+                this.sizeout = sz;
+            end
             this.Nx = sz(1);
             this.Ny = sz(2);
-           
-            this.pad = pad;
+            
             
             for c=1:length(varargin)
                 switch varargin{c}
                     case('FeitFleck')
-                        this.FeitFleck = true;
+                        this.type = this.FEITFLECK;
+                    case('AS')
+                        this.type = this.AS;
                     case('DontUseComplex')
                         this.usecomplex = false;
                 end
@@ -99,28 +111,23 @@ classdef Fresnel <  LinOp
             this.k = this.n0*this.k0;
             
             %  frequency grid
-            this.u = 1./(this.Nx *this.dxy) * [0:this.Nx/2-1, -this.Nx/2:-1];
-            this.v = 1./(this.Ny *this.dxy) * [0:this.Ny/2-1, -this.Ny/2:-1]';
+            this.v = 1./(this.Nx *this.dxy) * [0:this.Nx/2-1, -this.Nx/2:-1]';
+            this.u = 1./(this.Ny *this.dxy) * [0:this.Ny/2-1, -this.Ny/2:-1];
             
-            if this.FeitFleck
+            switch this.type
+                case this.AS % Angular spectrum
                 Mesh = kron(this.u.^2, this.v.^2);
-                this.F =  exp(-2i* pi * this.z.*this.lambda / this.n0 * Mesh ./ real(1 + sqrt(1 - (this.lambda/this.n0)^2 *Mesh)));
-            else
-                % separable Fresnel function
+                this.F =  exp(-2i* pi * this.z.* sqrt((1./this.lambda)^2- Mesh));
+                case this.FEITFLECK
+                 this.F =  exp(-2i* pi * this.z.*this.lambda / this.n0 * Mesh ./ real(1 + sqrt(1 - (this.lambda/this.n0)^2 *Mesh)));
+                otherwise 
+                % separable Fresnel function defined in Fourier
                 this.Fu = exp(-1i* pi *  this.z.* this.lambda / this.n0 * this.u.^2);
                 this.Fv = exp(-1i* pi *  this.z.* this.lambda / this.n0 * this.v.^2);
                 
                 this.F = kron(this.Fu, this.Fv);
             end
             
-            if (~isempty(pad))
-                this.F = padarray(this.F,pad);
-            this.sizein = sz+2*pad;
-            this.sizeout = sz+2*pad;
-            this.Nx = sz(1);
-            this.Ny = sz(2);
-           
-            end            
         end
         function y = Apply(this,x)
             if ~this.usecomplex

@@ -67,7 +67,7 @@ classdef LinOp < handle
             if this.issquare   % HtH =HHt
                 y = this.HtH(x);
             else
-            y = this.Apply(this.Ajoint(x));
+            y = this.Apply(this.Adjoint(x));
             end
         end
         function y = HtWH(this,x,W) %  Apply the HtH matrix

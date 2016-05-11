@@ -22,7 +22,6 @@ classdef VMLMB
     end
     properties (SetAccess = protected,GetAccess = public)
         nparam;
-        nbeval=0;
         task;
         xmin=[];
         xmax=[];
@@ -50,15 +49,16 @@ classdef VMLMB
                 this.sftol, this.sgtol, this.sxtol, this.epsilon, this.costheta);
             this.task =  this.isave(3);
         end
-        function x =Optimize(this,F,x0)
+        function bestx =Optimize(this,F,x0)
             x = x0;
             %      x(1)= x0(1); % Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
             this.task = this.OP_TASK_FG;
-            this.nbeval=0;
+            nbeval=0;
+            iter =1;
             if(this.verb)
             fprintf('it\t nbeval\t cost\t\t  normg\t\t task\tstage\n');
             end
-            for iter=1:this.nbitermax
+            while(iter< this.nbitermax)
                 if (this.task == this.OP_TASK_FG)
                     % apply bound constraints
                     % op_bounds_apply(n, x, xmin, xmax);
@@ -73,8 +73,10 @@ classdef VMLMB
                     cost = F.GetCost(x);     % evaluate the function at X;
                     grad = F.GetGradient();   % evaluate the gradient of F at X;
                     normg= sum(grad.^2);
-                    this.nbeval=this.nbeval+1;
+                    nbeval=nbeval+1;
                 elseif (this.task == this.OP_TASK_NEWX)
+                    iter = iter +1;
+                    bestx = x;
                     % New successful step: the approximation X, function F, and
                     % gradient G, are available for inspection.
                 else
@@ -82,7 +84,7 @@ classdef VMLMB
                     %fprintf('Convergence, or error, or warning :\n');
                     break;
                 end
-                if ( (this.nbeval==1) || (this.task == this.OP_TASK_NEWX))
+                if ( (nbeval==1) || (this.task == this.OP_TASK_NEWX))
                     % Computes set of active parameters :
                     % op_bounds_active(n, active, x, g, xmin, xmax);
                     switch(this.bounds)
@@ -99,7 +101,7 @@ classdef VMLMB
                 % Computes next step:
                 [this.task, this.csave]= m_vmlmb_next(x,cost,grad,active,this.isave,this.dsave);
                 if (mod(iter,this.verb)==0)
-                    fprintf('%d\t%d\t%7.2e\t%6.2g\t\t%d\t%d \n',iter,this.nbeval,cost,normg,this.task,this.isave(4));
+                    fprintf('%d\t%d\t%7.2e\t%6.2g\t\t%d\t%d \n',iter,nbeval,cost,normg,this.task,this.isave(4));
                 end
             end
             

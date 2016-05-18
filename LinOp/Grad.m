@@ -65,11 +65,11 @@ classdef Grad <  LinOp
             if this.sizein(2) ==1
                 this.sizeout= [this.sizein(1),this.lgthidx];
             else
-                this.sizeout= this.sizein
+                this.sizeout= this.sizein;
 			end
 			
 			if this.lgthidx > 1
-				this.sizeout(end+1) = this.lgthidx
+				this.sizeout(end+1) = this.lgthidx;
 			end
 			
         end

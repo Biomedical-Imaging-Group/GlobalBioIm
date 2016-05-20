@@ -1,8 +1,7 @@
-
 classdef Matrix <  LinOp
-    %% Identity : identity operator
+    %% Matrix : Matrix operator
     %  Matlab Linear Operator Library 
-    % Build the identity operator such that Obj.apply(x) = M *x
+    % Build the matrix operator such that Obj.apply(x) = M *x
     %
     % Example
     % Obj = Matrix(M)

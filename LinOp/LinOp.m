@@ -11,6 +11,7 @@ classdef LinOp < handle
     % * |sizein|        - dimension of the right hand side vector space $\mathcal{X}$
     % * |sizeout|       - dimension of the left hand side vector space $\mathcal{Y}$
     % * |isinvertible|  - true if the operator is invertible
+    % * |issquare|      - true if the operator is square
     % * |iscomplex|     - true is the operator is complex
     %
     %% Methods
@@ -49,7 +50,7 @@ classdef LinOp < handle
         sizein;         % dimension of the right hand side vector space
         sizeout;        % dimension of the left hand side vector space
         isinvertible = false; % true if the operator is invertible
-        issquare = false; % true if the operator is invertible
+        issquare = false; % true if the operator is square
         iscomplex = false;      % true is the operator is complex
     end
     
@@ -72,7 +73,7 @@ classdef LinOp < handle
         end
         function y = HtWH(this,x,W) %  Apply the HtH matrix
             if (isscalar(W) && isreal(W))
-                y = this.HtH(x);
+                y = W.*this.HtH(x);
             else
                 assert(isa(W,'LinOp'),'W must be a LinOp');
                 y = this.Adjoint(W.Apply(this.Apply(x)));

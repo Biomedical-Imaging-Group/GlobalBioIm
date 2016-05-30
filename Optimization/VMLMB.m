@@ -1,4 +1,4 @@
-classdef VMLMB
+classdef VMLMB<handle
     properties (Constant)
         OP_TASK_START  = 0; % first entry, start search
         OP_TASK_FG     = 1; % computation of F and G requested
@@ -16,7 +16,7 @@ classdef VMLMB
         sxtol=0.1;
         epsilon=0.01;
         costheta=0.4;
-        nbitermax=100;
+        nbitermax=10;
         nbevalmax;
         verb=0;
     end
@@ -49,9 +49,15 @@ classdef VMLMB
                 this.sftol, this.sgtol, this.sxtol, this.epsilon, this.costheta);
             this.task =  this.isave(3);
         end
+        function ReInit(this)
+            [this.csave, this.isave, this.dsave] = m_vmlmb_first(this.nparam, this.m, this.fatol, this.frtol,...
+                this.sftol, this.sgtol, this.sxtol, this.epsilon, this.costheta);
+            this.task =  this.isave(3);
+        end
         function bestx =Optimize(this,F,x0)
+            bestx = x0;
             x = x0;
-            %      x(1)= x0(1); % Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
+                  x(1)= x0(1); % Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
             this.task = this.OP_TASK_FG;
             nbeval=0;
             iter =1;
@@ -77,6 +83,7 @@ classdef VMLMB
                 elseif (this.task == this.OP_TASK_NEWX)
                     iter = iter +1;
                     bestx = x;
+                    F.UpdateLagrangians();
                     % New successful step: the approximation X, function F, and
                     % gradient G, are available for inspection.
                 else

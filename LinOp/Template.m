@@ -31,8 +31,9 @@ classdef Template <  LinOp
     methods
         function this = Template() %change the name of the constructor
             this.name ='';             %
-            this.issquare = true;      % is your operator square?
+            this.issquare = false;      % is your operator square?
             this.iscomplex= true;      % is your operator complex?
+            this.isinvertible = false; % true if the operator is invertible
             this.sizein = [];          % what is the size of the right hand side
             this.sizeout = [];         % what is the size of the left hand side
         end

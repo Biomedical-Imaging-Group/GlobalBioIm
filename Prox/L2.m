@@ -61,5 +61,9 @@ classdef L2 < Prox
             end
             y = 1./(this.alpha + this.wght) .* (this.alpha.* x + this.wght .* this.a);
         end
+        function cost = FCost(this,x) 
+           cost =   this.wght .*(abs(x - this.a)).^2;
+           cost = 0.5 * sum(cost(:));
+        end
     end
 end

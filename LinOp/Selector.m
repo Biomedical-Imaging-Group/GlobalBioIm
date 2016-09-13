@@ -35,7 +35,7 @@ classdef Selector <  LinOp
         function this = Selector(sel)
             this.name ='Selector';
             this.issquare = false;
-            this.iscomplex= true;
+            this.iscomplex= false;
             
             assert(islogical(sel),'The input selector should be boolean');
             this.sel = sel;

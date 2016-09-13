@@ -10,7 +10,7 @@ classdef VMLMB<handle
     properties
         m=3;
         fatol=0.0;
-        frtol=1e-12;
+        frtol=1e-8;
         sftol=0.001;
         sgtol=0.9;
         sxtol=0.1;
@@ -57,12 +57,12 @@ classdef VMLMB<handle
         function bestx =Optimize(this,F,x0)
             bestx = x0;
             x = x0;
-                  x(1)= x0(1); % Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
+            x(1)= x0(1); % Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
             this.task = this.OP_TASK_FG;
             nbeval=0;
             iter =1;
             if(this.verb)
-            fprintf('it\t nbeval\t cost\t\t  normg\t\t task\tstage\n');
+                fprintf('it\t nbeval\t cost\t\t  normg\t\t task\tstage\n');
             end
             while(iter< this.nbitermax)
                 if (this.task == this.OP_TASK_FG)
@@ -78,17 +78,20 @@ classdef VMLMB<handle
                     end
                     cost = F.GetCost(x);     % evaluate the function at X;
                     grad = F.GetGradient();   % evaluate the gradient of F at X;
-                    normg= sum(grad.^2);
+                    normg= sum(grad(:).^2);
                     nbeval=nbeval+1;
                 elseif (this.task == this.OP_TASK_NEWX)
                     iter = iter +1;
                     bestx = x;
                     F.UpdateLagrangians();
+                    if (mod(iter,this.verb)==0)
+                        fprintf('%d\t%d\t%7.2e\t%6.2g\t\t%d\t%d \n',iter,nbeval,cost,normg,this.task,this.isave(4));
+                    end
                     % New successful step: the approximation X, function F, and
                     % gradient G, are available for inspection.
                 else
                     % Convergence, or error, or warning
-                    %fprintf('Convergence, or error, or warning :\n');
+                    fprintf('Convergence, or error, or warning : %d  , %s\n',this.task,this.csave);
                     break;
                 end
                 if ( (nbeval==1) || (this.task == this.OP_TASK_NEWX))
@@ -107,9 +110,7 @@ classdef VMLMB<handle
                 end
                 % Computes next step:
                 [this.task, this.csave]= m_vmlmb_next(x,cost,grad,active,this.isave,this.dsave);
-                if (mod(iter,this.verb)==0)
-                    fprintf('%d\t%d\t%7.2e\t%6.2g\t\t%d\t%d \n',iter,nbeval,cost,normg,this.task,this.isave(4));
-                end
+                
             end
             
         end

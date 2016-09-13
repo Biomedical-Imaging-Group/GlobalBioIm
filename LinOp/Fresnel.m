@@ -104,23 +104,27 @@ classdef Fresnel <  LinOp
                         this.type = this.AS;
                     case('DontUseComplex')
                         this.usecomplex = false;
+                        this.sizeout = [this.sizeout 2];
+                        this.sizein = [this.sizein 2];
+                        this.iscomplex= false;
                 end
             end
             
             this.k0 = 2*pi/this.lambda;
             this.k = this.n0*this.k0;
             
-            %  frequency grid
-            this.v = 1./(this.Nx *this.dxy) * [0:this.Nx/2-1, -this.Nx/2:-1]';
-            this.u = 1./(this.Ny *this.dxy) * [0:this.Ny/2-1, -this.Ny/2:-1];
             
             switch this.type
                 case this.AS % Angular spectrum
-                Mesh = kron(this.u.^2, this.v.^2);
-                this.F =  exp(-2i* pi * this.z.* sqrt((1./this.lambda)^2- Mesh));
+                Mesh = 1./(this.Ny *this.dxy) * 1./(this.Nx *this.dxy) * fftdist(sz).^2;
+                this.F =  exp(-2i* pi * this.z.* sqrt(( this.n0/this.lambda)^2- Mesh));
                 case this.FEITFLECK
+                Mesh = 1./(this.Ny *this.dxy) * 1./(this.Nx *this.dxy) * fftdist(sz).^2;
                  this.F =  exp(-2i* pi * this.z.*this.lambda / this.n0 * Mesh ./ real(1 + sqrt(1 - (this.lambda/this.n0)^2 *Mesh)));
                 otherwise 
+            %  frequency grid
+            this.v = 1./(this.Nx *this.dxy) * [0:this.Nx/2-1, -this.Nx/2:-1]';
+            this.u = 1./(this.Ny *this.dxy) * [0:this.Ny/2-1, -this.Ny/2:-1];
                 % separable Fresnel function defined in Fourier
                 this.Fu = exp(-1i* pi *  this.z.* this.lambda / this.n0 * this.u.^2);
                 this.Fv = exp(-1i* pi *  this.z.* this.lambda / this.n0 * this.v.^2);
@@ -130,20 +134,21 @@ classdef Fresnel <  LinOp
             
         end
         function y = Apply(this,x)
+            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
             if ~this.usecomplex
                 x = complex(x(:,:,1),x(:,:,2));
             end
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
             y = ifft2( this.F .*  fft2(x));
             if ~this.usecomplex
                  y = cat(3,real(y),imag(y));
             end
         end
         function y = Adjoint(this,x)
+            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
+       
             if ~this.usecomplex
                 x = complex(x(:,:,1),x(:,:,2));
             end
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
             y = ifft2(  conj(this.F) .*  fft2(x));
             if ~this.usecomplex
                  y = cat(3,real(y),imag(y));
@@ -154,20 +159,20 @@ classdef Fresnel <  LinOp
             y = x;
         end
         function y = Inverse(this,x)
+            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
             if ~this.usecomplex
                 x = complex(x(:,:,1),x(:,:,2));
             end
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
             y = ifft2(  conj(this.F) .*  fft2(x));
             if ~this.usecomplex
                  y = cat(3,real(y),imag(y));
             end
         end
         function y = AdjointInverse(this,x)
+            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
             if ~this.usecomplex
                 x = complex(x(:,:,1),x(:,:,2));
             end
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
             y = ifft2( this.F .*  fft2(x));
             if ~this.usecomplex
                  y = cat(3,real(y),imag(y));

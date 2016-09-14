@@ -33,10 +33,12 @@ classdef StackLinOp < LinOp
         ALinOp     % Array of linop
         numLinOp   % number of linop
         alpha      % scalar factor
+        usecomplex = true; % if false complex are represented as an extra dimension of size 2 containning Real and imagenary parts of x
+  prmtIndex;
     end
     
     methods
-        function this = StackLinOp(ALinOp,alpha)
+        function this = StackLinOp(ALinOp,alpha, varargin)
             this.name ='StackLinOp';
 			
 			if nargin == 1
@@ -67,25 +69,48 @@ classdef StackLinOp < LinOp
                 this.iscomplex= this.ALinOp{n}(1).iscomplex || this.iscomplex ;
             end
             
+            for c=1:length(varargin)
+                switch varargin{c}
+                    case('DontUseComplex')
+                        assert(this.sizein(end)==2, ' last dimension of input LinOp should be 2');
+                        this.usecomplex = false;
+                        this.sizeout = [this.sizeout(1:end-2),this.sizeout(end),this.sizeout(end-1)];
+                        this.iscomplex= false;
+                        nd= numel(this.sizeout);
+                        this.prmtIndex = [1:(nd-2) nd (nd-1)];
+                end
+            end
+            
+            
                  
         end
         
         function y = Apply(this,x) % Apply the operator
 			LinOp.checkSize(x, this.sizein)
             
-            y = zeros(prod(this.sizeout(1:end-1)),this.numLinOp);
+            y = zeros(prod(this.ALinOp{1}.sizeout),this.numLinOp);
             for n = 1:this.numLinOp
                 tmp =this.ALinOp{n}(1).Apply(x);
                 y(:,n) =  this.alpha(n) .* tmp(:);
             end
-            y = reshape(y, this.sizeout);
+            
+            if ~this.usecomplex
+            y = reshape(y, [this.ALinOp{1}.sizeout this.numLinOp]);
+                y = permute(y,this.prmtIndex);
+            else
+                y = reshape(y, this.sizeout);
+            end
         end
         function y = Adjoint(this,x) % Apply the adjoint
 			LinOp.checkSize(x, this.sizeout);
             y =  zeros(this.sizein);
-            x = reshape(x, prod(this.sizeout(1:end-1)),this.numLinOp);
+            
+            if ~this.usecomplex
+                x = permute(x,this.prmtIndex);
+            end
+            x = reshape(x, prod(this.ALinOp{1}.sizeout),this.numLinOp);
             for n = 1:this.numLinOp
-                xtmp = zeros(this.sizeout(1:end-1));
+                xtmp = zeros(this.ALinOp{1}.sizeout);
                 xtmp(:) = x(:,n);
                 y = y + this.alpha(n) .* this.ALinOp{n}(1).Adjoint(xtmp);
             end

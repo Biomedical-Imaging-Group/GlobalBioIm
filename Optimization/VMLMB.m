@@ -101,9 +101,9 @@ classdef VMLMB<handle
                         case 0
                             active = [];
                         case 1
-                            active = int32( (grad>0) + (x<this.xmax) );
-                        case 2
                             active = int32( (x>this.xmin) + (grad<0) );
+                        case 2
+                            active = int32( (grad>0) + (x<this.xmax) );
                         case 3
                             active = int32( ( (x>this.xmin) + (grad<0) ).*( (x<this.xmax) + (grad>0) ) );
                     end

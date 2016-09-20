@@ -1,5 +1,12 @@
-function x=ADMM_Restore(H, proxOps, W, y, proxes, mu ,rhos, x0,maxiter,cgmaxiter)
+function x=ADMM_Restore(H, proxOps, W, y, proxes, mus ,rhos, x0,maxiter,cgmaxiter, GT)
 % function x=ADMM_Restore(H,D,B,W,y, zprox, tProx, mu ,rho1, rho2, x0,maxiter,cgmaxiter)
+% see "Distributed Optimization and Statistical Learning via the
+% Alternating Direction Method of Multipliers" - Boyd
+% https://web.stanford.edu/~boyd/papers/pdf/admm_distr_stats.pdf
+% especially Chapter 6, l1-norm problems, s 6.3
+%
+% mu is the regularization strength
+% rho is the penalty parameter
 
 x = x0;
 
@@ -13,7 +20,7 @@ end
 fprintf('******************************************\n');
 fprintf('**  ADMM Restore   **\n');
 fprintf('******************************************\n');
-fprintf('#iter  Likelihood   \t primal norm z    dual norm z \t primal norm t    dual norm t    \n')
+fprintf('#iter  Likelihood \t GT SNR   \t primal norm z    dual norm z \t primal norm t    dual norm t    \n')
 fprintf('====================================================================\n');
 
 A = OneToMany([{H}, proxOps], [1, rhos]);
@@ -43,12 +50,12 @@ x = ConjGrad(A,b,x,cgmaxiter, [{W}, num2cell(ones(1, length(proxes)))] );
 
 lkl = norm( reshape(W*(H*x - y),numel(y),1)); % likelihood
 
-% Sub problems
+% Sub problems 2-N
 for i = 1:length(proxes)
 	z_prevs{i} = zs{i};
 	Dx = proxOps{i} * x;
-	xu = Dx + us{i} / rhos(1);
-	zs{i} = proxes{i}.Apply( xu, mu/rhos(i) );
+	xu = Dx + us{i} / rhos(i);
+	zs{i} = proxes{i}.Apply( xu, mus(i)/rhos(i) );
 	
 	resids{i} = Dx - zs{i};
 	us{i} = us{i} + rhos(i) * resids{i};
@@ -60,7 +67,12 @@ for i = 1:length(proxes)
 	snorm(i) = norm( reshape(rhos(i) * proxOps{i}'*(zs{i} - z_prevs{i}),numel(x),1));% Dual residual norm
 end
 
-fprintf('%3d \t%12.6g \t', k,lkl);
+if exist('GT', 'var')
+	fprintf('%3d \t%12.6g \t %12.6g \t', k,lkl, snr(GT, GT-x));
+else
+	fprintf('%3d \t%12.6g \t %12.6g \t', k,lkl, nan);
+end
+	
 for i = 1:length(proxes)
 	fprintf('%12.6g \t%12.6g \t', rnorm(i),snorm(i));
 end

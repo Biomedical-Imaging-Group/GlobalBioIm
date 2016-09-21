@@ -50,9 +50,9 @@ classdef Hessian <  LinOp
 		  end
         end
         function y = Adjoint(this,x)
-		  if length(this.sizein)==3 %2D case
+		  if length(this.sizein)==2 %2D case
 			y = AdjHessian2D(x,this.bc);
-		  elseif length(this.sizein)==4 %3D case
+		  elseif length(this.sizein)==3 %3D case
 			y = AdjHessian3D(x,this.bc);
 		  end
 		end

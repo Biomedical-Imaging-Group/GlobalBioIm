@@ -9,6 +9,7 @@ classdef VMLMB<handle
     end
     properties
         m=3;
+        gtol=0;
         fatol=0.0;
         frtol=1e-8;
         sftol=0.001;
@@ -70,16 +71,20 @@ classdef VMLMB<handle
                     % op_bounds_apply(n, x, xmin, xmax);
                     if(bitand(this.bounds,1))
                         test = (x<this.xmin);
-                        if any(test), x(test) = this.xmin(test); end
+                        if any(test(:)), x(test) = this.xmin(test); end
                     end
                     if (bitand(this.bounds,2))
                         test = (x>this.xmax);
-                        if any(test), x(test) = this.xmax(test); end
+                        if any(test(:)), x(test) = this.xmax(test); end
                     end
                     cost = F.GetCost(x);     % evaluate the function at X;
                     grad = F.GetGradient();   % evaluate the gradient of F at X;
                     normg= sum(grad(:).^2);
                     nbeval=nbeval+1;
+                    if (normg< this.gtol)
+                         fprintf('Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d\t%d \n',iter,nbeval,cost,normg,this.task,this.isave(4));
+                        break;
+                    end
                 elseif (this.task == this.OP_TASK_NEWX)
                     iter = iter +1;
                     bestx = x;

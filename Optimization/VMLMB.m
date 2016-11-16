@@ -82,7 +82,7 @@ classdef VMLMB<handle
                     normg= sum(grad(:).^2);
                     nbeval=nbeval+1;
                     if (normg< this.gtol)
-                         fprintf('Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d\t%d \n',iter,nbeval,cost,normg,this.task,this.isave(4));
+                        fprintf('Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d\t%d \n',iter,nbeval,cost,normg,this.task,this.isave(4));
                         break;
                     end
                 elseif (this.task == this.OP_TASK_NEWX)

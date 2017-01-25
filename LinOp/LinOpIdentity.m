@@ -1,11 +1,11 @@
 
-classdef Identity <  LinOp
-    %% Identity : identity operator
+classdef LinOpIdentity <  LinOp
+    %% LinOpIdentity : identity operator
     %  Matlab Linear Operator Library 
     % Build the identity operator such that x = Id.apply(x)
     %
     % Example
-    % Id = Identity()
+    % Id = LinOpIdentity()
     %
     % Please refer to the LinOp superclass for documentation
     % See also LinOp
@@ -26,8 +26,8 @@ classdef Identity <  LinOp
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     methods
-        function this = Identity(sz)
-            this.name='Identity';
+        function this = LinOpIdentity(sz)
+            this.name='LinOp Identity';
             this.iscomplex=false;
             this.issquare = true;
             if nargin>0

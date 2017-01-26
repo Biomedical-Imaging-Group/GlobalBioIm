@@ -13,6 +13,7 @@ classdef LinOp < handle
     % * |isinvertible|  - true if the operator is invertible
     % * |issquare|      - true if the operator is square
     % * |iscomplex|     - true is the operator is complex
+    % * |norm|          - norm of the operator (if known, otherwise -1)
     %
     %% Methods
     % * |Apply|    - Apply the operator $\mathbf{H}$
@@ -46,12 +47,13 @@ classdef LinOp < handle
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     properties (SetAccess = protected,GetAccess = public)
-        name = 'none'   % name of the linear operator
-        sizein;         % dimension of the right hand side vector space
-        sizeout;        % dimension of the left hand side vector space
-        isinvertible = false; % true if the operator is invertible
-        issquare = false; % true if the operator is square
+        name = 'none'           % name of the linear operator
+        sizein;                 % dimension of the right hand side vector space
+        sizeout;                % dimension of the left hand side vector space
+        isinvertible = false;   % true if the operator is invertible
+        issquare = false;       % true if the operator is square
         iscomplex = false;      % true is the operator is complex
+        norm=-1;                % norm of the operator
     end
     
     methods

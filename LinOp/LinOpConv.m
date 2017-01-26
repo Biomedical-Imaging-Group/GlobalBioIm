@@ -77,6 +77,8 @@ classdef LinOpConv <  LinOp
                     this.isinvertible=false;
                 end
             
+            % -- Norm of the operator 
+            this.norm=max(abs(this.mtf(:)));
             
         end
         function y = Apply(this,x)

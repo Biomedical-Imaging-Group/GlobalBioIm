@@ -13,6 +13,9 @@ classdef VerbUpdate < handle
     %   - computes & display the cost (if activated)
     %   - computes & display the error to the groung thruth is provided
     %
+    % --Example
+    %  VU=VerbUpdate(computecost,xtrue)
+    % 
     % Child classes can derive from this one to define different actions to execute during 
     % optimization updates.
     %
@@ -21,7 +24,11 @@ classdef VerbUpdate < handle
     % to all the properties of OPTI objects.
     %
     % -- Properties
-    % * |name|      - name of the VerbUpdate class
+    % * |name|        - name of the VerbUpdate class
+    % * |computecost| - Boolean, if true the cost function will be computed
+    % * |xtrue|       - Ground Thruth to compute the error with the solution (if provided)
+    % * |evolcost|    - array to save the evolution of the cost function
+    % * |evolerr|     - array to save the evolution of the error with ground thruth
     %
     % -- Methods
     % * |exec|    - execute the defined actions
@@ -51,10 +58,10 @@ classdef VerbUpdate < handle
 		computecost=false; % Boolean, if true the cost function will be computed
 		xtrue;             % Ground Thruth
 	    count;             % internal counter
-    end
-    properties
-		evolcost;          % array saving the evolution of the cost function
+	    evolcost;          % array saving the evolution of the cost function
 		evolerr;           % array saving the evolution of the error with the groud thruth
+		evolxopt;          % cell saving the optimization variable xopt
+		iternum;           % array saving the iteration number corresponding to evolcost, evolxopt and evolerr entries
     end
     
     methods
@@ -71,23 +78,25 @@ classdef VerbUpdate < handle
         %% Initialization
         function init(this)
         	this.count=1;
-        	evolcost=[];
-        	evolerr=[];
+        	this.evolcost=[];
+        	this.evolerr=[];
         end
         %% Exec method
         function exec(this,opti)
-        	str=['Iter: ',num2str(opti.niter)];
+        	str=sprintf('Iter: %5i',opti.niter);
         	if this.computecost
         		cc=opti.cost.eval(opti.xopt);
-        		str=[str,' | Cost: ',num2str(cc)];
+        		str=sprintf('%s | Cost: %4.4e',str,cc);
         		this.evolcost(this.count)=cc;
         	end
         	if this.isgt
         		err=norm(this.xtrue(:)-opti.xopt(:));
-        		str=[str,' | GT-Err: ',num2str(err)];
+        		str=sprintf('%s | GT-Err: %4.4e',str,err);
         		this.evolerr(this.count)=err;
         	end
-        	this.count=this.count;
+        	this.evolxopt{this.count}=opti.xopt;
+        	this.iternum(this.count)=opti.niter;
+        	this.count=this.count+1;
         	disp(str);
         end
     end

@@ -30,9 +30,10 @@ classdef LinOpIdentity <  LinOp
             this.name='LinOp Identity';
             this.iscomplex=false;
             this.issquare = true;
+            this.norm=1;
             if nargin>0
-            this.sizeout=sz;
-            this.sizein=sz;
+            	this.sizeout=sz;
+            	this.sizein=sz;
             end
         end
         function y = Apply(this,x)

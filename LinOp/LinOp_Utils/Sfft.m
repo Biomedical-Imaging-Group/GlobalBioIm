@@ -6,7 +6,7 @@ function y = Sfft(x, Notindex)
 % Example:
 % y = Sfft(x,[3,4])
 % will compute 2D FFTs along dims 1 and 2 only such
-%  y(:,:,m,n) = fftn(x(:,:,m,n} for all (m,n)
+%  y(:,:,m,n) = fftn(x(:,:,m,n)) for all (m,n)
 %
 % See also iSfft fftn
 

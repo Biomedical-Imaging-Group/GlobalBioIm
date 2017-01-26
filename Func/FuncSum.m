@@ -25,7 +25,8 @@ classdef FuncSum < Func
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+ 
+    % Protected Set and public Read properties     
     properties (SetAccess = protected,GetAccess = public)
         funcs      % cell of Func
         numfuncs   % number of Func
@@ -47,9 +48,11 @@ classdef FuncSum < Func
 				this.alpha = alpha;
 			end
 			this.funcs = funcs;
-			this.sizein =  this.funcs{1}(1).sizein;
+			this.sizein =  this.funcs{1}.sizein;
+			this.isconvex=funcs{1}.isconvex; 
             for n =2:this.numfuncs
-                assert(isempty(this.funcs{n}(1).sizein)  || isequal(this.sizein,this.funcs{n}(1).sizein),'%d-th input does not have the right hand side size ', n) ;
+                assert(isempty(this.funcs{n}.sizein)  || isequal(this.sizein,this.funcs{n}.sizein),'%d-th input does not have the right hand side size ', n) ;
+                this.isconvex = this.isconvex & funcs{1}.isconvex; 
             end
     	end
     	%% Evaluation of the Functional

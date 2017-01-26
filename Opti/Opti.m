@@ -5,11 +5,11 @@ classdef Opti < handle
     %
     % -- Properties
     % * |name|      - name of the optimization algorithm  
-    % * |maxiter|   - maximal number of iterations (default 50)
+    % * |maxiter|   - maximal number of iterations (default 50) public property
     % * |xtol|      - stopping criteria tolerance on the relative difference between two 
-    %                 iterates (see TestConvergence function, default 1e-5)
+    %                 iterates (see TestConvergence function, default 1e-5) public property
     % * |verb|      - every verb iterations the exec method of a VerbUpdate object is called 
-    %                 (see Class VerbUpdate, default 0)
+    %                 (see Class VerbUpdate, default 0) public property
     % * |VerbUpdate|- VerbUpdate object
     % * |cost|      - whole minimized functional (Func)
     % * |time|      - execution time of the algorithm (last run)
@@ -45,15 +45,17 @@ classdef Opti < handle
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
+    % Protected Set and public Read properties     
     properties (SetAccess = protected,GetAccess = public)
         name = 'none'        % name of the optimization algorithm
     	cost;                % minimized functional
     	time;                % running time of the algorithm (last run)
-    	niter=0;             % iteration counter
+    	niter;               % iteration counter
     	xopt;                % optimization variable
     	verbup=VerbUpdate(); % VerbUpdate object
     end
+    % Full public properties
     properties
     	maxiter=50;     % maximal number of iterates
     	xtol=1e-5;      % stopping criteria tolerance on the relative difference btw two successive iterates
@@ -74,7 +76,7 @@ classdef Opti < handle
         %% Display ending message
         function ending_verb(this)
         	if this.verb~=0
-				fprintf('... Optimization finished \nElapsed time: %d (%i iterations). \n',this.time, this.niter);
+				fprintf('... Optimization finished \nElapsed time (s): %4.2d (%i iterations). \n',this.time, this.niter);
 			end
         end
         %% Test Convergence with the relative difference btw two successive iterates

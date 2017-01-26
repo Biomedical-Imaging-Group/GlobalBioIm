@@ -1,9 +1,9 @@
-classdef Diagonal <  LinOp
-    %% Diagonal : Diagonal operator
-    %  Matlab Linear Operator Library
+classdef LinOpDiag <  LinOp
+    %% LinOpDiag : Diagonal operator
+    %  Matlab Linear Operator Library 
     %
     % Example:
-    % Obj = Diagonal(diag)
+    % Obj = LinOpDiag(diag)
     %
     % Build the diagonal operator that multiply element wise the input by
     % the vector diag
@@ -33,8 +33,8 @@ classdef Diagonal <  LinOp
         usecomplex = true;
     end
     methods
-        function this = Diagonal(diag, varargin)
-            this.name ='Diagonal';
+        function this = LinOpDiag(diag,varargin)
+            this.name ='LinOp Diagonal';
             this.issquare = true;
             
           
@@ -66,7 +66,9 @@ classdef Diagonal <  LinOp
                 this.diag = diag;
             else
                 error('diag value must be numeric');
-            end
+            end           
+            % -- Norm of the operator 
+            this.norm=max(diag(:));
         end
         function y = Apply(this,x)
             if isequal(size(x),this.sizein)

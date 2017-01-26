@@ -32,22 +32,34 @@ classdef Selector <  LinOp
         sel % diagonal vector
     end
     methods
-        function this = Selector(sel)
+        function this = Selector(sel,varargin)
+            p = inputParser;
+            addOptional(p,'KeepDimensions',false); %true or false.
+            parse(p,varargin{:});
+            
             this.name ='Selector';
             this.issquare = false;
             this.iscomplex= true;
-            
             assert(islogical(sel),'The input selector should be boolean');
-            this.sel = sel;
-            this.sizeout=[sum(sel(:)), 1];
-            this.sizein=size(sel);
             
+            if true(p.Results.KeepDimensions)
+                   y = max(sum(sel,1));         %
+                   x =max(sum(sel,2));
+                   this.sizeout=[sum(y), sum(x)];
+            else
+                    this.sizeout=[sum(sel(:)), 1];
+                    this.sel = sel;
+            end
+            this.sizein=size(sel);
             this.isinvertible=false;
         end
+        
         function y = Apply(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
             y =x(this.sel);
+            y = reshape(y,this.sizeout);
         end
+        
         function y = Adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
             y = zeros(this.sizein);

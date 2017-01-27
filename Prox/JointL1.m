@@ -11,8 +11,8 @@ classdef JointL1 < Prox
     % example)
     % The option 'NonNegativity' add the non negativity constraint (default
     % false)
-	%
-	% useful also for isotropic TV
+    %
+    % useful also for isotropic TV
     
     %
     %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
@@ -33,6 +33,7 @@ classdef JointL1 < Prox
     
     properties (SetAccess = protected,GetAccess = public)
         nonneg = false
+        cmplx = false
         index
     end
     
@@ -42,54 +43,77 @@ classdef JointL1 < Prox
             
             assert(isvector(index),'The index should be a conformable  to sz');
             this.index = index;
-             
+            
             for c=1:length(varargin)
                 switch varargin{c}
                     case('NonNegativity')
                         this.nonneg = true;
+                    case('Complex')
+                        this.cmplx = true;
                 end
             end
             
         end
         function y = Apply(this,x,alpha) % Apply the operator
-			assert(isscalar(alpha),'alpha must be a scalar');
-			this.alpha = alpha;
-			
-			
-			sz = size(x);
-			ndms = length(sz);
-			T = true(ndms,1);
-			T(this.index)=false;
-			kerdims = sz;
-			kerdims(T)=1;
-			imdims = sz;
-			imdims(~T)=1;
-			
-			
-			
-			if this.nonneg
-				x =  max(x,0);
-			end
-			index = this.index;
-			sx = abs(x).^2;
-			while ~isempty(index)
-				sx = sum(sx,index(1));
-				index = index(2:end);
-			end
-			sx = sqrt(sx);
-			t = sx > this.alpha;
-			b = zeros(size(sx));
-			
-			b(t) = 1-this.alpha./sx(t);
-			y = reshape(repmat(reshape(b ,imdims),kerdims),sz).*x;
-			
-			% result:
-			% x(||x|| <= alpha) = 0
-			% x(||x|| > alpha) = x(||x|| > alpha) - ...
-			%      x(||x|| > alpha) / ||x|| * alpha
-			
+            assert(isscalar(alpha),'alpha must be a scalar');
+            this.alpha = alpha;
+            sizein = size(x);
+            if(this.cmplx)
+                x = cat(ndims(x)+1, real(x), imag(x));
+                index = [this.index,ndims(x)+1];
+            else
+                index = this.index;
+            end
             
-             
+            sz = size(x);
+            ndms = length(sz);
+            T = true(ndms,1);
+            T(index)=false;
+            kerdims = sz;
+            kerdims(T)=1;
+            imdims = sz;
+            imdims(~T)=1;
+            
+            
+            
+            if this.nonneg
+                x =  max(x,0);
+            end
+            sx = abs(x).^2;
+            while ~isempty(index)
+                sx = sum(sx,index(1));
+                index = index(2:end);
+            end
+            sx = sqrt(sx);
+            t = sx > this.alpha;
+            b = zeros(size(sx));
+            
+            b(t) = 1-this.alpha./sx(t);
+            y = reshape(repmat(reshape(b ,imdims),kerdims),sz).*x;
+            
+            if(this.cmplx)
+                y = reshape(y,[],2);
+                y = complex(y(:,1),y(:,2));
+                y = reshape(y,sizein);
+            end
+            % result:
+            % x(||x|| <= alpha) = 0
+            % x(||x|| > alpha) = x(||x|| > alpha) - ...
+            %      x(||x|| > alpha) / ||x|| * alpha
+            
+            
+            
+        end
+        function cost = FCost(this,x)
+            sx = abs(x).^2;
+            index =this.index;
+            while ~isempty(index)
+                sx = sum(sx,index(1));
+                index = index(2:end);
+            end
+            sx = sqrt(sx);
+            cost = sum(sx(:));
         end
     end
+    
 end

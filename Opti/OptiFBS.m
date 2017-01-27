@@ -1,6 +1,8 @@
 classdef OptiFBS < Opti
     %% OptiFBS : Forward-Backward Splitting optimization algorithm
     %  Matlab Inverse Problems Library
+    %
+    % -- Description
     %  Implements the Forward-Backward Splitting algorithm [1] to minimize a function of the form:
     %         F(x) + w*G(x)
     % where  G has  an implementation for the proximity operator (.prox) and F is differentiable 
@@ -89,6 +91,7 @@ classdef OptiFBS < Opti
 			this.starting_verb();
 			if this.fista,tk=1; y=this.xopt; end
 			while (this.niter<this.maxiter)
+				this.niter=this.niter+1;
 				xold=this.xopt;
 				% - Algorithm iteration
 				if this.fista  % if fista
@@ -103,7 +106,6 @@ classdef OptiFBS < Opti
 				if this.test_convergence(xold), break; end
 				% - Call VerbUpdate object
 				if (mod(this.niter,this.verb)==0),this.verbup.exec(this);end
-				this.niter=this.niter+1;
 			end 
 			this.time=toc(tstart);
 			this.ending_verb();

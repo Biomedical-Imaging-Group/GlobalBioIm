@@ -71,6 +71,7 @@ classdef Opti < handle
         function starting_verb(this)
         	if this.verb~=0
 				fprintf('---> Start %s ... \n',this.name);
+				this.verbup.exec(this);
 			end
         end
         %% Display ending message

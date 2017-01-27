@@ -5,11 +5,11 @@ classdef FuncLeastSquares < Func
     % -- Description
     % Implement the cost function for the weighted L2 norm
     % $$ 1/2||Hx - d||^2_W $$
+    % where H is a LinOp object (default LinOpIdentity), d are the data and W
+    % is a weight matrix (LinOp, default LinOpIdentity).
     %
     % -- Example
     % F = FuncLeastSquares(H,d,W);
-    % where H is a LinOp object (default LinOpIdentity), d are the data and W
-    % is a weight matrix (LinOp, default LinOpIdentity).
     %
     % Please refer to the FUNC superclass for general documentation about
     % functional class
@@ -65,7 +65,7 @@ classdef FuncLeastSquares < Func
             this.set_H(H);
             assert( isequal(size(data),this.H.sizeout),'H sizeout and data size are not equal');
             % -- Compute Lipschitz constant of the gradient (if the norm of H is known)
-            if this.isIdH || this.isConvH  % If operator identity or convolution
+            if this.H.norm>=0;
             	this.lip=this.H.norm^2;
             end
     	end
@@ -106,9 +106,7 @@ classdef FuncLeastSquares < Func
         			if ~this.H.iscomplex, y=real(y);end
         		end
         	end
-        	if isempty(y)
-        		error('Prox not implemented');
-        	end
+			if isempty(y),error('Prox not implemented');end
         end
         %% Function that set properly the operator H (has to be modified if new properties is???H are added)
         function set_H(this,H)

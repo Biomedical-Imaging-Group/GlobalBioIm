@@ -1,32 +1,26 @@
-classdef OptiGradDsct < Opti
-    %% OptiGradDsct : Gradient Descent optimization algorithm
+classdef OptiNAME < Opti
+    %% OptiNAME : TODO ADD DESCRIPTION
     %  Matlab Inverse Problems Library
-    %  Implements a Gradient Decsent
+    %
+    % -- Description
+    % TODO ADD A DESCRIPTION
     %
     % -- Example
-    % OptiGD=OptiGradDsct(F,verbup)
-    % where F is a FUNC object and verbup a VerbUpdate object 
+    % TODO ADD INSTANTIATION EXAMPLE
     % 
     % -- Properties
-    % * |name|      - name of the optimization algorithm (inherited from parent Opti class)
-    % * |cost|      - functional to minimize (inherited from parent Opti class,should have
-    %                 an implementation of the gradient)
-    % * |gam|       - descent step (public to be setted by the user if necessary)
-    %
-    % Note: If the Functional F is gradient Lipschitz, gam has to be lower than 2/L where
-    %       L is the Lipschitz constant of the gradient. The optimal choice is 1/L (see [1]).
-    %       If F.lip is known (i.e. different from -1), parameter gam is automatically setted to 1/L
+    % TODO ADD NEW PROPERTIES
     %
     % -- Methods
-    % * |run(x0)|   - run the algorithm from the initial point x0. If x0=[], restarts from the current state
+    % TODO ADD NEW METHODS
     %
-    % -- References 
-    % [1] Nesterov, Yurii. "Introductory lectures on convex programming." Lecture Notes (1998): 119-120.
+    % -- References
+    % TODO ADD REFERENCES IF NEEDED
     %
     % Please refer to the OPTI superclass for general documentation about optimization class
     % See also Opti
     %
-    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+    %     Copyright (C) TODO YEAR NAME EMAIL
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -41,26 +35,33 @@ classdef OptiGradDsct < Opti
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-	% Full public properties
+    % Protected Set and public Read properties     
+    properties (SetAccess = protected,GetAccess = public)
+		%% TODO SET HERE NEW PROTECTED SET AND PUBLIC READ PROPERTIES
+		%% IF NEEDED.
+		%% EXAMPLE THE MINIMIZED FUNC
+    end
+    % Full protected properties 
+    properties (SetAccess = protected,GetAccess = protected)
+		%% TODO SET HERE NEW FULLY PROTECTED PROPERTIES 
+		%% (E.G. INTERNAL VARIABLE USED TO AVOID MULTIPLE COMPUTATION)
+    end
+    % Full public properties
     properties
-    	gam=[];      % descent step
+		%% TODO SET FULLY PUBLIC PROPERTIES
     end
     
     methods
     	%% Constructor
-    	function this=OptiGradDsct(F,verbup)
-    		this.name='Opti Gradient Descent';
-    		this.cost=F;
-    		if F.lip~=-1
-    			this.gam=1/F.lip;
-    		end
-    		if nargin==2
-    			this.verbup=verbup;
-    		end
+    	function this=OptiNAME(~)
+    		% TODO SET THE INHERITED PROPERTIES
+    		this.name='Opti NAME';
+    		this.cost=????;
+    		this.verbup=?????;
+    		% TODO SET NEW DEFINED PROPERTIES
     	end 
     	%% Run the algorithm
         function run(this,x0) 
-        	if isempty(this.gam), error('Parameter gam is not setted'); end
 			tstart=tic;
 			this.verbup.init();
 			this.xopt=x0;
@@ -70,7 +71,9 @@ classdef OptiGradDsct < Opti
 				this.niter=this.niter+1;
 				xold=this.xopt;
 				% - Algorithm iteration
-				this.xopt=this.xopt-this.gam*this.cost.grad(this.xopt);
+				
+				% TODO IMPLEMENTS THE ALGORITHM ITERATION
+				
 				% - Convergence test
 				if this.test_convergence(xold), break; end
 				% - Call VerbUpdate object

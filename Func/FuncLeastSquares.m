@@ -41,9 +41,6 @@ classdef FuncLeastSquares < Func
         Hd               % application of the adjoint to data
         fftHstardata=[]; % if LinOp is convolution, store the product conj(fftn(psf)).*fftn(data) 
         isW=false;       % boolean true if a LinOp wght is given
-        isWdiag=false;   % boolean true id the LinOp wght is diagonal
-        % LinOp Infos
-        isConvH=false;   % boolean (true if the linOp is convolution)
     end
     
     methods 
@@ -52,11 +49,10 @@ classdef FuncLeastSquares < Func
         	this.isconvex=true; 
         	% -- Set entries
             if nargin==1 || isempty(H)
-            	H=LinOpIdentity(); 
+            	H=LinOpIdentity(size(data)); 
             end          	
             if nargin==3
             	this.W=wght;
-            	if strcmp(this.W.name,'LinOp Diagonal'), this.isWdiag=true;end
             	this.WplusWt=wght+wght';
             	this.isW=true;
             end
@@ -89,20 +85,21 @@ classdef FuncLeastSquares < Func
         end
         %% Proximity operator of the functional
         function y=prox(this,x,alpha)
+        	assert(isscalar(alpha),'alpha must be a scalar');
         	y=[];
-        	if this.isIdH
-        		if this.isWdiag  % if weight is diagonal linop
+        	if isa(this.H,'LinOpIdentity')
+        		if this.isW && isa(this.W,'LinOpDiag')  % if weight is diagonal linop
         			y=(x+alpha*this.W.diag.*this.data)./(1+alpha.*this.W.diag);
         		elseif ~this.isW % if no weight
         			y=(x+alpha*this.data)/(alpha+1);
         		end
-        	elseif this.isConvH  % if linop is convolution
+        	elseif isa(this.H,'LinOpConv')  % if linop is convolution
         		if isempty(this.fftHstardata)
         			this.fftHstardata=conj(this.H.mtf).*Sfft(this.data,this.H.Notindex);
         			if ~this.H.iscomplex, this.fftHstardata=real(this.fftHstardata);end
         		end
         		if ~this.isW     % if no weight
-        			y=iSfft((Sfft(x) + alpha*this.fftHstardata)./(1+alpha*(real(this.H.mtf).^2 + imag(this.H.mtf).^2)), this.H.Notindex);
+        			y=iSfft((Sfft(x,this.H.Notindex) + alpha*this.fftHstardata)./(1+alpha*(real(this.H.mtf).^2 + imag(this.H.mtf).^2)), this.H.Notindex);
         			if ~this.H.iscomplex, y=real(y);end
         		end
         	end
@@ -110,10 +107,6 @@ classdef FuncLeastSquares < Func
         end
         %% Function that set properly the operator H (has to be modified if new properties is???H are added)
         function set_H(this,H)
-        	this.isIdH=false;
-        	this.isConvH=false;
-        	if strcmp(H.name,'LinOp Convolution'), this.isConvH=true; end
-        	if strcmp(H.name,'LinOp Identity'), this.isIdH=true; end
         	this.H=H;
         	this.sizein=this.H.sizein;
         	if this.isW

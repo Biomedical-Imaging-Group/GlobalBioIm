@@ -47,7 +47,7 @@ classdef FuncKullLeib < Func
             this.isconvex=true; 
             % -- Set entries
             if nargin==1 || isempty(H)
-            	H=LinOpIdentity(); 
+            	H=LinOpIdentity(size(data)); 
             end   
             if nargin==3, this.bet=bet; end
             this.data=data;
@@ -72,7 +72,7 @@ classdef FuncKullLeib < Func
         %% Proximity operator of the functional
         function y=prox(this,x,alpha)
         	y=[];
-			if this.isIdH % if operator identity
+			if isa(this.H,'LinOpIdentity') % if operator identity
 				delta=(x-alpha-this.bet).^2+4*(x*this.bet + alpha*(this.data-this.bet));
 				y=zeros(size(x));
 				mask=delta>=0;

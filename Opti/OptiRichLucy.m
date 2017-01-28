@@ -39,16 +39,19 @@ classdef OptiRichLucy < Opti
     	function this=OptiRichLucy(F,verbup)
     		this.name='Opti Richardson-Lucy';
     		this.cost=F;
-    		this.verbup=verbup;
+    		if nargin==2 && ~isempty(verbup)
+    			this.verbup=verbup;
+    		end
     	end 
     	%% Run the algorithm
         function run(this,x0) 
+			if ~isempty(x0),this.xopt=x0;end;  % To restart from current state if wanted
+			assert(~isempty(this.xopt),'Missing starting point x0');
         	data=this.cost.data;
         	He1=this.cost.H.Adjoint(ones(this.cost.sizein));
         	bet=this.cost.bet;
 			tstart=tic;
 			this.verbup.init();
-			this.xopt=x0;
 			this.niter=1;
 			this.starting_verb();
 			while (this.niter<this.maxiter)

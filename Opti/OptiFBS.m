@@ -3,14 +3,14 @@ classdef OptiFBS < Opti
     %  Matlab Inverse Problems Library
     %
     % -- Description
-    %  Implements the Forward-Backward Splitting algorithm [1] to minimize a function of the form:
-    %         F(x) + w*G(x)
+    % Implements the Forward-Backward Splitting algorithm [1] to minimize a function of the form:
+    %         F(x) + G(x)
     % where  G has  an implementation for the proximity operator (.prox) and F is differentiable 
     % (i.e. has gradient (.grad))
     %
     % -- Example
-    % OptiGD=OptiFBS(F,G,w,verbup)
-    % where F and G are FUNC object, w a positive real and verbup a VerbUpdate object 
+    % OptiGD=OptiFBS(F,G,verbup)
+    % where F and G are FUNC object and verbup a VerbUpdate object 
     % 
     % -- Properties
     % * |name|      - name of the optimization algorithm (inherited from parent Opti class)
@@ -23,9 +23,6 @@ classdef OptiFBS < Opti
 	%       ensured by taking gam in (0,2/L] where L is the Lipschitz constant of grad(F) (see [1]).
 	%       When FISTA is used [3], gam should be in (0,1/L]. For nonconvex functions [2] take gam in (0,1/L].    
     %       If F.lip is known (i.e. different from -1), parameter gam is automatically setted to 1/L
-    %
-    % -- Methods
-    % * |run(x0)|   - run the algorithm from the initial point x0. If x0=[], restarts from the current state
     %
     % -- References 
 	% [1] P.L. Combettes and V.R. Wajs, "Signal recovery by proximal forward-backward splitting", SIAM Journal on
@@ -58,49 +55,58 @@ classdef OptiFBS < Opti
     properties (SetAccess = protected,GetAccess = public)
 		F;  % Func F
 		G;  % Func G
-		w;  % weight w
+    end
+    % Full protected properties 
+    properties (SetAccess = protected,GetAccess = protected)
+		y;    % Internal parameters
+		tk;
     end
     % Full public properties
     properties
-    	gam;           % descent step
+    	gam=[];        % descent step
     	fista=false;   % FISTA option [3]
     end
     
     methods
     	%% Constructor
-    	function this=OptiFBS(F,G,w,verbup)
+    	function this=OptiFBS(F,G,verbup)
     		this.name='Opti FBS';
-    		this.cost=F+FuncMultScalar(G,w);
+    		this.cost=F+G;
     		this.F=F;
     		this.G=G;
-    		this.w=w;
     		if F.lip~=-1
     			this.gam=1/F.lip;
     		end
-    		if nargin==4
+    		if nargin==3 && ~isempty(verbup)
     			this.verbup=verbup;
     		end
     	end 
     	%% Run the algorithm
         function run(this,x0) 
-        	if isempty(this.gam), error('Parameter gam is not setted'); end
+        	assert(~isempty(this.gam),'parameter gam is not setted');
+			if ~isempty(x0) % To restart from current state if wanted
+				this.xopt=x0;
+				if this.fista
+					this.tk=1; 
+					this.y=this.xopt;
+				end
+			end;  
+			assert(~isempty(this.xopt),'Missing starting point x0');
 			tstart=tic;
 			this.verbup.init();
-			this.xopt=x0;
 			this.niter=1;
-			this.starting_verb();
-			if this.fista,tk=1; y=this.xopt; end
+			this.starting_verb();		
 			while (this.niter<this.maxiter)
 				this.niter=this.niter+1;
 				xold=this.xopt;
 				% - Algorithm iteration
 				if this.fista  % if fista
-					this.xopt=this.G.prox(y - this.gam*this.F.grad(y),this.gam*this.w);
-					told=tk;
-					tk=0.5*(1+sqrt(1+4*tk^2));
-					y=this.xopt + (told-1)/tk*(this.xopt-xold);
+					this.xopt=this.G.prox(this.y - this.gam*this.F.grad(this.y),this.gam);
+					told=this.tk;
+					this.tk=0.5*(1+sqrt(1+4*this.tk^2));
+					this.y=this.xopt + (told-1)/this.tk*(this.xopt-xold);
 				else 
-					this.xopt=this.G.prox(this.xopt - this.gam*this.F.grad(this.xopt),this.gam*this.w);
+					this.xopt=this.G.prox(this.xopt - this.gam*this.F.grad(this.xopt),this.gam);
 				end
 				% - Convergence test
 				if this.test_convergence(xold), break; end

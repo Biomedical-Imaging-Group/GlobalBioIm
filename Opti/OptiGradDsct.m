@@ -54,16 +54,17 @@ classdef OptiGradDsct < Opti
     		if F.lip~=-1
     			this.gam=1/F.lip;
     		end
-    		if nargin==2
+    		if nargin==2 && ~isempty(verbup)
     			this.verbup=verbup;
     		end
     	end 
     	%% Run the algorithm
         function run(this,x0) 
         	if isempty(this.gam), error('Parameter gam is not setted'); end
+			if ~isempty(x0),this.xopt=x0;end;  % To restart from current state if wanted
+			assert(~isempty(this.xopt),'Missing starting point x0');
 			tstart=tic;
 			this.verbup.init();
-			this.xopt=x0;
 			this.niter=1;
 			this.starting_verb();
 			while (this.niter<this.maxiter)

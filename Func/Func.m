@@ -17,11 +17,7 @@ classdef Func < handle
     % * |prox|       - computes the proximity operator
     % * |prox_fench| - computes the proximity operator of the fenchel transform
     %                  (default for convex Func: uses the Moreau's identity 
-    %                       prox_{sigma F*}(y) = y - sigma prox_{F/sigma}(y/sigma)
-    %                  Note that the implemented version here is:
-    %                       prox_{sigma(alpha F)*}(y) = y - sigma prox_{alpha F /sigma}(y/sigma) 
-    %                  since algorithms will generally require the computation of the prox
-    %                  of (alpha F)* and not only of F*)
+    %                       prox_{alpha F*}(y) = y - alpha prox_{F/alpha}(y/alpha)
     %
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -47,11 +43,7 @@ classdef Func < handle
         H=LinOpIdentity();  % linear operator
         isconvex=false;
     end
-    % Full private properties 
-    properties (SetAccess = protected,GetAccess = protected)
-    	isIdH=true;         % boolean (true if the linOp is identity)
-    end
-    
+
     methods
     	%% Evaluation of the Functional
         function eval(~,~) 
@@ -65,10 +57,11 @@ classdef Func < handle
         function prox(~,~,~) 
             error('Prox not implemented');
         end
-        %% Proximity operator of the Fenchel transform of the functional prox_{sig (alph F)*}
-        function y=prox_fench(this,x,sig,alph)  
+        %% Proximity operator of the Fenchel transform of the functional prox_{alpha F*}
+        function y=prox_fench(this,x,alpha) 
+        	assert(isscalar(alpha),'alpha must be a scalar'); 
         	if this.isconvex
-            	y= x - sig*this.prox(x/sig,alph/sig);
+            	y= x - alpha*this.prox(x/alpha,1/alpha);
             else
             	error('Prox Fenchel not implemented');
             end
@@ -76,7 +69,7 @@ classdef Func < handle
         %% Operator compose with a LinOp
         function v=	o(this,x)
         	assert(isa(x,'LinOp'),' Composition of Func(.o) is only define with a LinOp');
-        	this.set_H(this.H*x);
+        	v=FuncComposeLinOp(this,x);
         end
         %% Overload the operator +
         function y = plus(this,x)
@@ -85,8 +78,6 @@ classdef Func < handle
 		end
 		%% Function that set properly the operator H (has to be modified if new properties is???H are added)
         function set_H(this,H)
-        	this.isIdH=false;
-        	if strcmp(H.name,'LinOp Identity'), this.isIdH=true; end
         	this.H=H;
         	this.sizein=this.H.sizein;
         end

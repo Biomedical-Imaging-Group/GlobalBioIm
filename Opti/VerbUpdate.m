@@ -4,14 +4,14 @@ classdef VerbUpdate < handle
     %
     % At each verb iterations of an optimization algorithm (see Opti generic class),
     % a function can be executed in order to:
-    %   - compute cost / error with ground thruth
+    %   - compute cost / error with ground truth
     %   - store current iterate / cost value 
     %   - plot/display stuffs
     %
     % The present generic class implements a basic exec method that:
     %   - display the iteration number
     %   - computes & display the cost (if activated)
-    %   - computes & display the error to the groung thruth is provided
+    %   - computes & display the error to the groung truth is provided
     %
     % --Example
     %  VU=VerbUpdate(computecost,xtrue)
@@ -26,7 +26,7 @@ classdef VerbUpdate < handle
     % -- Properties
     % * |name|        - name of the VerbUpdate class
     % * |computecost| - Boolean, if true the cost function will be computed
-    % * |xtrue|       - Ground Thruth to compute the error with the solution (if provided)
+    % * |xtrue|       - Ground Truth to compute the error with the solution (if provided)
     % * |evolcost|    - array to save the evolution of the cost function
     % * |evolerr|     - array to save the evolution of the error with ground thruth
     %
@@ -54,12 +54,12 @@ classdef VerbUpdate < handle
     
     properties (SetAccess = protected,GetAccess = public)
         name = 'none'      % name of the optimization algorithm
-        isgt=false;        % Boolean true if Ground Thruth is provided
+        isgt=false;        % Boolean true if Ground Truth is provided
 		computecost=false; % Boolean, if true the cost function will be computed
 		xtrue;             % Ground Thruth
 	    count;             % internal counter
 	    evolcost;          % array saving the evolution of the cost function
-		evolerr;           % array saving the evolution of the error with the groud thruth
+		evolerr;           % array saving the evolution of the error with the groud truth
 		evolxopt;          % cell saving the optimization variable xopt
 		iternum;           % array saving the iteration number corresponding to evolcost, evolxopt and evolerr entries
     end

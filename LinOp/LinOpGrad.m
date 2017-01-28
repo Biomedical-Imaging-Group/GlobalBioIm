@@ -41,7 +41,7 @@ classdef LinOpGrad <  LinOp
             if nargin == 1
                 index = [];
             end
-            if nargin==2 || isempty(res)
+            if nargin<=2 || isempty(res)
             	res=ones(size(sz));
             end
             this.name ='LinOp Gradient';

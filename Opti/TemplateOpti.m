@@ -62,9 +62,13 @@ classdef OptiNAME < Opti
     	end 
     	%% Run the algorithm
         function run(this,x0) 
+			if ~isempty(x0)   % To restart from current state if wanted
+				this.xopt=x0;
+				% + other initialization that should be avoided for restarting
+			end; 
+			assert(~isempty(this.xopt),'Missing starting point x0');
 			tstart=tic;
 			this.verbup.init();
-			this.xopt=x0;
 			this.niter=1;
 			this.starting_verb();
 			while (this.niter<this.maxiter)

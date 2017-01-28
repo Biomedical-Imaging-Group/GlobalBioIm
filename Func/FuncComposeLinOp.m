@@ -1,17 +1,14 @@
-classdef FuncNonNeg < Func
-    %% FuncNonNeg : Non negativity indicator functionnal
+classdef FuncComposeLinOp < Func
+    %% FuncComposeLinOp : Compose a Functional with a linear operator
     %  Matlab Inverse Problems Library
     %
-    % -- Description
-    % Implement the indicator over positive vector function:
-    % $$ \phi(Hx) = 0 \textrm{ if } Hx \ge 0 textrm{ and }  +\inf \textrm{ otherwise } $$
-    %
     % -- Example
-    % F = FuncNonNeg();
+    % G =  FuncComposeLinOp(F,Hcomp)
+    % where F is a FUNC object and Hcomp a LINOP one
     %
     % Please refer to the FUNC superclass for general documentation about
     % functional class
-    % See also Func, LinOp
+    % See also Func
 	%
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -27,30 +24,24 @@ classdef FuncNonNeg < Func
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+    % Protected Set and public Read properties     
+    properties (SetAccess = protected,GetAccess = public)
+		F;      % Functional
+    end
     
     methods 
     	%% Constructor
-        function this = FuncNonNeg(H)   
-        	 if nargin==0 || isempty(H)
-        	 	H=LinOpIdentity();
-        	 end
-        	 this.set_H(H);
-        	 this.name='Func NonNegativity';
+        function this = FuncComposeLinOp(F,Hcomp)
+            this.name='Func ComposeLinOp';
+            this.F=F;
+            if ~isa(F.H,'LinOpIdentity'), assert(isequal(Hcomp.sizeout,F.sizein),'sizeout of Hcomp must match with sizein of F'); end
+			this.isconvex= F.isconvex; 
+			this.set_H(Hcomp);
     	end
     	%% Evaluation of the Functional
         function y=eval(this,x)
-			y = 0; % We should put -> (norm(min(this.H*x,0.))>0)*realmax; But for some algorithm there is small negative residuals 
-			       % which would cause unreadability of the evolution of the cost function along iterates
-        end
-        %% Proximity operator of the functional
-        function y=prox(this,x,alpha)
-        	y=[];
-        	if isa(this.H,'LinOpIdentity')
-				y = max(x,0.);
-        	end
-        	if isempty(y)
-        		error('Prox not implemented');
-        	end
+			y=this.F.eval(this.H.Apply(x));
         end
     end
 end

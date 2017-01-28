@@ -67,6 +67,7 @@ classdef FuncNAME < Func
         end
         %% Proximity operator of the functional
         function y=prox(this,x,alpha)
+        	assert(isscalar(alpha),'alpha must be a scalar');
 			% TODO IMPLEMENTS THE PROX (IF APPLICABLE)
         end
         %% Function that set properly the operator H (has to be modified if new properties is???H are added)

@@ -52,7 +52,7 @@ classdef Opti < handle
     	cost;                % minimized functional
     	time;                % running time of the algorithm (last run)
     	niter;               % iteration counter
-    	xopt;                % optimization variable
+    	xopt=[];             % optimization variable
     	verbup=VerbUpdate(); % VerbUpdate object
     end
     % Full public properties

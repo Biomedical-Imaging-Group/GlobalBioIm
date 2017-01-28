@@ -3,8 +3,8 @@ classdef FuncMultScalar < Func
     %  Matlab Inverse Problems Library
     %
     % -- Example
-    % F = FuncSum(Func,alpha)
-    % Multiply the Func by the scalar alpha
+    % F = FuncSum(Func,s)
+    % Multiply the Func by the scalar s
     %
     % Please refer to the FUNC superclass for general documentation about
     % functional class
@@ -28,25 +28,31 @@ classdef FuncMultScalar < Func
     % Protected Set and public Read properties     
     properties (SetAccess = protected,GetAccess = public)
         func;      % Func
-        alpha;     % scalar factor
+        s;         % scalar factor
     end
     
     methods 
     	%% Constructor
-        function this = FuncMultScalar(func,alpha)
+        function this = FuncMultScalar(func,s)
             this.name='Func Multiply Scalar';
 			this.func = func;
-			this.alpha=alpha;
+			assert(isscalar(s),'s must be a scalar');
+			this.s=s;
 			this.sizein =  this.func.sizein;
 			this.isconvex=func.isconvex; 
     	end
     	%% Evaluation of the Functional
         function y=eval(this,x)
-			y=this.alpha*this.func.eval(x);
+			y=this.s*this.func.eval(x);
         end
         %% Gradient of the Functional
         function g=grad(this,x)
-			g=this.alpha*this.func.grad(x);
+			g=this.s*this.func.grad(x);
+        end
+        %% Proximity operator of the Functional
+        function y=prox(this,x,alpha)
+        	assert(isscalar(alpha),'alpha must be a scalar');
+			y = this.func.prox(x,this.s*alpha);
         end
     end
 end

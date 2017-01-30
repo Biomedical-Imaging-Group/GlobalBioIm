@@ -9,7 +9,7 @@ classdef FuncLeastSquares < Func
     % is a weight matrix (LinOp, default LinOpIdentity).
     %
     % -- Example
-    % F = FuncLeastSquares(H,d,W);
+    % F = FuncLeastSquares(d,[],W);
     %
     % Please refer to the FUNC superclass for general documentation about
     % functional class
@@ -62,7 +62,13 @@ classdef FuncLeastSquares < Func
             assert( isequal(size(data),this.H.sizeout),'H sizeout and data size are not equal');
             % -- Compute Lipschitz constant of the gradient (if the norm of H is known)
             if this.H.norm>=0;
-            	this.lip=this.H.norm^2;
+            	if this.isW 
+            		if this.W.norm>=0
+            			this.lip=this.H.norm^2*this.W.norm^2;
+            		end
+            	else
+            		this.lip=this.H.norm^2;
+            	end
             end
     	end
     	%% Evaluation of the Functional
@@ -110,7 +116,7 @@ classdef FuncLeastSquares < Func
         	this.H=H;
         	this.sizein=this.H.sizein;
         	if this.isW
-        		this.Hd=this.H.Adjoint(v.WplusWt.Apply(this.data)); 
+        		this.Hd=this.H.Adjoint(this.WplusWt.Apply(this.data)); 
         	else
         		this.Hd=this.H.Adjoint(this.data);
         	end

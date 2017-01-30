@@ -9,15 +9,15 @@ classdef OptiRichLucy < Opti
     % and bet is a small scalar (default 1e-3) to smooth the function at zero.
     %
     % -- Example
-    % OptiRL=OptiRichLucy(F,verbup)
-    % where F is a FuncKullLeib object and verbup a VerbUpdate object.
+    % OptiRL=OptiRichLucy(F,OutOp)
+    % where F is a FuncKullLeib object and OutOp a OutputOpti object.
     %
     % -- References
 	% [1] Lucy, Leon B. "An iterative technique for the rectification of observed distributions" The astronomical journal (1974)
 	% [2] Richardson, William Hadley. "Bayesian-based iterative method of image restoration." JOSA (1972): 55-59.
     %
     % Please refer to the OPTI superclass for general documentation about optimization class
-    % See also Opti, FuncKullLeib
+    % See also Opti, FuncKullLeib, OutputOpti
     %
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -36,11 +36,11 @@ classdef OptiRichLucy < Opti
    
     methods
     	%% Constructor
-    	function this=OptiRichLucy(F,verbup)
+    	function this=OptiRichLucy(F,OutOp)
     		this.name='Opti Richardson-Lucy';
     		this.cost=F;
-    		if nargin==2 && ~isempty(verbup)
-    			this.verbup=verbup;
+    		if nargin==2 && ~isempty(OutOp)
+    			this.OutOp=OutOp;
     		end
     	end 
     	%% Run the algorithm
@@ -51,7 +51,7 @@ classdef OptiRichLucy < Opti
         	He1=this.cost.H.Adjoint(ones(this.cost.sizein));
         	bet=this.cost.bet;
 			tstart=tic;
-			this.verbup.init();
+			this.OutOp.init();
 			this.niter=1;
 			this.starting_verb();
 			while (this.niter<this.maxiter)
@@ -61,8 +61,8 @@ classdef OptiRichLucy < Opti
 				this.xopt=this.xopt./He1.*this.cost.H.Adjoint(data./(this.cost.H.Apply(this.xopt)+bet));			
 				% - Convergence test
 				if this.test_convergence(xold), break; end
-				% - Call VerbUpdate object
-				if (mod(this.niter,this.verb)==0),this.verbup.exec(this);end
+				% - Call OutputOpti object
+				if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
 			end 
 			this.time=toc(tstart);
 			this.ending_verb();

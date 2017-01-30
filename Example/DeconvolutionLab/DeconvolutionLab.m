@@ -4,7 +4,7 @@
 %
 % Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
 %------------------------------------------------------------
-clear all; close all; clc;
+clear all; close all; clc;warning('off');
 
 % -- fix the random seed (for reproductibility)
 rng(1);
@@ -47,14 +47,14 @@ F_KL=FuncKullLeib(y,H);      % Func KL
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 figure;
 % -- Gradient Descent LS
-VU_GDls=VerbUpdate(1,impad);
-GD_LS=OptiGradDsct(F_LS,VU_GDls);
-GD_LS.verb=20;        % verbose upate every verb iterations
+Out_GDls=OutputOpti(1,impad,40);
+GD_LS=OptiGradDsct(F_LS,Out_GDls);
+GD_LS.ItUpOut=10;     % call OutputOpti update every ItUpOut iterations
 GD_LS.maxiter=200;    % max number of iterations
 GD_LS.run(y);         % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
-[v,n]=min(VU_GDls.evolerr(:));
-subplot(1,2,1);imdisp(VU_GDls.evolxopt{n}(idx,idx),'LS (GD)',0);
-subplot(1,2,2);loglog(VU_GDls.iternum,VU_GDls.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+[v,n]=max(Out_GDls.evolsnr(:));
+subplot(1,2,1);imdisp(Out_GDls.evolxopt{n}(idx,idx),'LS (GD)',0);
+subplot(1,2,2);plot(Out_GDls.iternum,Out_GDls.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% NonNegativity Constraint
@@ -64,39 +64,55 @@ R_POS=FuncNonNeg();
 
 figure;
 % -- FISTA LS + NonNeg
-VU_FSBlsPos=VerbUpdate(1,impad);
-FBS_LSPOS=OptiFBS(F_LS,R_POS,VU_FSBlsPos);
-FBS_LSPOS.verb=20;      % verbose upate every verb iterations
+Out_FSBlsPos=OutputOpti(1,impad,40);
+FBS_LSPOS=OptiFBS(F_LS,R_POS,Out_FSBlsPos);
+FBS_LSPOS.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 FBS_LSPOS.fista=true;   % activate fista
 FBS_LSPOS.maxiter=200;  % max number of iterations
 FBS_LSPOS.run(y);       % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
-[v,n]=min(VU_FSBlsPos.evolerr(:));
-subplot(2,3,1);imdisp(VU_FSBlsPos.evolxopt{n}(idx,idx),'LS + NonNeg (FISTA)',0);
-subplot(2,3,4);loglog(VU_FSBlsPos.iternum,VU_FSBlsPos.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Error');
+[v,n]=max(Out_FSBlsPos.evolsnr(:));
+subplot(2,3,1);imdisp(Out_FSBlsPos.evolxopt{n}(idx,idx),'LS + NonNeg (FISTA)',0);
+subplot(2,3,4);plot(Out_FSBlsPos.iternum,Out_FSBlsPos.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 
 % -- FISTA KL + NonNeg
-VU_FSBklPos=VerbUpdate(1,impad);
-FBS_KLPOS=OptiFBS(F_KL,R_POS,VU_FSBklPos);
-FBS_KLPOS.verb=20;      % verbose upate every verb iterations
+Out_FSBklPos=OutputOpti(1,impad,40);
+FBS_KLPOS=OptiFBS(F_KL,R_POS,Out_FSBklPos);
+FBS_KLPOS.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 FBS_KLPOS.fista=true;   % activate fista
 FBS_KLPOS.maxiter=200;  % max number of iterations
-FBS_KLPOS.gam=1e-2;
-FBS_KLPOS.run(y);      % run the algorithm 
-[v,n]=min(VU_FSBklPos.evolerr(:));
-subplot(2,3,2);imdisp(VU_FSBklPos.evolxopt{n}(idx,idx),'KL + NonNeg (FBS)',0);
-subplot(2,3,5);loglog(VU_FSBklPos.iternum,VU_FSBklPos.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+FBS_KLPOS.gam=1e-2;     % set gamma parameter
+FBS_KLPOS.run(y);       % run the algorithm 
+[v,n]=max(Out_FSBklPos.evolsnr(:));
+subplot(2,3,2);imdisp(Out_FSBklPos.evolxopt{n}(idx,idx),'KL + NonNeg (FISTA)',0);
+subplot(2,3,5);plot(Out_FSBklPos.iternum,Out_FSBklPos.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 
 
 % -- Richardson-Lucy KL + NonNeg (implicit)
-VU_RLklPos=VerbUpdate(1,impad);
-RL_KLPOS=OptiRichLucy(F_KL,VU_RLklPos);
-RL_KLPOS.verb=20;      % verbose upate every verb iterations
+Out_RLklPos=OutputOpti(1,impad,40);
+RL_KLPOS=OptiRichLucy(F_KL,Out_RLklPos);
+RL_KLPOS.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 RL_KLPOS.maxiter=200;  % max number of iterations
-RL_KLPOS.run(y);      % run the algorithm 
-[v,n]=min(VU_RLklPos.evolerr(:));
-subplot(2,3,3);imdisp(VU_RLklPos.evolxopt{n}(idx,idx),'KL + NonNeg (RL)',0);
-subplot(2,3,5);hold all; loglog(VU_RLklPos.iternum,VU_RLklPos.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+RL_KLPOS.run(y);       % run the algorithm 
+[v,n]=max(Out_RLklPos.evolsnr(:));
+subplot(2,3,3);imdisp(Out_RLklPos.evolxopt{n}(idx,idx),'KL + NonNeg (RL)',0);
+subplot(2,3,5);hold all; plot(Out_RLklPos.iternum,Out_RLklPos.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 legend('FISTA','RL');
+
+% -- Plot Evolution SNR and Running Time for No-Reg methods
+figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
+semilogy(Out_GDls.iternum,Out_GDls.evolsnr,'LineWidth',1.5); 
+semilogy(Out_FSBlsPos.iternum,Out_FSBlsPos.evolsnr,'LineWidth',1.5);
+semilogy(Out_FSBklPos.iternum,Out_FSBklPos.evolsnr,'LineWidth',1.5); 
+semilogy(Out_RLklPos.iternum,Out_RLklPos.evolsnr,'LineWidth',1.5); 
+legend('LS (GD)','LS+POS (FBS)','KL+POS (FBS)','KL+POS (RL)');xlabel('Iterations');ylabel('SNR (dB)');
+subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
+orderCol=get(gca,'ColorOrder');
+bar(1,[GD_LS.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
+bar(2,[FBS_LSPOS.time],'FaceColor',orderCol(2,:),'EdgeColor','k');
+bar(3,[FBS_KLPOS.time],'FaceColor',orderCol(3,:),'EdgeColor','k');
+bar(4,[RL_KLPOS.time],'FaceColor',orderCol(4,:),'EdgeColor','k');
+set(gca,'xtick',[1 2 3 4]);ylabel('Time (s)');
+set(gca,'xticklabels',{'LS (GD)','LS+POS (FBS)','KL+POS (FBS)','KL+POS (RL)'});set(gca,'XTickLabelRotation',45)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% TV Regul
@@ -104,32 +120,43 @@ legend('FISTA','RL');
 % -- Regul term
 G=LinOpGrad(size(y));      % Operator Gradient
 R_N21=FuncMixNorm21([3]);  % Mixed Norm 2-1
-lamb=5e-3;                 % Hyperparameter
+lamb=5e-4;                 % Hyperparameter
 
 figure;
 % -- Chambolle-Pock  LS + TV
-VU_CPlstv=VerbUpdate(1,impad);
-CP_LSTV=OptiChambPock(FuncMultScalar(R_N21,lamb),G,F_LS,VU_CPlstv);
-CP_LSTV.tau=10;
+Out_CPlstv=OutputOpti(1,impad,40);
+CP_LSTV=OptiChambPock(FuncMultScalar(R_N21,lamb),G,F_LS,Out_CPlstv);
+CP_LSTV.tau=20;
 CP_LSTV.sig=1/(CP_LSTV.tau*G.norm^2)-eps;
-CP_LSTV.verb=20;      % verbose upate every verb iterations
+CP_LSTV.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 CP_LSTV.maxiter=200;  % max number of iterations
 CP_LSTV.run(y);       % run the algorithm 
-subplot(1,3,1);imdisp(VU_CPlstv.evolxopt{end}(idx,idx),'LS + TV (CP)',0);
-subplot(1,3,3);loglog(VU_CPlstv.iternum,VU_CPlstv.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+subplot(1,3,1);imdisp(Out_CPlstv.evolxopt{end}(idx,idx),'LS + TV (CP)',0);
+subplot(1,3,3);plot(Out_CPlstv.iternum,Out_CPlstv.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 
 % -- ADMM LS + TV
 Fn={FuncLeastSquares(y),FuncMultScalar(R_N21,lamb)};
-Hn={H,G};
-rho_n=[1e-1,1e-1];
-VU_ADMMlstv=VerbUpdate(1,impad);
-ADMM_LSTV=OptiADMM([],[],Fn,Hn,rho_n,[],VU_ADMMlstv);
-ADMM_LSTV.verb=20;
-ADMM_LSTV.maxiter=200;
-ADMM_LSTV.run(y);
-subplot(1,3,2);imdisp(VU_ADMMlstv.evolxopt{end}(idx,idx),'LS + TV (ADMM)',0);
-subplot(1,3,3);hold all;loglog(VU_ADMMlstv.iternum,VU_ADMMlstv.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+Hn={H,G};rho_n=[1e-1,1e-1];
+Out_ADMMlstv=OutputOpti(1,impad,40);
+ADMM_LSTV=OptiADMM([],[],Fn,Hn,rho_n,[],Out_ADMMlstv);
+ADMM_LSTV.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
+ADMM_LSTV.maxiter=200;  % max number of iterations
+ADMM_LSTV.run(y);       % run the algorithm 
+subplot(1,3,2);imdisp(Out_ADMMlstv.evolxopt{end}(idx,idx),'LS + TV (ADMM)',0);
+subplot(1,3,3);hold all;plot(Out_ADMMlstv.iternum,Out_ADMMlstv.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 legend('CP','ADMM');
+
+% -- Plot Evolution SNR and Running Time for TV-Reg methods
+figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
+semilogy(Out_CPlstv.iternum,Out_CPlstv.evolsnr,'LineWidth',1.5); 
+semilogy(Out_ADMMlstv.iternum,Out_ADMMlstv.evolsnr,'LineWidth',1.5);
+legend('LS+TV (CP)','LS+TV (ADMM)');xlabel('Iterations');ylabel('SNR (dB)');
+subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
+orderCol=get(gca,'ColorOrder');
+bar(1,[CP_LSTV.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
+bar(2,[ADMM_LSTV.time],'FaceColor',orderCol(2,:),'EdgeColor','k');
+set(gca,'xtick',[1 2]);ylabel('Time (s)');
+set(gca,'xticklabels',{'LS+TV (CP)','LS+TV (ADMM)'});set(gca,'XTickLabelRotation',45)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Hessian Regul
@@ -152,7 +179,7 @@ legend('CP','ADMM');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Positivity + TV/Hessian/Wavelet Regul
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%{
 figure;
 % -- ADMM LS + TV + NonNeg
 lamb=2e-3; 
@@ -161,11 +188,11 @@ Hn={H,G,LinOpIdentity(size(impad))};
 rho_n=[1e-1,1e-1,1e-1];
 VU_ADMMlstvPos=VerbUpdate(1,impad);
 ADMM_LSTVPOS=OptiADMM([],[],Fn,Hn,rho_n,[],VU_ADMMlstvPos);
-ADMM_LSTVPOS.verb=20;
+ADMM_LSTVPOS.verb=10;
 ADMM_LSTVPOS.maxiter=200;
 ADMM_LSTVPOS.run(y);
 subplot(2,3,1);imdisp(VU_ADMMlstvPos.evolxopt{end}(idx,idx),'LS + TV + POS (ADMM)',0);
-subplot(2,3,5);hold all;loglog(VU_ADMMlstvPos.iternum,VU_ADMMlstvPos.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+subplot(2,3,5);hold all;plot(VU_ADMMlstvPos.iternum,VU_ADMMlstvPos.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 
 % -- PrimalDual Condat LS + TV + NonNeg
 
@@ -176,12 +203,12 @@ Hn={H,G,LinOpIdentity(size(impad))};
 rho_n=[1e-1,1e-1,1e-1];
 VU_ADMMkltvPos=VerbUpdate(1,impad);
 ADMM_KLTVPOS=OptiADMM([],[],Fn,Hn,rho_n,[],VU_ADMMkltvPos);
-ADMM_KLTVPOS.verb=20;
+ADMM_KLTVPOS.verb=10;
 ADMM_KLTVPOS.maxiter=200;
 ADMM_KLTVPOS.run(y);
 subplot(2,3,3);imdisp(VU_ADMMkltvPos.evolxopt{end}(idx,idx),'KL + TV + POS (ADMM)',0);
-subplot(2,3,6);hold all;loglog(VU_ADMMkltvPos.iternum,VU_ADMMkltvPos.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
-
+subplot(2,3,6);hold all;plot(VU_ADMMkltvPos.iternum,VU_ADMMkltvPos.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+%}
 % -- PrimalDual Condat KL + TV + NonNeg
 
 % -- Richardson-Lucy-TV  KL + TV + NonNeg (implicit)
@@ -205,15 +232,3 @@ subplot(2,3,6);hold all;loglog(VU_ADMMkltvPos.iternum,VU_ADMMkltvPos.evolcost,'L
 
 % -- PrimalDual Condat KL + Wavelet + NonNeg
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%-- Comparison Error Ground Thruth
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-figure; grid; hold all; title('Error Ground Truth');
-semilogy(VU_GDls.iternum,VU_GDls.evolerr,'LineWidth',1.5); set(gca,'FontSize',12);
-semilogy(VU_FSBlsPos.iternum,VU_FSBlsPos.evolerr,'LineWidth',1.5); set(gca,'FontSize',12);
-semilogy(VU_FSBklPos.iternum,VU_FSBklPos.evolerr,'LineWidth',1.5); set(gca,'FontSize',12);
-semilogy(VU_RLklPos.iternum,VU_RLklPos.evolerr,'LineWidth',1.5); set(gca,'FontSize',12);
-semilogy(VU_CPlstv.iternum,VU_CPlstv.evolerr,'LineWidth',1.5,'LineStyle','--'); set(gca,'FontSize',12);
-semilogy(VU_ADMMlstv.iternum,VU_ADMMlstv.evolerr,'LineWidth',1.5,'LineStyle','--'); set(gca,'FontSize',12);
-legend('LS (GD)','LS+POS (FBS)','KL+POS (FBS)','KL+POS (RL)','LS+TV (CP)','LS+TV (ADMM)');

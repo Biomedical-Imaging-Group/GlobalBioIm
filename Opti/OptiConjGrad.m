@@ -12,12 +12,12 @@ classdef OptiConjGrad < Opti
     %         $$ 0.5||A*x - b||^2
     %
     % -- Example
-    % CG = OptiConjGrad(A,b,W,verbup)
+    % CG = OptiConjGrad(A,b,W,OutOp)
     % where A is a LINOP object, b the data, W a LINOP so that the algorithm solves A'*W*Ax=b
-    % and verbup a VERBUPDATE object
+    % and OutOp a OutputOpti object
     %
     % Please refer to the OPTI superclass for general documentation about optimization class
-    % See also Opti
+    % See also Opti, OutputOpti
     %
 	%     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
     %
@@ -46,10 +46,10 @@ classdef OptiConjGrad < Opti
     
     methods
     	%% Constructor
-    	function this=OptiConjGrad(A,b,W,verbup)
+    	function this=OptiConjGrad(A,b,W,OutOp)
     		this.name='Opti Conjugate Gradient';
     		if nargin<=2, W=[]; end
-    		if nargin==4 && ~isempty(verbup),this.verbup=verbup;end  
+    		if nargin==4 && ~isempty(OutOp),this.OutOp=OutOp;end  
     		if isempty(W)
     			this.A=A;
     		else
@@ -68,7 +68,7 @@ classdef OptiConjGrad < Opti
 			end;  
 			assert(~isempty(this.xopt),'Missing starting point x0');
 			tstart=tic;
-			this.verbup.init();
+			this.OutOp.init();
 			this.niter=1;
 			this.starting_verb();			
 			while (this.niter<this.maxiter)
@@ -89,8 +89,8 @@ classdef OptiConjGrad < Opti
     			this.xopt = this.xopt + alpha*p;
     			this.r = this.r - alpha*q;
     			rho_prec = rho;
-				% - Call VerbUpdate object
-				if (mod(this.niter,this.verb)==0),this.verbup.exec(this);end
+				% - Call OutputOpti object
+				if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
 			end 
 			this.time=toc(tstart);
 			this.ending_verb();

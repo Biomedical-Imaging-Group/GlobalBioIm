@@ -12,8 +12,8 @@ classdef OptiChambPock < Opti
 	%       as soon as F as an implementation of the prox, see FUNC superclass).
 	%
     % -- Example
-    % OptiCP = OptiChambPock(F,H,G,verbup)
-    % where F and G are FUNC objects, H LINOP object and verbup a VerbUpdate object 
+    % OptiCP = OptiChambPock(F,H,G,OutOp)
+    % where F and G are FUNC objects, H LINOP object and OutOp a OutputOpti object 
     %
     % -- Properties
     % * |tau|    parameter of the algorithm (see the note below) default 1
@@ -40,7 +40,7 @@ classdef OptiChambPock < Opti
 	%     applications to imaging." Journal of Mathematical Imaging and Vision 40.1, pp 120-145 (2011).	
     %
     % Please refer to the OPTI superclass for general documentation about optimization class
-    % See also Opti
+    % See also Opti, OutputOpti
     %
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -78,14 +78,14 @@ classdef OptiChambPock < Opti
     
     methods
     	%% Constructor
-    	function this=OptiChambPock(F,H,G,verbup)
+    	function this=OptiChambPock(F,H,G,OutOp)
     		this.name='Opti Chambolle-Pock';
     		this.cost=F.o(H)+G;
     		this.F=F;
     		this.G=G;
     		this.H=H;
-    		if nargin==4 && ~isempty(verbup)
-    			this.verbup=verbup;
+    		if nargin==4 && ~isempty(OutOp)
+    			this.OutOp=OutOp;
     		end
     		if this.H.norm>=0
     			this.sig=1/(this.tau*this.H.norm^2)-eps;
@@ -100,7 +100,7 @@ classdef OptiChambPock < Opti
 				this.xopt=x0;
 			end
 			tstart=tic;
-			this.verbup.init();
+			this.OutOp.init();
 			this.xopt=x0;
 			this.niter=1;
 			this.starting_verb();
@@ -149,8 +149,8 @@ classdef OptiChambPock < Opti
 				end				
 				% - Convergence test
 				if this.test_convergence(xold), break; end
-				% - Call VerbUpdate object
-				if (mod(this.niter,this.verb)==0),this.verbup.exec(this);end
+				% - Call OutputOpti object
+				if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
 			end 
 			this.time=toc(tstart);
 			this.ending_verb();

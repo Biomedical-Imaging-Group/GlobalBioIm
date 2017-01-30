@@ -81,7 +81,7 @@ classdef LinOpGrad <  LinOp
 				case(1), this.norm=2/res(1);
 				case(2), this.norm=2*sqrt(1/res(1)^2+1/res(2)^2);
 				case(3), this.norm=2*sqrt(1/res(1)^2+1/res(2)^2+1/res(3)^2);
-				case(4),	this.norm=2*sqrt(1/res(1)^2+1/res(2)^2+1/res(3)^2+1/res(4)^2);		
+				case(4), this.norm=2*sqrt(1/res(1)^2+1/res(2)^2+1/res(3)^2+1/res(4)^2);		
 			end
 			
         end

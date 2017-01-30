@@ -18,19 +18,17 @@ classdef LinOp < handle
     %% Methods
     % * |Apply|    - Apply the operator $\mathbf{H}$
     % * |Adjoint|  - Apply the adjoint  $\mathbf{H}^{\mathrm{*}}$ defined
-    % such  $<\mathbf{H} \mathbf{x} . \mathbf{y} > = <\mathbf{x} .
-    % \mathbf{H}^{\mathrm{*}} \mathbf{y} >$
+    % 				 such  $<\mathbf{H} \mathbf{x} . \mathbf{y} > = <\mathbf{x} .
+    %                \mathbf{H}^{\mathrm{*}} \mathbf{y} >$
     % * |HtH|      - Apply the HtH matrix: the operator followed by its adjoint
-    % $\mathbf{H}^{\mathrm{*}} \cdot \mathbf{H}$    
+    %                $\mathbf{H}^{\mathrm{*}} \cdot \mathbf{H}$    
     % * |HHt|      - Apply the HHt matrix: the adjoint operator followed by its 
-    % $ \mathbf{H} \cdot \mathbf{H}^{\mathrm{*}} $
+    %                $ \mathbf{H} \cdot \mathbf{H}^{\mathrm{*}} $
     % * |Inverse|  - Apply the inverse  $\mathbf{H}^{\mathrm{-1}}$ of the
-    % operator if it exist
+    %                operator if it exist
     % * |AdjointInverse|  - Apply the adjoint of the inverse  $\mathbf{H}^{\mathrm{-*}}$ of the
-    % operator if it exist
-    %%
-     
-    
+    %                       operator if it exist
+    %   
     %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify

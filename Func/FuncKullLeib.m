@@ -9,7 +9,7 @@ classdef FuncKullLeib < Func
     % and bet is a small scalar (default 1e-10) to smooth the function at zero.
     %
     % -- Example
-    % F=FuncKullLeib(H,d,bet)
+    % F=FuncKullLeib(d,H,bet)
     %
     % Please refer to the FUNC superclass for general documentation about
     % functional class

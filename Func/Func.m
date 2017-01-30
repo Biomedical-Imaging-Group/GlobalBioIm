@@ -76,6 +76,11 @@ classdef Func < handle
             assert(isa(x,'Func'),'Addition of Func is only define with other Func');
             y = FuncSum({this,x});
 		end
+		%% Overload the operator -
+        function y = minus(this,x)
+            assert(isa(x,'Func'),'Subtraction of Func is only define with other Func');
+            y = FuncSum({this,x},[1,-1]);
+		end
 		%% Function that set properly the operator H (has to be modified if new properties is???H are added)
         function set_H(this,H)
         	this.H=H;

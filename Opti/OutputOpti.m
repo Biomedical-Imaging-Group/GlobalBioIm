@@ -1,26 +1,31 @@
-classdef VerbUpdate < handle
-    %% VerbUpdate : Generic class for object VerbUpdates objects 
+classdef OutputOpti < handle
+    %% OutputOpti : Generic class for object OutputOpti objects
     %  Matlab Inverse Problems Library
     %
-    % At each verb iterations of an optimization algorithm (see Opti generic class),
-    % a function can be executed in order to:
-    %   - compute cost / error with ground truth
+    % At each ItUpOut iterations of an optimization algorithm (see Opti generic class),
+    % the update method of an OutputOpti object will be called in order to acheive user 
+    % defined computations:
+    %   - compute cost / SNR
     %   - store current iterate / cost value 
     %   - plot/display stuffs
     %
-    % The present generic class implements a basic exec method that:
+    % The present generic class implements a basic update method that:
     %   - display the iteration number
     %   - computes & display the cost (if activated)
-    %   - computes & display the error to the groung truth is provided
+    %   - computes & display the SNR if ground truth is provided
     %
     % --Example
-    %  VU=VerbUpdate(computecost,xtrue)
+    %  VU=OutputOpti(computecost,xtrue,iterVerb)
+    % where computecost is a boolean stating if the cost function has to be computed, xtrue is
+    % the ground truth and iterVerb corresponds to the interval (in number of iterations) for 
+    % which the update will only perform the computation (every ItUpOut iterations) but not
+    % print/display anithing. Hence iterVerb must be a multiple of ItUpOut Opti parameter.
     % 
     % Child classes can derive from this one to define different actions to execute during 
     % optimization updates.
     %
-    % IMPORTANT: The exec method should have an unique imput that is the OPTI object in order to 
-    % be generic for all Optimization routines. Hence the exec method has acces (in reading mode) 
+    % IMPORTANT: The update method should have an unique imput that is the OPTI object in order to 
+    % be generic for all Optimization routines. Hence the update method has acces (in reading mode) 
     % to all the properties of OPTI objects.
     %
     % -- Properties
@@ -28,10 +33,12 @@ classdef VerbUpdate < handle
     % * |computecost| - Boolean, if true the cost function will be computed
     % * |xtrue|       - Ground Truth to compute the error with the solution (if provided)
     % * |evolcost|    - array to save the evolution of the cost function
-    % * |evolerr|     - array to save the evolution of the error with ground thruth
+    % * |evolsnr|     - array to save the evolution of the SNR
+    % * |iterVerb|    - message will be displayed every iterVerb iterations (must be a multiple
+    %                   of the ItUpOut Opti parameter)
     %
     % -- Methods
-    % * |exec|    - execute the defined actions
+    % * |update|  - execute the defined actions
     % * |init|    - initialization (called at the starting of the opti algorithm to initialize
     %               internal variables (counter, array for saving...)
     %
@@ -53,36 +60,48 @@ classdef VerbUpdate < handle
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     properties (SetAccess = protected,GetAccess = public)
-        name = 'none'      % name of the optimization algorithm
-        isgt=false;        % Boolean true if Ground Truth is provided
+        name = 'OutputOpti'% name of the optimization algorithm
 		computecost=false; % Boolean, if true the cost function will be computed
 		xtrue;             % Ground Thruth
-	    count;             % internal counter
 	    evolcost;          % array saving the evolution of the cost function
-		evolerr;           % array saving the evolution of the error with the groud truth
+		evolsnr;           % array saving the evolution of the error with the groud truth
 		evolxopt;          % cell saving the optimization variable xopt
 		iternum;           % array saving the iteration number corresponding to evolcost, evolxopt and evolerr entries
+		iterVerb=0;        % message will be displayed every iterVerb iterations
+    end
+    properties (SetAccess = protected,GetAccess = public)
+    	normXtrue;         % Norm of the true signal (to compute snr)
+    	isgt=false;        % Boolean true if Ground Truth is provided
+   		count;             % internal counter
     end
     
     methods
     	%% Constructor
-        function this=VerbUpdate(computecost,xtrue) 
+        function this=OutputOpti(computecost,xtrue,iterVerb) 
         	if nargin==1
         		this.computecost=computecost;
             elseif nargin==2
             	this.computecost=computecost;
+            	this.xtrue=xtrue;
+            elseif nargin==3
+                this.computecost=computecost;
+            	this.xtrue=xtrue;
+            	this.iterVerb=iterVerb;
+			end
+			if ~isempty(this.xtrue)
             	this.isgt=true;
             	this.xtrue=xtrue;
-			end
+            	this.normXtrue=norm(this.xtrue(:));
+            end
         end
         %% Initialization
         function init(this)
         	this.count=1;
         	this.evolcost=[];
-        	this.evolerr=[];
+        	this.evolsnr=[];
         end
-        %% Exec method
-        function exec(this,opti)
+        %% Update method
+        function update(this,opti)
         	str=sprintf('Iter: %5i',opti.niter);
         	if this.computecost
         		cc=opti.cost.eval(opti.xopt);
@@ -90,14 +109,16 @@ classdef VerbUpdate < handle
         		this.evolcost(this.count)=cc;
         	end
         	if this.isgt
-        		err=norm(this.xtrue(:)-opti.xopt(:));
-        		str=sprintf('%s | GT-Err: %4.4e',str,err);
-        		this.evolerr(this.count)=err;
+        		snr=20*log(this.normXtrue/norm(this.xtrue(:)-opti.xopt(:)));
+        		str=sprintf('%s | SNR: %4.4e dB',str,snr);
+        		this.evolsnr(this.count)=snr;
         	end
         	this.evolxopt{this.count}=opti.xopt;
         	this.iternum(this.count)=opti.niter;
         	this.count=this.count+1;
-        	disp(str);
+        	if (mod(opti.niter,this.iterVerb)==0) || opti.niter==1,
+        		disp(str);
+        	end
         end
     end
 end

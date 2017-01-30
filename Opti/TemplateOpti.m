@@ -18,7 +18,7 @@ classdef OptiNAME < Opti
     % TODO ADD REFERENCES IF NEEDED
     %
     % Please refer to the OPTI superclass for general documentation about optimization class
-    % See also Opti
+    % See also Opti, OutputOpti
     %
     %     Copyright (C) TODO YEAR NAME EMAIL
     %
@@ -57,7 +57,7 @@ classdef OptiNAME < Opti
     		% TODO SET THE INHERITED PROPERTIES
     		this.name='Opti NAME';
     		this.cost=????;
-    		this.verbup=?????;
+    		this.OutOp=?????;
     		% TODO SET NEW DEFINED PROPERTIES
     	end 
     	%% Run the algorithm
@@ -68,7 +68,7 @@ classdef OptiNAME < Opti
 			end; 
 			assert(~isempty(this.xopt),'Missing starting point x0');
 			tstart=tic;
-			this.verbup.init();
+			this.OutOp.init();
 			this.niter=1;
 			this.starting_verb();
 			while (this.niter<this.maxiter)
@@ -80,8 +80,8 @@ classdef OptiNAME < Opti
 				
 				% - Convergence test
 				if this.test_convergence(xold), break; end
-				% - Call VerbUpdate object
-				if (mod(this.niter,this.verb)==0),this.verbup.exec(this);end
+				% - Call OutputOpti object
+				if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
 			end 
 			this.time=toc(tstart);
 			this.ending_verb();

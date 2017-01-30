@@ -4,8 +4,8 @@ classdef OptiGradDsct < Opti
     %  Implements a Gradient Decsent
     %
     % -- Example
-    % OptiGD=OptiGradDsct(F,verbup)
-    % where F is a FUNC object and verbup a VerbUpdate object 
+    % OptiGD=OptiGradDsct(F,OutOp)
+    % where F is a FUNC object and OutOp a OutputOpti object 
     % 
     % -- Properties
     % * |name|      - name of the optimization algorithm (inherited from parent Opti class)
@@ -24,7 +24,7 @@ classdef OptiGradDsct < Opti
     % [1] Nesterov, Yurii. "Introductory lectures on convex programming." Lecture Notes (1998): 119-120.
     %
     % Please refer to the OPTI superclass for general documentation about optimization class
-    % See also Opti
+    % See also Opti, OutputOpti
     %
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -48,14 +48,14 @@ classdef OptiGradDsct < Opti
     
     methods
     	%% Constructor
-    	function this=OptiGradDsct(F,verbup)
+    	function this=OptiGradDsct(F,OutOp)
     		this.name='Opti Gradient Descent';
     		this.cost=F;
     		if F.lip~=-1
     			this.gam=1/F.lip;
     		end
-    		if nargin==2 && ~isempty(verbup)
-    			this.verbup=verbup;
+    		if nargin==2 && ~isempty(OutOp)
+    			this.OutOp=OutOp;
     		end
     	end 
     	%% Run the algorithm
@@ -64,7 +64,7 @@ classdef OptiGradDsct < Opti
 			if ~isempty(x0),this.xopt=x0;end;  % To restart from current state if wanted
 			assert(~isempty(this.xopt),'Missing starting point x0');
 			tstart=tic;
-			this.verbup.init();
+			this.OutOp.init();
 			this.niter=1;
 			this.starting_verb();
 			while (this.niter<this.maxiter)
@@ -74,8 +74,8 @@ classdef OptiGradDsct < Opti
 				this.xopt=this.xopt-this.gam*this.cost.grad(this.xopt);
 				% - Convergence test
 				if this.test_convergence(xold), break; end
-				% - Call VerbUpdate object
-				if (mod(this.niter,this.verb)==0),this.verbup.exec(this);end
+				% - Call OutputOpti object
+				if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
 			end 
 			this.time=toc(tstart);
 			this.ending_verb();

@@ -9,8 +9,8 @@ classdef OptiFBS < Opti
     % (i.e. has gradient (.grad))
     %
     % -- Example
-    % OptiGD=OptiFBS(F,G,verbup)
-    % where F and G are FUNC object and verbup a VerbUpdate object 
+    % OptiGD=OptiFBS(F,G,OutOp)
+    % where F and G are FUNC object and OutOp a OutputOpti object 
     % 
     % -- Properties
     % * |name|      - name of the optimization algorithm (inherited from parent Opti class)
@@ -34,7 +34,7 @@ classdef OptiFBS < Opti
 	%     SIAM Journal on Imaging Science, vol 2, no. 1, pp 182-202 (2009)
     %
     % Please refer to the OPTI superclass for general documentation about optimization class
-    % See also Opti
+    % See also Opti, OutputOpti
     %
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -69,7 +69,7 @@ classdef OptiFBS < Opti
     
     methods
     	%% Constructor
-    	function this=OptiFBS(F,G,verbup)
+    	function this=OptiFBS(F,G,OutOp)
     		this.name='Opti FBS';
     		this.cost=F+G;
     		this.F=F;
@@ -77,8 +77,8 @@ classdef OptiFBS < Opti
     		if F.lip~=-1
     			this.gam=1/F.lip;
     		end
-    		if nargin==3 && ~isempty(verbup)
-    			this.verbup=verbup;
+    		if nargin==3 && ~isempty(OutOp)
+    			this.OutOp=OutOp;
     		end
     	end 
     	%% Run the algorithm
@@ -93,7 +93,7 @@ classdef OptiFBS < Opti
 			end;  
 			assert(~isempty(this.xopt),'Missing starting point x0');
 			tstart=tic;
-			this.verbup.init();
+			this.OutOp.init();
 			this.niter=1;
 			this.starting_verb();		
 			while (this.niter<this.maxiter)
@@ -110,8 +110,8 @@ classdef OptiFBS < Opti
 				end
 				% - Convergence test
 				if this.test_convergence(xold), break; end
-				% - Call VerbUpdate object
-				if (mod(this.niter,this.verb)==0),this.verbup.exec(this);end
+				% - Call OutputOpti object
+				if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
 			end 
 			this.time=toc(tstart);
 			this.ending_verb();

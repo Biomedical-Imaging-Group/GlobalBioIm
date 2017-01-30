@@ -15,13 +15,13 @@ classdef OptiADMM < Opti
     % where the \rho_n >0 n=1...N are the multipliers.
     %
     % -- Example
-    %   ADMM= OptiADMM(F0,H0,Fn,Hn,rho_n,solver,verbup)
+    %   ADMM= OptiADMM(F0,H0,Fn,Hn,rho_n,solver,OutOp)
     % where F0 is a FUNC object, H0 a LINOP object, Fn a cell of N FUNC, Hn a cell of N LINOP, 
     % rho_n a vector of N nonnegative scalars and solver a function handle such that:
     %   solver(z_n,rho_n)
     % where z_n is a cell of N elements and rho_n as above, minimizes the following function:
     %    $$ F_0(H_0*x) + \sum_{n=1}^N 0.5*\rho_n||H_n*x -z_n||^2 $$
-    % Finally verbup is a VERBUPDATE object.
+    % Finally OutOp is a OutputOpti object.
     %
     % Note: If F0=[], then solver is not mandatory and by default the ADMM algorithm will
     %       use the Conjugate Gradient algorithm (see OptiConjGrad) to make the minimization task
@@ -32,15 +32,15 @@ classdef OptiADMM < Opti
     % -- Properties
     % * |maxiterCG|   number of iteration for Conjugate Gradient (when used)
     % * |rho_n|       vector containing the multipliers
-    % * |verbupCG|    VerbUpdate object for Conjugate Gradient (when used)
-    % * |verbCG|      verb parameter for Conjugate Gracdient (when used, default 0)
+    % * |OutOpCG|     OutputOpti object for Conjugate Gradient (when used)
+    % * |ItUpOutCG|   ItUpOut parameter for Conjugate Gracdient (when used, default 0)
     %
     % -- References
 	% [1] Boyd, Stephen, et al. "Distributed optimization and statistical learning via the alternating direction 
 	%     method of multipliers." Foundations and Trends in Machine Learning, 2011.
     %
     % Please refer to the OPTI superclass for general documentation about optimization class
-    % See also Opti, OptiConjGrad, LinOp, Func, VerbUpdate
+    % See also Opti, OptiConjGrad, LinOp, Func, OutputOpti
     %
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -77,18 +77,18 @@ classdef OptiADMM < Opti
     properties
 		rho_n;                 % vector containing the multipliers
 		maxiterCG=20;          % max number of Conjugate Gradient iterates (when used)
-		verbupCG=VerbUpdate(); % VerbUpdate object for Conjugate Gradient (when used)
-		verbCG=0;              % verb parameter for Conjugate Gradient (when used)
+		OutOpCG=OutputOpti();  % OutputOpti object for Conjugate Gradient (when used)
+		ItUpOutCG=0;           % ItUpOut parameter for Conjugate Gradient (when used)
     end
     
     methods
     	%% Constructor
-    	function this=OptiADMM(F0,H0,Fn,Hn,rho_n,solver,verbup)
+    	function this=OptiADMM(F0,H0,Fn,Hn,rho_n,solver,OutOp)
     		this.name='Opti ADMM';
     		if ~isempty(F0), this.F0=F0; end
     		if ~isempty(H0), this.H0=H0; end
     		if nargin==5, solver=[]; end
-    		if nargin==7 && ~isempty(verbup),this.verbup=verbup;end   		
+    		if nargin==7 && ~isempty(OutOp),this.OutOp=OutOp;end   		
     		assert(length(Fn)==length(Hn),'Fn, Hn and rho_n must have the same length');
     		assert(length(Hn)==length(rho_n),'Fn, Hn and rho_n must have the same length');
     		this.Fn=Fn;
@@ -123,7 +123,7 @@ classdef OptiADMM < Opti
 			end;  
 			assert(~isempty(this.xopt),'Missing starting point x0');
 			tstart=tic;
-			this.verbup.init();
+			this.OutOp.init();
 			this.niter=1;
 			this.starting_verb();
 			while (this.niter<this.maxiter)
@@ -139,9 +139,9 @@ classdef OptiADMM < Opti
 					for n=2:length(this.Hn)
 						b=b+this.rho_n(n)*this.Hn{n}.Adjoint(this.zn{n});
 					end
-					CG=OptiConjGrad(this.A,b,[],this.verbupCG);
+					CG=OptiConjGrad(this.A,b,[],this.OutOpCG);
 					CG.maxiter=this.maxiterCG;
-					CG.verb=this.verbCG;
+					CG.ItUpOut=this.ItUpOutCG;
 					CG.run(this.xopt);
 					this.xopt=CG.xopt;
 				else
@@ -153,8 +153,8 @@ classdef OptiADMM < Opti
 				end
 				% - Convergence test
 				if this.test_convergence(xold), break; end
-				% - Call VerbUpdate object
-				if (mod(this.niter,this.verb)==0),this.verbup.exec(this);end
+				% - Call OutputOpti object
+				if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
 			end 
 			this.time=toc(tstart);
 			this.ending_verb();

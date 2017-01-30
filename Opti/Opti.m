@@ -8,20 +8,20 @@ classdef Opti < handle
     % * |maxiter|   - maximal number of iterations (default 50) public property
     % * |xtol|      - stopping criteria tolerance on the relative difference between two 
     %                 iterates (see TestConvergence function, default 1e-5) public property
-    % * |verb|      - every verb iterations the exec method of a VerbUpdate object is called 
-    %                 (see Class VerbUpdate, default 0) public property
-    % * |VerbUpdate|- VerbUpdate object
+    % * |ItUpOut|   - every ItUpOut iterations the update method of a OutputOpti object is called 
+    %                 (see Class OutputOpti, default 0) public property
+    % * |OutOp|     - OutputOpti object
     % * |cost|      - whole minimized functional (Func)
     % * |time|      - execution time of the algorithm (last run)
     % * |niter|     - iteration counter
     % * |xopt|      - optimization variable
     %
     % Note: in each derived class the minimized functional(s) are defined as properties and combined to 
-    %       form the cost functional (that can be used by the exec method of VerbUpdate object).
+    %       form the cost functional (that can be used by the update method of OutputOpti object).
     %       For example let us consider the OptiChambollePock class that allows to minimize F(Kx)+G(x). In this 
     %       situation F, G and the LinOp K have to be given separately to the Opti class (they will define
     %       new properties of the derivate class). Moreover, we will define cost = F(K) + G in order to have a generic
-    %       way to evaluate the cost for all the algorithms (which can be used by the method exec of VerbUpdate)
+    %       way to evaluate the cost for all the algorithms (which can be used by the method update of OutputOpti)
     %
     % -- Methods
     % * |run(x0)|          - run the algorithm from the initial point x0. If x0=[], should restart from current state. 
@@ -29,7 +29,7 @@ classdef Opti < handle
     % * |ending_verb|      - idem for ending message
     % * |test_convergence| - generic function to test convergence based on the relative difference between two successive iterates
     %
-    % See also VerbUpdate
+    % See also OutputOpti
     %
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -53,13 +53,13 @@ classdef Opti < handle
     	time;                % running time of the algorithm (last run)
     	niter;               % iteration counter
     	xopt=[];             % optimization variable
-    	verbup=VerbUpdate(); % VerbUpdate object
+    	OutOp=OutputOpti();  % OutputOpti object
     end
     % Full public properties
     properties
     	maxiter=50;     % maximal number of iterates
     	xtol=1e-5;      % stopping criteria tolerance on the relative difference btw two successive iterates
-    	verb=0;         % period (in number of iterations) to 
+    	ItUpOut=0;      % period (in number of iterations) of calling the OutputOpti object
     end
     
     methods
@@ -68,17 +68,17 @@ classdef Opti < handle
             error(['In ',this.name,': run method is not implemented']);
         end
         %% Display starting message
-        function starting_verb(this)
-        	if this.verb~=0
-				fprintf('---> Start %s ... \n',this.name);
-				this.verbup.exec(this);
+        function starting_verb(this)     	
+        	if this.ItUpOut~=0
+        		fprintf('---> Start %s ... \n',this.name);
+				this.OutOp.update(this);
 			end
         end
         %% Display ending message
         function ending_verb(this)
-        	if this.verb~=0
+        	if this.ItUpOut~=0
 				fprintf('... Optimization finished \nElapsed time (s): %4.2d (%i iterations). \n',this.time, this.niter);
-			end
+        	end
         end
         %% Test Convergence with the relative difference btw two successive iterates
         function stop=test_convergence(this,xold)

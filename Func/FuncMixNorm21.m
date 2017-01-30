@@ -6,7 +6,7 @@ classdef FuncMixNorm21 < Func
     % Implements the mixed norm ||Hx||_{2,1}:
     % $$ \sum_k \sqrt( \sum_l (Hx)_{k,l}^2 ) $$
     % where H is a LinOp object (default LinOpIdentity)
-    % It correspond to an l2-norm along some dimensions (idexed by l in the example)
+    % It corresponds to an l2-norm along some dimensions (idexed by l in the example)
     % combined by an l1-norm along the remaining dimensions (sum over k in the example)
     %
     % -- Example
@@ -48,7 +48,7 @@ classdef FuncMixNorm21 < Func
 			if nargin==1 || isempty(H)
             	H=LinOpIdentity(); 
             end     
-            assert(isvector(index),'The index should be a conformable  to sz');
+            assert(isnumeric(index)&&isvector(index),'The index should be a vector of integers');
             this.index=index;
             this.set_H(H);
     	end

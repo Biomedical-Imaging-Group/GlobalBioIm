@@ -40,6 +40,9 @@ classdef FuncMultScalar < Func
 			this.s=s;
 			this.sizein =  this.func.sizein;
 			this.isconvex=func.isconvex; 
+			if func.lip~=-1
+				this.lip=func.lip*s;
+			end
     	end
     	%% Evaluation of the Functional
         function y=eval(this,x)

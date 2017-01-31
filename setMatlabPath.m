@@ -5,7 +5,7 @@ addpath([pathToDir,'/Util/']);
 addpath([pathToDir,'/Opti/']);
 addpath([pathToDir,'/LinOp/']);
 addpath([pathToDir,'/LinOp/LinOp_Utils/']);
-addpath([pathToDir,'/LinOp/Hessian/']);
 addpath([pathToDir,'/Func/']);
+addpath([pathToDir,'/Func/FuncUtils']);
 addpath([pathToDir,'/Example/']);
 

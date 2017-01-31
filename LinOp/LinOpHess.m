@@ -43,8 +43,10 @@ classdef LinOpHess <  LinOp
 			this.sizein=sz;
 			this.ndms = length(this.sizein);
 			switch(this.ndms)
-				case(2), this.sizeout=[sz 3];
-				case(3), this.sizeout=[sz 6];
+				case(2), 
+					this.sizeout=[sz 3];
+				case(3), 
+					this.sizeout=[sz 6];
 			end
         end
         function y = Apply(this,x)
@@ -68,7 +70,6 @@ classdef LinOpHess <  LinOp
 					y(:,1:end-2,3)=x(:,3:end)-2*x(:,2:end-1)+x(:,1:end-2);
 					y(:,end-1,3)=x(:,end-1)-2*x(:,end);
 					y(:,end,3)=x(:,end);
-					%}
                 % 3 dimensions
                 case(3)
                     % xx
@@ -159,6 +160,8 @@ classdef LinOpHess <  LinOp
             nidx = 0;
             y = zeros(this.sizein);
             % switch according to the number of dimension of the input
+            % Emmanuel : FOR LARGE IMAGES IT SEEMS THAT THIS IMPLEMENTATION OF HTH DO NOT MAKE ANY 
+            % IMPROVEMENT WITH RESPECT TO SUCCESSIVELY APPLY  H AND HT
             switch(this.ndms)
                 % 2 dimension
                 case(2)
@@ -186,6 +189,54 @@ classdef LinOpHess <  LinOp
 					y(:,end)=y(:,end)+6*x(:,end)-4*x(:,end-1) + x(:,end-2);
                 % 3 dimensions
                 case(3)
+                    % xx
+					y(1,:,:)= y(1,:,:) + x(3,:,:) -2*x(2,:,:) + x(1,:,:);
+					y(2,:,:)=y(2,:,:) + x(4,:,:) - 4*x(3,:,:) + 5*x(2,:,:) - 2*x(1,:,:);
+					y(3:end-2,:,:)=y(3:end-2,:,:) + 6*x(3:end-2,:,:) - 4*x(4:end-1,:,:) + x(5:end,:,:) - 4*x(2:end-3,:,:) + x(1:end-4,:,:);
+					y(end-1,:,:)=y(end-1,:,:) + 6*x(end-1,:,:) - 4*x(end-2,:,:) - 4*x(end,:,:) + x(end-3,:,:);
+					y(end,:,:)=y(end,:,:)+6*x(end,:,:)-4*x(end-1,:,:) + x(end-2,:,:);
+					% xy
+					y(1,1,:)=y(1,1,:) + x(2,2,:) - x(2,1,:) - x(1,2,:) + x(1,1,:);
+					y(2:end-1,2:end-1,:)=y(2:end-1,2:end-1,:) + 4*x(2:end-1,2:end-1,:) - 2*x(2:end-1,1:end-2,:) - 2*x(1:end-2,2:end-1,:) -2*x(2:end-1,3:end,:) - 2*x(3:end,2:end-1,:) + x(1:end-2,1:end-2,:) + x(1:end-2,3:end,:) + x(3:end,1:end-2,:) + x(3:end,3:end,:); 
+					y(1,2:end-1,:) = y(1,2:end-1,:) - 2*x(2,2:end-1,:) + 2*x(1,2:end-1,:) - x(1,3:end,:) + x(2,1:end-2,:) + x(2,3:end,:) - x(1,1:end-2,:);
+					y(2:end-1,1,:) = y(2:end-1,1,:) - 2*x(2:end-1,2,:) + 2*x(2:end-1,1,:) - x(3:end,1,:) + x(1:end-2,2,:) + x(3:end,2,:) - x(1:end-2,1,:);
+					y(end,2:end-1,:)=y(end,2:end-1,:) + 4*x(end,2:end-1,:) - 2*x(end,1:end-2,:) - 2*x(end,3:end,:) -2*x(end-1,2:end-1,:) + x(end-1,1:end-2,:) + x(end-1,3:end,:);
+					y(2:end-1,end,:)=y(2:end-1,end,:) + 4*x(2:end-1,end,:) - 2*x(1:end-2,end,:) - 2*x(3:end,end,:) -2*x(2:end-1,end-1,:) + x(1:end-2,end-1,:) + x(3:end,end-1,:);
+					y(1,end,:)=y(1,end,:) + 2*x(1,end,:) + x(2,end-1,:) -2*x(2,end,:) - x(1,end-1,:);
+					y(end,1,:)=y(end,1,:) + 2*x(end,1,:) + x(end-1,2,:) -2*x(end,2,:) - x(end-1,1,:);
+					y(end,end,:)=y(end,end,:) + 4*x(end,end,:) - 2*x(end,end-1,:) -2*x(end-1,end,:) + x(end-1,end-1,:);
+					% xz
+					y(1,:,1)=y(1,:,1) + x(2,:,2) - x(2,:,1) - x(1,:,2) + x(1,:,1);
+					y(2:end-1,:,2:end-1)=y(2:end-1,:,2:end-1) + 4*x(2:end-1,:,2:end-1) - 2*x(2:end-1,:,1:end-2) - 2*x(1:end-2,:,2:end-1) -2*x(2:end-1,:,3:end) - 2*x(3:end,:,2:end-1) + x(1:end-2,:,1:end-2) + x(1:end-2,:,3:end) + x(3:end,:,1:end-2) + x(3:end,:,3:end); 
+					y(1,:,2:end-1) = y(1,:,2:end-1) - 2*x(2,:,2:end-1) + 2*x(1,:,2:end-1) - x(1,:,3:end) + x(2,:,1:end-2) + x(2,:,3:end) - x(1,:,1:end-2);
+					y(2:end-1,:,1) = y(2:end-1,:,1) - 2*x(2:end-1,:,2) + 2*x(2:end-1,:,1) - x(3:end,:,1) + x(1:end-2,:,2) + x(3:end,:,2) - x(1:end-2,:,1);
+					y(end,:,2:end-1)=y(end,:,2:end-1) + 4*x(end,:,2:end-1) - 2*x(end,:,1:end-2) - 2*x(end,:,3:end) -2*x(end-1,:,2:end-1) + x(end-1,:,1:end-2) + x(end-1,:,3:end);
+					y(2:end-1,:,end)=y(2:end-1,:,end) + 4*x(2:end-1,:,end) - 2*x(1:end-2,:,end) - 2*x(3:end,:,end) -2*x(2:end-1,:,end-1) + x(1:end-2,:,end-1) + x(3:end,:,end-1);
+					y(1,:,end)=y(1,:,end) + 2*x(1,:,end) + x(2,:,end-1) -2*x(2,:,end) - x(1,:,end-1);
+					y(end,:,1)=y(end,:,1) + 2*x(end,:,1) + x(end-1,:,2) -2*x(end,:,2) - x(end-1,:,1);
+					y(end,:,end)=y(end,:,end) + 4*x(end,:,end) - 2*x(end,:,end-1) -2*x(end-1,:,end) + x(end-1,:,end-1);
+                	% yy
+					y(:,1,:)= y(:,1,:) + x(:,3,:) -2*x(:,2,:) + x(:,1,:);
+					y(:,2,:)=y(:,2,:) + x(:,4,:) - 4*x(:,3,:) + 5*x(:,2,:) - 2*x(:,1,:);
+					y(:,3:end-2,:)=y(:,3:end-2,:) + 6*x(:,3:end-2,:) - 4*x(:,4:end-1,:) + x(:,5:end,:) - 4*x(:,2:end-3,:) + x(:,1:end-4,:);
+					y(:,end-1,:)=y(:,end-1,:) + 6*x(:,end-1,:) - 4*x(:,end-2,:) - 4*x(:,end,:) + x(:,end-3,:);
+					y(:,end,:)=y(:,end,:)+6*x(:,end,:)-4*x(:,end-1,:) + x(:,end-2,:);
+					% yz
+					y(:,1,1)=y(:,1,1) + x(:,2,2) - x(:,2,1) - x(:,1,2) + x(:,1,1);
+					y(:,2:end-1,2:end-1)=y(:,2:end-1,2:end-1) + 4*x(:,2:end-1,2:end-1) - 2*x(:,2:end-1,1:end-2) - 2*x(:,1:end-2,2:end-1) -2*x(:,2:end-1,3:end) - 2*x(:,3:end,2:end-1) + x(:,1:end-2,1:end-2) + x(:,1:end-2,3:end) + x(:,3:end,1:end-2) + x(:,3:end,3:end); 
+					y(:,1,2:end-1) = y(:,1,2:end-1) - 2*x(:,2,2:end-1) + 2*x(:,1,2:end-1) - x(:,1,3:end) + x(:,2,1:end-2) + x(:,2,3:end) - x(:,1,1:end-2);
+					y(:,2:end-1,1) = y(:,2:end-1,1) - 2*x(:,2:end-1,2) + 2*x(:,2:end-1,1) - x(:,3:end,1) + x(:,1:end-2,2) + x(:,3:end,2) - x(:,1:end-2,1);
+					y(:,end,2:end-1)=y(:,end,2:end-1) + 4*x(:,end,2:end-1) - 2*x(:,end,1:end-2) - 2*x(:,end,3:end) -2*x(:,end-1,2:end-1) + x(:,end-1,1:end-2) + x(:,end-1,3:end);
+					y(:,2:end-1,end)=y(:,2:end-1,end) + 4*x(:,2:end-1,end) - 2*x(:,1:end-2,end) - 2*x(:,3:end,end) -2*x(:,2:end-1,end-1) + x(:,1:end-2,end-1) + x(:,3:end,end-1);
+					y(:,1,end)=y(:,1,end) + 2*x(:,1,end) + x(:,2,end-1) -2*x(:,2,end) - x(:,1,end-1);
+					y(:,end,1)=y(:,end,1) + 2*x(:,end,1) + x(:,end-1,2) -2*x(:,end,2) - x(:,end-1,1);
+					y(:,end,end)=y(:,end,end) + 4*x(:,end,end) - 2*x(:,end,end-1) -2*x(:,end-1,end) + x(:,end-1,end-1);
+					% zz
+					y(:,:,1)= y(:,:,1) + x(:,:,3) -2*x(:,:,2) + x(:,:,1);
+					y(:,:,2)=y(:,:,2) + x(:,:,4) - 4*x(:,:,3) + 5*x(:,:,2) - 2*x(:,:,1);
+					y(:,:,3:end-2)=y(:,:,3:end-2) + 6*x(:,:,3:end-2) - 4*x(:,:,4:end-1) + x(:,:,5:end) - 4*x(:,:,2:end-3) + x(:,:,1:end-4);
+					y(:,:,end-1)=y(:,:,end-1) + 6*x(:,:,end-1) - 4*x(:,:,end-2) - 4*x(:,:,end) + x(:,:,end-3);
+					y(:,:,end)=y(:,:,end)+6*x(:,:,end)-4*x(:,:,end-1) + x(:,:,end-2);
             end
     	end
     end

@@ -1,9 +1,9 @@
-classdef FuncMixNorm21 < Func
-    %% FuncMixNorm21 : Mixed norm 2-1
+classdef FuncMixNorm12 < Func
+    %% FuncMixNorm12 : Mixed norm 1-2
     %  Matlab Inverse Problems Library
     %
     % -- Description
-    % Implements the mixed norm ||Hx||_{2,1}:
+    % Implements the mixed norm ||Hx||_{1,2}:
     % $$ \sum_k \sqrt( \sum_l (Hx)_{k,l}^2 ) $$
     % where H is a LinOp object (default LinOpIdentity)
     % It corresponds to an l2-norm along some dimensions (idexed by l in the example)
@@ -42,8 +42,8 @@ classdef FuncMixNorm21 < Func
     
     methods 
     	%% Constructor
-        function this = FuncMixNorm21(index,H)
-            this.name='Func MixNorm2-1';
+        function this = FuncMixNorm12(index,H)
+            this.name='Func MixNorm1-2';
 			this.isconvex=true; 
 			if nargin==1 || isempty(H)
             	H=LinOpIdentity(); 

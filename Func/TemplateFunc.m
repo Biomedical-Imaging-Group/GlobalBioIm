@@ -54,7 +54,7 @@ classdef FuncNAME < Func
             this.name='Func NAME';
 			this.isconvex= ???; 
 			this.lip= ???;
-			% call set_H (will also set the sizein parameter)
+			% call this.set_H (will also set the sizein parameter)
 			% TODO SET NEW DEFINED PROPERTIES
     	end
     	%% Evaluation of the Functional

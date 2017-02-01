@@ -36,6 +36,7 @@ phobud=1e5;  % photon budget
 tmp=H*impad*phobud; 
 y=zeros(512); y(idx,idx)=poissrnd(tmp(idx,idx))/phobud + sig_n*randn(256);
 y=max(y,0);
+fftHty=conj(fft2(psf)).*fft2(y);
 imdisp(y(idx,idx),'Convolved and noisy data',1);
 
 % -- Least Squares Functional definition
@@ -119,15 +120,15 @@ set(gca,'xticklabels',{'LS (GD)','LS+POS (FBS)','KL+POS (FBS)','KL+POS (RL)'});s
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % -- Regul term
 G=LinOpGrad(size(y));      % Operator Gradient
-R_N21=FuncMixNorm21([3]);  % Mixed Norm 2-1
+R_N12=FuncMixNorm12([3]);  % Mixed Norm 2-1
 lamb=5e-4;                 % Hyperparameter
 
 figure;
 % -- Chambolle-Pock  LS + TV
 Out_CPlstv=OutputOpti(1,impad,40);
-CP_LSTV=OptiChambPock(FuncMultScalar(R_N21,lamb),G,F_LS,Out_CPlstv);
-CP_LSTV.tau=20;
-CP_LSTV.sig=1/(CP_LSTV.tau*G.norm^2)-eps;
+CP_LSTV=OptiChambPock(FuncMultScalar(R_N12,lamb),G,F_LS,Out_CPlstv);
+CP_LSTV.tau=15;
+CP_LSTV.sig=1/(CP_LSTV.tau*G.norm^2)*0.99;
 CP_LSTV.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 CP_LSTV.maxiter=200;  % max number of iterations
 CP_LSTV.run(y);       % run the algorithm 
@@ -135,10 +136,12 @@ subplot(1,3,1);imdisp(Out_CPlstv.evolxopt{end}(idx,idx),'LS + TV (CP)',0);
 subplot(1,3,3);plot(Out_CPlstv.iternum,Out_CPlstv.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 
 % -- ADMM LS + TV
-Fn={FuncLeastSquares(y),FuncMultScalar(R_N21,lamb)};
-Hn={H,G};rho_n=[1e-1,1e-1];
+Fn={FuncMultScalar(R_N12,lamb)};
+Hn={G};rho_n=[1e-1];
+lap=zeros(size(impad)); lap(1,1)=4; lap(1,2)=-1;lap(2,1)=-1; lap(1,end)=-1;lap(end,1)=-1; Flap=fft2(lap);
+solver = @(z,rho) real(ifft2((fftHty + rho(1)*fft2(G'*z{1}))./(abs(H.mtf).^2 + rho(1)*Flap)));
 Out_ADMMlstv=OutputOpti(1,impad,40);
-ADMM_LSTV=OptiADMM([],[],Fn,Hn,rho_n,[],Out_ADMMlstv);
+ADMM_LSTV=OptiADMM(FuncLeastSquares(y),H,Fn,Hn,rho_n,solver,Out_ADMMlstv);
 ADMM_LSTV.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 ADMM_LSTV.maxiter=200;  % max number of iterations
 ADMM_LSTV.run(y);       % run the algorithm 
@@ -161,10 +164,47 @@ set(gca,'xticklabels',{'LS+TV (CP)','LS+TV (ADMM)'});set(gca,'XTickLabelRotation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Hessian Regul
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% -- Hessian Schatten Regul
+Hess=LinOpHess(size(impad));     % Hessian Operator
+R_1sch=FuncMixNorm1Schatt([],1); % Mixed Norm 1-Schatten (p=1)
+lamb=2e-3;                       % Hyperparameter
 
+figure
 % -- Chambolle-Pock  LS + ShattenHess
+Out_CPlshess=OutputOpti(1,impad,40);
+CP_LSHESS=OptiChambPock(FuncMultScalar(R_1sch,lamb),Hess,F_LS,Out_CPlshess);
+CP_LSHESS.tau=15;
+CP_LSHESS.sig=0.001;
+CP_LSHESS.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
+CP_LSHESS.maxiter=200;  % max number of iterations
+CP_LSHESS.run(y);       % run the algorithm 
+subplot(1,3,1);imdisp(Out_CPlshess.evolxopt{end}(idx,idx),'LS + Hess (CP)',0);
+subplot(1,3,3);plot(Out_CPlshess.iternum,Out_CPlshess.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 
 % -- ADMM LS + ShattenHess
+Fn={FuncLeastSquares(y),FuncMultScalar(R_1sch,lamb)};
+Hn={H,Hess};rho_n=[1e-1,1e-1];
+Out_ADMMlshess=OutputOpti(1,impad,40);
+ADMM_LSHESS=OptiADMM([],[],Fn,Hn,rho_n,[],Out_ADMMlshess);
+ADMM_LSHESS.maxiterCG=2;  % 2 CG iterations are sufficient for this example
+ADMM_LSHESS.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
+ADMM_LSHESS.maxiter=200;  % max number of iterations
+ADMM_LSHESS.run(y);       % run the algorithm 
+subplot(1,3,2);imdisp(Out_ADMMlshess.evolxopt{end}(idx,idx),'LS + Hess (ADMM)',0);
+subplot(1,3,3);hold all;plot(Out_ADMMlshess.iternum,Out_ADMMlshess.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+legend('CP','ADMM');
+
+% -- Plot Evolution SNR and Running Time for Hess-Reg methods
+figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
+semilogy(Out_CPlshess.iternum,Out_CPlshess.evolsnr,'LineWidth',1.5); 
+semilogy(Out_ADMMlshess.iternum,Out_ADMMlshess.evolsnr,'LineWidth',1.5);
+legend('LS+TV (CP)','LS+TV (ADMM)');xlabel('Iterations');ylabel('SNR (dB)');
+subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
+orderCol=get(gca,'ColorOrder');
+bar(1,[CP_LSHESS.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
+bar(2,[ADMM_LSHESS.time],'FaceColor',orderCol(2,:),'EdgeColor','k');
+set(gca,'xtick',[1 2]);ylabel('Time (s)');
+set(gca,'xticklabels',{'LS+HESS (CP)','LS+HESS (ADMM)'});set(gca,'XTickLabelRotation',45)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Wavelet regul

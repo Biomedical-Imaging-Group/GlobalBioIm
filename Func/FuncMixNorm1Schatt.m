@@ -1,5 +1,5 @@
-classdef FuncMixNorm1Shatt < Func
-    %% FuncMixNorm1Shatt : Mixed l1-Shatten Norm
+classdef FuncMixNorm1Schatt < Func
+    %% FuncMixNorm1Schatt : Mixed l1-Schatten Norm
     %  Matlab Inverse Problems Library
     %
     % -- Description
@@ -11,7 +11,16 @@ classdef FuncMixNorm1Shatt < Func
     % where sig_k(X) is the k-th singular value of X. In other words it is the lp-norm 
     % of the signular values of X.
     %
-    % Note: The actual implementation ...
+    % Note: The actual implementation works for Hx having one of the two following forms:
+    %          - Hx (NxMx3) such that the Sp norm will be applied on each symetric 2x2
+    %            matrix [Hx(n,m,1) Hx(n,m,2)
+    %                    Hx(n,m,2), Hx(n,m,3)]
+    %            and then the l1 norm on the two other dimensions
+    %          - Hx (NxMx6) such that the Sp norm will be applied on each symetric 3x3
+    %            matrix [Hx(n,m,1) Hx(n,m,2) Hx(n,m,3)
+    %                    Hx(n,m,2) Hx(n,m,4)  Hx(n,m,5)
+    %                    Hx(n,m,3) Hx(n,m,5) Hx(n,m,6)] 
+    %            and then the l1 norm on the two other dimensions.
     %
     % -- Example
     % F=FuncMixNorm1Shatt(H,p)
@@ -50,7 +59,7 @@ classdef FuncMixNorm1Shatt < Func
     
     methods 
     	%% Constructor
-        function this = FuncMixNorm1Shatt(H,p)
+        function this = FuncMixNorm1Schatt(H,p)
             this.name='Func MixNorm1-Shatten';
 			this.isconvex= true; 
 			if nargin==0 || isempty(H), 
@@ -60,7 +69,7 @@ classdef FuncMixNorm1Shatt < Func
 			end;
 			if nargin<=1 || isempty(p), p=1; end;
 			assert(p>=1,'p should be >=1');
-			this.p=p
+			this.p=p;
 			this.set_H(H);
     	end
     	%% Evaluation of the Functional
@@ -69,7 +78,7 @@ classdef FuncMixNorm1Shatt < Func
         	if dim(3)==3     % 2D
 				[E,V]=svd2D_decomp(x);
 			elseif dim(3)==6 % 3D
-				[E,V]=svd3D_decomp(x);
+				%[E,V]=svd3D_decomp(x);
 			else
 				error('third dimension of x should be 3 or 6');
 			end
@@ -83,7 +92,32 @@ classdef FuncMixNorm1Shatt < Func
         %% Proximity operator of the functional
         function y=prox(this,x,alpha)
         	assert(isscalar(alpha),'alpha must be a scalar');
-			% TODO IMPLEMENTS THE PROX (IF APPLICABLE)
+        	dim=size(x);
+			if this.p==1
+			    if dim(3)==3     % 2D
+					[E,V]=svd2D_decomp(x);
+					E=max(abs(E)-alpha,0).*sign(E);
+					y=svd2D_recomp(E,V);
+				elseif diDm(3)==6 % 3D
+					%[E,V]=svd3D_decomp(x);
+					%E=max(E-alpha,0);
+					%y=svd3D_recomp(E,V);
+				else
+					error('third dimension of x should be 3 or 6');
+				end
+			elseif this.p==2
+				if dim(3)==3     % 2D
+					N=sqrt(x(:,:,1).^2+2*x(:,:,2).^2+x(:,:,3).^2);
+					y=repmat((N-1)./N,[1,1,3]).*x;
+				elseif diDm(3)==6 % 3D
+					N=sqrt(x(:,:,1).^2+2*x(:,:,2).^2+2*x(:,:,3).^2+x(:,:,4)+2*x(:,:,5)+x(:,:,6));
+					y=repmat((N-1)./N,[1,1,3]).*x;
+				else
+					error('third dimension of x should be 3 or 6');
+				end			
+			else 
+				error('prox not implemented');
+			end
         end
     end
 end

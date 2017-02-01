@@ -11,7 +11,7 @@ classdef OptiADMM < Opti
     % proximity operator for n = 1,...,N (and not necessarily for n=0)
     %
     % In fact the algorithm aims to minimize the Lagrangian formulation of the above problem:
-    % $$ L(x,y_1...y_n,w_1...w_) = F_0(H_0*x) + \sum_{n=1}^N 0.5*\rho_n*||H_n*x - y_n + w_n/rho_n||^2 $$
+    % $$ L(x,y_1...y_n,w_1...w_) = F_0(H_0*x) + \sum_{n=1}^N 0.5*\rho_n*||H_n*x - y_n + w_n/rho_n||^2 + F_n(y_n)$$
     % where the \rho_n >0 n=1...N are the multipliers.
     %
     % -- Example
@@ -96,7 +96,7 @@ classdef OptiADMM < Opti
     		this.rho_n=rho_n;
     		if ~isempty(F0)
     			assert(~isempty(solver),'when F0 is nonempty a solver must be given (see help)');
-    			this.cost=F0.o(H0);
+    			this.cost=F0.o(H0) + Fn{1}.o(Hn{1});
     		else
     			this.cost=Fn{1}.o(Hn{1});
     		end

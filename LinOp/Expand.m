@@ -1,17 +1,15 @@
-function out = Expand(Sel,varargin)
+function out = Expand(Mask,varargin)
     %% Selector : Selector operator
     %  Matlab Linear Operator Library
     %
     % Example:
-    % Obj = Selector(sel)
+    % Obj = Expand(Mask)
     %
-    % Build the operator selecting values of the input vector according to
-    % the boolean value of sel
+    % Adjoint of selector. Expands the input by adding zeros where the Mask
+    % is 1.
     %
     % Please refer to the LinOp superclass for documentation
     % See also LinOp
-    
-    
     
     %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
     %
@@ -32,6 +30,6 @@ p = inputParser;
 addOptional(p,'KeepDimensions',false);
 parse(p,varargin{:});
 
-    out = adjoint(Selector(Sel,'KeepDimensions',p.Results.KeepDimensions));
+    out = adjoint(Selector(Mask,'KeepDimensions',p.Results.KeepDimensions));
     
 end

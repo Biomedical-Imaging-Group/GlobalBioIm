@@ -101,7 +101,6 @@ classdef OptiChambPock < Opti
 			end
 			tstart=tic;
 			this.OutOp.init();
-			this.xopt=x0;
 			this.niter=1;
 			this.starting_verb();
 			y=this.H.Apply(this.xopt);
@@ -129,8 +128,8 @@ classdef OptiChambPock < Opti
 						tau=theta*tau;			 
 						sig=sig/theta;           
 					end
-					xbar=(1+theta)*this.xopt - theta*xold;    
-					Kxbar=(1+theta)*Kxopt - theta*Kxold;
+					xbar=this.xopt+theta*(this.xopt - xold);    
+					Kxbar=Kxopt+theta*(Kxopt - Kxold);
 				else % === using ybar
 					yold=y;
 					KTyold=KTy;

@@ -36,7 +36,7 @@ classdef FuncSum < Func
     methods 
     	%% Constructor
         function this = FuncSum(funcs,alpha)
-            if nargin == 1, alpha = 1;end
+            if nargin == 1, alpha = ones(size(funcs));end
             this.name='Func Sum';
             this.numfuncs = numel(funcs);
             assert(isnumeric(alpha)&& ( isscalar(alpha) || ( isvector(alpha) && (numel(alpha)== this.numfuncs))),'Second input should be a scalar or an array of scalar of the same size as the first input');
@@ -51,6 +51,7 @@ classdef FuncSum < Func
 			this.sizein =  this.funcs{1}.sizein;
 			this.isconvex=funcs{1}.isconvex; 
             for n =2:this.numfuncs
+            	if isempty(this.sizein), this.sizein=this.funcs{n}.sizein; end
                 assert(isempty(this.funcs{n}.sizein)  || isequal(this.sizein,this.funcs{n}.sizein),'%d-th input does not have the right hand side size ', n) ;
                 this.isconvex = this.isconvex & funcs{1}.isconvex; 
             end

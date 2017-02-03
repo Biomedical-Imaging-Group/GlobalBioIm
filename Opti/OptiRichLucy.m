@@ -38,6 +38,7 @@ classdef OptiRichLucy < Opti
     	%% Constructor
     	function this=OptiRichLucy(F,OutOp)
     		this.name='Opti Richardson-Lucy';
+    		assert(isa(F,'FuncKullLeib'), 'The minimized functional should be the FuncKullLeib');
     		this.cost=F;
     		if nargin==2 && ~isempty(OutOp)
     			this.OutOp=OutOp;

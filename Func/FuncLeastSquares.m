@@ -105,7 +105,7 @@ classdef FuncLeastSquares < Func
         			if ~this.H.iscomplex, this.fftHstardata=real(this.fftHstardata);end
         		end
         		if ~this.isW     % if no weight
-        			y=iSfft((Sfft(x,this.H.Notindex) + alpha*this.fftHstardata)./(1+alpha*(real(this.H.mtf).^2 + imag(this.H.mtf).^2)), this.H.Notindex);
+        			y=iSfft((Sfft(x,this.H.Notindex) + alpha*this.fftHstardata)./(1+alpha*(abs(this.H.mtf).^2)), this.H.Notindex);
         			if ~this.H.iscomplex, y=real(y);end
         		end
         	end

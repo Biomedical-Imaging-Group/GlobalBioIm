@@ -87,7 +87,7 @@ classdef OptiADMM < Opti
     		this.name='Opti ADMM';
     		if ~isempty(F0), this.F0=F0; end
     		if ~isempty(H0), this.H0=H0; end
-    		if nargin==5, solver=[]; end
+    		if nargin<=5, solver=[]; end
     		if nargin==7 && ~isempty(OutOp),this.OutOp=OutOp;end   		
     		assert(length(Fn)==length(Hn),'Fn, Hn and rho_n must have the same length');
     		assert(length(Hn)==length(rho_n),'Fn, Hn and rho_n must have the same length');

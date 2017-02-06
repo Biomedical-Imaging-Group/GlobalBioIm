@@ -109,7 +109,7 @@ classdef OutputOpti < handle
         		this.evolcost(this.count)=cc;
         	end
         	if this.isgt
-        		snr=20*log(this.normXtrue/norm(this.xtrue(:)-opti.xopt(:)));
+        		snr=20*log10(this.normXtrue/norm(this.xtrue(:)-opti.xopt(:)));
         		str=sprintf('%s | SNR: %4.4e dB',str,snr);
         		this.evolsnr(this.count)=snr;
         	end

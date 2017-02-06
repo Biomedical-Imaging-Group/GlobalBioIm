@@ -9,11 +9,25 @@
 %
 % See LinOp, LinOpConv, LinOpGrad, Func, FuncLeastSquares, FuncNonNeg,  
 % FuncMixNorm12, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
-%
-% Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
 %------------------------------------------------------------
 clear all; close all; clc;warning('off');
 help Deconv_LS_TV_NonNeg
+%--------------------------------------------------------------
+%  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+%
+%  This program is free software: you can redistribute it and/or modify
+%  it under the terms of the GNU General Public License as published by
+%  the Free Software Foundation, either version 3 of the License, or
+%  (at your option) any later version.
+%
+%  This program is distributed in the hope that it will be useful,
+%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%  GNU General Public License for more details.
+%
+%  You should have received a copy of the GNU General Public License
+%  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%---------------------------------------------------------------
 
 % -- fix the random seed (for reproductibility)
 rng(1);
@@ -43,7 +57,7 @@ R_POS=FuncNonNeg();          % Non-Negativity
 lamb=7e-4;                   % Hyperparameter
 
 % -- ADMM LS + TV + NonNeg
-Fn={FuncLeastSquares(y),FuncMultScalar(R_N12,lamb),R_POS};
+Fn={FuncLeastSquares(y),MultScalarFunc(R_N12,lamb),R_POS};
 Hn={H,G,LinOpIdentity(size(impad))};
 rho_n=[1e-1,1e-1,1e-1];
 lap=zeros(size(impad)); lap(1,1)=4; lap(1,2)=-1;lap(2,1)=-1; lap(1,end)=-1;lap(end,1)=-1; Flap=fft2(lap);
@@ -55,7 +69,7 @@ ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 
 
 % -- PrimalDual Condat LS + TV + NonNeg
-Fn={FuncMultScalar(R_N12,lamb)};
+Fn={MultScalarFunc(R_N12,lamb)};
 Hn={G};
 OutPDC=OutputOpti(1,impad,40);
 PDC=OptiPrimalDualCondat(F_LS,R_POS,Fn,Hn,OutPDC);

@@ -9,8 +9,13 @@ classdef OptiRichLucy < Opti
     % and bet is a small scalar (default 1e-3) to smooth the function at zero.
     %
     % -- Example
-    % OptiRL=OptiRichLucy(F,OutOp)
-    % where F is a FuncKullLeib object and OutOp a OutputOpti object.
+    % OptiRL=OptiRichLucy(F,TV,lamb,OutOp)
+    % where F is a FuncKullLeib object, TV a boolean to activate the TV regularized version or not
+    % (default false), lamb the regularization parameter used when TV and OutOp a OutputOpti object.
+    %
+    % -- Properties
+    % *|lamb|   regularization parameter when TV is activated
+    % *|epsl|   smoothing parameter for TV
     %
     % -- References
 	% [1] Lucy, Leon B. "An iterative technique for the rectification of observed distributions" The astronomical journal (1974)
@@ -33,24 +38,50 @@ classdef OptiRichLucy < Opti
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+    % Full public properties     
+    properties (SetAccess = public,GetAccess = public)
+		epsl=1e-10; % smoothing parameter for TV
+    end
+    % Protected set public read    
+    properties (SetAccess = public,GetAccess = public)
+		TV=false;   % boolean true if RL-TV version activated (default false)
+		lamb=1e-2;  % regularization parameter
+	end
+    % Full protected properties
+    properties (SetAccess = protected,GetAccess = protected)
+		G;   % gradient operator (used if TV activated)
+		Fkl; % Kullback-Leibler divergence
+    end
    
     methods
     	%% Constructor
-    	function this=OptiRichLucy(F,OutOp)
+    	function this=OptiRichLucy(F,TV,lamb,OutOp)
     		this.name='Opti Richardson-Lucy';
     		assert(isa(F,'FuncKullLeib'), 'The minimized functional should be the FuncKullLeib');
     		this.cost=F;
-    		if nargin==2 && ~isempty(OutOp)
+    		if nargin==4 && ~isempty(OutOp)
     			this.OutOp=OutOp;
+    		end
+    		if nargin>=2 && ~isempty(TV), this.TV=TV; end
+    		this.Fkl=F;
+    		if nargin>=3 && ~isempty(lamb), this.lamb=lamb; end
+    		if this.TV
+    			this.G=LinOpGrad(this.Fkl.sizein);
+    			if length(this.Fkl.sizein)==2  % 2D
+    				this.cost=this.cost + MultScalarFunc(FuncMixNorm12([3],this.G),this.lamb);
+    			elseif length(this.Fkl.sizein)==3
+    				this.cost=this.cost + MultScalarFunc(FuncMixNorm12([4],this.G),this.lamb);
+    			end
     		end
     	end 
     	%% Run the algorithm
         function run(this,x0) 
 			if ~isempty(x0),this.xopt=x0;end;  % To restart from current state if wanted
 			assert(~isempty(this.xopt),'Missing starting point x0');
-        	data=this.cost.data;
-        	He1=this.cost.H.Adjoint(ones(this.cost.sizein));
-        	bet=this.cost.bet;
+        	data=this.Fkl.data;
+        	He1=this.Fkl.H.Adjoint(ones(this.Fkl.sizein));
+        	bet=this.Fkl.bet;
 			tstart=tic;
 			this.OutOp.init();
 			this.niter=1;
@@ -59,7 +90,23 @@ classdef OptiRichLucy < Opti
 				this.niter=this.niter+1;
 				xold=this.xopt;
 				% - Algorithm iteration
-				this.xopt=this.xopt./He1.*this.cost.H.Adjoint(data./(this.cost.H.Apply(this.xopt)+bet));			
+				if ~this.TV
+					this.xopt=this.xopt./He1.*this.Fkl.H.Adjoint(data./(this.Fkl.H.Apply(this.xopt)+bet));	
+				else
+					tmp=this.G.Apply(this.xopt);
+					if length(size(tmp))==2     % 1D
+						nor=sqrt(tmp.^2+this.epsl);
+					elseif length(size(tmp))==3 % 2D
+						nor=repmat(sqrt(sum(tmp.^2,3)+this.epsl),[1,1,size(tmp,3)]);
+					elseif length(size(tmp))==4 % 3D
+						nor=repmat(sqrt(sum(tmp.^2,4)+this.epsl),[1,1,1,size(tmp,4)]);
+					end
+					gradReg=this.G.Adjoint(tmp./nor);
+					this.xopt=this.xopt./(He1 + this.lamb*gradReg).*this.Fkl.H.Adjoint(data./(this.Fkl.H.Apply(this.xopt)+bet));
+					if sum(this.xopt(:)<0)~=0
+  						warning('Violation of the positivity of the solution (the regularization parameter should be decreased).');
+  					end
+				end		
 				% - Convergence test
 				if this.test_convergence(xold), break; end
 				% - Call OutputOpti object

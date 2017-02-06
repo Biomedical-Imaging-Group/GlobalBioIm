@@ -1,9 +1,9 @@
-classdef FuncSum < Func
-    %% FuncSum : Sum of Functionnals
+classdef SumFunc < Func
+    %% SumFunc : Sum of Functionnals
     %  Matlab Inverse Problems Library
     %
     % -- Example
-    % F = FuncSum(AFunc,alpha)
+    % F = SumFunc(AFunc,alpha)
     % Sum the all Func contained in vector AFUNC weighted by ALPHA (default 1)
     % F  sum_n alpha(n) * AFunc(n)
     %
@@ -35,9 +35,9 @@ classdef FuncSum < Func
     
     methods 
     	%% Constructor
-        function this = FuncSum(funcs,alpha)
+        function this = SumFunc(funcs,alpha)
             if nargin == 1, alpha = ones(size(funcs));end
-            this.name='Func Sum';
+            this.name='Sum of Funcs';
             this.numfuncs = numel(funcs);
             assert(isnumeric(alpha)&& ( isscalar(alpha) || ( isvector(alpha) && (numel(alpha)== this.numfuncs))),'Second input should be a scalar or an array of scalar of the same size as the first input');
             allfuncs = all( cellfun(@(x)(isa(x, 'Func')), funcs) );

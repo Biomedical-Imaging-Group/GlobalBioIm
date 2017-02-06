@@ -8,11 +8,25 @@
 %
 % See LinOp, LinOpConv, LinOpHess, Func, FuncLeastSquares,   
 % FuncMixNorm1Schatt, Opti, OptiChambPock, OptiADMM, OutpuOpti
-%
-% Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
 %------------------------------------------------------------
 clear all; close all; clc;warning('off');
 help Deconv_LS_HessSchatt
+%--------------------------------------------------------------
+%  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+%
+%  This program is free software: you can redistribute it and/or modify
+%  it under the terms of the GNU General Public License as published by
+%  the Free Software Foundation, either version 3 of the License, or
+%  (at your option) any later version.
+%
+%  This program is distributed in the hope that it will be useful,
+%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%  GNU General Public License for more details.
+%
+%  You should have received a copy of the GNU General Public License
+%  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%---------------------------------------------------------------
 
 % -- fix the random seed (for reproductibility)
 rng(1);
@@ -41,15 +55,15 @@ lamb=2e-3;                       % Hyperparameter
 
 % -- Chambolle-Pock  LS + ShattenHess
 OutCP=OutputOpti(1,impad,40);
-CP=OptiChambPock(FuncMultScalar(R_1sch,lamb),Hess,F_LS,OutCP);
+CP=OptiChambPock(MultScalarFunc(R_1sch,lamb),Hess,F_LS,OutCP);
 CP.tau=1;        % algorithm parameters
 CP.sig=0.02;     %
 CP.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
-CP.maxiter=1000;  % max number of iterations
+CP.maxiter=200;  % max number of iterations
 CP.run(y);       % run the algorithm 
 
 % -- ADMM LS + ShattenHess
-Fn={FuncLeastSquares(y),FuncMultScalar(R_1sch,lamb)};
+Fn={FuncLeastSquares(y),MultScalarFunc(R_1sch,lamb)};
 Hn={H,Hess};rho_n=[1e-1,1e-1];
 OutADMM=OutputOpti(1,impad,40);
 ADMM=OptiADMM([],[],Fn,Hn,rho_n,[],OutADMM);

@@ -9,11 +9,25 @@
 %
 % See LinOp, LinOpConv, LinOpHess, Func, FuncLeastSquares, FuncNonNeg,  
 % FuncMixNorm1Schatt, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
-%
-% Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
 %------------------------------------------------------------
 clear all; close all; clc;warning('off');
 help Deconv_LS_HessSchatt_NonNeg
+%--------------------------------------------------------------
+%  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+%
+%  This program is free software: you can redistribute it and/or modify
+%  it under the terms of the GNU General Public License as published by
+%  the Free Software Foundation, either version 3 of the License, or
+%  (at your option) any later version.
+%
+%  This program is distributed in the hope that it will be useful,
+%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%  GNU General Public License for more details.
+%
+%  You should have received a copy of the GNU General Public License
+%  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%---------------------------------------------------------------
 
 % -- fix the random seed (for reproductibility)
 rng(1);
@@ -43,7 +57,7 @@ R_POS=FuncNonNeg();              % Non-Negativity
 lamb=1e-3;                       % Hyperparameter
 
 % -- ADMM LS + ShattenHess + NonNeg
-Fn={FuncLeastSquares(y),FuncMultScalar(R_1sch,lamb),R_POS};
+Fn={FuncLeastSquares(y),MultScalarFunc(R_1sch,lamb),R_POS};
 Hn={H,Hess,LinOpIdentity(size(impad))};
 rho_n=[1e-1,1e-1,1e-1];
 OutADMM=OutputOpti(1,impad,40);
@@ -54,7 +68,7 @@ ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 
 
 % -- PrimalDual Condat LS + ShattenHess + NonNeg
-Fn={FuncMultScalar(R_1sch,lamb)};
+Fn={MultScalarFunc(R_1sch,lamb)};
 Hn={Hess};
 OutPDC=OutputOpti(1,impad,40);
 PDC=OptiPrimalDualCondat(F_LS,R_POS,Fn,Hn,OutPDC);

@@ -9,11 +9,25 @@
 %
 % See LinOp, LinOpConv, LinOpHess, Func, FuncKullLeib, FuncNonNeg,  
 % FuncMixNorm1Schatt, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
-%
-% Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
 %------------------------------------------------------------
 clear all; close all; clc;warning('off');
 help Deconv_KL_HessSchatt_NonNeg
+%--------------------------------------------------------------
+%  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+%
+%  This program is free software: you can redistribute it and/or modify
+%  it under the terms of the GNU General Public License as published by
+%  the Free Software Foundation, either version 3 of the License, or
+%  (at your option) any later version.
+%
+%  This program is distributed in the hope that it will be useful,
+%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%  GNU General Public License for more details.
+%
+%  You should have received a copy of the GNU General Public License
+%  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%---------------------------------------------------------------
 
 % -- fix the random seed (for reproductibility)
 rng(1);
@@ -43,7 +57,7 @@ R_POS=FuncNonNeg();              % Non-Negativity
 lamb=5e-3;                       % Hyperparameter
 
 % -- ADMM KL + ShattenHess + NonNeg
-Fn={FuncKullLeib(y,[],0),FuncMultScalar(R_1sch,lamb),R_POS};
+Fn={FuncKullLeib(y,[],0),MultScalarFunc(R_1sch,lamb),R_POS};
 Hn={H,Hess,LinOpIdentity(size(impad))};
 rho_n=[1e-2,1e-2,1e-2];
 OutADMM=OutputOpti(1,impad,40);
@@ -55,7 +69,7 @@ ADMM.run(y);            % run the algorithm
 
 
 % -- PrimalDual Condat KL + ShattenHess + NonNeg
-Fn={FuncMultScalar(R_1sch,lamb)};
+Fn={MultScalarFunc(R_1sch,lamb)};
 Hn={Hess};
 OutPDC=OutputOpti(1,impad,40);
 PDC=OptiPrimalDualCondat(F_KL,R_POS,Fn,Hn,OutPDC);
@@ -69,9 +83,8 @@ PDC.run(y);            % run the algorithm
 % -- Display
 imdisp(OutADMM.evolxopt{end}(idx,idx),'KL+HESS+POS (ADMM)',1);
 imdisp(OutPDC.evolxopt{end}(idx,idx),'KL+HESS+POS (Condat)',1);
-figure; plot(OutADMM.iternum,OutADMM.evolcost,'LineWidth',1.5); 
-hold all; plot(OutPDC.iternum,OutPDC.evolcost,'LineWidth',1.5); 
-grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+figure; plot(OutADMM.iternum,OutADMM.evolcost,'LineWidth',1.5); grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+hold all; plot(OutPDC.iternum,OutPDC.evolcost,'LineWidth',1.5);
 legend('ADMM','Condat');title('Cost evolution');
 
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);

@@ -69,17 +69,17 @@ classdef Func < handle
         %% Operator compose with a LinOp
         function v=	o(this,x)
         	assert(isa(x,'LinOp'),' Composition of Func(.o) is only define with a LinOp');
-        	v=FuncComposeLinOp(this,x);
+        	v=ComposeLinOpFunc(this,x);
         end
         %% Overload the operator +
         function y = plus(this,x)
             assert(isa(x,'Func'),'Addition of Func is only define with other Func');
-            y = FuncSum({this,x});
+            y = SumFunc({this,x});
 		end
 		%% Overload the operator -
         function y = minus(this,x)
             assert(isa(x,'Func'),'Subtraction of Func is only define with other Func');
-            y = FuncSum({this,x},[1,-1]);
+            y = SumFunc({this,x},[1,-1]);
 		end
 		%% Function that set properly the operator H (has to be modified if new properties is???H are added)
         function set_H(this,H)

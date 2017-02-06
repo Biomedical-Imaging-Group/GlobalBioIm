@@ -11,11 +11,25 @@
 % See LinOp, LinOpConv, LinOpGrad, Func, FuncKullLeib, FuncNonNeg, 
 % FuncMixNorm12, Opti, OptiADMM, OptiRichLucy, OutpuOpti
 % OptiPrimalDualCondat.
-%
-% Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
 %------------------------------------------------------------
-clear all; close all; clc;warning('off');
+clear all; close all; clc;%warning('off');
 help Deconv_KL_TV_NonNeg
+%--------------------------------------------------------------
+%  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+%
+%  This program is free software: you can redistribute it and/or modify
+%  it under the terms of the GNU General Public License as published by
+%  the Free Software Foundation, either version 3 of the License, or
+%  (at your option) any later version.
+%
+%  This program is distributed in the hope that it will be useful,
+%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%  GNU General Public License for more details.
+%
+%  You should have received a copy of the GNU General Public License
+%  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%---------------------------------------------------------------
 
 % -- fix the random seed (for reproductibility)
 rng(1);
@@ -41,10 +55,10 @@ F_KL=FuncKullLeib(y,H);     % Kullback-Leibler divergence data term
 R_POS=FuncNonNeg();         % Non-Negativity
 R_N12=FuncMixNorm12([3]);   % Mixed Norm 2-1
 G=LinOpGrad(size(y));       % Operator Gradient
-lamb=2e-3;                  % Hyperparameter  
+lamb=1e-2;                  % Hyperparameter  
 
 % -- ADMM KL + TV + NonNeg
-Fn={FuncKullLeib(y,[],0),FuncMultScalar(R_N12,lamb),R_POS};
+Fn={FuncKullLeib(y,[],0),MultScalarFunc(R_N12,lamb),R_POS};
 Hn={H,G,LinOpIdentity(size(impad))};
 rho_n=[1e-2,1e-2,1e-2];
 lap=zeros(size(impad)); lap(1,1)=4; lap(1,2)=-1;lap(2,1)=-1; lap(1,end)=-1;lap(end,1)=-1; Flap=fft2(lap);
@@ -56,7 +70,7 @@ ADMM.maxiter=200;                                 % max number of iterations
 ADMM.run(y);                                      % run the algorithm
 
 % -- PrimalDual Condat KL + TV + NonNeg
-Fn={FuncMultScalar(R_N12,lamb)};
+Fn={MultScalarFunc(R_N12,lamb)};
 Hn={G};
 OutPDC=OutputOpti(1,impad,40);
 PDC=OptiPrimalDualCondat(F_KL,R_POS,Fn,Hn,OutPDC);
@@ -68,28 +82,34 @@ PDC.maxiter=200;       % max number of iterations
 PDC.run(y);            % run the algorithm 
 
 % -- Richardson-Lucy-TV  KL + TV + NonNeg (implicit)
-
-
+OutRLTV=OutputOpti(1,impad,40);
+RLTV=OptiRichLucy(F_KL,1,lamb,OutRLTV);
+RLTV.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
+RLTV.maxiter=200;  % max number of iterations
+RLTV.run(y);       % run the algorithm 
 
 % -- Display
 imdisp(OutADMM.evolxopt{end}(idx,idx),'KL+TV+POS (ADMM)',1);
 imdisp(OutPDC.evolxopt{end}(idx,idx),'KL+TV+POS (Condat)',1);
+imdisp(OutRLTV.evolxopt{end}(idx,idx),'KL+TV+POS (RL-TV)',1);
 
-figure;plot(OutADMM.iternum,OutADMM.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
-hold all;plot(OutPDC.iternum,OutPDC.evolcost,'LineWidth',1.5); grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+figure;plot(OutADMM.iternum,OutADMM.evolcost,'LineWidth',1.5); grid;  
+hold all;plot(OutPDC.iternum,OutPDC.evolcost,'LineWidth',1.5); 
+plot(OutRLTV.iternum,OutRLTV.evolcost,'LineWidth',1.5); 
+set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 legend('ADMM','Condat','RL-TV');title('Cost evolution');
 
 % -- Plot Evolution SNR and Running Time for Hess-Reg-Pos methods
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
 semilogy(OutADMM.iternum,OutADMM.evolsnr,'LineWidth',1.5);
 semilogy(OutPDC.iternum,OutPDC.evolsnr,'LineWidth',1.5);
-% semilogy(PDC_LSTVPOS.iternum,PDC_LSTVPOS.evolsnr,'LineWidth',1.5);
+semilogy(OutRLTV.iternum,OutRLTV.evolsnr,'LineWidth',1.5);
 legend('KL+TV+POS (ADMM)','KL+TV+POS (Condat)','KL+TV+POS (RL-TV)');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[ADMM.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
 bar(2,[PDC.time],'FaceColor',orderCol(2,:),'EdgeColor','k');
-%bar(5,[PDC_LSTVPOS.time],'FaceColor',orderCol(5,:),'EdgeColor','k');
-set(gca,'xtick',[1 2 3 4 5]);ylabel('Time (s)');
+bar(3,[RLTV.time],'FaceColor',orderCol(3,:),'EdgeColor','k');
+set(gca,'xtick',[1 2 3]);ylabel('Time (s)');
 set(gca,'xticklabels',{'KL+TV+POS (ADMM)','KL+TV+POS (Condat)','KL+TV+POS (RL-TV)'});set(gca,'XTickLabelRotation',45)
 

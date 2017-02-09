@@ -92,14 +92,35 @@ classdef SumLinOp < LinOp
             for n = 1:this.numLinOp
                 y = y + this.alpha(n) .* this.ALinOp{n}(1).Apply(x);
             end
-        end
+		end
+		
         function y = Adjoint(this,x) % Apply the adjoint
 			LinOp.checkSize(x, this.sizeout);
             y =  zeros(this.sizein);
             for n = 1:this.numLinOp
                 y = y + this.alpha(n) .* this.ALinOp{n}(1).Adjoint(x);
             end
-        end
+		end
+		
+		function y = HtH(this,x) %  Apply the HtH matrix
+			y =  zeros(this.sizein);
+			for n = 1:this.numLinOp
+				y = y + this.alpha(n) .* this.ALinOp{n}.HtH(x);
+			end
+		end
+		
+		function y = HHt(this,x) %  Apply the HHt matrix
+			if this.issquare   % HtH =HHt
+				y = this.HtH(x);
+			else
+				y =  zeros(this.sizeout);
+				for n = 1:this.numLinOp
+					y = y + this.alpha(n) .* this.ALinOp{n}.HHt(x);
+				end
+			end
+		end
+		
+		
     end
 end
 

@@ -77,7 +77,7 @@ classdef VMLMB<handle
                         if any(test), x(test) = this.xmax(test); end
                     end
                     cost = F.GetCost(x);     % evaluate the function at X;
-                    grad = F.GetGradient();   % evaluate the gradient of F at X;
+                    grad = F.GetGradient(x);   % evaluate the gradient of F at X;
                     normg= sum(grad.^2);
                     nbeval=nbeval+1;
                 elseif (this.task == this.OP_TASK_NEWX)

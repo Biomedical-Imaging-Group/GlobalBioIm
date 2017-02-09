@@ -1,6 +1,9 @@
 function x = steepest(A, b, x, iMax ,W)
-% steepest descent method from https://www.cs.cmu.edu/~quake-papers/painless-conjugate-gradient.pdf
+% solves Ax = b with the steepest descent method 
+%
+% from https://www.cs.cmu.edu/~quake-papers/painless-conjugate-gradient.pdf
 % appendix B1
+
 
 HtH = false;
 if (nargin>4) && (~isempty(W))

@@ -108,7 +108,7 @@ classdef Convolution <  LinOp
                 error('Operator not invertible');
             end
         end
-        function AdjointInverse(this,~) % Apply the inverse
+        function y=AdjointInverse(this,x) % Apply the inverse
             if this.isinvertible
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
             y = iSfft( 1./conj(this.mtf) .* Sfft(x, this.Notindex), this.Notindex );

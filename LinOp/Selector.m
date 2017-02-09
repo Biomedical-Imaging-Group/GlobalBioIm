@@ -1,18 +1,17 @@
 classdef Selector <  LinOp
-    %% Selector : Selector operator
+   %% Selector : Selector operator
     %  Matlab Linear Operator Library
     %
     % Example:
-    % Obj = Selector(sel)
+    % Obj = Selector(sel) or Obj = Selector(sel,'KeepDimensions',true)
     %
-    % Build the operator selecting values of the input vector according to
-    % the boolean value of sel
+    % Builds the operator by selecting the values of the input vector according to
+    % the boolean value of sel. If the option KeepDimensions is activated,
+    % sel has to select a compact rectangle. The compact rectangle is not stored for memory
+    % reasons.
     %
     % Please refer to the LinOp superclass for documentation
     % See also LinOp
-    
-    
-    
     %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -29,34 +28,64 @@ classdef Selector <  LinOp
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     properties (SetAccess = protected,GetAccess = public)
-        sel % diagonal vector
+        sel         % diagonal vector, boolean
+        XLIM
+        YLIM
+        KeepDimensions %true or false
     end
     methods
-        function this = Selector(sel)
+        function this = Selector(sel,varargin)
+            p = inputParser;
+            addOptional(p,'KeepDimensions',false); %true or false.
+            parse(p,varargin{:});
+
+             this.KeepDimensions = p.Results.KeepDimensions;
             this.name ='Selector';
             this.issquare = false;
             this.iscomplex= true;
-            
             assert(islogical(sel),'The input selector should be boolean');
-            this.sel = sel;
-            this.sizeout=[sum(sel(:)), 1];
-            this.sizein=size(sel);
             
+            if true(p.Results.KeepDimensions)
+                   [row,col]= find(sel ~=0);
+                   this.XLIM = [min(col) max(col)];          %x index, start and end positions of the selector
+                   this.YLIM =  [min(row) max(row)];      %y index, start and end positions of the selector
+                   this.sizeout=[this.XLIM(2)-this.XLIM(1)+1, this.YLIM(2)-this.YLIM(1)+1];
+            else
+                    this.sizeout=[sum(sel(:)), 1];
+                    this.sel = sel;
+            end
+            this.sizein=size(sel);
             this.isinvertible=false;
         end
+        
         function y = Apply(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
-            y =x(this.sel);
+            if true(this.KeepDimensions)
+                y = x(this.YLIM(1):this.YLIM(2),this.XLIM(1):this.XLIM(2));
+            else
+                y =x(this.sel);
+            end
+            y = reshape(y,this.sizeout);
         end
+        
         function y = Adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
             y = zeros(this.sizein);
-            y(this.sel) = x;
+            if true(this.KeepDimensions)
+                y(this.YLIM(1):this.YLIM(2),this.XLIM(1):this.XLIM(2)) = x;
+            else
+                y(this.sel) = x;
+            end
         end
         function y = HtH(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
-            y = x;
-            y(~this.sel) = 0;
+                if true(this.KeepDimensions)
+                    y = zeros(this.sizein);
+                    y(this.YLIM(1):this.YLIM(2),this.XLIM(1):this.XLIM(2)) = x(this.YLIM(1):this.YLIM(2),this.XLIM(1):this.XLIM(2));
+                else
+                    y = x;
+                    y(~this.sel) = 0;                
+                end
         end
         function y = HHt(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);

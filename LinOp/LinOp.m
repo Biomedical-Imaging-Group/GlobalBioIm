@@ -13,23 +13,22 @@ classdef LinOp < handle
     % * |isinvertible|  - true if the operator is invertible
     % * |issquare|      - true if the operator is square
     % * |iscomplex|     - true is the operator is complex
+    % * |norm|          - norm of the operator (if known, otherwise -1)
     %
     %% Methods
     % * |Apply|    - Apply the operator $\mathbf{H}$
     % * |Adjoint|  - Apply the adjoint  $\mathbf{H}^{\mathrm{*}}$ defined
-    % such  $<\mathbf{H} \mathbf{x} . \mathbf{y} > = <\mathbf{x} .
-    % \mathbf{H}^{\mathrm{*}} \mathbf{y} >$
+    % 				 such  $<\mathbf{H} \mathbf{x} . \mathbf{y} > = <\mathbf{x} .
+    %                \mathbf{H}^{\mathrm{*}} \mathbf{y} >$
     % * |HtH|      - Apply the HtH matrix: the operator followed by its adjoint
-    % $\mathbf{H}^{\mathrm{*}} \cdot \mathbf{H}$    
+    %                $\mathbf{H}^{\mathrm{*}} \cdot \mathbf{H}$    
     % * |HHt|      - Apply the HHt matrix: the adjoint operator followed by its 
-    % $ \mathbf{H} \cdot \mathbf{H}^{\mathrm{*}} $
+    %                $ \mathbf{H} \cdot \mathbf{H}^{\mathrm{*}} $
     % * |Inverse|  - Apply the inverse  $\mathbf{H}^{\mathrm{-1}}$ of the
-    % operator if it exist
+    %                operator if it exist
     % * |AdjointInverse|  - Apply the adjoint of the inverse  $\mathbf{H}^{\mathrm{-*}}$ of the
-    % operator if it exist
-    %%
-     
-    
+    %                       operator if it exist
+    %   
     %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -46,12 +45,13 @@ classdef LinOp < handle
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     properties (SetAccess = protected,GetAccess = public)
-        name = 'none'   % name of the linear operator
-        sizein;         % dimension of the right hand side vector space
-        sizeout;        % dimension of the left hand side vector space
-        isinvertible = false; % true if the operator is invertible
-        issquare = false; % true if the operator is square
+        name = 'none'           % name of the linear operator
+        sizein;                 % dimension of the right hand side vector space
+        sizeout;                % dimension of the left hand side vector space
+        isinvertible = false;   % true if the operator is invertible
+        issquare = false;       % true if the operator is square
         iscomplex = false;      % true is the operator is complex
+        norm=-1;                % norm of the operator
     end
     
     methods

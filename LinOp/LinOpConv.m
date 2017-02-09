@@ -1,9 +1,9 @@
-classdef Convolution <  LinOp
-    %% Convolution : Convolution operator
+classdef LinOpConv <  LinOp
+    %% LinOpConv : Convolution operator
     %  Matlab Linear Operator Library
     %
-    % Example:
-    % Obj = Convolution(psf, index)
+    % -- Example:
+    % Obj = LinOpConv(psf, index)
     % Convolution operator with  PSF psf along the dimension
     % indexed in INDEX (all by default)
     %
@@ -34,11 +34,11 @@ classdef Convolution <  LinOp
         ndms
     end
     methods
-        function this = Convolution(psf,index)
+        function this = LinOpConv(psf,index)
             if nargin == 1
                 index = [];
             end
-            this.name ='Convolution';
+            this.name ='LinOp Convolution';
             this.isinvertible=false;
             this.issquare = true;
             
@@ -77,6 +77,8 @@ classdef Convolution <  LinOp
                     this.isinvertible=false;
                 end
             
+            % -- Norm of the operator 
+            this.norm=max(abs(this.mtf(:)));
             
         end
         function y = Apply(this,x)

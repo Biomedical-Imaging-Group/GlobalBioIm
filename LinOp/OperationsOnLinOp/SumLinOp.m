@@ -31,7 +31,7 @@ classdef SumLinOp < LinOp
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     properties (SetAccess = protected,GetAccess = public)
-        ALinOp     % Array of linop
+        ALinOp     % cell of linop
         numLinOp   % number of linop
         alpha      % scalar factor
     end

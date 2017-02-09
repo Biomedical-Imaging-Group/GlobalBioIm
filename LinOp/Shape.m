@@ -36,7 +36,7 @@ classdef Shape <  LinOp
                 index = [];
             end
             this.name ='Shape';
-            this.iscomplex= true;
+            this.iscomplex= false;
             this.isinvertible=true;
             this.issquare = false;
             

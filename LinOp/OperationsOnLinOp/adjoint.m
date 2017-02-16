@@ -43,6 +43,8 @@ classdef adjoint < LinOp
             this.issquare = this.TLinOp.issquare;
             this.sizein =  this.TLinOp.sizeout;
             this.sizeout =  this.TLinOp.sizein;
+			
+			this.norm = this.TLinOp.norm;
             
           end
         

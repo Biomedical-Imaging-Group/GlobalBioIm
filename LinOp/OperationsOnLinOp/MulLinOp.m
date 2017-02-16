@@ -52,6 +52,14 @@ classdef MulLinOp < LinOp
 				this.isHHt = true;
 				this.issquare = true;
 			end
+			
+			if isnumeric(LinOp1) && LinOp2.norm ~= -1
+				this.norm = LinOp1 * LinOp2.norm;
+			elseif isnumeric(LinOp2) && LinOp1.norm ~= -1
+				this.norm = LinOp2 * LinOp1.norm;
+			elseif LinOp1.norm ~= -1 && this.LinOp2.norm ~= -1
+				this.norm = this.LinOp1.norm * this.LinOp2.norm;
+			end
 					
 			
             if isnumeric(LinOp1)

@@ -45,6 +45,8 @@ classdef Selector <  LinOp
             this.iscomplex= true;
             assert(islogical(sel),'The input selector should be boolean');
             
+			this.norm = 1;
+			
             if true(p.Results.KeepDimensions)
                    [row,col]= find(sel ~=0);
                    this.XLIM = [min(col) max(col)];          %x index, start and end positions of the selector

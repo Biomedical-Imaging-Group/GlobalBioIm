@@ -4,7 +4,7 @@ function write_deprecation_funcs()
 % warnings.
 
 names = {
-	'LinOp/Conv' 'LinOp/LinOpConv'
+	'LinOp/Convolution' 'LinOp/LinOpConv'
  	'LinOp/Diag' 'LinOp/LinOpDiag'
 	'LinOp/Grad' 'LinOp/LinOpGrad'
 	'LinOp/Hess' 'LinOp/LinOpHess'

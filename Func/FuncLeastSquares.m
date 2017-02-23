@@ -102,7 +102,6 @@ classdef FuncLeastSquares < Func
         	elseif isa(this.H,'LinOpConv')  % if linop is convolution
         		if isempty(this.fftHstardata)
         			this.fftHstardata=conj(this.H.mtf).*Sfft(this.data,this.H.Notindex);
-        			if ~this.H.iscomplex, this.fftHstardata=real(this.fftHstardata);end
         		end
         		if ~this.isW     % if no weight
         			y=iSfft((Sfft(x,this.H.Notindex) + alpha*this.fftHstardata)./(1+alpha*(abs(this.H.mtf).^2)), this.H.Notindex);

@@ -111,7 +111,10 @@ classdef LinOp < handle
         end
         function y =	plus(this,x)% Overloading for +
             assert(isa(x,'LinOp'),'addition of LinOp is only define with other LinOp');
-            y = SumLinOp({this,x});
+			y = SumLinOp({this,x});
+		end
+		function this = setNorm(this, x)
+			this.norm = x;
 		end
 	end
 	

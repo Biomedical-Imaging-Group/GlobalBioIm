@@ -24,6 +24,6 @@ for i = 1:length(names)
 	fid = fopen(autoName, 'w');
 	fprintf(fid, 'function obj = %s(varargin) \n', n);
 	fprintf(fid, 'warning(''%s is deprecated, please use %s''); \n', n, nNew);
-	fprintf(fid, 'obj = %s(varargin); \n', nNew);
+	fprintf(fid, 'obj = %s(varargin{:}); \n', nNew);
 	fclose(fid);
 end

@@ -94,7 +94,7 @@ classdef OptiADMM < Opti
     		this.Fn=Fn;
     		this.Hn=Hn;
     		this.rho_n=rho_n;
-    		if ~isempty(F0)
+    		if ~isempty(F0) % todo: can include quadratic F0 in this case as well.
     			assert(~isempty(solver),'when F0 is nonempty a solver must be given (see help)');
     			this.cost=F0.o(H0) + Fn{1}.o(Hn{1});
     		else
@@ -145,7 +145,7 @@ classdef OptiADMM < Opti
 					CG.run(this.xopt);
 					this.xopt=CG.xopt;
 				else
-					this.xopt=this.solver(this.zn,this.rho_n);
+					this.xopt=this.solver(this.zn,this.rho_n, this.xopt);
 				end
 				for n=1:length(this.wn)
 					this.Hnx{n}=this.Hn{n}.Apply(this.xopt);

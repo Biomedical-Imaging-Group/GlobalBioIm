@@ -59,7 +59,7 @@ classdef OptiGradDsct < Opti
     		end
     	end 
     	%% Run the algorithm
-        function run(this,x0) 
+        function xopt = run(this,x0) 
         	if isempty(this.gam), error('Parameter gam is not setted'); end
 			if ~isempty(x0),this.xopt=x0;end;  % To restart from current state if wanted
 			assert(~isempty(this.xopt),'Missing starting point x0');
@@ -67,7 +67,7 @@ classdef OptiGradDsct < Opti
 			this.OutOp.init();
 			this.niter=1;
 			this.starting_verb();
-			while (this.niter<this.maxiter)
+			while (this.niter<=this.maxiter)
 				this.niter=this.niter+1;
 				xold=this.xopt;
 				% - Algorithm iteration
@@ -79,6 +79,7 @@ classdef OptiGradDsct < Opti
 			end 
 			this.time=toc(tstart);
 			this.ending_verb();
+			xopt = this.xopt;
         end
 	end
 end

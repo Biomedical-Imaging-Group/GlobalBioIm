@@ -36,11 +36,17 @@ classdef FuncNonNeg < Func
         	 end
         	 this.set_H(H);
         	 this.name='Func NonNegativity';
+			 
+			 if isa(this.H,'LinOpIdentity')
+				 this.isconvex = true;
+			 end
+			 
     	end
     	%% Evaluation of the Functional
-        function y=eval(this,x)
-			y = 0; % We should put -> (norm(min(this.H*x,0.))>0)*realmax; But for some algorithm there is small negative residuals 
-			       % which would cause unreadability of the evolution of the cost function along iterates
+		function y=eval(this,x)
+			y = 0; % We should put -> (norm(min(this.H*x,0.))>0)*realmax; But for some algorithm there is small negative residuals
+			% which would cause unreadability of the evolution of the cost function along iterates
+			y = inf * any(this.H*x < 0);
         end
         %% Proximity operator of the functional
         function y=prox(this,x,alpha)

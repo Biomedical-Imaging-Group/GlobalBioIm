@@ -33,43 +33,33 @@ classdef adjoint < LinOp
     
     methods 
         function this = adjoint(TLinOp)
-            this.name ='adjoint';
-            
-            
+            this.name ='adjoint';           
             assert(isa(TLinOp,'LinOp'),'Input should be a  LinOp');
             this.TLinOp = TLinOp;
             this.iscomplex= this.TLinOp.iscomplex;
             this.isinvertible=this.TLinOp.isinvertible;
             this.issquare = this.TLinOp.issquare;
             this.sizein =  this.TLinOp.sizeout;
-            this.sizeout =  this.TLinOp.sizein;
-			
-			this.norm = this.TLinOp.norm;
-            
+            this.sizeout =  this.TLinOp.sizein;			
+			this.norm = this.TLinOp.norm;        
           end
         
-        function y = Apply(this,x) % Apply the operator
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizein);            
+        function y = Apply(this,x) % Apply the operator         
             y =this.TLinOp.Adjoint(x);
         end
         function y = Adjoint(this,x) % Apply the adjoint
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizeout);
             y =this.TLinOp.Apply(x);
         end
         function y = HtH(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizein);
             y =this.TLinOp.HHt(x);
         end
         function y = HHt(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizeout);
             y =this.TLinOp.HtH(x);
         end
         function y = Inverse(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizeout);
             y =this.TLinOp.AdjointInverse(x);
         end
         function y = AdjointInverse(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizein);   
             y =this.TLinOp.AdjointInverse(x); 
         end
     end

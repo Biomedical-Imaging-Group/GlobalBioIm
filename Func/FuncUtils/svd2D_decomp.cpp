@@ -16,7 +16,9 @@
   
   Compilation:
      -linux: mex -v svd2D_decomp.cpp CFLAGS="\$CFLAGS -openmp" LDFLAGS="\$LDFLAGS -openmp" -largeArrayDims
-  
+     -mac  : mex svd2D_decomp.cpp -DUSE_BLAS_LIB -DNEW_MATLAB_BLAS -DINT_64BITS -largeArrayDims CXX=/usr/local/Cellar/gcc/6.3.0_1/bin/g++-6 CXXOPTIMFLAGS="-O3
+                   -mtune=native -fomit-frame-pointer -fopenmp" LDOPTIMFLAGS=" -O " LINKLIBS="$LINKLIBS -lmwblas -lmwlapack -L"/usr/local/Cellar/gcc/6.3.0_1/lib/gcc/6" -L/ -fopenmp"
+ 
   Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
 
 ****************************************************************************/
@@ -53,7 +55,7 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 	double trace;
   	double delta;
 	
-    #pragma omp parallel for shared(X, Xp) private(i, k, trace, delta, n, tmp, E, U)
+    #pragma omp parallel for shared(X,Ye,Yv) private(i, k, trace, delta, n, tmp, E, U)
     for(i=0; i < num_of_mat; i++){
     	for (k=0;k<3;k++)   // get the matrix value [X(1,1) X(2,1)=X(1,2), X(2,2)]
         	tmp[k]=X[i+num_of_mat*k];

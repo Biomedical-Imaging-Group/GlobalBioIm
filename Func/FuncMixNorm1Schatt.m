@@ -16,10 +16,10 @@ classdef FuncMixNorm1Schatt < Func
     %            matrix [Hx(n,m,1) Hx(n,m,2)
     %                    Hx(n,m,2), Hx(n,m,3)]
     %            and then the l1 norm on the two other dimensions
-    %          - Hx (NxMx6) such that the Sp norm will be applied on each symetric 3x3
-    %            matrix [Hx(n,m,1) Hx(n,m,2) Hx(n,m,3)
-    %                    Hx(n,m,2) Hx(n,m,4)  Hx(n,m,5)
-    %                    Hx(n,m,3) Hx(n,m,5) Hx(n,m,6)] 
+    %          - Hx (NxMxKx6) such that the Sp norm will be applied on each symetric 3x3
+    %            matrix [Hx(n,m,k,1) Hx(n,m,k,2) Hx(n,m,k,3)
+    %                    Hx(n,m,k,2) Hx(n,m,k,4)  Hx(n,m,k,5)
+    %                    Hx(n,m,k,3) Hx(n,m,k,5) Hx(n,m,k,6)] 
     %            and then the l1 norm on the two other dimensions.
     %
     % -- Example
@@ -65,7 +65,7 @@ classdef FuncMixNorm1Schatt < Func
 			if nargin==0 || isempty(H), 
 				H=LinOpIdentity(); 
 			else
-				assert(length(H.sizeout)==3 && (H.sizeout(3)==3 || H.sizeout(3)==6),'sizeout of H should be [?,?,3 or 6]');
+				assert((length(H.sizeout)==3 || length(H.sizeout)==4) && (H.sizeout(3)==3 || H.sizeout(4)==6),'sizeout of H should be [?,?,(?),3 or 6]');
 			end;
 			if nargin<=1 || isempty(p), p=1; end;
 			assert(p>=1,'p should be >=1');
@@ -74,50 +74,50 @@ classdef FuncMixNorm1Schatt < Func
     	end
     	%% Evaluation of the Functional
         function y=eval(this,x)
-        	dim=size(x);
-        	if dim(3)==3     % 2D
-				[E,V]=svd2D_decomp(x);
-			elseif dim(3)==6 % 3D
-				%[E,V]=svd3D_decomp(x);
-			else
-				error('third dimension of x should be 3 or 6');
-			end
-			if isinf(this.p)
-				tmp=max(E,[],3);
-			else
-				tmp=sum(abs(E).^this.p,3).^(1/this.p);
-			end
-			y=sum(tmp(:));
+            dim=size(x);
+            if dim(3)==3     % 2D
+                [E,V]=svd2D_decomp(x);
+            elseif dim(4)==6 % 3D
+                [E,V]=svd3D_decomp(x);
+            else
+                error('third dimension of x should be 3 or 6');
+            end
+            if isinf(this.p)
+                tmp=max(E,[],3);
+            else
+                tmp=sum(abs(E).^this.p,3).^(1/this.p);
+            end
+            y=sum(tmp(:));
         end
         %% Proximity operator of the functional
         function y=prox(this,x,alpha)
-        	assert(isscalar(alpha),'alpha must be a scalar');
-        	dim=size(x);
-			if this.p==1
-			    if dim(3)==3     % 2D
-					[E,V]=svd2D_decomp(x);
-					E=max(abs(E)-alpha,0).*sign(E);
-					y=svd2D_recomp(E,V);
-				elseif diDm(3)==6 % 3D
-					%[E,V]=svd3D_decomp(x);
-					%E=max(E-alpha,0);
-					%y=svd3D_recomp(E,V);
-				else
-					error('third dimension of x should be 3 or 6');
-				end
-			elseif this.p==2
-				if dim(3)==3     % 2D
-					N=sqrt(x(:,:,1).^2+2*x(:,:,2).^2+x(:,:,3).^2);
-					y=repmat((N-1)./N,[1,1,3]).*x;
-				elseif diDm(3)==6 % 3D
-					N=sqrt(x(:,:,1).^2+2*x(:,:,2).^2+2*x(:,:,3).^2+x(:,:,4)+2*x(:,:,5)+x(:,:,6));
-					y=repmat((N-1)./N,[1,1,3]).*x;
-				else
-					error('third dimension of x should be 3 or 6');
-				end			
-			else 
-				error('prox not implemented');
-			end
+            assert(isscalar(alpha),'alpha must be a scalar');
+            dim=size(x);
+            if this.p==1
+                if dim(3)==3     % 2D
+                    [E,V]=svd2D_decomp(x);
+                    E=max(abs(E)-alpha,0).*sign(E);
+                    y=svd2D_recomp(E,V);
+                elseif dim(4)==6 % 3D
+                    [E,V]=svd3D_decomp(x);
+                    E=max(abs(E)-alpha,0).*sign(E);
+                    y=svd3D_recomp(E,V);
+                else
+                    error('third dimension of x should be 3 or 6');
+                end
+            elseif this.p==2
+                if dim(3)==3     % 2D
+                    N=sqrt(x(:,:,1).^2+2*x(:,:,2).^2+x(:,:,3).^2);
+                    y=repmat((N-1)./N,[1,1,3]).*x;
+                elseif dim(4)==6 % 3D
+                    N=sqrt(x(:,:,:,1).^2+2*x(:,:,:,2).^2+2*x(:,:,:,3).^2+x(:,:,:,4)+2*x(:,:,:,5)+x(:,:,:,6));
+                    y=repmat((N-1)./N,[1,1,6]).*x;
+                else
+                    error('third dimension of x should be 3 or 6');
+                end
+            else
+                error('prox not implemented');
+            end
         end
     end
 end

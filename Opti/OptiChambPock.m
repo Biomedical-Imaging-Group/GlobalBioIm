@@ -121,8 +121,7 @@ classdef OptiChambPock < Opti
 					Kxold=Kxopt;
 					% - Algorithm iteration
 					y=this.F.prox_fench(y+sig*Kxbar,sig);
-					this.xopt=this.G.prox(this.xopt-tau*this.H.Adjoint(y),tau, this.F.prox(this.xopt, 0));
-					%this.xopt=this.G.prox(this.xopt-tau*this.H.Adjoint(y),tau, this.xopt); %todo: apply prox here?
+					this.xopt=this.G.prox(this.xopt-tau*this.H.Adjoint(y),tau);
 					Kxopt=this.H.Apply(this.xopt);
 					if ~isempty(gam) % acceleration => uodate theta, tau and sig according to [1]
 						theta=1/sqrt(1+2*gam*tau);

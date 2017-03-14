@@ -46,7 +46,7 @@ classdef FuncNonNeg < Func
 		function y=eval(this,x)
 			y = 0; % We should put -> (norm(min(this.H*x,0.))>0)*realmax; But for some algorithm there is small negative residuals
 			% which would cause unreadability of the evolution of the cost function along iterates
-			y = inf * any(this.H*x < 0);
+			y = inf * any(reshape(this.H*x, [], 1) < 0);
         end
         %% Proximity operator of the functional
         function y=prox(this,x,alpha)

@@ -1,14 +1,14 @@
-classdef ComposeLinOpFunc < Func
-    %% ComposeLinOpFunc : Compose a Functional with a linear operator
+classdef MultScalarCost < Cost
+    %% MultScalarCost : Multiply a Cost by a scalar
     %  Matlab Inverse Problems Library
     %
     % -- Example
-    % G =  ComposeLinOpFunc(F,Hcomp)
-    % where F is a FUNC object and Hcomp a LINOP one
+    % F = MultScalarCost(Cost,s)
+    % Multiply the Cost by the scalar s
     %
     % Please refer to the FUNC superclass for general documentation about
     % functional class
-    % See also Func
+    % See also Cost
 	%
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -27,21 +27,35 @@ classdef ComposeLinOpFunc < Func
  
     % Protected Set and public Read properties     
     properties (SetAccess = protected,GetAccess = public)
-		F;      % Functional
+        func;      % Cost
+        s;         % scalar factor
     end
     
     methods 
     	%% Constructor
-        function this = ComposeLinOpFunc(F,Hcomp)
-            this.name='ComposeLinOpFunc';
-            this.F=F;
-            if ~isa(F.H,'LinOpIdentity'), assert(isequal(Hcomp.sizeout,F.sizein),'sizeout of Hcomp must match with sizein of F'); end
-			this.isconvex= F.isconvex; 
-			this.set_H(Hcomp);
+        function this = MultScalarCost(func,s)
+            this.name='Multiply Cost by Scalar';
+			this.func = func;
+			assert(isscalar(s),'s must be a scalar');
+			this.s=s;
+			this.sizein =  this.func.sizein;
+			this.isconvex=func.isconvex; 
+			if func.lip~=-1
+				this.lip=func.lip*s;
+			end
     	end
     	%% Evaluation of the Functional
         function y=eval(this,x)
-			y=this.F.eval(this.H.Apply(x));
+			y=this.s*this.func.eval(x);
+        end
+        %% Gradient of the Functional
+        function g=grad(this,x)
+			g=this.s*this.func.grad(x);
+        end
+        %% Proximity operator of the Functional
+        function y=prox(this,x,alpha)
+        	assert(isscalar(alpha),'alpha must be a scalar');
+			y = this.func.prox(x,this.s*alpha);
         end
     end
 end

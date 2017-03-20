@@ -1,21 +1,25 @@
 classdef Cost < handle
-    %% Cost : Cost function generic class
+    %% Cost : Costtional generic class
     %  Matlab Inverse Problems Library
-    % The Cost meta class implement generic methods for all cost functions
+    %  The Cost meta class implements generic methods for all functionals
     %
-    %% Properties
-    % * |name|          - name of the function  
-    % * |sizeIn|          - size of input space (kernel)
+    % -- Properties
+    % * |name|       - name of the function  
+    % * |sizein|     - size of input space (kernel)
+    % * |H|          - LinOp composed with the functional
+    % * |lip|        - Lipschitz constant of the gradient (if known, otherwise -1)
+    % * |isconvex|   - boolean true is the function is convex
     %
-    %% Methods
-    % * |update|        - Update the input x
-    % * |getCost|       - compute the cost 
-    % * |getGradient|   - Compute $\phi(\mathrm{Prox}_{\alpha\,\phi}(\mathbf{x}))$
-    % * |prox|          - Compute the  Moreau proximal mapping operator
-    %%
-    
-    
-    %     Copyright (C) 2016 F. Soulez ferreol.soulez@epfl.ch
+    % -- Methods
+    % * |eval|       - evaluates the functional 
+    % * |grad|       - evaluates the gradient of the functional 
+    % * |o|          - compose with a LinOp
+    % * |prox|       - computes the proximity operator
+    % * |prox_fench| - computes the proximity operator of the fenchel transform
+    %                  (default for convex Cost: uses the Moreau's identity 
+    %                       prox_{alpha F*}(y) = y - alpha prox_{F/alpha}(y/alpha)
+    %
+    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -29,24 +33,58 @@ classdef Cost < handle
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+ 
+    % Protected Set and public Read properties    
     properties (SetAccess = protected,GetAccess = public)
-        name = 'none'   % name of the linear operator
-        sizeIn;             % dimensions of the input vector space
+        name = 'none'       % name of the functional
+        sizein;             % dimensions of the input vector space
+        lip=-1;             % Lipschitz constant of the gradient
+        % LinOp Infos
+        H=LinOpIdentity();  % linear operator
+        isconvex=false;
     end
-    
+
     methods
-        function update(~,~,~) % 
-            error('Operator not implemented');
+    	%% Evaluation of the Costtional
+        function eval(~,~) 
+            error('Eval not implemented');
         end
-        function getCost(~,~) % Get the  cost
-            error('Cost not implemented');
+        %% Gradient of the Costtional
+        function grad(~,~) 
+            error('Prox not implemented');
         end
-        function getGradient(~,~) % get the function cost
-            error('fCost not implemented');
+        %% Proximity operator of the functional
+        function prox(~,~,~) 
+            error('Prox not implemented');
         end
-        function prox(~,~) % Apply the prox
-            error('residuals not implemented');
+        %% Proximity operator of the Fenchel transform of the functional prox_{alpha F*}
+        function y=prox_fench(this,x,alpha) 
+        	assert(isscalar(alpha),'alpha must be a scalar'); 
+        	if this.isconvex
+            	y= x - alpha*this.prox(x/alpha,1/alpha);
+            else
+            	error('Prox Fenchel not implemented');
+            end
+        end
+        %% Operator compose with a LinOp
+        function v=	o(this,x)
+        	assert(isa(x,'LinOp'),' Composition of Cost(.o) is only define with a LinOp');
+        	v=ComposeLinOpCost(this,x);
+        end
+        %% Overload the operator +
+        function y = plus(this,x)
+            assert(isa(x,'Cost'),'Addition of Cost is only define with other Cost');
+            y = SumCost({this,x});
+		end
+		%% Overload the operator -
+        function y = minus(this,x)
+            assert(isa(x,'Cost'),'Subtraction of Cost is only define with other Cost');
+            y = SumCost({this,x},[1,-1]);
+		end
+		%% Costtion that set properly the operator H (has to be modified if new properties is???H are added)
+        function set_H(this,H)
+        	this.H=H;
+        	this.sizein=this.H.sizein;
         end
     end
 end

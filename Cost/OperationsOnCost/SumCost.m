@@ -1,15 +1,15 @@
-classdef SumFunc < Func
-    %% SumFunc : Sum of Functionnals
+classdef SumCost < Cost
+    %% SumCost : Sum of Costtionnals
     %  Matlab Inverse Problems Library
     %
     % -- Example
-    % F = SumFunc(AFunc,alpha)
-    % Sum the all Func contained in vector AFUNC weighted by ALPHA (default 1)
-    % F  sum_n alpha(n) * AFunc(n)
+    % F = SumCost(ACost,alpha)
+    % Sum the all Cost contained in vector AFUNC weighted by ALPHA (default 1)
+    % F  sum_n alpha(n) * ACost(n)
     %
     % Please refer to the FUNC superclass for general documentation about
     % functional class
-    % See also Func
+    % See also Cost
 	%
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -28,20 +28,20 @@ classdef SumFunc < Func
  
     % Protected Set and public Read properties     
     properties (SetAccess = protected,GetAccess = public)
-        funcs      % cell of Func
-        numfuncs   % number of Func
+        funcs      % cell of Cost
+        numfuncs   % number of Cost
         alpha      % scalar factor (array)
     end
     
     methods 
     	%% Constructor
-        function this = SumFunc(funcs,alpha)
+        function this = SumCost(funcs,alpha)
             if nargin == 1, alpha = ones(size(funcs));end
-            this.name='Sum of Funcs';
+            this.name='Sum of Costs';
             this.numfuncs = numel(funcs);
             assert(isnumeric(alpha)&& ( isscalar(alpha) || ( isvector(alpha) && (numel(alpha)== this.numfuncs))),'Second input should be a scalar or an array of scalar of the same size as the first input');
-            allfuncs = all( cellfun(@(x)(isa(x, 'Func')), funcs) );
-			assert(iscell(funcs) && allfuncs, 'First input should be a cell array Func');
+            allfuncs = all( cellfun(@(x)(isa(x, 'Cost')), funcs) );
+			assert(iscell(funcs) && allfuncs, 'First input should be a cell array Cost');
 			if  isscalar(alpha)
 				this.alpha = repmat(alpha, 1, this.numfuncs) ;
 			else

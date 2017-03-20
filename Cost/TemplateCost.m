@@ -1,5 +1,5 @@
-classdef FuncNAME < Func
-    %% FuncNAME : TODO ADD DESCRIPTION
+classdef CostNAME < Cost
+    %% CostNAME : TODO ADD DESCRIPTION
     %  Matlab Inverse Problems Library
     %
     % -- Description
@@ -19,7 +19,7 @@ classdef FuncNAME < Func
     %
     % Please refer to the FUNC superclass for general documentation about
     % functional class
-    % See also Func
+    % See also Cost
 	%
     %     Copyright (C) TODO YEAR NAME EMAIL
     %
@@ -49,9 +49,9 @@ classdef FuncNAME < Func
     
     methods 
     	%% Constructor
-        function this = FuncNAME(~)
+        function this = CostNAME(~)
         	% TODO SET THE INHERITED PROPERTIES (IF APPLICABLE)
-            this.name='Func NAME';
+            this.name='Cost NAME';
 			this.isconvex= ???; 
 			this.lip= ???;
 			% call this.set_H (will also set the sizein parameter)

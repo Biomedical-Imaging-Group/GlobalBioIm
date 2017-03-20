@@ -1,5 +1,5 @@
-classdef FuncKullLeib < Func
-    %% FuncKullLeib : Kullback–Leibler divergence
+classdef CostKullLeib < Cost
+    %% CostKullLeib : KullbackLeibler divergence
     %  Matlab Inverse Problems Library
     %
     % -- Description
@@ -9,11 +9,11 @@ classdef FuncKullLeib < Func
     % and bet is a small scalar (default 1e-10) to smooth the function at zero.
     %
     % -- Example
-    % F=FuncKullLeib(d,H,bet)
+    % F=CostKullLeib(d,H,bet)
     %
     % Please refer to the FUNC superclass for general documentation about
     % functional class
-    % See also Func
+    % See also Cost
 	%
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -42,8 +42,8 @@ classdef FuncKullLeib < Func
     
     methods 
     	%% Constructor
-        function this = FuncKullLeib(data,H,bet)
-            this.name='Func Kullback–Leibler';
+        function this = CostKullLeib(data,H,bet)
+            this.name='Cost Kullback-Leibler';
             this.isconvex=true; 
             % -- Set entries
             if nargin==1 || isempty(H)

@@ -1,5 +1,5 @@
-classdef FuncMixNorm1Schatt < Func
-    %% FuncMixNorm1Schatt : Mixed l1-Schatten Norm
+classdef CostMixNorm1Schatt < Cost
+    %% CostMixNorm1Schatt : Mixed l1-Schatten Norm
     %  Matlab Inverse Problems Library
     %
     % -- Description
@@ -23,7 +23,7 @@ classdef FuncMixNorm1Schatt < Func
     %            and then the l1 norm on the two other dimensions.
     %
     % -- Example
-    % F=FuncMixNorm1Shatt(H,p)
+    % F=CostMixNorm1Shatt(H,p)
     % where H is a LinOp object and p the order of the shatten norm (>=1)
     %
     % -- Properties
@@ -35,7 +35,7 @@ classdef FuncMixNorm1Schatt < Func
     %
     % Please refer to the FUNC superclass for general documentation about
     % functional class
-    % See also Func
+    % See also Cost
 	%
 	%     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -59,8 +59,8 @@ classdef FuncMixNorm1Schatt < Func
     
     methods 
     	%% Constructor
-        function this = FuncMixNorm1Schatt(H,p)
-            this.name='Func MixNorm1-Shatten';
+        function this = CostMixNorm1Schatt(H,p)
+            this.name='Cost MixNorm1-Shatten';
 			this.isconvex= true; 
 			if nargin==0 || isempty(H), 
 				H=LinOpIdentity(); 

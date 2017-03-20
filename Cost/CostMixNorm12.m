@@ -1,5 +1,5 @@
-classdef FuncMixNorm12 < Func
-    %% FuncMixNorm12 : Mixed norm 1-2
+classdef CostMixNorm12 < Cost
+    %% CostMixNorm12 : Mixed norm 1-2
     %  Matlab Inverse Problems Library
     %
     % -- Description
@@ -10,7 +10,7 @@ classdef FuncMixNorm12 < Func
     % combined by an l1-norm along the remaining dimensions (sum over k in the example)
     %
     % -- Example
-    % F = FuncMixNorm21(index,H);
+    % F = CostMixNorm21(index,H);
     % INDEX with indicate on which dimensions will the inner sum (l is the example)
     %
     % -- Properties
@@ -18,7 +18,7 @@ classdef FuncMixNorm12 < Func
     %
     % Please refer to the FUNC superclass for general documentation about
     % functional class
-    % See also Func
+    % See also Cost
 	%
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -42,8 +42,8 @@ classdef FuncMixNorm12 < Func
     
     methods 
     	%% Constructor
-        function this = FuncMixNorm12(index,H)
-            this.name='Func MixNorm1-2';
+        function this = CostMixNorm12(index,H)
+            this.name='Cost MixNorm1-2';
 			this.isconvex=true; 
 			if nargin==1 || isempty(H)
             	H=LinOpIdentity(); 

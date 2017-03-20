@@ -1,5 +1,5 @@
-classdef FuncNonNeg < Func
-    %% FuncNonNeg : Non negativity indicator functionnal
+classdef CostNonNeg < Cost
+    %% CostNonNeg : Non negativity indicator functionnal
     %  Matlab Inverse Problems Library
     %
     % -- Description
@@ -7,11 +7,11 @@ classdef FuncNonNeg < Func
     % $$ \phi(Hx) = 0 \textrm{ if } Hx \ge 0 textrm{ and }  +\inf \textrm{ otherwise } $$
     %
     % -- Example
-    % F = FuncNonNeg();
+    % F = CostNonNeg();
     %
     % Please refer to the FUNC superclass for general documentation about
     % functional class
-    % See also Func, LinOp
+    % See also Cost, LinOp
 	%
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -30,12 +30,12 @@ classdef FuncNonNeg < Func
     
     methods 
     	%% Constructor
-        function this = FuncNonNeg(H)   
+        function this = CostNonNeg(H)   
         	 if nargin==0 || isempty(H)
         	 	H=LinOpIdentity();
         	 end
         	 this.set_H(H);
-        	 this.name='Func NonNegativity';
+        	 this.name='Cost NonNegativity';
     	end
     	%% Evaluation of the Functional
         function y=eval(this,x)

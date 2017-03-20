@@ -1,9 +1,9 @@
-classdef Shape <  LinOp
-    %% Shape : reshaping operator
+classdef LinOpShape <  LinOp
+    %% LinOpShape : reshaping operator
     %  Matlab Linear Operator Library
     %
     % Example
-    % Obj = Shape(sizein,sizeout)
+    % Obj = LinOpShape(sizein,sizeout)
     % Shape operator
     % Reshape an array of size sizein in a array of size sizeout
     % 
@@ -31,11 +31,11 @@ classdef Shape <  LinOp
     
     end
     methods
-        function this = Shape(sizein, sizeout)
+        function this = LinOpShape(sizein, sizeout)
             if nargin == 1
                 index = [];
             end
-            this.name ='Shape';
+            this.name ='LinOp Shape';
             this.iscomplex= false;
             this.isinvertible=true;
             this.issquare = false;

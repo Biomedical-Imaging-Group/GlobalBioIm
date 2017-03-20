@@ -1,9 +1,9 @@
-classdef SDFT <  LinOp
-    %% SDFT : Sliced Discrete Fourier operator
+classdef LinOpSDFT <  LinOp
+    %% LinOpSDFT : Sliced Discrete Fourier operator
     %  Matlab Linear Operator Library
     %
     % Example
-    % Obj = SDFT(index)
+    % Obj = LinOpSDFT(index)
     % Discrete Fourier transform operator
     %
     % FIXME : Should better be merged with DFT
@@ -35,7 +35,7 @@ classdef SDFT <  LinOp
         N % Number of element
     end
     methods
-        function this = SDFT(index,sz)
+        function this = LinOpSDFT(index,sz)
             if (~isempty(index))
                 assert(issize(index),'The index should be a conformable  to sz');
                 this.index = index;
@@ -47,7 +47,7 @@ classdef SDFT <  LinOp
             this.sizeout=sz;
             this.sizein=sz;
             end
-            this.name ='SDFT';
+            this.name ='LinOp SDFT';
             this.iscomplex= true;
             this.isinvertible=true;
             this.issquare = true;

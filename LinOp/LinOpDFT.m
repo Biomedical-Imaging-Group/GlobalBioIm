@@ -1,16 +1,16 @@
-classdef DFT <  LinOp
-    %% DFT : Discrete Fourier operator
+classdef LinOpDFT <  LinOp
+    %% LinOpDFT : Discrete Fourier operator
     %  Matlab Linear Operator Library 
     % 
     % Example
-    % Obj = DFT(pad)
+    % Obj = LinOpDFT(pad)
     % Compute the dicrete fourier transfom padded by PAD (optionnal) such
     % y = Obj.Apply(x)  <=> y = fftn(x,pad)
     % 
     %
     % Please refer to the LINOP superclass for general documentation about
     % linear operators class
-    % See also LinOp fftn SDFT ifftn
+    % See also LinOp fftn LinOpSDFT ifftn
     
 %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
 %
@@ -34,9 +34,9 @@ classdef DFT <  LinOp
         unitary = false
     end
     methods
-        function this = DFT(varargin)
+        function this = LinOpDFT(varargin)
             
-            this.name ='DFT';
+            this.name ='Complex DFT';
             this.iscomplex= true;   
             this.isinvertible=true;
             this.issquare = true;
@@ -72,7 +72,7 @@ classdef DFT <  LinOp
         function y = Inverse(this,x)
             y = ifftn(x,this.pad);
         end
-        function y = HtH(this,x)%Beware of unitary fft of Matlab :-(
+        function y = HtH(this,x)%Beware of unitary fft of Matlab 
             this.N=numel(x);
             
             if this.unitary
@@ -81,7 +81,7 @@ classdef DFT <  LinOp
             y =this.N *x;
             end
         end
-        function y = AdjointInverse(this,x)%Beware of unitary fft of Matlab :-(
+        function y = AdjointInverse(this,x)%Beware of unitary fft of Matlab 
             this.N=numel(x);
             y = 1/this.N *fftn(x,this.pad);
         end

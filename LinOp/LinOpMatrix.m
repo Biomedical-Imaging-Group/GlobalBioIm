@@ -1,10 +1,10 @@
-classdef Matrix <  LinOp
-    %% Matrix : Matrix operator
+classdef LinOpMatrix <  LinOp
+    %% LinOpMatrix : Matrix operator
     %  Matlab Linear Operator Library 
     % Build the matrix operator such that Obj.apply(x) = M *x
     %
     % Example
-    % Obj = Matrix(M)
+    % Obj = LinOpMatrix(M)
     %
     % Be carefull it was not really tested
     %
@@ -34,8 +34,8 @@ properties
     leftsz
 end
     methods
-        function this = Matrix(M,index)
-            this.name='Matrix';
+        function this = LinOpMatrix(M,index)
+            this.name='Linop Matrix';
             this.M = M;
             this.sz =size(M);
             this.ndms = ndims(M);

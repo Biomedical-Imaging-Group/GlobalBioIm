@@ -1,9 +1,9 @@
-classdef Scaling <  LinOp
-    %% Scaling : scaling operator
+classdef LinOpScaling <  LinOp
+    %% LinOpScaling : LinOp scaling operator
     %  Matlab Linear Operator Library 
     %
     % Example
-    % Obj = Scaling(scale)
+    % Obj = LinOpScaling(scale)
     %
     % Build the scaling operator that scale the input by the scalar factor
     % scale
@@ -30,8 +30,8 @@ classdef Scaling <  LinOp
         scale % scale factor
     end
     methods
-        function this = Scaling(scale,sz)
-            this.name ='Scaling';
+        function this = LinOpScaling(scale,sz)
+            this.name ='LinOp Scaling';
             this.issquare = true;
             if isscalar(scale)
                 this.scale = scale;
@@ -44,7 +44,7 @@ classdef Scaling <  LinOp
                     this.isinvertible= false;
                 end
             else
-                error('Scale value must be a scalar');
+                error('LinOpScale value must be a scalar');
             end
             
             if nargin>1

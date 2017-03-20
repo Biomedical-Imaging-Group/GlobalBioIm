@@ -1,9 +1,9 @@
-classdef Sum <  LinOp
+classdef LinOpSum <  LinOp
     %% Sum : Summation operator
     %  Matlab Linear Operator Library
     %
     % Example
-    % Obj = Sum(sz,index)
+    % Obj = LinOpSum(sz,index)
     % Sum operator
     % Sum the any vector of size SZ along the dimension
     % indexed in INDEX (all by default)
@@ -35,11 +35,11 @@ classdef Sum <  LinOp
         imdims % im dimensions
     end
     methods
-        function this = Sum(sz,index)
+        function this = LinOpSum(sz,index)
             if nargin == 1
                 index = [];
             end
-            this.name ='Sum';
+            this.name ='LinOp Sum ';
             this.iscomplex= true;
             this.isinvertible=false;
             this.issquare = false;

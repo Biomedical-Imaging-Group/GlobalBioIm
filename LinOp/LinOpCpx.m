@@ -1,11 +1,11 @@
-classdef Cpx <  LinOp
-    %% Cpx : Complex representation  operator
+classdef LinOpCpx <  LinOp
+    %% LinOpCpx : Complex representation  operator
     %  Matlab Linear Operator Library
     %
     % Example:
-    % Obj = Cpx(sz)
+    % Obj = LinOpCpx(sz)
     %
-    % Build the operator selecting the imaginary part of the input vector
+    % Build the operator transforming a complex vector as a 2D real vector with [Real, Im] the imaginary part of the input vector
     %
     % HANDLE WITH CARE ; it is not exactly a linear operator as the dot
     % product is not well defined
@@ -33,8 +33,8 @@ classdef Cpx <  LinOp
         nbDim
     end
     methods
-        function this = Cpx(sz)
-            this.name ='Cpx';
+        function this = LinOpCpx(sz)
+            this.name ='LinOp Complrx';
             this.issquare = true;
             this.iscomplex = false;
             this.isinvertible = true;
@@ -66,9 +66,6 @@ classdef Cpx <  LinOp
         function y = Inverse(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizein); 
             y = complex(x(:,:,1),x(:,:,2));
-         end
-         function y = AdjointInverse(this,x)
-             
-         end
+        end
     end
 end

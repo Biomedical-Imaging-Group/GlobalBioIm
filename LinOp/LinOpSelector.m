@@ -1,9 +1,9 @@
-classdef Selector <  LinOp
-   %% Selector : Selector operator
+classdef LinOpSelector <  LinOp
+   %% LinOpSelector : Selector operator
     %  Matlab Linear Operator Library
     %
     % Example:
-    % Obj = Selector(sel) or Obj = Selector(sel,'KeepDimensions',true)
+    % Obj = LinOpSelector(sel) or Obj = Selector(sel,'KeepDimensions',true)
     %
     % Builds the operator by selecting the values of the input vector according to
     % the boolean value of sel. If the option KeepDimensions is activated,
@@ -34,13 +34,13 @@ classdef Selector <  LinOp
         KeepDimensions %true or false
     end
     methods
-        function this = Selector(sel,varargin)
+        function this = LinOpSelector(sel,varargin)
             p = inputParser;
             addOptional(p,'KeepDimensions',false); %true or false.
             parse(p,varargin{:});
 
              this.KeepDimensions = p.Results.KeepDimensions;
-            this.name ='Selector';
+            this.name ='LinOp Selector';
             this.issquare = false;
             this.iscomplex= true;
             assert(islogical(sel),'The input selector should be boolean');

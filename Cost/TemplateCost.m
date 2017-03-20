@@ -54,6 +54,14 @@ classdef CostNAME < Cost
             this.name='Cost NAME';
 			this.isconvex= ???; 
 			this.lip= ???;
+             % -- Set entries
+            if nargin<2
+                    y=[];
+            end
+            if nargin<1
+                    H=[];
+            end
+            set_H(this,H,y);
 			% call this.set_H (will also set the sizein parameter)
 			% TODO SET NEW DEFINED PROPERTIES
     	end

@@ -1,5 +1,5 @@
-classdef CostNonNeg < Cost
-    %% CostNonNeg : Non negativity indicator functionnal
+classdef CostNonNeg < CostIndicator
+    %% CostNonNeg : Non negativity indicator 
     %  Matlab Inverse Problems Library
     %
     % -- Description
@@ -9,9 +9,9 @@ classdef CostNonNeg < Cost
     % -- Example
     % F = CostNonNeg();
     %
-    % Please refer to the FUNC superclass for general documentation about
+    % Please refer to the COST superclass for general documentation about
     % functional class
-    % See also Cost, LinOp
+    % See also Cost, CostIndicator, LinOp
 	%
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -30,33 +30,25 @@ classdef CostNonNeg < Cost
     
     methods 
     	%% Constructor
-        function this = CostNonNeg(H)   
-        	 if nargin==0 || isempty(H)
-        	 	H=LinOpIdentity();
-        	 end
-        	 this.set_H(H);
-        	 this.name='Func NonNegativity';
+        function this = CostNonNeg(H,y) 
+            if nargin<2
+                y=[];
+            end
+            if nargin<1
+                H=[];
+            end
+            set_H(this,H,y);
+            this.name='Cost NonNegativity';
 			 
-			 if isa(this.H,'LinOpIdentity')
-				 this.isconvex = true;
-			 end
-			 
+            this.xmin=0;
+			 this.xmax =+inf;
     	end
     	%% Evaluation of the Functional
-		function y=eval(this,x)
-			y = 0; % We should put -> (norm(min(this.H*x,0.))>0)*realmax; But for some algorithm there is small negative residuals
+        function f=eval(this,x)
+			f = 0; % We should put -> (norm(min(this.H*x,0.))>0)*realmax; But for some algorithm there is small negative residuals
 			% which would cause unreadability of the evolution of the cost function along iterates
-			y = inf * any(reshape(this.H*x, [], 1) < 0);
+			f = inf * any(reshape(this.H*x-this.y, [], 1) < 0);
         end
-        %% Proximity operator of the functional
-        function y=prox(this,x,alpha)
-        	y=[];
-        	if isa(this.H,'LinOpIdentity')
-				y = max(x,0.);
-        	end
-        	if isempty(y)
-        		error('Prox not implemented');
-        	end
-        end
+       
     end
 end

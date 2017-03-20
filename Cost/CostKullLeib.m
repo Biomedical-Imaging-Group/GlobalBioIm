@@ -45,22 +45,19 @@ classdef CostKullLeib < Cost
             this.name='Cost Kullback-Leibler';
             this.isconvex=true;
             % -- Set entries
-            if nargin>0
-                if ~isempty(H)
-                    this.set_H(H);
-                end
+            if nargin<2
+                    y=[];
             end
-            if nargin>1
-                if ~isempty(y)
-                    this.y=y;
-                end
+            if nargin<1
+                    H=[];
             end
+            set_H(this,H,y);
             
             if nargin==3
                 this.bet=bet;
             end
+            
             if ~isempty(this.H.sizeout)
-                assert((~isscalar(this.y)) && isequal(size(this.y),this.H.sizeout),'H sizeout and y size are not equal');
                 tmp=ones(this.sizein);
                 this.He1=this.H.Adjoint(tmp);
             end

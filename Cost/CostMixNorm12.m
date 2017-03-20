@@ -19,7 +19,7 @@ classdef CostMixNorm12 < Cost
     % Please refer to the FUNC superclass for general documentation about
     % functional class
     % See also Cost
-	%
+    %
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -34,65 +34,70 @@ classdef CostMixNorm12 < Cost
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
-    % Protected Set and public Read properties     
+    
+    % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
-		index;    % dimensions along which the l2-norm will be applied
+        index;    % dimensions along which the l2-norm will be applied
     end
     
-    methods 
-    	%% Constructor
-        function this = CostMixNorm12(index,H)
+    methods
+        %% Constructor
+        function this = CostMixNorm12(index,H,y)
             this.name='Cost MixNorm1-2';
-			this.isconvex=true; 
-			if nargin==1 || isempty(H)
-            	H=LinOpIdentity(); 
-            end     
+            this.isconvex=true;
+            % -- Set entries
+            if nargin<3
+                y=[];
+            end
+            if nargin<2
+                H=[];
+            end
+            set_H(this,H,y);
+            
             assert(isnumeric(index)&&isvector(index),'The index should be a vector of integers');
             this.index=index;
-            this.set_H(H);
-    	end
-    	%% Evaluation of the Functional
+        end
+        %% Evaluation of the Functional
         function y=eval(this,x)
-			u=abs(this.H.Apply(x)).^2;
-			% Computes the l2-norm along the dimensions given by index
-			for n=1:length(this.index)
-				u = sum(u,this.index(n));
-			end
-			u = sqrt(u);
-			y=sum(u(:));
+            u=abs(this.H.Apply(x)-this.y).^2;
+            % Computes the l2-norm along the dimensions given by index
+            for n=1:length(this.index)
+                u = sum(u,this.index(n));
+            end
+            u = sqrt(u);
+            y=sum(u(:));
         end
         %% Proximity operator of the functional
-        function y=prox(this,x,alpha)
-        	assert(isscalar(alpha),'alpha must be a scalar');
-        	y=[];
-        	if isa(this.H,'LinOpIdentity')
-            	sz = size(x);
-				ndms = length(sz);
-				T = true(ndms,1);
-				T(this.index)=false;
-				kerdims = sz; kerdims(T)=1;
-				imdims = sz; imdims(~T)=1;
-			
-				% Computes the l2-norm along the dimensions given by index
-				sx = abs(x).^2;
-				for n=1:length(this.index)
-					sx = sum(sx,this.index(n));
-				end
-				sx = sqrt(sx);
-				
-				% Computes the prox
-				t = sx > alpha;
-				b = zeros(size(sx));
-			
-				b(t) = 1-alpha./sx(t);
-				y = reshape(repmat(reshape(b ,imdims),kerdims),sz).*x;
-			end
-			if isempty(y),error('Prox not implemented');end
-			% result:
-			% x(||x|| <= alpha) = 0
-			% x(||x|| > alpha) = x(||x|| > alpha) - ...
-			%      x(||x|| > alpha) / ||x|| * alpha
+        function z=prox(this,x,alpha)
+            assert(isscalar(alpha),'alpha must be a scalar');
+            z=[];
+            if isa(this.H,'LinOpIdentity')
+                sz = size(x);
+                ndms = length(sz);
+                T = true(ndms,1);
+                T(this.index)=false;
+                kerdims = sz; kerdims(T)=1;
+                imdims = sz; imdims(~T)=1;
+                
+                % Computes the l2-norm along the dimensions given by index
+                sx = abs(x-this.y).^2;
+                for n=1:length(this.index)
+                    sx = sum(sx,this.index(n));
+                end
+                sx = sqrt(sx);
+                
+                % Computes the prox
+                t = sx > alpha;
+                b = zeros(size(sx));
+                
+                b(t) = 1-alpha./sx(t);
+                z = reshape(repmat(reshape(b ,imdims),kerdims),sz).*x+this.y;
+            end
+            if isempty(z),error('Prox not implemented');end
+            % result:
+            % x(||x|| <= alpha) = 0
+            % x(||x|| > alpha) = x(||x|| > alpha) - ...
+            %      x(||x|| > alpha) / ||x|| * alpha
         end
     end
 end

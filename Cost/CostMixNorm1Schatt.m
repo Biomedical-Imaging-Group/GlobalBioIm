@@ -59,20 +59,28 @@ classdef CostMixNorm1Schatt < Cost
     
     methods 
     	%% Constructor
-        function this = CostMixNorm1Schatt(H,p)
+        function this = CostMixNorm1Schatt(H,p,y)
             this.name='Cost MixNorm1-Shatten';
 			this.isconvex= true; 
-			if nargin==0 || isempty(H), 
-				H=LinOpIdentity(); 
-			else
-				assert((length(H.sizeout)==3 || length(H.sizeout)==4) && (H.sizeout(3)==3 || H.sizeout(4)==6),'sizeout of H should be [?,?,(?),3 or 6]');
-			end;
-			if nargin<=1 || isempty(p), p=1; end;
+             % -- Set entries
+            if nargin<3
+                y=[];
+            end            
+			if nargin<2 || isempty(p), p=1; end;
 			assert(p>=1,'p should be >=1');
 			this.p=p;
-			this.set_H(H);
+            if nargin<1
+                H=[];
+            end
+            set_H(this,H,y);
+            
+                if ~isa(H, 'LinOpIdentity')
+				assert((length(H.sizeout)==3 || length(H.sizeout)==4) && (H.sizeout(3)==3 || H.sizeout(4)==6),'sizeout of H should be [?,?,(?),3 or 6]');
+                end
+                
     	end
     	%% Evaluation of the Functional
+        % FIXME WARNING have to be checked when H and y exist
         function y=eval(this,x)
             dim=size(x);
             if dim(3)==3     % 2D

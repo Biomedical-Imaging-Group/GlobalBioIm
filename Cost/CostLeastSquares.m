@@ -47,16 +47,13 @@ classdef CostLeastSquares < Cost
         function this = CostLeastSquares(H,y,wght)
             this.isconvex=true;
             % -- Set entries
-            if nargin>0
-                if ~isempty(H)
-                    this.set_H(H);
-                end
+            if nargin<2
+                y=[];
             end
-            if nargin>1
-                if ~isempty(y)
-                    this.y=y;
-                end
+            if nargin<1
+                H=[];
             end
+            set_H(this,H,y);
             if nargin==3
                 this.W=wght;
                 this.WplusWt=wght+wght';
@@ -64,7 +61,7 @@ classdef CostLeastSquares < Cost
             end
             this.data=y;
             this.name='Cost Least Squares';
- %           assert( isequal(size(y),this.H.sizeout),'H sizeout and data size are not equal');
+            %           assert( isequal(size(y),this.H.sizeout),'H sizeout and data size are not equal');
             % -- Compute Lipschitz constant of the gradient (if the norm of H is known)
             if this.H.norm>=0;
                 if this.isW
@@ -124,7 +121,7 @@ classdef CostLeastSquares < Cost
                 end
                 if ~this.isW     % if no weight
                     y=iSfft((Sfft(x,this.H.Notindex) + alpha*this.fftHstardata)./(1+alpha*(abs(this.H.mtf).^2)), this.H.Notindex);
-                    if ~this.H.iscomplex, y=real(y);end 
+                    if ~this.H.iscomplex, y=real(y);end
                 end
             end
             if isempty(y),error('Prox not implemented');end

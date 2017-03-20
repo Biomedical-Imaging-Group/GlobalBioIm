@@ -3,7 +3,7 @@ classdef Cost < handle
     %  Matlab Inverse Problems Library
     %  The Cost meta class implements generic methods for all cost function
     %  Cost functions  $\mathbb{C}^sizein\rightarrow\mathbb{R}$
-    %                                 $x \rightarrow f( H.x , y )$
+    %                                 $H.x \rightarrow f( H.x , y )$
     % return a real scalar  f( H.x , y )
     % -- Properties
     % * |name|       - name of the function
@@ -22,7 +22,7 @@ classdef Cost < handle
     %                  (default for convex Cost: uses the Moreau's identity
     %                       prox_{alpha F*}(y) = y - alpha prox_{F/alpha}(y/alpha)
     %
-    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch & F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ classdef Cost < handle
     % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
         name = 'none'       % name of the functional
-        sizein;             % dimensions of the input vector space
+        sizein=[];             % dimensions of the input vector space
         lip=-1;             % Lipschitz constant of the gradient
         % LinOp Infos
         y=0;
@@ -86,10 +86,28 @@ classdef Cost < handle
             y = SumCost({this,x},[1,-1]);
         end
         %% Function that set properly the operator H (has to be modified if new properties is???H are added)
-        function set_H(this,H)
+        function set_H(this,H,y)
+            if isempty(H)
+                H=LinOpIdentity();
+            end
+            if isempty(y)
+                y =0;
+            end
             assert(isa(H,'LinOp'),' H must be a LinOp');
+            
             this.H=H;
-            this.sizein=this.H.sizein;
+            
+            assert(isnumeric(y),' y must be a numeric');
+            
+            if ~isempty(H.sizein)
+                this.sizein=this.H.sizeout;
+                assert( (~isscalar(y))&& (isequal(this.H.sizeout,size(y))),'y must be equal to H.sizeout');
+            else
+                if (~isscalar(y))
+                    this.sizein= size(y);
+                end
+            end
+            
         end
     end
 end

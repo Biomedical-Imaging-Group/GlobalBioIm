@@ -33,29 +33,45 @@ classdef LinOpDiag <  LinOp
         usecomplex = true;
     end
     methods
-        function this = LinOpDiag(diag,varargin)
+		function this = LinOpDiag(diag,varargin)
             this.name ='LinOp Diagonal';
             this.issquare = true;
-            
-          
-            
-            if isnumeric(diag)
-                this.sizeout=size(diag);
-                this.sizein=size(diag);
-                if isreal(diag)
-                    this.iscomplex= false;
-                else
+			
+			if ~isnumeric(diag)
+				error('diag must be numeric');
+			end
+			
+			% collapse repeated diagonal element to a scalar
+			if length(unique(diag)) == 1
+				diag = unique(diag);
+			end
+			
+			if isscalar(diag)
+				if isempty(varargin) || ~issize(varargin{1})
+					error('must provide sz argument when diag is a scalar');
+				end
+				this.sizein = varargin{1};
+				this.sizeout = varargin{1};
+				varargin = varargin(2:end);
+			else
+				this.sizeout=size(diag);
+				this.sizein=size(diag);
+			end
+			
+			if isreal(diag)
+				this.iscomplex= false;
+			else
                     this.iscomplex= true;
-                end
+				end
                 
-                  for c=1:length(varargin)
-                switch varargin{c}
-                    case('DontUseComplex')
-                        this.usecomplex = false;
-                         diag = reshape(diag,[],2);
-                    diag = complex(diag(:,1),diag(:,2));
-                end
-                  end
+				for c=1:length(varargin)
+					switch varargin{c}
+						case('DontUseComplex')
+							this.usecomplex = false;
+							diag = reshape(diag,[],2);
+							diag = complex(diag(:,1),diag(:,2));
+					end
+				end
             
                 if all(diag)
                     this.isinvertible=true;
@@ -64,9 +80,7 @@ classdef LinOpDiag <  LinOp
                 end
                 
                 this.diag = diag;
-            else
-                error('diag value must be numeric');
-            end           
+           
             % -- Norm of the operator 
             this.norm=max(diag(:));
         end

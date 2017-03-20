@@ -39,6 +39,8 @@ classdef Shape <  LinOp
             this.iscomplex= false;
             this.isinvertible=true;
             this.issquare = false;
+			
+			this.norm = 1;
             
             assert(issize(sizein),'The input size sizein should be a conformable  to a size ');
             this.sizein = sizein;

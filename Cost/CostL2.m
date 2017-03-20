@@ -1,5 +1,5 @@
-classdef CostLeastSquares < Cost
-    %% CostLeastSquares : Least Squares functional
+classdef CostL2 < Cost
+    %% CostL2 : Least Squares functional
     %  Matlab Inverse Problems Library
     %
     % -- Description
@@ -9,7 +9,7 @@ classdef CostLeastSquares < Cost
     % is a weight matrix (LinOp, default LinOpIdentity).
     %
     % -- Example
-    % F = CostLeastSquares(H,y,W);
+    % F = CostL2(H,y,W);
     %
     % Please refer to the COST superclass for general documentation about
     % functional class
@@ -36,15 +36,13 @@ classdef CostLeastSquares < Cost
     end
     % Full protected properties
     properties (SetAccess = protected,GetAccess = protected)
-        WplusWt=[];      % sum of W plus its transpose
-        Hd               % application of the adjoint to data
         fftHstardata=[]; % if LinOp is convolution, store the product conj(fftn(psf)).*fftn(data)
         isW=false;       % boolean true if a LinOp wght is given
     end
     
     methods
         %% Constructor
-        function this = CostLeastSquares(H,y,wght)
+        function this = CostL2(H,y,wght)
             this.isconvex=true;
             % -- Set entries
             if nargin>0
@@ -59,11 +57,10 @@ classdef CostLeastSquares < Cost
             end
             if nargin==3
                 this.W=wght;
-                this.WplusWt=wght+wght';
                 this.isW=true;
             end
             this.data=y;
-            this.name='Cost Least Squares';
+            this.name='Cost L2';
  %           assert( isequal(size(y),this.H.sizeout),'H sizeout and data size are not equal');
             % -- Compute Lipschitz constant of the gradient (if the norm of H is known)
             if this.H.norm>=0;
@@ -88,10 +85,11 @@ classdef CostLeastSquares < Cost
         end
         %% Gradient of the Functional
         function g=grad(this,x)
+            r=this.H.Apply(x)-this.y;
             if this.isW
-                g = 0.5*(this.H.HtWH(x,this.WplusWt)-this.Hd);
+                g = this.H.Adjoint(this.W.Apply(r)) ;
             else
-                g = this.H.HtH(x) - this.Hd;
+                g = this.H.Adjoint(r) ;
             end
         end
         %% Evaluation & Gradient of the Functional
@@ -128,16 +126,6 @@ classdef CostLeastSquares < Cost
                 end
             end
             if isempty(y),error('Prox not implemented');end
-        end
-        %% Function that set properly the operator H (has to be modified if new properties is???H are added)
-        function set_H(this,H)
-            this.H=H;
-            this.sizein=this.H.sizein;
-            if this.isW
-                this.Hd=this.H.Adjoint(this.WplusWt.Apply(this.y));
-            else
-                this.Hd=this.H.Adjoint(this.y);
-            end
         end
     end
 end

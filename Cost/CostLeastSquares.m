@@ -4,14 +4,14 @@ classdef CostLeastSquares < Cost
     %
     % -- Description
     % Implement the cost function for the weighted L2 norm
-    % $$ 1/2||Hx - d||^2_W $$
-    % where H is a LinOp object (default LinOpIdentity), d are the data and W
+    % $$ 1/2||Hx - y||^2_W $$
+    % where H is a LinOp object (default LinOpIdentity), y are the data and W
     % is a weight matrix (LinOp, default LinOpIdentity).
     %
     % -- Example
-    % F = CostLeastSquares(d,[],W);
+    % F = CostLeastSquares(H,y,W);
     %
-    % Please refer to the FUNC superclass for general documentation about
+    % Please refer to the COST superclass for general documentation about
     % functional class
     % See also Cost, LinOp
     %
@@ -32,7 +32,6 @@ classdef CostLeastSquares < Cost
     
     % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
-        data           % data
         W=[];          % weight matrix
     end
     % Full protected properties
@@ -45,21 +44,27 @@ classdef CostLeastSquares < Cost
     
     methods
         %% Constructor
-        function this = CostLeastSquares(data,H,wght)
+        function this = CostLeastSquares(y,H,wght)
             this.isconvex=true;
             % -- Set entries
-            if nargin==1 || isempty(H)
-                H=LinOpIdentity(size(data));
+            if nargin>0
+                if ~isempty(H)
+                    this.set_H(H);
+                end
+            end
+            if nargin>1
+                if ~isempty(y)
+                    this.y=y;
+                end
             end
             if nargin==3
                 this.W=wght;
                 this.WplusWt=wght+wght';
                 this.isW=true;
             end
-            this.data=data;
+            this.data=y;
             this.name='Cost Least Squares';
-            this.set_H(H);
-            assert( isequal(size(data),this.H.sizeout),'H sizeout and data size are not equal');
+ %           assert( isequal(size(y),this.H.sizeout),'H sizeout and data size are not equal');
             % -- Compute Lipschitz constant of the gradient (if the norm of H is known)
             if this.H.norm>=0;
                 if this.isW
@@ -72,13 +77,13 @@ classdef CostLeastSquares < Cost
             end
         end
         %% Evaluation of the Functional
-        function y=eval(this,x)
-            r=this.H.Apply(x)-this.data;
+        function f=eval(this,x)
+            r=this.H.Apply(x)-this.y;
             if this.isW
                 wr=this.W.Apply(r);
-                y=0.5*dot(r(:),wr(:));
+                f=0.5*dot(r(:),wr(:));
             else
-                y=0.5*norm(r(:))^2;
+                f=0.5*norm(r(:))^2;
             end
         end
         %% Gradient of the Functional
@@ -89,24 +94,37 @@ classdef CostLeastSquares < Cost
                 g = this.H.HtH(x) - this.Hd;
             end
         end
+        %% Evaluation & Gradient of the Functional
+        function [f, g] =eval_grad(this,x)
+            
+            r=this.H.Apply(x)-this.y;
+            if this.isW
+                wr=this.W.Apply(r);
+                f=0.5*dot(r(:),wr(:));
+                g = this.H.Adjoint(wr) ;
+            else
+                f=0.5*norm(r(:))^2;
+                g = this.H.Adjoint(r) ;
+            end
+            
+        end
         %% Proximity operator of the functional
         function y=prox(this,x,alpha)
             assert(isscalar(alpha),'alpha must be a scalar');
             y=[];
             if isa(this.H,'LinOpIdentity')
                 if this.isW && isa(this.W,'LinOpDiag')  % if weight is diagonal linop
-                    y=(x+alpha*this.W.diag.*this.data)./(1+alpha.*this.W.diag);
+                    y=(x+alpha*this.W.diag.*this.y)./(1+alpha.*this.W.diag);
                 elseif ~this.isW % if no weight
-                    y=(x+alpha*this.data)/(alpha+1);
+                    y=(x+alpha*this.y)/(alpha+1);
                 end
             elseif isa(this.H,'LinOpConv')  % if linop is convolution
                 if isempty(this.fftHstardata)
-                    this.fftHstardata=conj(this.H.mtf).*Sfft(this.data,this.H.Notindex);
-                    if ~this.H.iscomplex, this.fftHstardata=real(this.fftHstardata);end
+                    this.fftHstardata=conj(this.H.mtf).*Sfft(this.y,this.H.Notindex);
                 end
                 if ~this.isW     % if no weight
                     y=iSfft((Sfft(x,this.H.Notindex) + alpha*this.fftHstardata)./(1+alpha*(abs(this.H.mtf).^2)), this.H.Notindex);
-                    if ~this.H.iscomplex, y=real(y);end
+                    if ~this.H.iscomplex, y=real(y);end 
                 end
             end
             if isempty(y),error('Prox not implemented');end
@@ -116,9 +134,9 @@ classdef CostLeastSquares < Cost
             this.H=H;
             this.sizein=this.H.sizein;
             if this.isW
-                this.Hd=this.H.Adjoint(this.WplusWt.Apply(this.data));
+                this.Hd=this.H.Adjoint(this.WplusWt.Apply(this.y));
             else
-                this.Hd=this.H.Adjoint(this.data);
+                this.Hd=this.H.Adjoint(this.y);
             end
         end
     end

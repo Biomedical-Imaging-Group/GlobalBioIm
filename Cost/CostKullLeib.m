@@ -11,7 +11,7 @@ classdef CostKullLeib < Cost
     % -- Example
     % F=CostKullLeib(H,y,bet)
     %
-    % Please refer to the FUNC superclass for general documentation about
+    % Please refer to the COST superclass for general documentation about
     % functional class
     % See also Cost
     %

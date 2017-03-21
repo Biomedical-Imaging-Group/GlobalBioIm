@@ -129,7 +129,6 @@ classdef CostLeastSquares < Cost
         %% Function that set properly the operator H (has to be modified if new properties is???H are added)
         function set_H(this,H)
             this.H=H;
-            this.sizein=this.H.sizein;
             if this.isW
                 this.Hd=this.H.Adjoint(this.WplusWt.Apply(this.y));
             else

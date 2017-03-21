@@ -57,10 +57,10 @@ classdef CostKullLeib < Cost
                 this.bet=bet;
             end
             
-            if ~isempty(this.H.sizeout)
-                tmp=ones(this.sizein);
+          
+                tmp=ones(this.H.sizeout);
                 this.He1=this.H.Adjoint(tmp);
-            end
+                
             % -- Compute Lipschitz constant of the gradient (if the norm of H is known)
             if ((this.bet>0)&&(this.H.norm>=0));
                 this.lip=max(this.y(:))./this.bet^2*this.H.norm^2;
@@ -68,10 +68,6 @@ classdef CostKullLeib < Cost
         end
         %% Evaluation of the Functional
         function f=eval(this,x)
-            if isempty(this.H.sizeout)
-                tmp=ones(this.sizein);
-                this.He1=this.H.Adjoint(tmp);
-            end
             tmp=this.H.Apply(x);
             assert(any(tmp(:)<0) ,'H.x must be non-negative');
             if (all(this.bet(:)))
@@ -85,10 +81,6 @@ classdef CostKullLeib < Cost
         end
         %% Gradient of the Functional
         function g=grad(this,x)
-            if isempty(this.H.sizeout)
-                tmp=ones(this.sizein);
-                this.He1=this.H.Adjoint(tmp);
-            end
             g= this.He1 - this.H.Adjoint(this.y./(this.H.Apply(x)+this.bet));
         end
         %% Proximity operator of the functional

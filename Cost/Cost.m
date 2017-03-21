@@ -2,14 +2,14 @@ classdef Cost < handle
     %% Cost : Cost function generic class
     %  Matlab Inverse Problems Library
     %  The Cost meta class implements generic methods for all cost function
-    %  Cost functions  $\mathbb{C}^sizein\rightarrow\mathbb{R}$
-    %                                 $H.x \rightarrow f( H.x , y )$
+    %  Cost functions  $\mathbb{C}^N\rightarrow\mathbb{R}$
+    %                                 $cost \rightarrow f( H.x , y )$
     % return a real scalar  f( H.x , y )
     % -- Properties
     % * |name|       - name of the function
-    % * |sizein|     - size of input space (kernel)
-    % * |H|          - LinOp composed with the functional
-    % * |y|          - a vector of size sizein
+    % * |H|          - LinOp composed with the functional if H is a size it
+    % implicitly make H=LinOpIdentity(H);
+    % * |y|          - a vector of size H.sizeout
     % * |lip|        - Lipschitz constant of the gradient (if known, otherwise -1)
     % * |isconvex|   - boolean true is the function is convex
     %
@@ -40,11 +40,10 @@ classdef Cost < handle
     % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
         name = 'none'       % name of the functional
-        sizein=[];             % dimensions of the input vector space
         lip=-1;             % Lipschitz constant of the gradient
         % LinOp Infos
         y=0;
-        H=LinOpIdentity();  % linear operator
+        H=[];  % linear operator
         isconvex=false;
     end
     
@@ -87,26 +86,27 @@ classdef Cost < handle
         end
         %% Function that set properly the operator H (has to be modified if new properties is???H are added)
         function set_H(this,H,y)
-            if isempty(H)
-                H=LinOpIdentity();
-            end
+                          
             if isempty(y)
                 y =0;
             end
-            assert(isa(H,'LinOp'),' H must be a LinOp');
-            
-            this.H=H;
             
             assert(isnumeric(y),' y must be a numeric');
             
-            if ~isempty(H.sizein)
-                this.sizein=this.H.sizeout;
+            if isa(H, 'LinOp')  
                 assert( (~isscalar(y))&& (isequal(this.H.sizeout,size(y))),'y must be equal to H.sizeout');
-            else
-                if (~isscalar(y))
-                    this.sizein= size(y);
+            else if issize(H)
+                H=LinOpIdentity(H);
+                assert( (~isscalar(y))&& (isequal(this.H.sizeout,size(y))),'y must be equal to H.sizeout');
+                else if isempty(H)
+                        H =LinOpIdentity(size(y));
+                    end
                 end
             end
+            
+            this.H=H;
+            this.y = y;
+            
             
         end
     end

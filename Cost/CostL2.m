@@ -59,7 +59,6 @@ classdef CostL2 < Cost
             
             this.data=y;
             this.name='Cost L2';
-            %           assert( isequal(size(y),this.H.sizeout),'H sizeout and data size are not equal');
             % -- Compute Lipschitz constant of the gradient (if the norm of H is known)
             if this.H.norm>=0;
                 if this.isW

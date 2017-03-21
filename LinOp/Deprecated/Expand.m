@@ -26,9 +26,9 @@ function out = Expand(Mask,varargin)
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-p = inputParser;
-addOptional(p,'KeepDimensions',false);
-parse(p,varargin{:});
+    p = inputParser;
+    addOptional(p,'KeepDimensions',false);
+    parse(p,varargin{:});
 
     out = adjoint(Selector(Mask,'KeepDimensions',p.Results.KeepDimensions));
     

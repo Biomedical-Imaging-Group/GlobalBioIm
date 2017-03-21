@@ -6,8 +6,9 @@ addpath([pathToDir,'/Opti/']);
 addpath([pathToDir,'/LinOp/']);
 addpath([pathToDir,'/LinOp/LinOp_Utils/']);
 addpath([pathToDir,'/LinOp/OperationsOnLinOp/']);
-addpath([pathToDir,'/Func/']);
-addpath([pathToDir,'/Func/FuncUtils/']);
-addpath([pathToDir,'/Func/OperationsOnFunc/']);
+addpath([pathToDir,'/Cost/']);
+addpath([pathToDir,'/Cost/CostUtils/']);
+addpath([pathToDir,'/Cost/IndicatorFunctions/']);
+addpath([pathToDir,'/Cost/OperationsOnCost/']);
 addpath([pathToDir,'/Example/']);
 

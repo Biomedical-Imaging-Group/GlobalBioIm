@@ -94,10 +94,10 @@ classdef Cost < handle
             assert(isnumeric(y),' y must be a numeric');
             
             if isa(H, 'LinOp')  
-                assert( (~isscalar(y))&& (isequal(this.H.sizeout,size(y))),'y must be equal to H.sizeout');
+                assert( (isscalar(y)) || (isequal(H.sizeout,size(y))),'y must be equal to H.sizeout');
             else if issize(H)
                 H=LinOpIdentity(H);
-                assert( (~isscalar(y))&& (isequal(this.H.sizeout,size(y))),'y must be equal to H.sizeout');
+                assert( (isscalar(y)) || (isequal(H.sizeout,size(y))),'y must be equal to H.sizeout');
                 else if isempty(H)
                         H =LinOpIdentity(size(y));
                     end

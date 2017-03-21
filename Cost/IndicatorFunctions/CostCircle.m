@@ -30,26 +30,27 @@ classdef CostCircle < CostRing
     end
     
     methods
-        function this = CostCircle(radius)
+        function this = CostCircle(radius,sz)
             this.name='Cost Circle';
             
-            set_H(this,[],[]);
-          
             
             if nargin >0
-                if isscalar(radius)
-                    this.radius = radius;
-                else
-                    if isnumeric(radius)
-                        this.radius = radius;
-                        this.sizein = size(radius);
-                    else
-                        error('C should be numeric');
-                    end
-                end
+                assert(isnumeric(radius),'C should be numeric');
             else
                 radius = 1;
             end
+            
+            if nargin==1
+                sz = [];
+            end 
+            
+            if isempty(sz)
+                sz = size(radius);
+            end
+            set_H(this,sz,[]);
+          
+            
+            
              this.outer = radius;
              this.inner = radius;
         end

@@ -29,7 +29,6 @@ classdef CostRing < Cost
     properties (SetAccess = protected,GetAccess = public)
         inner=0;
         outer = 1;
-        usecomplex =true;
     end
     
     methods

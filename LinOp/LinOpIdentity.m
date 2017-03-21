@@ -37,12 +37,12 @@ classdef LinOpIdentity <  LinOp
                 this.sizein=sz;
             end
         end
-        function y = Apply(this,x)
+        function y = apply(this,x)
             this.sizeout=size(x);
             this.sizein=size(x);
             y =x;
         end
-        function y = Adjoint(this,x)
+        function y = adjoint(this,x)
             this.sizeout=size(x);
             this.sizein=size(x);
             y =x;
@@ -50,10 +50,10 @@ classdef LinOpIdentity <  LinOp
         function y = HtH(~,x)
             y =x;
         end
-        function y = Inverse(~,x)
+        function y = inverse(~,x)
             y =x;
         end
-        function y = AdjointInverse(~,x)
+        function y = adjointInverse(~,x)
             y =x;
         end
     end

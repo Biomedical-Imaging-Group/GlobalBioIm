@@ -80,11 +80,11 @@ end
             this.M= reshape(M,this.leftsz,this.rightsz);
             
         end
-        function y = Apply(this,x)
+        function y = apply(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
             y = reshape(this.M * reshape(x,[this.rightsz,1]),this.sizeout);
         end
-        function y = Adjoint(this,x)
+        function y = adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
             y = reshape(this.M' * reshape(x,[this.leftsz,1]),this.sizein);
         end

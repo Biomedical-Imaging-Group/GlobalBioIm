@@ -1,7 +1,7 @@
 function CheckLinOp(LinOp)
 %% CHECKLINOP function
 % Matlab Linear Operator Library
-% Function checking the correctness of Adjoint and Inverse implementation
+% Function checking the correctness of adjoint and inverse implementation
 % of the linear operator LinOp
 %
 % Example:
@@ -44,8 +44,8 @@ if LinOp.iscomplex
 	Out = Out + 1i * rand(sizeout);	
 end
 
-HIn = LinOp.Apply(In);
-HtOut = LinOp.Adjoint(Out);
+HIn = LinOp.apply(In);
+HtOut = LinOp.adjoint(Out);
 
 
 tol = 1e-3*max( max(max(abs(In(:))),max(abs(HIn(:)))),max(max(abs(Out(:))),max(abs(HtOut(:))))); % Tolerance for numerical equality
@@ -53,12 +53,12 @@ tol = 1e-3*max( max(max(abs(In(:))),max(abs(HIn(:)))),max(max(abs(Out(:))),max(a
 diff = dot(In(:) ,HtOut(:)) - dot(HIn(:) , Out(:));
 normDiff = diff(:)' * diff(:);
 if normDiff < tol
-    disp('Adjoint OK');
+    disp('adjoint OK');
 else
-    error('Adjoint error: <Hx.y> ~= <x.H^*y> : diff = %d', normDiff);
+    error('adjoint error: <Hx.y> ~= <x.H^*y> : diff = %d', normDiff);
 end
 
-diff = LinOp.Adjoint(HIn) - LinOp.HtH(In);
+diff = LinOp.adjoint(HIn) - LinOp.HtH(In);
 normDiff = diff(:)' * diff(:);
 if  normDiff < tol
     disp('HtH matrix OK');
@@ -67,7 +67,7 @@ else
 end
 
 if ~LinOp.issquare
-    if  (dot((LinOp.Apply(HtOut) - LinOp.HHt(Out)),conj(LinOp.Apply(HtOut) - LinOp.HHt(Out)))<tol)
+    if  (dot((LinOp.apply(HtOut) - LinOp.HHt(Out)),conj(LinOp.apply(HtOut) - LinOp.HHt(Out)))<tol)
         disp('HHt matrix OK');
     else
         error('Error in HHt matrix computation');
@@ -75,17 +75,17 @@ if ~LinOp.issquare
 end
 
 if LinOp.isinvertible
-    if abs(LinOp.Inverse(HIn)-In)<tol
-        disp('Inverse OK');
+    if abs(LinOp.inverse(HIn)-In)<tol
+        disp('inverse OK');
     else
         error('Error in inverse computation: H^-1 H ~= I');
     end
-    HIIn = LinOp.AdjointInverse(In);
-    HItOut = LinOp.Inverse(Out);
+    HIIn = LinOp.adjointInverse(In);
+    HItOut = LinOp.inverse(Out);
     if abs(dot(In(:) ,HItOut(:) ) - dot(HIIn(:) , Out(:)))<10*tol
-        disp('Adjoint Inverse  OK');
+        disp('adjoint inverse  OK');
     else
-        error('Adjoint Inverse error: <H^-1 x.y> ~= <x.H^-* y>');
+        error('adjoint inverse error: <H^-1 x.y> ~= <x.H^-* y>');
     end
 else
     disp('LinOp non invertible');

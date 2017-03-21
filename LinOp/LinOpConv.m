@@ -81,14 +81,14 @@ classdef LinOpConv <  LinOp
             this.norm=max(abs(this.mtf(:)));
             
         end
-        function y = Apply(this,x)
+        function y = apply(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d]',this.sizein);
             y = iSfft( this.mtf .* Sfft(x, this.Notindex), this.Notindex );
             if (~this.iscomplex)&&isreal(x)
                 y = real(y);
             end
         end
-        function y = Adjoint(this,x)
+        function y = adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
             y = iSfft( conj(this.mtf) .* Sfft(x, this.Notindex), this.Notindex );
             if (~this.iscomplex)&&isreal(x)
@@ -102,7 +102,7 @@ classdef LinOpConv <  LinOp
                 y = real(y);
             end
         end
-        function y=Inverse(this,x) % Apply the inverse
+        function y=inverse(this,x) % apply the inverse
             if this.isinvertible
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d]',this.sizein);
             y = iSfft( 1./this.mtf .* Sfft(x, this.Notindex), this.Notindex );       
@@ -110,7 +110,7 @@ classdef LinOpConv <  LinOp
                 error('Operator not invertible');
             end
         end
-        function y=AdjointInverse(this,x) % Apply the inverse
+        function y=adjointInverse(this,x) % apply the inverse
             if this.isinvertible
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
             y = iSfft( 1./conj(this.mtf) .* Sfft(x, this.Notindex), this.Notindex );

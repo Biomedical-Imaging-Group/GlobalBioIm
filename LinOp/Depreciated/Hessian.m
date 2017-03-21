@@ -42,14 +42,14 @@ classdef Hessian <  LinOp
 			  this.sizeout=[sz 6];
 			end
         end
-        function y = Apply(this,x)
+        function y = apply(this,x)
 		  if length(this.sizein)==2
 			y = Hessian2D(x,this.bc);
 		  elseif length(this.sizein)==3
 			y = Hessian3D(x,this.bc);
 		  end
         end
-        function y = Adjoint(this,x)
+        function y = adjoint(this,x)
 		  if length(this.sizein)==2 %2D case
 			y = AdjHessian2D(x,this.bc);
 		  elseif length(this.sizein)==3 %3D case

@@ -85,12 +85,12 @@ classdef StackLinOp < LinOp
                  
         end
         
-        function y = Apply(this,x) % Apply the operator
+        function y = apply(this,x) % apply the operator
 			LinOp.checkSize(x, this.sizein)
             
             y = zeros(prod(this.ALinOp{1}.sizeout),this.numLinOp);
             for n = 1:this.numLinOp
-                tmp =this.ALinOp{n}(1).Apply(x);
+                tmp =this.ALinOp{n}(1).apply(x);
                 y(:,n) =  this.alpha(n) .* tmp(:);
             end
             
@@ -101,7 +101,7 @@ classdef StackLinOp < LinOp
                 y = reshape(y, this.sizeout);
             end
         end
-        function y = Adjoint(this,x) % Apply the adjoint
+        function y = adjoint(this,x) % apply the adjoint
 			LinOp.checkSize(x, this.sizeout);
             y =  zeros(this.sizein);
             
@@ -112,7 +112,7 @@ classdef StackLinOp < LinOp
             for n = 1:this.numLinOp
                 xtmp = zeros(this.ALinOp{1}.sizeout);
                 xtmp(:) = x(:,n);
-                y = y + this.alpha(n) .* this.ALinOp{n}(1).Adjoint(xtmp);
+                y = y + this.alpha(n) .* this.ALinOp{n}(1).adjoint(xtmp);
             end
         end
     end

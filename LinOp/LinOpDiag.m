@@ -84,7 +84,7 @@ classdef LinOpDiag <  LinOp
             % -- Norm of the operator 
             this.norm=max(diag(:));
         end
-        function y = Apply(this,x)
+        function y = apply(this,x)
             if isequal(size(x),this.sizein)
                 if ~this.usecomplex
                     x = reshape(x,[],2);
@@ -99,7 +99,7 @@ classdef LinOpDiag <  LinOp
                 error('x should be the same size as diag: [%d, %d, %d, %d]',this.sizein);
             end
         end
-        function y = Adjoint(this,x)
+        function y = adjoint(this,x)
             
             if isequal(size(x),this.sizeout)
                 if this.iscomplex
@@ -120,7 +120,7 @@ classdef LinOpDiag <  LinOp
             end
         end
         
-        function y = HtH(this,x) %  Apply the HtH matrix
+        function y = HtH(this,x) %  apply the HtH matrix
             if isequal(size(x),this.sizeout)
                 if this.iscomplex
                     y =abs(this.diag).^2 .*x;
@@ -132,13 +132,13 @@ classdef LinOpDiag <  LinOp
             end
         end
         
-        function y = Inverse(this,x)
+        function y = inverse(this,x)
             if ( ~this.isinvertible)
                 error('Operator non invertible');
             end
             y =(1./this.diag) .*x;
         end
-        function y = AdjointInverse(this,x)
+        function y = adjointInverse(this,x)
             if ( ~this.isinvertible)
                 error('Operator non invertible');
             end

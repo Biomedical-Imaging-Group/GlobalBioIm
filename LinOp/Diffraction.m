@@ -139,7 +139,7 @@ classdef Diffraction <  LinOp
                 end
             end
         end
-        function y = Apply(this,x)
+        function y = apply(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d]',this.sizein);
             y = complex(zeros(this.sizeout));
             if this.useincident
@@ -153,7 +153,7 @@ classdef Diffraction <  LinOp
             end
             y = ifft2(y);
         end
-        function y = Adjoint(this,x)
+        function y = adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
             y = zeros(this.sizein);
             fx = fft2(x);

@@ -79,14 +79,14 @@ classdef LinOpSum <  LinOp
             this.imdims(~T)=1;
             
         end
-        function y = Apply(this,x)
+        function y = apply(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
             for n=this.index
                 x = sum(x,n);
             end
             y = squeeze(x);
         end
-        function y = Adjoint(this,x)
+        function y = adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
             y = reshape(repmat(reshape(x,this.imdims),this.kerdims),this.sizein);
         end

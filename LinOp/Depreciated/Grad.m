@@ -73,7 +73,7 @@ classdef Grad <  LinOp
 			end
 			
         end
-        function y = Apply(this,x)
+        function y = apply(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
             y = zeros(this.sizeout);
             nidx = 0;
@@ -124,7 +124,7 @@ classdef Grad <  LinOp
                     end
             end
         end
-        function y = Adjoint(this,x)
+        function y = adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
             nidx = 0;
             y = zeros(this.sizein);
@@ -176,7 +176,7 @@ classdef Grad <  LinOp
             
             
         end
-        function y = HtH(this,x) %  Apply the HtH matrix
+        function y = HtH(this,x) %  apply the HtH matrix
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizein);
             nidx = 0;
             y = zeros(this.sizein);

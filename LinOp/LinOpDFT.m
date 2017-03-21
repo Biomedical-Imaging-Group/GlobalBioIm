@@ -5,7 +5,7 @@ classdef LinOpDFT <  LinOp
     % Example
     % Obj = LinOpDFT(pad)
     % Compute the dicrete fourier transfom padded by PAD (optionnal) such
-    % y = Obj.Apply(x)  <=> y = fftn(x,pad)
+    % y = Obj.apply(x)  <=> y = fftn(x,pad)
     % 
     %
     % Please refer to the LINOP superclass for general documentation about
@@ -50,7 +50,7 @@ classdef LinOpDFT <  LinOp
                 end
             end
         end
-        function y = Apply(this,x)
+        function y = apply(this,x)
             this.sizein = size(x);
             this.sizeout = size(x);
             this.N=numel(x);
@@ -61,7 +61,7 @@ classdef LinOpDFT <  LinOp
             
             end
         end
-        function y = Adjoint(this,x)
+        function y = adjoint(this,x)
             this.N=numel(x);
             if this.unitary
             y = sqrt(this.N) * ifftn(x,this.pad); 
@@ -69,7 +69,7 @@ classdef LinOpDFT <  LinOp
             y = this.N * ifftn(x,this.pad); 
             end
         end
-        function y = Inverse(this,x)
+        function y = inverse(this,x)
             y = ifftn(x,this.pad);
         end
         function y = HtH(this,x)%Beware of unitary fft of Matlab 
@@ -81,7 +81,7 @@ classdef LinOpDFT <  LinOp
             y =this.N *x;
             end
         end
-        function y = AdjointInverse(this,x)%Beware of unitary fft of Matlab 
+        function y = adjointInverse(this,x)%Beware of unitary fft of Matlab 
             this.N=numel(x);
             y = 1/this.N *fftn(x,this.pad);
         end

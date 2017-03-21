@@ -1,6 +1,6 @@
 function As=shiftAdj(A,e,bc)
 
-%SHIFTADJ Adjoint of the Shifting operator with reflexive (mirror), 
+%SHIFTADJ adjoint of the Shifting operator with reflexive (mirror), 
 %         periodic (circular) or zero boundary conditions
 %   B = SHIFT(A,SHIFTSIZE) shifts the values in the array A by SHIFTSIZE
 %   elements. SHIFTSIZE is a vector of integer scalars where the N-th

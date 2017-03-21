@@ -133,7 +133,7 @@ classdef Fresnel <  LinOp
             end
             
         end
-        function y = Apply(this,x)
+        function y = apply(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
             if ~this.usecomplex
                 x = complex(x(:,:,1),x(:,:,2));
@@ -143,7 +143,7 @@ classdef Fresnel <  LinOp
                  y = cat(3,real(y),imag(y));
             end
         end
-        function y = Adjoint(this,x)
+        function y = adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
        
             if ~this.usecomplex
@@ -154,11 +154,11 @@ classdef Fresnel <  LinOp
                  y = cat(3,real(y),imag(y));
             end
         end
-        function y = HtH(this,x) %  Apply the HtH matrix
+        function y = HtH(this,x) %  apply the HtH matrix
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
             y = x;
         end
-        function y = Inverse(this,x)
+        function y = inverse(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
             if ~this.usecomplex
                 x = complex(x(:,:,1),x(:,:,2));
@@ -168,7 +168,7 @@ classdef Fresnel <  LinOp
                  y = cat(3,real(y),imag(y));
             end
         end
-        function y = AdjointInverse(this,x)
+        function y = adjointInverse(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
             if ~this.usecomplex
                 x = complex(x(:,:,1),x(:,:,2));

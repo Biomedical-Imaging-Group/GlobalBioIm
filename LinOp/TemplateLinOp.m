@@ -47,22 +47,22 @@ classdef LinOpNAME <  LinOp
             this.sizeout = [];         % what is the size of the left hand side
         end
         % MANDATORY METHODS
-        function y = Apply(this,x)   
+        function y = apply(this,x)   
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
         end
-        function y = Adjoint(this,x)
+        function y = adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
         end
 %         FACULTATIVE METHODS
-%         function y = Inverse(this,x)
+%         function y = inverse(this,x)
 %         end
-%         function y = AdjointInverse(this,x)
+%         function y = adjointInverse(this,x)
 %         end
-%         function y = HtH(this,x) %  Apply the HtH matrix
+%         function y = HtH(this,x) %  apply the HtH matrix
 %         end
-%         function y = HHt(this,x) %  Apply the HHt matrix
+%         function y = HHt(this,x) %  apply the HHt matrix
 %         end
-%         function y = HtWH(this,x,W) %  Apply the HtWH matrix
+%         function y = HtWH(this,x,W) %  apply the HtWH matrix
 %         end
     end
 end

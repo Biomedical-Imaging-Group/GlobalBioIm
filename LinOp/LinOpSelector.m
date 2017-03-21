@@ -60,7 +60,7 @@ classdef LinOpSelector <  LinOp
             this.isinvertible=false;
         end
         
-        function y = Apply(this,x)
+        function y = apply(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
             if true(this.KeepDimensions)
                 y = x(this.YLIM(1):this.YLIM(2),this.XLIM(1):this.XLIM(2));
@@ -70,7 +70,7 @@ classdef LinOpSelector <  LinOp
             y = reshape(y,this.sizeout);
         end
         
-        function y = Adjoint(this,x)
+        function y = adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
             y = zeros(this.sizein);
             if true(this.KeepDimensions)

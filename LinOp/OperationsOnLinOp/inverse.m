@@ -47,21 +47,21 @@ classdef inverse < LinOp
             
           end
         
-        function y = Apply(this,x) % Apply the operator
+        function y = apply(this,x) % apply the operator
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizein);            
-            y =this.TLinOp.Inverse(x);
+            y =this.TLinOp.inverse(x);
         end
-        function y = Adjoint(this,x) % Apply the adjoint
+        function y = adjoint(this,x) % apply the adjoint
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizeout);
-            y =this.TLinOp.AdjointInverse(x);
+            y =this.TLinOp.adjointInverse(x);
         end
-        function y = Inverse(this,x)
+        function y = inverse(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizeout);
-            y =this.TLinOp.Apply(x);
+            y =this.TLinOp.apply(x);
         end
-        function y = AdjointInverse(this,x)
+        function y = adjointInverse(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizein);   
-            y =this.TLinOp.Adjoint(x); 
+            y =this.TLinOp.adjoint(x); 
         end
     end
 end

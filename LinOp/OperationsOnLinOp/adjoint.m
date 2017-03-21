@@ -44,11 +44,11 @@ classdef adjoint < LinOp
 			this.norm = this.TLinOp.norm;        
           end
         
-        function y = Apply(this,x) % Apply the operator         
-            y =this.TLinOp.Adjoint(x);
+        function y = apply(this,x) % apply the operator         
+            y =this.TLinOp.adjoint(x);
         end
-        function y = Adjoint(this,x) % Apply the adjoint
-            y =this.TLinOp.Apply(x);
+        function y = adjoint(this,x) % apply the adjoint
+            y =this.TLinOp.apply(x);
         end
         function y = HtH(this,x)
             y =this.TLinOp.HHt(x);
@@ -56,11 +56,11 @@ classdef adjoint < LinOp
         function y = HHt(this,x)
             y =this.TLinOp.HtH(x);
         end
-        function y = Inverse(this,x)
-            y =this.TLinOp.AdjointInverse(x);
+        function y = inverse(this,x)
+            y =this.TLinOp.adjointInverse(x);
         end
-        function y = AdjointInverse(this,x)
-            y =this.TLinOp.AdjointInverse(x); 
+        function y = adjointInverse(this,x)
+            y =this.TLinOp.adjointInverse(x); 
         end
     end
 end

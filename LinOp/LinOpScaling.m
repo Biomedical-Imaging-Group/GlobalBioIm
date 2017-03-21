@@ -53,12 +53,12 @@ classdef LinOpScaling <  LinOp
             end
             
         end
-        function y = Apply(this,x)
+        function y = apply(this,x)
             this.sizeout=size(x);
             this.sizein=size(x);
             y =this.scale .* x;
         end
-        function y = Adjoint(this,x)
+        function y = adjoint(this,x)
             this.sizeout=size(x);
             this.sizein=size(x);
             if this.iscomplex
@@ -67,13 +67,13 @@ classdef LinOpScaling <  LinOp
                 y =conj(this.scale) .*x;
             end
         end
-        function y = Inverse(this,x)
+        function y = inverse(this,x)
             if ( ~this.isinvertible)
                 error('Operator non invertible');
             end
             y =(1./this.scale) .*x;
         end
-        function y = AdjointInverse(this,x)
+        function y = adjointInverse(this,x)
             if (~this.isinvertible)
                 error('Operator non invertible');
             end

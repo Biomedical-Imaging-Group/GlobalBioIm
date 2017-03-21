@@ -16,17 +16,17 @@ classdef LinOp < handle
     % * |norm|          - norm of the operator (if known, otherwise -1)
     %
     %% Methods
-    % * |Apply|    - Apply the operator $\mathbf{H}$
-    % * |Adjoint|  - Apply the adjoint  $\mathbf{H}^{\mathrm{*}}$ defined
+    % * |apply|    - apply the operator $\mathbf{H}$
+    % * |adjoint|  - apply the adjoint  $\mathbf{H}^{\mathrm{*}}$ defined
     % 				 such  $<\mathbf{H} \mathbf{x} . \mathbf{y} > = <\mathbf{x} .
     %                \mathbf{H}^{\mathrm{*}} \mathbf{y} >$
-    % * |HtH|      - Apply the HtH matrix: the operator followed by its adjoint
+    % * |HtH|      - apply the HtH matrix: the operator followed by its adjoint
     %                $\mathbf{H}^{\mathrm{*}} \cdot \mathbf{H}$    
-    % * |HHt|      - Apply the HHt matrix: the adjoint operator followed by its 
+    % * |HHt|      - apply the HHt matrix: the adjoint operator followed by its 
     %                $ \mathbf{H} \cdot \mathbf{H}^{\mathrm{*}} $
-    % * |Inverse|  - Apply the inverse  $\mathbf{H}^{\mathrm{-1}}$ of the
+    % * |inverse|  - apply the inverse  $\mathbf{H}^{\mathrm{-1}}$ of the
     %                operator if it exist
-    % * |AdjointInverse|  - Apply the adjoint of the inverse  $\mathbf{H}^{\mathrm{-*}}$ of the
+    % * |adjointInverse|  - apply the adjoint of the inverse  $\mathbf{H}^{\mathrm{-*}}$ of the
     %                       operator if it exist
     %   
     %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
@@ -55,47 +55,47 @@ classdef LinOp < handle
     end
     
     methods
-        function Apply(~,~) % Apply the operator
+        function apply(~,~) % apply the operator
             error('Operator not implemented');
         end
-        function Adjoint(~,~) % Apply the adjoint
-            error('Adjoint not implemented');
+        function adjoint(~,~) % apply the adjoint
+            error('adjoint not implemented');
         end
-        function y = HtH(this,x) %  Apply the HtH matrix
-            y = this.Adjoint(this.Apply(x));
+        function y = HtH(this,x) %  apply the HtH matrix
+            y = this.adjoint(this.apply(x));
         end
-        function y = HHt(this,x) %  Apply the HHt matrix
+        function y = HHt(this,x) %  apply the HHt matrix
             if this.issquare   % HtH =HHt
                 y = this.HtH(x);
             else
-            y = this.Apply(this.Adjoint(x));
+            y = this.apply(this.adjoint(x));
             end
         end
-        function y = HtWH(this,x,W) %  Apply the HtH matrix
+        function y = HtWH(this,x,W) %  apply the HtH matrix
             if (isscalar(W) && isreal(W))
                 y = W.*this.HtH(x);
             else
                 assert(isa(W,'LinOp'),'W must be a LinOp');
-                y = this.Adjoint(W.Apply(this.Apply(x)));
+                y = this.adjoint(W.apply(this.apply(x)));
             end
         end
-        function Inverse(this,~) % Apply the inverse
+        function inverse(this,~) % apply the inverse
             if this.isinvertible
-                error('Inverse not implemented');
+                error('inverse not implemented');
             else
                 error('Operator not invertible');
             end
         end
-        function AdjointInverse(this,~) % Apply the inverse
+        function adjointInverse(this,~) % apply the inverse
             if this.isinvertible
-                error('AdjointInverse not implemented');
+                error('adjointInverse not implemented');
             else
                 error('Operator not invertible');
             end
         end
         function this = transpose(this) % Overloading for transpose 
             if this.iscomplex
-            warning('Warning: Do you mean adjoint? For LinOp object transpose() is an alias of Adjoint method');
+            warning('Warning: Do you mean adjoint? For LinOp object transpose() is an alias of adjoint method');
             end
            this = adjoint(this);
         end
@@ -106,7 +106,7 @@ classdef LinOp < handle
             if isa(x,'LinOp')
             y = MulLinOp(this, x);
             else
-                y = this.Apply(x);
+                y = this.apply(x);
             end
         end
         function y =	plus(this,x)% Overloading for +

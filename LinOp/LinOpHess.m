@@ -7,10 +7,10 @@ classdef LinOpHess <  LinOp
     % Build the Hessian operator to apply on a variable os size SZ
     %
     % Note: Only 2D and 3D cases are implemented.
-    %       The output of the Apply() method is:
+    %       The output of the apply() method is:
     %         - for 2D case: a [sz,3] matrix containing [d^2F/dxx;d^2F/dxy;d^2F/dyy] 
     %		  - for 3D case: a [sz,6] matrix containing [d^2F/dxx;d^2F/dxy;d^2F/dxz;d^2F/dyy;d^2F/dyz;d^2F/dzz]
-    %       These size are the input sizes for the Adjoint() method
+    %       These size are the input sizes for the adjoint() method
     %
     % 
     % Please refer to the LinOp superclass for documentation
@@ -49,7 +49,7 @@ classdef LinOpHess <  LinOp
 					this.sizeout=[sz 6];
 			end
         end
-        function y = Apply(this,x)
+        function y = apply(this,x)
 			assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
             y = zeros(this.sizeout);
             nidx = 0;
@@ -101,7 +101,7 @@ classdef LinOpHess <  LinOp
 					y(:,:,end,6)=x(:,:,end);
             end
         end
-        function y = Adjoint(this,x)
+        function y = adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
             nidx = 0;
             y = zeros(this.sizein);
@@ -155,7 +155,7 @@ classdef LinOpHess <  LinOp
 					
         	end
 		end
-		 function y = HtH(this,x) %  Apply the HtH matrix
+		 function y = HtH(this,x) %  apply the HtH matrix
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizein);
             nidx = 0;
             y = zeros(this.sizein);

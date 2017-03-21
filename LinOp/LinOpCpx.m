@@ -46,11 +46,11 @@ classdef LinOpCpx <  LinOp
             
             
         end
-        function y = Apply(this,x)
+        function y = apply(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein); 
             y = cat(this.nbDim+1, real(x),imag(x));
         end
-        function y = Adjoint(this,x)
+        function y = adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizein); 
             y = reshape(x,[],2);
             y = complex(y(:,1),y(:,2));
@@ -63,7 +63,7 @@ classdef LinOpCpx <  LinOp
             y =x;
         end
         
-        function y = Inverse(this,x)
+        function y = inverse(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizein); 
             y = complex(x(:,:,1),x(:,:,2));
         end

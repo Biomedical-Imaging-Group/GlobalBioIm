@@ -50,11 +50,11 @@ classdef LinOpShape <  LinOp
             assert(prod(sizeout)==prod(sizein),'The inputs sizein and sizeout should be a conformable');
             
         end
-        function y = Apply(this,x)
+        function y = apply(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
             y = reshape(x, this.sizeout);
         end
-        function y = Adjoint(this,x)
+        function y = adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
             y = reshape(x, this.sizein);
         end
@@ -66,11 +66,11 @@ classdef LinOpShape <  LinOp
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
             y=x;
         end        
-        function y = Inverse(this,x)
+        function y = inverse(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
              y = reshape(x, this.sizein);
         end
-        function y = AdjointInverse(this,x)
+        function y = adjointInverse(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
             y = reshape(x, this.sizeout);
         end

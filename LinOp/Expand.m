@@ -5,7 +5,7 @@ function out = Expand(Mask,varargin)
     % Example:
     % Obj = Expand(Mask)
     %
-    % Adjoint of selector. Expands the input by adding zeros where the Mask
+    % adjoint of selector. Expands the input by adding zeros where the Mask
     % is 1.
     %
     % Please refer to the LinOp superclass for documentation

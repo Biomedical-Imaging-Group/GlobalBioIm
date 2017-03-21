@@ -103,7 +103,7 @@ classdef Wiener <  LinOp
             end
             this.imtf2 = 1./mtf2;
         end
-        function y = Apply(this,x)
+        function y = apply(this,x)
         htx = 0;
             for n=1:this.nlinop;
                     switch(this.ALinOp{n}{1}.name)

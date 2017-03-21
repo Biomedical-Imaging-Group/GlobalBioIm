@@ -52,7 +52,7 @@ classdef LinOpSDFT <  LinOp
             this.isinvertible=true;
             this.issquare = true;
         end
-        function y = Apply(this,x)
+        function y = apply(this,x)
              if (~isempty(this.index))
                 dim = 1:ndims(x);
                 Iidx = true(ndims(x),1);
@@ -67,16 +67,16 @@ classdef LinOpSDFT <  LinOp
             this.N= prod(this.sizein(this.index));
             y =  Sfft(x, this.Notindex);
         end
-        function y = Adjoint(this,x)
+        function y = adjoint(this,x)
             y =   this.N * iSfft(x,this.Notindex);
         end
-        function y = Inverse(this,x)
+        function y = inverse(this,x)
             y =  iSfft(x, this.Notindex);
         end
         function y = HtH(this,x)
             y = this.N * x;
         end
-        function y = AdjointInverse(this,x)
+        function y = adjointInverse(this,x)
             y =   1/this.N * Sfft(x, this.Notindex);
         end
     end

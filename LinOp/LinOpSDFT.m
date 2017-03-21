@@ -43,10 +43,10 @@ classdef LinOpSDFT <  LinOp
                 this.index = 1:this.ndms;
             end
             
-            if nargin>1
+            assert(issize(sz),'The input size sz should be a conformable  to a size ');
             this.sizeout=sz;
             this.sizein=sz;
-            end
+
             this.name ='LinOp SDFT';
             this.iscomplex= true;
             this.isinvertible=true;

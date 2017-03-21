@@ -32,9 +32,6 @@ classdef LinOpShape <  LinOp
     end
     methods
         function this = LinOpShape(sizein, sizeout)
-            if nargin == 1
-                index = [];
-            end
             this.name ='LinOp Shape';
             this.iscomplex= false;
             this.isinvertible=true;

@@ -35,16 +35,14 @@ classdef LinOpIdentity <  LinOp
             if nargin>0
                 this.sizeout=sz;
                 this.sizein=sz;
+            else
+                error('a size SZ should be given');
             end
         end
-        function y = apply(this,x)
-            this.sizeout=size(x);
-            this.sizein=size(x);
+        function y = apply(~,x)
             y =x;
         end
-        function y = adjoint(this,x)
-            this.sizeout=size(x);
-            this.sizein=size(x);
+        function y = adjoint(~,x)
             y =x;
         end
         function y = HtH(~,x)

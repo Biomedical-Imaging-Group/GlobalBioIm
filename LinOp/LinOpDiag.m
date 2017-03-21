@@ -1,12 +1,17 @@
 classdef LinOpDiag <  LinOp
     %% LinOpDiag : Diagonal operator
-    %  Matlab Linear Operator Library 
+    %  Matlab Linear Operator Library
     %
     % Example:
     % Obj = LinOpDiag(diag)
     %
     % Build the diagonal operator that multiply element wise the input by
-    % the vector diag
+    % the vector DIAG  or
+    %
+    % Obj = LinOpDiag(diag,sz)
+    %
+    % Build the diagonal operator that multiply element wise an input of size SZby
+    % the scalar DIAG
     %
     % Please refer to the LinOp superclass for documentation
     % See also LinOp
@@ -30,71 +35,52 @@ classdef LinOpDiag <  LinOp
     
     properties (SetAccess = protected,GetAccess = public)
         diag % diagonal vector
-        usecomplex = true;
     end
     methods
-		function this = LinOpDiag(diag,varargin)
+        function this = LinOpDiag(diag,sz)
             this.name ='LinOp Diagonal';
             this.issquare = true;
-			
-			if ~isnumeric(diag)
-				error('diag must be numeric');
-			end
-			
-			% collapse repeated diagonal element to a scalar
-			if length(unique(diag)) == 1
-				diag = unique(diag);
-			end
-			
-			if isscalar(diag)
-				if isempty(varargin) || ~issize(varargin{1})
-					error('must provide sz argument when diag is a scalar');
-				end
-				this.sizein = varargin{1};
-				this.sizeout = varargin{1};
-				varargin = varargin(2:end);
-			else
-				this.sizeout=size(diag);
-				this.sizein=size(diag);
-			end
-			
-			if isreal(diag)
-				this.iscomplex= false;
-			else
-                    this.iscomplex= true;
-				end
-                
-				for c=1:length(varargin)
-					switch varargin{c}
-						case('DontUseComplex')
-							this.usecomplex = false;
-							diag = reshape(diag,[],2);
-							diag = complex(diag(:,1),diag(:,2));
-					end
-				end
             
-                if all(diag)
-                    this.isinvertible=true;
-                else
-                    this.isinvertible=false;
+            if ~isnumeric(diag)
+                error('diag must be numeric');
+            end
+            
+            % collapse repeated diagonal element to a scalar
+            if length(unique(diag)) == 1
+                diag = unique(diag);
+            end
+            
+            if isscalar(diag)
+                if isempty(sz) || ~issize(sz)
+                    error('must provide sz argument when diag is a scalar');
                 end
-                
-                this.diag = diag;
-           
-            % -- Norm of the operator 
+                this.sizein = sz;
+                this.sizeout = sz;
+            else
+                this.sizeout=size(diag);
+                this.sizein=size(diag);
+            end
+            
+            if isreal(diag)
+                this.iscomplex= false;
+            else
+                this.iscomplex= true;
+            end
+            
+            if all(diag)
+                this.isinvertible=true;
+            else
+                this.isinvertible=false;
+            end
+            
+            this.diag = diag;
+            
+            % -- Norm of the operator
             this.norm=max(diag(:));
         end
         function y = apply(this,x)
             if isequal(size(x),this.sizein)
-                if ~this.usecomplex
-                    x = reshape(x,[],2);
-                    x = complex(x(:,1),x(:,2));
-                    y =this.diag .* x;
-                      y = cat(3,real(y),imag(y));
-                    y = reshape(y , this.sizeout);
-                else
                 y =this.diag .* x;
-                end
             else
                 error('x should be the same size as diag: [%d, %d, %d, %d]',this.sizein);
             end
@@ -105,15 +91,7 @@ classdef LinOpDiag <  LinOp
                 if this.iscomplex
                     y =conj(this.diag) .*x;
                 else
-                if ~this.usecomplex
-                    x = reshape(x,[],2);
-                    x = complex(x(:,1),x(:,2));
-                    y =conj(this.diag) .* x;
-                      y = cat(3,real(y),imag(y));
-                    y = reshape(y , this.sizeout);
-                else
                     y =this.diag .*x;
-                end
                 end
             else
                 error('x should be the same size as diag: [%d, %d, %d, %d]',this.sizein);

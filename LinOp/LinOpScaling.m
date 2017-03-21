@@ -1,6 +1,6 @@
 classdef LinOpScaling <  LinOp
     %% LinOpScaling : LinOp scaling operator
-    %  Matlab Linear Operator Library 
+    %  Matlab Linear Operator Library
     %
     % Example
     % Obj = LinOpScaling(scale)
@@ -10,22 +10,22 @@ classdef LinOpScaling <  LinOp
     %
     % Please refer to the LinOp superclass for documentation
     % See also LinOp
-        
-%     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
-%
-%     This program is free software: you can redistribute it and/or modify
-%     it under the terms of the GNU General Public License as published by
-%     the Free Software Foundation, either version 3 of the License, or
-%     (at your option) any later version.
-% 
-%     This program is distributed in the hope that it will be useful,
-%     but WITHOUT ANY WARRANTY; without even the implied warranty of
-%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%     GNU General Public License for more details.
-% 
-%     You should have received a copy of the GNU General Public License
-%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+    
+    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+    %
+    %     This program is free software: you can redistribute it and/or modify
+    %     it under the terms of the GNU General Public License as published by
+    %     the Free Software Foundation, either version 3 of the License, or
+    %     (at your option) any later version.
+    %
+    %     This program is distributed in the hope that it will be useful,
+    %     but WITHOUT ANY WARRANTY; without even the implied warranty of
+    %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    %     GNU General Public License for more details.
+    %
+    %     You should have received a copy of the GNU General Public License
+    %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
     properties (SetAccess = protected,GetAccess = public)
         scale % scale factor
     end
@@ -46,11 +46,10 @@ classdef LinOpScaling <  LinOp
             else
                 error('LinOpScale value must be a scalar');
             end
+            assert(issize(sz),'The input size sz should be a conformable  to a size ');
             
-            if nargin>1
             this.sizeout=sz;
             this.sizein=sz;
-            end
             
         end
         function y = apply(this,x)

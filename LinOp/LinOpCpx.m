@@ -39,7 +39,7 @@ classdef LinOpCpx <  LinOp
             this.iscomplex = false;
             this.isinvertible = true;
             
-            
+            assert(issize(sz),'The input size sz should be a conformable  to a size ');
             this.sizeout = [sz 2];
             this.sizein = sz;
             this.nbDim = numel(sz);

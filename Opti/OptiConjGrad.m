@@ -1,6 +1,6 @@
 classdef OptiConjGrad < Opti
     %% OptiConjGrad : Conjugate gradient optimization algorithm
-    %  Matlab Inverse Problems Library
+    %  Matlab inverse Problems Library
     %
     % -- Description
     % Solves the linear system A*x=b by minimizing 

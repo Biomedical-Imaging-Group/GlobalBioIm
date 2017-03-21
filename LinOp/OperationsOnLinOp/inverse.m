@@ -1,10 +1,10 @@
-classdef inverse < LinOp
-    %% inverse : overload of inverse function for LinOp
+classdef Inverse < LinOp
+    %% Inverse : overload of Inverse function for LinOp
     %  Matlab Linear Operator Library
     %
     % Example
     % Obj = inverse(LinOp)
-    % Obj is the inverse of the LinOp
+    % Obj is the Inverse of the LinOp
     %
     %
     %

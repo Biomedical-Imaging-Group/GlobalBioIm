@@ -1,6 +1,6 @@
 classdef OptiFBS < Opti
     %% OptiFBS : Forward-Backward Splitting optimization algorithm
-    %  Matlab Inverse Problems Library
+    %  Matlab inverse Problems Library
     %
     % -- Description
     % Implements the Forward-Backward Splitting algorithm [1] to minimize a function of the form:
@@ -30,7 +30,7 @@ classdef OptiFBS < Opti
 	% [2] Hedy Attouch, Jerome Bolte and Benar Fux Svaiter "Convergence of descent methods for semi-algebraic and 
 	%     tame problems: proximal algorithms, forward-backward splitting, and regularized gaussiedel methods." 
 	%     Mathematical Programming, 137 (2013).
-	% [3] Amir Beck and Marc Teboulle, "A Fast Iterative Shrinkage-Thresholding Algorithm for Linear Inverse Problems",
+	% [3] Amir Beck and Marc Teboulle, "A Fast Iterative Shrinkage-Thresholding Algorithm for Linear inverse Problems",
 	%     SIAM Journal on Imaging Science, vol 2, no. 1, pp 182-202 (2009)
     %
     % Please refer to the OPTI superclass for general documentation about optimization class

@@ -1,6 +1,6 @@
 classdef OptiPrimalDualCondat < Opti
     %% OptiPrimalDualCondat : Primal-Dual algorithm proposed by Condat [1]
-    %  Matlab Inverse Problems Library
+    %  Matlab inverse Problems Library
     %
     % -- Description
     % Implements the primal-dual algorithm proposed by Condat [1] to minimizes a function
@@ -120,7 +120,7 @@ classdef OptiPrimalDualCondat < Opti
 					temp=this.xopt;
 				end
 				for n=1:length(this.Hn) 
-					temp=temp-this.tau*this.Hn{n}.Adjoint(this.y{n});
+					temp=temp-this.tau*this.Hn{n}.adjoint(this.y{n});
 				end
 				if ~isempty(this.G)
 					xtilde=this.G.prox(temp,this.tau);

@@ -51,15 +51,15 @@ classdef CostL1 < Cost
             end
             
         end
-        function z = prox(this,x,alpha) % Apply the operator
+        function z = prox(this,x,alpha) % apply the operator
             assert(isscalar(alpha),'alpha must be a scalar');
             
             if this.H.isinvertible
-                 tmp = this.H.Apply(x)-this.y ;
+                 tmp = this.H.apply(x)-this.y ;
                 if this.nonneg
-                    z =   this.H.Inverse(max(tmp- alpha,0)+this.y);
+                    z =   this.H.inverse(max(tmp- alpha,0)+this.y);
                 else
-                    z =  this.H.Inverse(sign(tmp) .* max( abs( tmp) - alpha,0)+this.y);
+                    z =  this.H.inverse(sign(tmp) .* max( abs( tmp) - alpha,0)+this.y);
                 end
             else
                 error('Prox not implemented');
@@ -67,7 +67,7 @@ classdef CostL1 < Cost
         end
         function f=eval(this,x)
             if ~this.nonneg
-                 tmp = this.H.Apply(x)-this.y;
+                 tmp = this.H.apply(x)-this.y;
                  f=sum(abs(tmp(:)));
             else
                 error('eval L1 not implemented');

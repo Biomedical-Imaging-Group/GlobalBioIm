@@ -1,6 +1,6 @@
 classdef OptiGradDsct < Opti
     %% OptiGradDsct : Gradient Descent optimization algorithm
-    %  Matlab Inverse Problems Library
+    %  Matlab inverse Problems Library
     %  Implements a Gradient Decsent
     %
     % -- Example

@@ -81,14 +81,17 @@ classdef CostRing < Cost
                     end
                 end
         end
-        function z = prox(this,x,~) % Apply the operator
+        function z = prox(this,x,~) % apply the operator
             assert(isnumeric(x),'x must be numeric');
-          
-            if ~isscalar(this.radius)
-                assert( isequal(size(x),this.sz),  'x does not have the right size: [%d, %d, %d,%d]',this.sz);
-            end
-            tmp =this.H.Apply(x) - this.y;
-            z = max(min(this.outer,abs(tmp)),this.inner) .* exp(1i .* angle(tmp));
+            
+          if this.H.isinvertible
+              tmp =this.H.apply(x) - this.y;
+            z = this.H.inverse(max(min(this.outer,abs(tmp)),this.inner) .* exp(1i .* angle(tmp))+this.y);
+            else
+        		error('Prox not implemented');
+          end
+            
+            
             
         end
     end

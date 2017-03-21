@@ -1,12 +1,12 @@
 function CheckLinOp(LinOp)
 %% CHECKLINOP function
 % Matlab Linear Operator Library
-% Function checking the correctness of adjoint and inverse implementation
+% Function checking the correctness of adjoint and Inverse implementation
 % of the linear operator LinOp
 %
 % Example:
 % I = Identity()
-% CheckLinop(I) % will check if adjoint gram and inverse gives coherent results 
+% CheckLinop(I) % will check if adjoint gram and Inverse gives coherent results 
 %
 % See also LinOp
 
@@ -78,14 +78,14 @@ if LinOp.isinvertible
     if abs(LinOp.inverse(HIn)-In)<tol
         disp('inverse OK');
     else
-        error('Error in inverse computation: H^-1 H ~= I');
+        error('Error in Inverse computation: H^-1 H ~= I');
     end
     HIIn = LinOp.adjointInverse(In);
     HItOut = LinOp.inverse(Out);
     if abs(dot(In(:) ,HItOut(:) ) - dot(HIIn(:) , Out(:)))<10*tol
-        disp('adjoint inverse  OK');
+        disp('adjoint Inverse  OK');
     else
-        error('adjoint inverse error: <H^-1 x.y> ~= <x.H^-* y>');
+        error('adjoint Inverse error: <H^-1 x.y> ~= <x.H^-* y>');
     end
 else
     disp('LinOp non invertible');

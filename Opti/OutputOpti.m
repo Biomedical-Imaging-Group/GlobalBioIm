@@ -1,6 +1,6 @@
 classdef OutputOpti < handle
     %% OutputOpti : Generic class for object OutputOpti objects
-    %  Matlab Inverse Problems Library
+    %  Matlab inverse Problems Library
     %
     % At each ItUpOut iterations of an optimization algorithm (see Opti generic class),
     % the update method of an OutputOpti object will be called in order to acheive user 

@@ -1,6 +1,6 @@
 classdef OptiChambPock < Opti
     %% OptiChambPock : Chambolle-Pock optimization algorithm
-    %  Matlab Inverse Problems Library
+    %  Matlab inverse Problems Library
     %
     % -- Description
     % Implements the Chambolle-Pock algorithm [1] to minimize a function of the form:
@@ -109,7 +109,7 @@ classdef OptiChambPock < Opti
 				Kxbar=y;
 			else
 				ybar=y;
-				KTybar=this.H.Adjoint(ybar);
+				KTybar=this.H.adjoint(ybar);
 				KTy=KTybar;
 			end
 			Kxopt=y;
@@ -121,7 +121,7 @@ classdef OptiChambPock < Opti
 					Kxold=Kxopt;
 					% - Algorithm iteration
 					y=this.F.prox_fench(y+sig*Kxbar,sig);
-					this.xopt=this.G.prox(this.xopt-tau*this.H.Adjoint(y),tau);
+					this.xopt=this.G.prox(this.xopt-tau*this.H.adjoint(y),tau);
 					Kxopt=this.H.Apply(this.xopt);
 					if ~isempty(gam) % acceleration => uodate theta, tau and sig according to [1]
 						theta=1/sqrt(1+2*gam*tau);
@@ -137,7 +137,7 @@ classdef OptiChambPock < Opti
 					this.xopt=this.G.prox(this.xopt-tau*KTybar,tau);
 					Kxopt=this.H.Apply(this.xopt);
 					y=this.F.prox_fench(y+sig*Kxopt,sig);
-					KTy=this.H.Adjoint(y);
+					KTy=this.H.adjoint(y);
 					if ~isempty(gam) % acceleration => uodate theta, tau and sig according to [1]
 						theta=1/sqrt(1+2*gam*sig); 
 						tau=tau/theta;		 

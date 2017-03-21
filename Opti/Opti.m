@@ -1,6 +1,6 @@
 classdef Opti < matlab.mixin.SetGet
     %% Opti : Optimization algorithm generic class
-    %  Matlab Inverse Problems Library
+    %  Matlab inverse Problems Library
     %  The Opti meta class implements generic methods for all optimization algorithms
     %
     % -- Properties

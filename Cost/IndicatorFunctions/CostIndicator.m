@@ -61,10 +61,10 @@ classdef CostIndicator < Cost
             this.xmax = xmax;
             
         end
-        function z = prox(this,x,~) % Apply the operator
+        function z = prox(this,x,~) % apply the operator
             
         	if this.H.isinvertible
-				z = this.H.Inverse(min(max(this.H.Apply(x)-this.y, this.xmin),this.xmax)+this.y);
+				z = this.H.inverse(min(max(this.H.apply(x)-this.y, this.xmin),this.xmax)+this.y);
             else
         		error('Prox not implemented');
         	end

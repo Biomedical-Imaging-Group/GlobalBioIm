@@ -41,7 +41,7 @@ classdef ComposeLinOpCost < Cost
     	end
     	%% Evaluation of the Functional
         function y=eval(this,x)
-			y=this.F.eval(this.H.Apply(x));
+			y=this.F.eval(this.H.apply(x));
         end
     end
 end

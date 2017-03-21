@@ -45,7 +45,7 @@ for i = 1:length(proxes)
 	zus{i} = zs{i} - us{i}/rhos(i);
 end
 %b = H'* wy + rho1*D'*zu1 + rho2 *B'*tu2;
-b = A.Adjoint([Wy, zus]);
+b = A.adjoint([Wy, zus]);
 x = ConjGrad(A,b,x,cgmaxiter, [{W}, num2cell(ones(1, length(proxes)))] ); 
 
 lkl = norm( reshape(W*(H*x - y),numel(y),1)); % likelihood

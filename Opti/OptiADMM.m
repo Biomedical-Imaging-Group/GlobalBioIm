@@ -1,6 +1,6 @@
 classdef OptiADMM < Opti
     %% OptiADMM : Alternating Direction Method of Multipliers algorithm
-    %  Matlab Inverse Problems Library
+    %  Matlab inverse Problems Library
     %
     % -- Description
     % Implements the ADMM algorithm [1] to minimize:
@@ -135,9 +135,9 @@ classdef OptiADMM < Opti
 					this.zn{n}=this.yn{n}-this.wn{n}/this.rho_n(n);
 				end
 				if isempty(this.solver)
-					b=this.rho_n(1)*this.Hn{1}.Adjoint(this.zn{1});
+					b=this.rho_n(1)*this.Hn{1}.adjoint(this.zn{1});
 					for n=2:length(this.Hn)
-						b=b+this.rho_n(n)*this.Hn{n}.Adjoint(this.zn{n});
+						b=b+this.rho_n(n)*this.Hn{n}.adjoint(this.zn{n});
 					end
 					CG=OptiConjGrad(this.A,b,[],this.OutOpCG);
 					CG.maxiter=this.maxiterCG;

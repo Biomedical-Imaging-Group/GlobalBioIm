@@ -65,9 +65,9 @@ classdef OptiDouglasRachford < Opti
 				if this.useL
 					Ly = this.L*y;
 					if this.useL==2
-						this.xopt = L.Adjoint( this.F2.prox(Ly, this.gamma(2)));
+						this.xopt = L.adjoint( this.F2.prox(Ly, this.gamma(2)));
 					else
-						this.xopt = y + (1./this.nu).* L.Adjoint( this.F2.prox(Ly, this.nu.*this.gamma(2)) - Ly);
+						this.xopt = y + (1./this.nu).* L.adjoint( this.F2.prox(Ly, this.nu.*this.gamma(2)) - Ly);
 					end
 				else
 					this.xopt = this.F2.prox(y, this.gamma(2));

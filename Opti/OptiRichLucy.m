@@ -1,6 +1,6 @@
 classdef OptiRichLucy < Opti
     %% OptiRichLucy : Richardson-Lucy algorithm
-    %  Matlab Inverse Problems Library
+    %  Matlab inverse Problems Library
     %
     % -- Description
     % Implements the Richardson-Lucy algorithm [1] to minimize the functional (FuncKullLeib):
@@ -80,7 +80,7 @@ classdef OptiRichLucy < Opti
 			if ~isempty(x0),this.xopt=x0;end;  % To restart from current state if wanted
 			assert(~isempty(this.xopt),'Missing starting point x0');
         	data=this.Fkl.data;
-        	He1=this.Fkl.H.Adjoint(ones(this.Fkl.sizein));
+        	He1=this.Fkl.H.adjoint(ones(this.Fkl.sizein));
         	bet=this.Fkl.bet;
 			tstart=tic;
 			this.OutOp.init();
@@ -91,7 +91,7 @@ classdef OptiRichLucy < Opti
 				xold=this.xopt;
 				% - Algorithm iteration
 				if ~this.TV
-					this.xopt=this.xopt./He1.*this.Fkl.H.Adjoint(data./(this.Fkl.H.Apply(this.xopt)+bet));	
+					this.xopt=this.xopt./He1.*this.Fkl.H.adjoint(data./(this.Fkl.H.Apply(this.xopt)+bet));	
 				else
 					tmp=this.G.Apply(this.xopt);
 					if length(size(tmp))==2     % 1D
@@ -101,8 +101,8 @@ classdef OptiRichLucy < Opti
 					elseif length(size(tmp))==4 % 3D
 						nor=repmat(sqrt(sum(tmp.^2,4)+this.epsl),[1,1,1,size(tmp,4)]);
 					end
-					gradReg=this.G.Adjoint(tmp./nor);
-					this.xopt=this.xopt./(He1 + this.lamb*gradReg).*this.Fkl.H.Adjoint(data./(this.Fkl.H.Apply(this.xopt)+bet));
+					gradReg=this.G.adjoint(tmp./nor);
+					this.xopt=this.xopt./(He1 + this.lamb*gradReg).*this.Fkl.H.adjoint(data./(this.Fkl.H.Apply(this.xopt)+bet));
 					if sum(this.xopt(:)<0)~=0
   						warning('Violation of the positivity of the solution (the regularization parameter should be decreased).');
   					end

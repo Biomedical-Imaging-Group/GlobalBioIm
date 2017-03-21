@@ -24,9 +24,9 @@ classdef LinOp < handle
     %                $\mathbf{H}^{\mathrm{*}} \cdot \mathbf{H}$    
     % * |HHt|      - apply the HHt matrix: the adjoint operator followed by its 
     %                $ \mathbf{H} \cdot \mathbf{H}^{\mathrm{*}} $
-    % * |inverse|  - apply the inverse  $\mathbf{H}^{\mathrm{-1}}$ of the
+    % * |inverse|  - apply the Inverse  $\mathbf{H}^{\mathrm{-1}}$ of the
     %                operator if it exist
-    % * |adjointInverse|  - apply the adjoint of the inverse  $\mathbf{H}^{\mathrm{-*}}$ of the
+    % * |adjointInverse|  - apply the adjoint of the Inverse  $\mathbf{H}^{\mathrm{-*}}$ of the
     %                       operator if it exist
     %   
     %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch

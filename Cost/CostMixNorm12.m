@@ -59,7 +59,7 @@ classdef CostMixNorm12 < Cost
         end
         %% Evaluation of the Functional
         function y=eval(this,x)
-            u=abs(this.H.Apply(x)-this.y).^2;
+            u=abs(this.H.apply(x)-this.y).^2;
             % Computes the l2-norm along the dimensions given by index
             for n=1:length(this.index)
                 u = sum(u,this.index(n));

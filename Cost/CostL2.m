@@ -72,9 +72,9 @@ classdef CostL2 < Cost
         end
         %% Evaluation of the Functional
         function f=eval(this,x)
-            r=this.H.Apply(x)-this.y;
+            r=this.H.apply(x)-this.y;
             if this.isW
-                wr=this.W.Apply(r);
+                wr=this.W.apply(r);
                 f=0.5*dot(r(:),wr(:));
             else
                 f=0.5*norm(r(:))^2;
@@ -82,24 +82,24 @@ classdef CostL2 < Cost
         end
         %% Gradient of the Functional
         function g=grad(this,x)
-            r=this.H.Apply(x)-this.y;
+            r=this.H.apply(x)-this.y;
             if this.isW
-                g = this.H.Adjoint(this.W.Apply(r)) ;
+                g = this.H.adjoint(this.W.apply(r)) ;
             else
-                g = this.H.Adjoint(r) ;
+                g = this.H.adjoint(r) ;
             end
         end
         %% Evaluation & Gradient of the Functional
         function [f, g] =eval_grad(this,x)
             
-            r=this.H.Apply(x)-this.y;
+            r=this.H.apply(x)-this.y;
             if this.isW
-                wr=this.W.Apply(r);
+                wr=this.W.apply(r);
                 f=0.5*dot(r(:),wr(:));
-                g = this.H.Adjoint(wr) ;
+                g = this.H.adjoint(wr) ;
             else
                 f=0.5*norm(r(:))^2;
-                g = this.H.Adjoint(r) ;
+                g = this.H.adjoint(r) ;
             end
             
         end

@@ -1,6 +1,6 @@
 classdef OptiNAME < Opti
     %% OptiNAME : TODO ADD DESCRIPTION
-    %  Matlab Inverse Problems Library
+    %  Matlab inverse Problems Library
     %
     % -- Description
     % TODO ADD A DESCRIPTION

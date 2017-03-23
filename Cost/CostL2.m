@@ -15,7 +15,8 @@ classdef CostL2 < Cost
     % functional class
     % See also Cost, LinOp
     %
-    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch & Ferreol
+    %     Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -32,12 +33,12 @@ classdef CostL2 < Cost
     
     % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
-        W=[];          % weight matrix
+        W=1;          % weight matrix
     end
     % Full protected properties
     properties (SetAccess = protected,GetAccess = protected)
         fftHstardata=[]; % if LinOp is convolution, store the product conj(fftn(psf)).*fftn(data)
-        isW=false;       % boolean true if a LinOp wght is given
+        wr;              % weighted residual
     end
     
     methods
@@ -53,55 +54,35 @@ classdef CostL2 < Cost
             end
             set_H(this,H,y);
             if nargin==3
+                assert(isscalar(wght)||isa(wght,'LinOp'),'weight WGHT must be scalar or linop');
                 this.W=wght;
-                this.isW=true;
             end
             
             this.data=y;
             this.name='Cost L2';
             % -- Compute Lipschitz constant of the gradient (if the norm of H is known)
             if this.H.norm>=0;
-                if this.isW
+                if isscalar(this.W)
+                    this.lip=this.W.^2.*this.H.norm^2;
+                else
                     if this.W.norm>=0
                         this.lip=this.H.norm^2*this.W.norm^2;
                     end
-                else
-                    this.lip=this.H.norm^2;
                 end
             end
         end
         %% Evaluation of the Functional
         function f=eval(this,x)
-            r=this.H.apply(x)-this.y;
-            if this.isW
-                wr=this.W.apply(r);
-                f=0.5*dot(r(:),wr(:));
-            else
-                f=0.5*norm(r(:))^2;
-            end
+            r=this.H.apply(x)-this.y;            
+            this.wr=this.W*r;
+            f=0.5*dot(r(:),this.wr(:));
         end
         %% Gradient of the Functional
         function g=grad(this,x)
-            r=this.H.apply(x)-this.y;
-            if this.isW
-                g = this.H.adjoint(this.W.apply(r)) ;
-            else
-                g = this.H.adjoint(r) ;
+            if nargin ==2
+                this.wr = this.W*(this.H.apply(x)-this.y);
             end
-        end
-        %% Evaluation & Gradient of the Functional
-        function [f, g] =eval_grad(this,x)
-            
-            r=this.H.apply(x)-this.y;
-            if this.isW
-                wr=this.W.apply(r);
-                f=0.5*dot(r(:),wr(:));
-                g = this.H.adjoint(wr) ;
-            else
-                f=0.5*norm(r(:))^2;
-                g = this.H.adjoint(r) ;
-            end
-            
+            g = this.H.adjoint(this.wr) ;
         end
         %% Proximity operator of the functional
         function y=prox(this,x,alpha)

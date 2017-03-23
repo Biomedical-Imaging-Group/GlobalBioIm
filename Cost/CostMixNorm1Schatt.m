@@ -6,9 +6,9 @@ classdef CostMixNorm1Schatt < Cost
     % This function implements the mixed l1-Shatten norm as proposed in [1]:
     %     sum_n || (Hx)(n,:) ||_{Sp},   p=>1 (p=Inf is possible)
     % where H is a LINOP, n can stand for multiple indexes (and ':' for the remaining ones) and Sp
-    % denotes the p-order Shatten norm defined by 
+    % denotes the p-order Shatten norm defined by
     %      ||X||_{Sp} = [sum_k  (sig_k(X))^p]^{1/p},
-    % where sig_k(X) is the k-th singular value of X. In other words it is the lp-norm 
+    % where sig_k(X) is the k-th singular value of X. In other words it is the lp-norm
     % of the signular values of X.
     %
     % Note: The actual implementation works for Hx having one of the two following forms:
@@ -19,7 +19,7 @@ classdef CostMixNorm1Schatt < Cost
     %          - Hx (NxMxKx6) such that the Sp norm will be applied on each symetric 3x3
     %            matrix [Hx(n,m,k,1) Hx(n,m,k,2) Hx(n,m,k,3)
     %                    Hx(n,m,k,2) Hx(n,m,k,4)  Hx(n,m,k,5)
-    %                    Hx(n,m,k,3) Hx(n,m,k,5) Hx(n,m,k,6)] 
+    %                    Hx(n,m,k,3) Hx(n,m,k,5) Hx(n,m,k,6)]
     %            and then the l1 norm on the two other dimensions.
     %
     % -- Example
@@ -30,14 +30,14 @@ classdef CostMixNorm1Schatt < Cost
     % * |p|     order of the Shatten-norm (default 1)
     %
     % -- References
-    % [1] Lefkimmiatis, S., Ward, J. P., & Unser, M. (2013). Hessian Schatten-norm regularization 
+    % [1] Lefkimmiatis, S., Ward, J. P., & Unser, M. (2013). Hessian Schatten-norm regularization
     %     for linear inverse problems. IEEE transactions on image processing, 22(5), 1873-1888.
     %
     % Please refer to the FUNC superclass for general documentation about
     % functional class
     % See also Cost
-	%
-	%     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+    %
+    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -51,35 +51,35 @@ classdef CostMixNorm1Schatt < Cost
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
-    % Protected Set and public Read properties     
+    
+    % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
-		p;       % order of the Shatten norm (>=1)
+        p;       % order of the Shatten norm (>=1)
     end
     
-    methods 
-    	%% Constructor
+    methods
+        %% Constructor
         function this = CostMixNorm1Schatt(H,p,y)
             this.name='Cost MixNorm1-Shatten';
-			this.isconvex= true; 
-             % -- Set entries
+            this.isconvex= true;
+            % -- Set entries
             if nargin<3
                 y=[];
-            end            
-			if nargin<2 || isempty(p), p=1; end;
-			assert(p>=1,'p should be >=1');
-			this.p=p;
+            end
+            if nargin<2 || isempty(p), p=1; end;
+            assert(p>=1,'p should be >=1');
+            this.p=p;
             if nargin<1
                 H=[];
             end
             set_H(this,H,y);
             
-                if ~isa(H, 'LinOpIdentity')
-				assert((length(H.sizeout)==3 || length(H.sizeout)==4) && (H.sizeout(3)==3 || H.sizeout(4)==6),'sizeout of H should be [?,?,(?),3 or 6]');
-                end
-                
-    	end
-    	%% Evaluation of the Functional
+            if ~isa(H, 'LinOpIdentity')
+                assert((length(H.sizeout)==3 || length(H.sizeout)==4) && (H.sizeout(3)==3 || H.sizeout(4)==6),'sizeout of H should be [?,?,(?),3 or 6]');
+            end
+            
+        end
+        %% Evaluation of the Functional
         % FIXME WARNING have to be checked when H and y exist
         function y=eval(this,x)
             dim=size(x);

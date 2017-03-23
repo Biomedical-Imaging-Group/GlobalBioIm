@@ -37,6 +37,7 @@ classdef CostKullLeib < Cost
     % Full protected properties
     properties (SetAccess = protected,GetAccess = protected)
         He1;     % Application of the adjoint of H to a vector of ones
+        Hx;     % H.apply(x)
     end
     
     methods
@@ -68,20 +69,23 @@ classdef CostKullLeib < Cost
         end
         %% Evaluation of the Functional
         function f=eval(this,x)
-            tmp=this.H.apply(x);
-            assert(any(tmp(:)<0) ,'H.x must be non-negative');
+            this.Hx=this.H.apply(x);
+            assert(any(this.Hx(:)<0) ,'H.x must be non-negative');
             if (all(this.bet(:)))
-                f=sum(-this.y(:).*log(tmp(:)+this.bet) + tmp(:));
+                f=sum(-this.y(:).*log(this.Hx(:)+this.bet) + this.Hx(:));
             else
-                f = zeros(size(tmp));
-                zidx = (tmp(:)~=0);
-                f(zidx)=sum(-this.y(zidx).*log(tmp(zidx)+this.bet(zidx)) + tmp(zidx));
+                f = zeros(size(this.Hx));
+                zidx = (this.Hx(:)~=0);
+                f(zidx)=sum(-this.y(zidx).*log(this.Hx(zidx)+this.bet(zidx)) + tmp(zidx));
             end
             
         end
         %% Gradient of the Functional
         function g=grad(this,x)
-            g= this.He1 - this.H.adjoint(this.y./(this.H.apply(x)+this.bet));
+            if nargin ==2
+            this.Hx=this.H.apply(x);
+            end
+            g= this.He1 - this.H.adjoint(this.y./(this.Hx+this.bet));
         end
         %% Proximity operator of the functional
         function z=prox(this,x,alpha)

@@ -46,9 +46,10 @@ classdef LinOpDiag <  LinOp
             end
             
             % collapse repeated diagonal element to a scalar
-            if length(unique(diag)) == 1
-                diag = unique(diag);
-            end
+            % Very slow
+            %if length(unique(diag)) == 1
+            %    diag = unique(diag);
+            %end
             
             if isscalar(diag)
                 if isempty(sz) || ~issize(sz)
@@ -76,7 +77,7 @@ classdef LinOpDiag <  LinOp
             this.diag = diag;
             
             % -- Norm of the operator
-            this.norm=max(diag(:));
+            this.norm=max(abs(diag(:)));
         end
         function y = apply(this,x)
             if isequal(size(x),this.sizein)

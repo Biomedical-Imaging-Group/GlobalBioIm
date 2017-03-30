@@ -97,10 +97,10 @@ classdef LinOp < handle
             if this.iscomplex
             warning('Warning: Do you mean adjoint? For LinOp object transpose() is an alias of adjoint method');
             end
-           this = adjoint(this);
+           this = Adjoint(this);
         end
         function this = ctranspose(this) % Overloading for ctranspose 
-           this = adjoint(this);
+           this = Adjoint(this);
         end
         function y =	mtimes(this,x)% Overloading for *
             if isa(x,'LinOp')

@@ -3,7 +3,7 @@ classdef Inverse < LinOp
     %  Matlab Linear Operator Library
     %
     % Example
-    % Obj = inverse(LinOp)
+    % Obj = Inverse(LinOp)
     % Obj is the Inverse of the LinOp
     %
     %

@@ -5,7 +5,7 @@ classdef OptiGradDsct < Opti
     %
     % -- Example
     % OptiGD=OptiGradDsct(F,OutOp)
-    % where F is a FUNC object and OutOp a OutputOpti object 
+    % where F is a Cost object and OutOp a OutputOpti object 
     % 
     % -- Properties
     % * |name|      - name of the optimization algorithm (inherited from parent Opti class)
@@ -13,7 +13,7 @@ classdef OptiGradDsct < Opti
     %                 an implementation of the gradient)
     % * |gam|       - descent step (public to be setted by the user if necessary)
     %
-    % Note: If the Functional F is gradient Lipschitz, gam has to be lower than 2/L where
+    % Note: If the cost F is gradient Lipschitz, gam has to be lower than 2/L where
     %       L is the Lipschitz constant of the gradient. The optimal choice is 1/L (see [1]).
     %       If F.lip is known (i.e. different from -1), parameter gam is automatically setted to 1/L
     %

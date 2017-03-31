@@ -16,7 +16,7 @@ classdef OptiADMM < Opti
     %
     % -- Example
     %   ADMM= OptiADMM(F0,H0,Fn,Hn,rho_n,solver,OutOp)
-    % where F0 is a FUNC object, H0 a LINOP object, Fn a cell of N FUNC, Hn a cell of N LINOP, 
+    % where F0 is a FUNC object, H0 a LINOP object, Fn a cell of N COST, Hn a cell of N LINOP, 
     % rho_n a vector of N nonnegative scalars and solver a function handle such that:
     %   solver(z_n,rho_n)
     % where z_n is a cell of N elements and rho_n as above, minimizes the following function:
@@ -40,7 +40,7 @@ classdef OptiADMM < Opti
 	%     method of multipliers." Foundations and Trends in Machine Learning, 2011.
     %
     % Please refer to the OPTI superclass for general documentation about optimization class
-    % See also Opti, OptiConjGrad, LinOp, Func, OutputOpti
+    % See also Opti, OptiConjGrad, LinOp, Cost, OutputOpti
     %
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -60,8 +60,8 @@ classdef OptiADMM < Opti
     % Protected Set and public Read properties     
     properties (SetAccess = protected,GetAccess = public)
 		F0=[];               % func F0
-		Fn;                  % Cell containing the Func Fn
-		H0=LinOpIdentity();  % LinOp H0
+		Fn;                  % Cell containing the Cost Fn
+		H0=[];               % LinOp H0
 		Hn;                  % Cell containing the LinOp Hn
 		solver=[];           % solver for the last step of the algorithm
     end
@@ -116,7 +116,7 @@ classdef OptiADMM < Opti
 			if ~isempty(x0), % To restart from current state if wanted
 				this.xopt=x0;
 				for n=1:length(this.Hn)
-					this.yn{n}=this.Hn{n}.Apply(this.xopt);
+					this.yn{n}=this.Hn{n}.apply(this.xopt);
 					this.Hnx{n}=this.yn{n};
 					this.wn{n}=zeros(size(this.yn{n}));
 				end
@@ -148,7 +148,7 @@ classdef OptiADMM < Opti
 					this.xopt=this.solver(this.zn,this.rho_n, this.xopt);
 				end
 				for n=1:length(this.wn)
-					this.Hnx{n}=this.Hn{n}.Apply(this.xopt);
+					this.Hnx{n}=this.Hn{n}.apply(this.xopt);
 					this.wn{n}=this.wn{n} + this.rho_n(n)*(this.Hnx{n}-this.yn{n});
 				end
 				% - Convergence test

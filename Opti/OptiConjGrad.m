@@ -56,7 +56,7 @@ classdef OptiConjGrad < Opti
     			assert(isa(W,'LinOp'),'W must be a LinOp object');
     			this.A=A'*W*A; 			
     		end
-    		this.cost=FuncLeastSquares(b,this.A);
+    		this.cost=CostL2(this.A,b);
     		assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
     		this.b=b;
     	end 
@@ -64,7 +64,7 @@ classdef OptiConjGrad < Opti
         function run(this,x0) 
 			if ~isempty(x0) % To restart from current state if wanted
 				this.xopt=x0;
-				this.r= this.b - this.A.Apply(this.xopt);
+				this.r= this.b - this.A.apply(this.xopt);
 			end;  
 			assert(~isempty(this.xopt),'Missing starting point x0');
 			tstart=tic;

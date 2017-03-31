@@ -5,15 +5,15 @@ classdef OptiChambPock < Opti
     % -- Description
     % Implements the Chambolle-Pock algorithm [1] to minimize a function of the form:
 	%      F(Hx) + G(x)
-	% where F and G are two functionals (Func) where F and G have an implementation for
+	% where F and G are two functionals (Cost) where F and G have an implementation for
 	% the proximity operator (.prox). H is a linear operator (LinOp).
 	%
 	% Note: In fact, F needs only the prox of its fenchel transform (which is implemented 
-	%       as soon as F as an implementation of the prox, see FUNC superclass).
+	%       as soon as F as an implementation of the prox, see Cost superclass).
 	%
     % -- Example
     % OptiCP = OptiChambPock(F,H,G,OutOp)
-    % where F and G are FUNC objects, H LINOP object and OutOp a OutputOpti object 
+    % where F and G are COST objects, H LINOP object and OutOp a OutputOpti object 
     %
     % -- Properties
     % * |tau|    parameter of the algorithm (see the note below) default 1
@@ -21,7 +21,7 @@ classdef OptiChambPock < Opti
     %            the inequality below (if H.norm is implemented)
     % * |gam|    if non-empty, then the accelerated version of the algorithm is used (see [1])
     %            Hence G of F^* is uniformly with Grad(G^*) or Grad(F) is 1/gam-Lipschitz. 
-	%            If G is uniformly convex then set the parameter var to 1
+	%            If G is uniformly convex then set the parameter var to 1LS
 	%            If F^* is uniformly convex then set the parameter var to 2
     % * |var|    select the "bar" variable of the algorithm (see [1]):
 	%              - if 1 (default) then the primal variable xbar = x_n + theta(x_n - x_{n-1}) is used 
@@ -59,8 +59,8 @@ classdef OptiChambPock < Opti
 
     % Protected Set and public Read properties     
     properties (SetAccess = protected,GetAccess = public)
-		F;  % Func F
-		G;  % Func G
+		F;  % Cost F
+		G;  % Cost G
 		H;  % LinOp H
     end
     % Full protected properties 
@@ -103,7 +103,7 @@ classdef OptiChambPock < Opti
 			this.OutOp.init();
 			this.niter=1;
 			this.starting_verb();
-			y=this.H.Apply(this.xopt);
+			y=this.H.apply(this.xopt);
 			if this.var==1
 				xbar=this.xopt;
 				Kxbar=y;
@@ -122,7 +122,7 @@ classdef OptiChambPock < Opti
 					% - Algorithm iteration
 					y=this.F.prox_fench(y+sig*Kxbar,sig);
 					this.xopt=this.G.prox(this.xopt-tau*this.H.adjoint(y),tau);
-					Kxopt=this.H.Apply(this.xopt);
+					Kxopt=this.H.apply(this.xopt);
 					if ~isempty(gam) % acceleration => uodate theta, tau and sig according to [1]
 						theta=1/sqrt(1+2*gam*tau);
 						tau=theta*tau;			 
@@ -135,7 +135,7 @@ classdef OptiChambPock < Opti
 					KTyold=KTy;
 					% -- Algorithm iteration
 					this.xopt=this.G.prox(this.xopt-tau*KTybar,tau);
-					Kxopt=this.H.Apply(this.xopt);
+					Kxopt=this.H.apply(this.xopt);
 					y=this.F.prox_fench(y+sig*Kxopt,sig);
 					KTy=this.H.adjoint(y);
 					if ~isempty(gam) % acceleration => uodate theta, tau and sig according to [1]

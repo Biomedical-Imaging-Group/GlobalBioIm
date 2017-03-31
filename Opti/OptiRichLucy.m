@@ -3,14 +3,14 @@ classdef OptiRichLucy < Opti
     %  Matlab inverse Problems Library
     %
     % -- Description
-    % Implements the Richardson-Lucy algorithm [1] to minimize the functional (FuncKullLeib):
+    % Implements the Richardson-Lucy algorithm [1] to minimize the functional (CostKullLeib):
 	% $$\sum_n -d_n log((H*x)_n + bet) + (Hx)_n$$
     % where H is a LinOp object (default LinOpIdentity), d are the data
     % and bet is a small scalar (default 1e-3) to smooth the function at zero.
     %
     % -- Example
     % OptiRL=OptiRichLucy(F,TV,lamb,OutOp)
-    % where F is a FuncKullLeib object, TV a boolean to activate the TV regularized version or not
+    % where F is a CostKullLeib object, TV a boolean to activate the TV regularized version or not
     % (default false), lamb the regularization parameter used when TV and OutOp a OutputOpti object.
     %
     % -- Properties
@@ -22,7 +22,7 @@ classdef OptiRichLucy < Opti
 	% [2] Richardson, William Hadley. "Bayesian-based iterative method of image restoration." JOSA (1972): 55-59.
     %
     % Please refer to the OPTI superclass for general documentation about optimization class
-    % See also Opti, FuncKullLeib, OutputOpti
+    % See also Opti, CostKullLeib, OutputOpti
     %
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -58,7 +58,7 @@ classdef OptiRichLucy < Opti
     	%% Constructor
     	function this=OptiRichLucy(F,TV,lamb,OutOp)
     		this.name='Opti Richardson-Lucy';
-    		assert(isa(F,'FuncKullLeib'), 'The minimized functional should be the FuncKullLeib');
+    		assert(isa(F,'CostKullLeib'), 'The minimized functional should be the FuncKullLeib');
     		this.cost=F;
     		if nargin==4 && ~isempty(OutOp)
     			this.OutOp=OutOp;
@@ -67,11 +67,11 @@ classdef OptiRichLucy < Opti
     		this.Fkl=F;
     		if nargin>=3 && ~isempty(lamb), this.lamb=lamb; end
     		if this.TV
-    			this.G=LinOpGrad(this.Fkl.sizein);
-    			if length(this.Fkl.sizein)==2  % 2D
-    				this.cost=this.cost + MultScalarFunc(FuncMixNorm12([3],this.G),this.lamb);
-    			elseif length(this.Fkl.sizein)==3
-    				this.cost=this.cost + MultScalarFunc(FuncMixNorm12([4],this.G),this.lamb);
+    			this.G=LinOpGrad(this.Fkl.H.sizein);
+    			if length(this.Fkl.H.sizein)==2  % 2D
+    				this.cost=this.cost + MultScalarCost(CostMixNorm12([3],this.G),this.lamb);
+    			elseif length(this.Fkl.H.sizein)==3
+    				this.cost=this.cost + MultScalarCost(CostMixNorm12([4],this.G),this.lamb);
     			end
     		end
     	end 
@@ -79,9 +79,10 @@ classdef OptiRichLucy < Opti
         function run(this,x0) 
 			if ~isempty(x0),this.xopt=x0;end;  % To restart from current state if wanted
 			assert(~isempty(this.xopt),'Missing starting point x0');
-        	data=this.Fkl.data;
-        	He1=this.Fkl.H.adjoint(ones(this.Fkl.sizein));
+        	data=this.Fkl.y;
+        	He1=this.Fkl.H.adjoint(ones(this.Fkl.H.sizein));
         	bet=this.Fkl.bet;
+            if bet==0, error('Smoothing parameter beta has to be different from 0 (see constructor of CostKullLeib)'); end;
 			tstart=tic;
 			this.OutOp.init();
 			this.niter=1;
@@ -91,9 +92,9 @@ classdef OptiRichLucy < Opti
 				xold=this.xopt;
 				% - Algorithm iteration
 				if ~this.TV
-					this.xopt=this.xopt./He1.*this.Fkl.H.adjoint(data./(this.Fkl.H.Apply(this.xopt)+bet));	
+					this.xopt=this.xopt./He1.*this.Fkl.H.adjoint(data./(this.Fkl.H.apply(this.xopt)+bet));	
 				else
-					tmp=this.G.Apply(this.xopt);
+					tmp=this.G.apply(this.xopt);
 					if length(size(tmp))==2     % 1D
 						nor=sqrt(tmp.^2+this.epsl);
 					elseif length(size(tmp))==3 % 2D
@@ -102,7 +103,7 @@ classdef OptiRichLucy < Opti
 						nor=repmat(sqrt(sum(tmp.^2,4)+this.epsl),[1,1,1,size(tmp,4)]);
 					end
 					gradReg=this.G.adjoint(tmp./nor);
-					this.xopt=this.xopt./(He1 + this.lamb*gradReg).*this.Fkl.H.adjoint(data./(this.Fkl.H.Apply(this.xopt)+bet));
+					this.xopt=this.xopt./(He1 + this.lamb*gradReg).*this.Fkl.H.adjoint(data./(this.Fkl.H.apply(this.xopt)+bet));
 					if sum(this.xopt(:)<0)~=0
   						warning('Violation of the positivity of the solution (the regularization parameter should be decreased).');
   					end

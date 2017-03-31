@@ -10,7 +10,7 @@ classdef OptiFBS < Opti
     %
     % -- Example
     % OptiGD=OptiFBS(F,G,OutOp)
-    % where F and G are FUNC object and OutOp a OutputOpti object 
+    % where F and G are Cost object and OutOp a OutputOpti object 
     % 
     % -- Properties
     % * |name|      - name of the optimization algorithm (inherited from parent Opti class)
@@ -53,8 +53,8 @@ classdef OptiFBS < Opti
 
     % Protected Set and public Read properties     
     properties (SetAccess = protected,GetAccess = public)
-		F;  % Func F
-		G;  % Func G
+		F;  % Cost F
+		G;  % Cost G
     end
     % Full protected properties 
     properties (SetAccess = protected,GetAccess = protected)

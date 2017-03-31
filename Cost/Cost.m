@@ -86,8 +86,8 @@ classdef Cost < handle
         end
         %% Function that set properly the operator H (has to be modified if new properties is???H are added)
         function set_H(this,H,y)
-                          
-            if isempty(y)
+  
+            if (nargin <3 || isempty(y))
                 y =0;
             end
             

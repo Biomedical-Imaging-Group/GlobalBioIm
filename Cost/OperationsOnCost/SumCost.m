@@ -7,8 +7,6 @@ classdef SumCost < Cost
     % Sum the all Cost contained in vector AFUNC weighted by ALPHA (default 1)
     % F  sum_n alpha(n) * ACost(n)
     %
-    % Please refer to the FUNC superclass for general documentation about
-    % functional class
     % See also Cost
 	%
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -28,46 +26,43 @@ classdef SumCost < Cost
  
     % Protected Set and public Read properties     
     properties (SetAccess = protected,GetAccess = public)
-        funcs      % cell of Cost
-        numfuncs   % number of Cost
+        costs      % cell of Cost
+        numcosts   % number of Cost
         alpha      % scalar factor (array)
     end
     
     methods 
     	%% Constructor
-        function this = SumCost(funcs,alpha)
-            if nargin == 1, alpha = ones(size(funcs));end
+        function this = SumCost(costs,alpha)
+            if nargin == 1, alpha = ones(size(costs));end
             this.name='Sum of Costs';
-            this.numfuncs = numel(funcs);
-            assert(isnumeric(alpha)&& ( isscalar(alpha) || ( isvector(alpha) && (numel(alpha)== this.numfuncs))),'Second input should be a scalar or an array of scalar of the same size as the first input');
-            allfuncs = all( cellfun(@(x)(isa(x, 'Cost')), funcs) );
-			assert(iscell(funcs) && allfuncs, 'First input should be a cell array Cost');
+            this.numcosts = numel(costs);
+            assert(isnumeric(alpha)&& ( isscalar(alpha) || ( isvector(alpha) && (numel(alpha)== this.numcosts))),'Second input should be a scalar or an array of scalar of the same size as the first input');
+            allcosts = all( cellfun(@(x)(isa(x, 'Cost')), costs) );
+			assert(iscell(costs) && allcosts, 'First input should be a cell array Cost');
 			if  isscalar(alpha)
-				this.alpha = repmat(alpha, 1, this.numfuncs) ;
+				this.alpha = repmat(alpha, 1, this.numcosts) ;
 			else
 				this.alpha = alpha;
 			end
-			this.funcs = funcs;
-			this.sizein =  this.funcs{1}.sizein;
-			this.isconvex=funcs{1}.isconvex; 
-            for n =2:this.numfuncs
-            	if isempty(this.sizein), this.sizein=this.funcs{n}.sizein; end
-                assert(isempty(this.funcs{n}.sizein)  || isequal(this.sizein,this.funcs{n}.sizein),'%d-th input does not have the right hand side size ', n) ;
-                this.isconvex = this.isconvex & funcs{1}.isconvex; 
+			this.costs = costs;
+			this.isconvex=costs{1}.isconvex; 
+            for n =2:this.numcosts
+                this.isconvex = this.isconvex & costs{1}.isconvex; 
             end
     	end
     	%% Evaluation of the Functional
         function y=eval(this,x)
-			y=this.alpha(1)*this.funcs{1}.eval(x);
-			for n=2:this.numfuncs
-				y=y+this.alpha(n)*this.funcs{n}.eval(x);
+			y=this.alpha(1)*this.costs{1}.eval(x);
+			for n=2:this.numcosts
+				y=y+this.alpha(n)*this.costs{n}.eval(x);
 			end
         end
         %% Gradient of the Functional
         function g=grad(this,x)
-			g=this.alpha(1)*this.funcs{1}.grad(x);
-			for n=2:this.numfuncs
-				g=g+this.alpha(n)*this.funcs{n}.grad(x);
+			g=this.alpha(1)*this.costs{1}.grad(x);
+			for n=2:this.numcosts
+				g=g+this.alpha(n)*this.costs{n}.grad(x);
 			end
         end
     end

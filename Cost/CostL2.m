@@ -11,8 +11,6 @@ classdef CostL2 < Cost
     % -- Example
     % F = CostL2(H,y,W);
     %
-    % Please refer to the COST superclass for general documentation about
-    % functional class
     % See also Cost, LinOp
     %
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch & Ferreol
@@ -39,6 +37,7 @@ classdef CostL2 < Cost
     properties (SetAccess = protected,GetAccess = protected)
         fftHstardata=[]; % if LinOp is convolution, store the product conj(fftn(psf)).*fftn(data)
         wr;              % weighted residual
+        isW=false;       % boolean true if a LinOp wght is given
     end
     
     methods
@@ -56,9 +55,10 @@ classdef CostL2 < Cost
             if nargin==3
                 assert(isscalar(wght)||isa(wght,'LinOp'),'weight WGHT must be scalar or linop');
                 this.W=wght;
+                this.isW=true;
             end
             
-            this.data=y;
+            this.y=y;
             this.name='Cost L2';
             % -- Compute Lipschitz constant of the gradient (if the norm of H is known)
             if this.H.norm>=0;

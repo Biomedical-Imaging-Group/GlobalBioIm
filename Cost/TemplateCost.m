@@ -17,7 +17,7 @@ classdef CostNAME < Cost
     % -- References
     % TODO ADD REFERENCES IF NEEDED
     %
-    % Please refer to the FUNC superclass for general documentation about
+    % Please refer to the COST superclass for general documentation about
     % functional class
     % See also Cost
 	%
@@ -62,7 +62,7 @@ classdef CostNAME < Cost
                     H=[];
             end
             set_H(this,H,y);
-			% call this.set_H (will also set the sizein parameter)
+			% call this.set_H 
 			% TODO SET NEW DEFINED PROPERTIES
     	end
     	%% Evaluation of the Functional

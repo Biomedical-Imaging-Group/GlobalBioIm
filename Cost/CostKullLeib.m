@@ -6,7 +6,7 @@ classdef CostKullLeib < Cost
     % Implements the Kullback-Leibler divergence between H.x and y .
     % $$ \sum_n -y_n log((H*x)_n + bet) + (H*x)_n,
     % where H is a LinOp object (default LinOpIdentity), y are the data
-    % and bet is a small scalar (default 1e-10) to smooth the function at zero.
+    % and bet is a scalar (default 0) to smooth the function at zero.
     %
     % -- Example
     % F=CostKullLeib(H,y,bet)
@@ -56,11 +56,9 @@ classdef CostKullLeib < Cost
             
             if nargin==3
                 this.bet=bet;
-            end
-            
-          
-                tmp=ones(this.H.sizeout);
-                this.He1=this.H.adjoint(tmp);
+            end         
+           tmp=ones(this.H.sizeout);
+           this.He1=this.H.adjoint(tmp);
                 
             % -- Compute Lipschitz constant of the gradient (if the norm of H is known)
             if ((this.bet>0)&&(this.H.norm>=0));
@@ -70,15 +68,18 @@ classdef CostKullLeib < Cost
         %% Evaluation of the Functional
         function f=eval(this,x)
             this.Hx=this.H.apply(x);
-            assert(any(this.Hx(:)<0) ,'H.x must be non-negative');
-            if (all(this.bet(:)))
-                f=sum(-this.y(:).*log(this.Hx(:)+this.bet) + this.Hx(:));
+            if ~any(this.Hx(:)<0)
+                f=Inf;
             else
-                f = zeros(size(this.Hx));
-                zidx = (this.Hx(:)~=0);
-                f(zidx)=sum(-this.y(zidx).*log(this.Hx(zidx)+this.bet(zidx)) + tmp(zidx));
+                if (this.bet~=0)
+                    f=sum(-this.y(:).*log(this.Hx(:)+this.bet) + this.Hx(:));
+                else
+                    ft = zeros(size(this.Hx));
+                    zidx = (this.Hx~=0);
+                    ft(zidx)=-this.y(zidx).*log(this.Hx(zidx)) + this.Hx(zidx);
+                    f=sum(ft(:));
+                end
             end
-            
         end
         %% Gradient of the Functional
         function g=grad(this,x)
@@ -91,10 +92,12 @@ classdef CostKullLeib < Cost
         function z=prox(this,x,alpha)
             z=[];
             if isa(this.H,'LinOpIdentity') % if operator identity
-                delta=(x-alpha-this.bet).^2+4*(x*this.bet + alpha*(this.y-this.bet));
-                z=zeros(size(x));
-                mask=delta>=0;
-                z(mask)=0.5*(x(mask)-alpha-this.bet + sqrt(delta(mask)));
+                if (this.bet~=0)
+                    delta=(x-alpha-this.bet).^2+4*(x*this.bet + alpha*(this.y-this.bet));
+                    z=zeros(size(x));
+                    mask=delta>=0;
+                    z(mask)=0.5*(x(mask)-alpha-this.bet + sqrt(delta(mask)));
+                end
             end
             if isempty(z),error('Prox not implemented');end
         end

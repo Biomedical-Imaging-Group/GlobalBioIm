@@ -33,7 +33,7 @@ classdef CostMixNorm1Schatt < Cost
     % [1] Lefkimmiatis, S., Ward, J. P., & Unser, M. (2013). Hessian Schatten-norm regularization
     %     for linear inverse problems. IEEE transactions on image processing, 22(5), 1873-1888.
     %
-    % Please refer to the FUNC superclass for general documentation about
+    % Please refer to the COST superclass for general documentation about
     % functional class
     % See also Cost
     %
@@ -74,8 +74,8 @@ classdef CostMixNorm1Schatt < Cost
             end
             set_H(this,H,y);
             
-            if ~isa(H, 'LinOpIdentity')
-                assert((length(H.sizeout)==3 || length(H.sizeout)==4) && (H.sizeout(3)==3 || H.sizeout(4)==6),'sizeout of H should be [?,?,(?),3 or 6]');
+            if ~isa(this.H, 'LinOpIdentity')
+                assert((length(this.H.sizeout)==3 || length(this.H.sizeout)==4) && (this.H.sizeout(3)==3 || this.H.sizeout(4)==6),'sizeout of H should be [?,?,(?),3 or 6]');
             end
             
         end

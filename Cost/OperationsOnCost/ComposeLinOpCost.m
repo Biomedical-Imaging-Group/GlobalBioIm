@@ -3,11 +3,9 @@ classdef ComposeLinOpCost < Cost
     %  Matlab Inverse Problems Library
     %
     % -- Example
-    % G =  ComposeLinOpCost(F,Hcomp)
-    % where F is a FUNC object and Hcomp a LINOP one
+    % G =  ComposeLinOpCost(cost,Hcomp)
+    % where cost is a COST object and Hcomp a LINOP one
     %
-    % Please refer to the FUNC superclass for general documentation about
-    % functional class
     % See also Cost
 	%
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -27,21 +25,20 @@ classdef ComposeLinOpCost < Cost
  
     % Protected Set and public Read properties     
     properties (SetAccess = protected,GetAccess = public)
-		F;      % Functional
+		cost;      % Functional
     end
     
     methods 
     	%% Constructor
-        function this = ComposeLinOpCost(F,Hcomp)
+        function this = ComposeLinOpCost(cost,Hcomp)
             this.name='ComposeLinOpCost';
-            this.F=F;
-            if ~isa(F.H,'LinOpIdentity'), assert(isequal(Hcomp.sizeout,F.sizein),'sizeout of Hcomp must match with sizein of F'); end
-			this.isconvex= F.isconvex; 
-			this.set_H(Hcomp);
+            this.cost=cost;
+            this.set_H(Hcomp);
+			this.isconvex= cost.isconvex; 			
     	end
     	%% Evaluation of the Functional
         function y=eval(this,x)
-			y=this.F.eval(this.H.apply(x));
+			y=this.cost.eval(this.H.apply(x));
         end
     end
 end

@@ -6,8 +6,6 @@ classdef MultScalarCost < Cost
     % F = MultScalarCost(Cost,s)
     % Multiply the Cost by the scalar s
     %
-    % Please refer to the FUNC superclass for general documentation about
-    % functional class
     % See also Cost
 	%
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -27,35 +25,34 @@ classdef MultScalarCost < Cost
  
     % Protected Set and public Read properties     
     properties (SetAccess = protected,GetAccess = public)
-        func;      % Cost
+        cost;      % Cost
         s;         % scalar factor
     end
     
     methods 
     	%% Constructor
-        function this = MultScalarCost(func,s)
+        function this = MultScalarCost(cost,s)
             this.name='Multiply Cost by Scalar';
-			this.func = func;
+			this.cost = cost;
 			assert(isscalar(s),'s must be a scalar');
 			this.s=s;
-			this.sizein =  this.func.sizein;
-			this.isconvex=func.isconvex; 
-			if func.lip~=-1
-				this.lip=func.lip*s;
+			this.isconvex=cost.isconvex; 
+			if cost.lip~=-1
+				this.lip=cost.lip*s;
 			end
     	end
     	%% Evaluation of the Functional
         function y=eval(this,x)
-			y=this.s*this.func.eval(x);
+			y=this.s*this.cost.eval(x);
         end
         %% Gradient of the Functional
         function g=grad(this,x)
-			g=this.s*this.func.grad(x);
+			g=this.s*this.cost.grad(x);
         end
         %% Proximity operator of the Functional
         function y=prox(this,x,alpha)
         	assert(isscalar(alpha),'alpha must be a scalar');
-			y = this.func.prox(x,this.s*alpha);
+			y = this.cost.prox(x,this.s*alpha);
         end
     end
 end

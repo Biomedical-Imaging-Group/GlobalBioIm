@@ -4,7 +4,7 @@
 %     0.5 ||Hx - y||^2
 % using Gradient Descent
 %
-% See LinOp, LinOpConv, Func, FuncLeastSquares, Opti, OptiGradDsct
+% See LinOp, LinOpConv, Cost, CostL2, Opti, OptiGradDsct
 % OutpuOpti
 %------------------------------------------------------------
 clear all; close all; clc;warning('off');
@@ -46,7 +46,7 @@ load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
 
 % -- Function definition
-F_LS=FuncLeastSquares(y,H);  % Least-Sqaures data term
+F_LS=CostL2(H,y);  % Least-Sqaures data term
 
 % -- Gradient Descent LS
 OutOp=OutputOpti(1,impad,40);

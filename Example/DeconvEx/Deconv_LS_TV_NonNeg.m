@@ -7,8 +7,8 @@
 %      - Primal-Dual Condat
 %      - ADMM 
 %
-% See LinOp, LinOpConv, LinOpGrad, Func, FuncLeastSquares, FuncNonNeg,  
-% FuncMixNorm12, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
+% See LinOp, LinOpConv, LinOpGrad, Cost, CostL2, CostNonNeg,  
+% CostMixNorm12, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
 %------------------------------------------------------------
 clear all; close all; clc;warning('off');
 help Deconv_LS_TV_NonNeg
@@ -50,18 +50,18 @@ imdisp(y(idx,idx),'Convolved and noisy data',1);
 fftHty=conj(H.mtf).*fft2(y);
 
 % -- Functions definition
-F_LS=FuncLeastSquares(y,H);  % Least-Sqaures data term
-R_N12=FuncMixNorm12([3]);    % Mixed Norm 2-1
+F_LS=CostL2(H,y);            % Least-Sqaures data term
+R_N12=CostMixNorm12([3]);    % Mixed Norm 2-1
 G=LinOpGrad(size(y));        % Operator Gradient
-R_POS=FuncNonNeg();          % Non-Negativity
+R_POS=CostNonNeg();          % Non-Negativity
 lamb=7e-4;                   % Hyperparameter
 
 % -- ADMM LS + TV + NonNeg
-Fn={FuncLeastSquares(y),MultScalarFunc(R_N12,lamb),R_POS};
+Fn={CostL2([],y),MultScalarCost(R_N12,lamb),R_POS};
 Hn={H,G,LinOpIdentity(size(impad))};
 rho_n=[1e-1,1e-1,1e-1];
 lap=zeros(size(impad)); lap(1,1)=4; lap(1,2)=-1;lap(2,1)=-1; lap(1,end)=-1;lap(end,1)=-1; Flap=fft2(lap);
-solver = @(z,rho) real(ifft2((rho(1)*conj(H.mtf).*fft2(z{1}) + fft2(rho(2)*G'*z{2} + rho(3)*z{3}) )./(rho(1)*abs(H.mtf).^2 + rho(2)*Flap + rho(3))));  % solver to solve the x update
+solver = @(z,rho,x) real(ifft2((rho(1)*conj(H.mtf).*fft2(z{1}) + fft2(rho(2)*G'*z{2} + rho(3)*z{3}) )./(rho(1)*abs(H.mtf).^2 + rho(2)*Flap + rho(3))));  % solver to solve the x update
 OutADMM=OutputOpti(1,impad,40);
 ADMM=OptiADMM([],[],Fn,Hn,rho_n,solver,OutADMM);
 ADMM.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
@@ -69,7 +69,7 @@ ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 
 
 % -- PrimalDual Condat LS + TV + NonNeg
-Fn={MultScalarFunc(R_N12,lamb)};
+Fn={MultScalarCost(R_N12,lamb)};
 Hn={G};
 OutPDC=OutputOpti(1,impad,40);
 PDC=OptiPrimalDualCondat(F_LS,R_POS,Fn,Hn,OutPDC);

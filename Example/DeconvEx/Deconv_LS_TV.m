@@ -6,8 +6,8 @@
 %      - Chambolle-Pock
 %      - ADMM 
 %
-% See LinOp, LinOpConv, LinOpGrad, Func, FuncLeastSquares,   
-% FuncMixNorm12, Opti, OptiChambPock, OptiADMM, OutpuOpti
+% See LinOp, LinOpConv, LinOpGrad, Cost, CostL2,   
+% CostMixNorm12, Opti, OptiChambPock, OptiADMM, OutpuOpti
 %------------------------------------------------------------
 clear all; close all; clc;warning('off');
 help Deconv_LS_TV
@@ -49,14 +49,14 @@ imdisp(y(idx,idx),'Convolved and noisy data',1);
 fftHty=conj(H.mtf).*fft2(y);
 
 % -- Functions definition
-F_LS=FuncLeastSquares(y,H);  % Least-Sqaures data term
-R_N12=FuncMixNorm12([3]);    % Mixed Norm 2-1
+F_LS=CostL2(H,y);  % Least-Sqaures data term
+R_N12=CostMixNorm12([3]);    % Mixed Norm 2-1
 G=LinOpGrad(size(y));        % Operator Gradient
 lamb=1e-3;                   % Hyperparameter
 
 % -- Chambolle-Pock  LS + TV
 OutCP=OutputOpti(1,impad,40);
-CP=OptiChambPock(MultScalarFunc(R_N12,lamb),G,F_LS,OutCP);
+CP=OptiChambPock(MultScalarCost(R_N12,lamb),G,F_LS,OutCP);
 CP.tau=15;                            % algorithm parameters
 CP.sig=1/(CP.tau*G.norm^2)*0.99;      %
 CP.ItUpOut=10;                        % call OutputOpti update every ItUpOut iterations
@@ -64,12 +64,12 @@ CP.maxiter=200;                       % max number of iterations
 CP.run(y);                            % run the algorithm 
 
 % -- ADMM LS + TV
-Fn={MultScalarFunc(R_N12,lamb)};
+Fn={MultScalarCost(R_N12,lamb)};
 Hn={G};rho_n=[1e-1];
 lap=zeros(size(impad)); lap(1,1)=4; lap(1,2)=-1;lap(2,1)=-1; lap(1,end)=-1;lap(end,1)=-1; Flap=fft2(lap);  
-solver = @(z,rho) real(ifft2((fftHty + rho(1)*fft2(G'*z{1}))./(abs(H.mtf).^2 + rho(1)*Flap)));            % solver to solve the x update
+solver = @(z,rho,x) real(ifft2((fftHty + rho(1)*fft2(G'*z{1}))./(abs(H.mtf).^2 + rho(1)*Flap)));            % solver to solve the x update
 OutADMM=OutputOpti(1,impad,40);
-ADMM=OptiADMM(FuncLeastSquares(y),H,Fn,Hn,rho_n,solver,OutADMM);
+ADMM=OptiADMM(CostL2(size(y),y),H,Fn,Hn,rho_n,solver,OutADMM);
 ADMM.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;  % max number of iterations
 ADMM.run(y);       % run the algorithm 

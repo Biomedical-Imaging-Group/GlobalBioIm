@@ -7,8 +7,8 @@
 %      - Primal-Dual Condat
 %      - ADMM 
 %
-% See LinOp, LinOpConv, LinOpHess, Func, FuncKullLeib, FuncNonNeg,  
-% FuncMixNorm1Schatt, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
+% See LinOp, LinOpConv, LinOpHess, Cost, CostKullLeib, CostNonNeg,  
+% CostMixNorm1Schatt, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
 %------------------------------------------------------------
 clear all; close all; clc;warning('off');
 help Deconv_KL_HessSchatt_NonNeg
@@ -50,26 +50,26 @@ imdisp(y(idx,idx),'Convolved and noisy data',1);
 fftHty=conj(H.mtf).*fft2(y);
 
 % -- Functions definition
-F_KL=FuncKullLeib(y,H);          % Kullback-Leibler divergence data term
+F_KL=CostKullLeib(H,y,1e-6);     % Kullback-Leibler divergence data term
 Hess=LinOpHess(size(impad));     % Hessian Operator
-R_1sch=FuncMixNorm1Schatt([],1); % Mixed Norm 1-Schatten (p=1)
-R_POS=FuncNonNeg();              % Non-Negativity
+R_1sch=CostMixNorm1Schatt([],1); % Mixed Norm 1-Schatten (p=1)
+R_POS=CostNonNeg();              % Non-Negativity
 lamb=5e-3;                       % Hyperparameter
 
 % -- ADMM KL + ShattenHess + NonNeg
-Fn={FuncKullLeib(y,[],0),MultScalarFunc(R_1sch,lamb),R_POS};
+Fn={CostKullLeib([],y,1e-6),MultScalarCost(R_1sch,lamb),R_POS};
 Hn={H,Hess,LinOpIdentity(size(impad))};
 rho_n=[1e-2,1e-2,1e-2];
 OutADMM=OutputOpti(1,impad,40);
 ADMM=OptiADMM([],[],Fn,Hn,rho_n,[],OutADMM);
-ADMM.maxiterCG=2;       % 2 CG iterations are sufficient for this example
+ADMM.maxiterCG=5;       % 2 CG iterations are sufficient for this example
 ADMM.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 
 
 
 % -- PrimalDual Condat KL + ShattenHess + NonNeg
-Fn={MultScalarFunc(R_1sch,lamb)};
+Fn={MultScalarCost(R_1sch,lamb)};
 Hn={Hess};
 OutPDC=OutputOpti(1,impad,40);
 PDC=OptiPrimalDualCondat(F_KL,R_POS,Fn,Hn,OutPDC);

@@ -5,7 +5,7 @@
 %     0.5 ||Hx - y||^2  + i_{>0}(x)
 % using FISTA
 %
-% See LinOp, LinOpConv, Func, FuncLeastSquares, FuncNonNeg, Opti, 
+% See LinOp, LinOpConv, Cost, CostL2, CostNonNeg, Opti, 
 % OptiFBS, OutpuOpti
 %------------------------------------------------------------
 clear all; close all; clc;warning('off');
@@ -47,8 +47,8 @@ load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
 
 % -- Functions definition
-F_LS=FuncLeastSquares(y,H);  % Least-Sqaures data term
-R_POS=FuncNonNeg();          % Non-Negativity
+F_LS=CostL2(H,y);      % Least-Sqaures data term
+R_POS=CostNonNeg();    % Non-Negativity
 
 % -- FISTA LS + NonNeg
 OutOp=OutputOpti(1,impad,40);

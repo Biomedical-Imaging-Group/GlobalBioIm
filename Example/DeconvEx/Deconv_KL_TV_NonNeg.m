@@ -8,8 +8,8 @@
 %    - ADMM 
 %    - RichardsonLucy-TV
 %
-% See LinOp, LinOpConv, LinOpGrad, Func, FuncKullLeib, FuncNonNeg, 
-% FuncMixNorm12, Opti, OptiADMM, OptiRichLucy, OutpuOpti
+% See LinOp, LinOpConv, LinOpGrad, Cost, CostKullLeib, CostNonNeg, 
+% CostMixNorm12, Opti, OptiADMM, OptiRichLucy, OutpuOpti
 % OptiPrimalDualCondat.
 %------------------------------------------------------------
 clear all; close all; clc;%warning('off');
@@ -51,18 +51,18 @@ load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
 
 % -- Functions definition
-F_KL=FuncKullLeib(y,H);     % Kullback-Leibler divergence data term
-R_POS=FuncNonNeg();         % Non-Negativity
-R_N12=FuncMixNorm12([3]);   % Mixed Norm 2-1
+F_KL=CostKullLeib(H,y,1e-6);% Kullback-Leibler divergence data term
+R_POS=CostNonNeg();         % Non-Negativity
+R_N12=CostMixNorm12([3]);   % Mixed Norm 2-1
 G=LinOpGrad(size(y));       % Operator Gradient
 lamb=1e-2;                  % Hyperparameter  
 
 % -- ADMM KL + TV + NonNeg
-Fn={FuncKullLeib(y,[],0),MultScalarFunc(R_N12,lamb),R_POS};
+Fn={CostKullLeib([],y,1e-6),MultScalarCost(R_N12,lamb),R_POS};
 Hn={H,G,LinOpIdentity(size(impad))};
 rho_n=[1e-2,1e-2,1e-2];
 lap=zeros(size(impad)); lap(1,1)=4; lap(1,2)=-1;lap(2,1)=-1; lap(1,end)=-1;lap(end,1)=-1; Flap=fft2(lap);
-solver = @(z,rho) real(ifft2((rho(1)*conj(H.mtf).*fft2(z{1}) + fft2(rho(2)*G'*z{2} + rho(3)*z{3}) )./(rho(1)*abs(H.mtf).^2 + rho(2)*Flap + rho(3))));  % solver to solve the x update
+solver = @(z,rho,x) real(ifft2((rho(1)*conj(H.mtf).*fft2(z{1}) + fft2(rho(2)*G'*z{2} + rho(3)*z{3}) )./(rho(1)*abs(H.mtf).^2 + rho(2)*Flap + rho(3))));  % solver to solve the x update
 OutADMM=OutputOpti(1,impad,40);
 ADMM=OptiADMM([],[],Fn,Hn,rho_n,solver,OutADMM);
 ADMM.ItUpOut=10;                                  % call OutputOpti update every ItUpOut iterations
@@ -70,7 +70,7 @@ ADMM.maxiter=200;                                 % max number of iterations
 ADMM.run(y);                                      % run the algorithm
 
 % -- PrimalDual Condat KL + TV + NonNeg
-Fn={MultScalarFunc(R_N12,lamb)};
+Fn={MultScalarCost(R_N12,lamb)};
 Hn={G};
 OutPDC=OutputOpti(1,impad,40);
 PDC=OptiPrimalDualCondat(F_KL,R_POS,Fn,Hn,OutPDC);

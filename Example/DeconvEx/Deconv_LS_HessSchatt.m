@@ -6,8 +6,8 @@
 %      - Chambolle-Pock
 %      - ADMM 
 %
-% See LinOp, LinOpConv, LinOpHess, Func, FuncLeastSquares,   
-% FuncMixNorm1Schatt, Opti, OptiChambPock, OptiADMM, OutpuOpti
+% See LinOp, LinOpConv, LinOpHess, Cost, CostL2,   
+% CostMixNorm1Schatt, Opti, OptiChambPock, OptiADMM, OutpuOpti
 %------------------------------------------------------------
 clear all; close all; clc;warning('off');
 help Deconv_LS_HessSchatt
@@ -48,14 +48,14 @@ load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
 
 % -- Functions definition
-F_LS=FuncLeastSquares(y,H);      % Least-Sqaures data term
+F_LS=CostL2(H,y);                % Least-Sqaures data term
 Hess=LinOpHess(size(impad));     % Hessian Operator
-R_1sch=FuncMixNorm1Schatt([],1); % Mixed Norm 1-Schatten (p=1)
+R_1sch=CostMixNorm1Schatt([],1); % Mixed Norm 1-Schatten (p=1)
 lamb=2e-3;                       % Hyperparameter
 
 % -- Chambolle-Pock  LS + ShattenHess
 OutCP=OutputOpti(1,impad,40);
-CP=OptiChambPock(MultScalarFunc(R_1sch,lamb),Hess,F_LS,OutCP);
+CP=OptiChambPock(MultScalarCost(R_1sch,lamb),Hess,F_LS,OutCP);
 CP.tau=1;        % algorithm parameters
 CP.sig=0.02;     %
 CP.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
@@ -63,11 +63,11 @@ CP.maxiter=200;  % max number of iterations
 CP.run(y);       % run the algorithm 
 
 % -- ADMM LS + ShattenHess
-Fn={FuncLeastSquares(y),MultScalarFunc(R_1sch,lamb)};
+Fn={CostL2([],y),MultScalarCost(R_1sch,lamb)};
 Hn={H,Hess};rho_n=[1e-1,1e-1];
 OutADMM=OutputOpti(1,impad,40);
 ADMM=OptiADMM([],[],Fn,Hn,rho_n,[],OutADMM);
-ADMM.maxiterCG=2;  % 2 CG iterations are sufficient for this example
+ADMM.maxiterCG=5;  % 2 CG iterations are sufficient for this example
 ADMM.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;  % max number of iterations
 ADMM.run(y);       % run the algorithm 

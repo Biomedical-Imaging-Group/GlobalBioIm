@@ -7,7 +7,7 @@
 %    - FISTA
 %    - RichardsonLucy
 %
-% See LinOp, LinOpConv, Func, FuncKullLeib, FuncNonNeg, Opti, 
+% See LinOp, LinOpConv, Cost, CostKullLeib, CostNonNeg, Opti, 
 % OptiFBS, OptiRichLucy, OutpuOpti
 %------------------------------------------------------------
 clear all; close all; clc;warning('off');
@@ -49,8 +49,8 @@ load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
 
 % -- Functions definition
-F_KL=FuncKullLeib(y,H);     % Kullback-Leibler divergence data term
-R_POS=FuncNonNeg();         % Non-Negativity
+F_KL=CostKullLeib(H,y,1e-6);     % Kullback-Leibler divergence data term
+R_POS=CostNonNeg();              % Non-Negativity
 
 % -- FISTA KL + NonNeg
 OutFista=OutputOpti(1,impad,40);

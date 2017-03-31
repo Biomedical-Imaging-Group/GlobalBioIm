@@ -7,8 +7,8 @@
 %      - Primal-Dual Condat
 %      - ADMM 
 %
-% See LinOp, LinOpConv, LinOpHess, Func, FuncLeastSquares, FuncNonNeg,  
-% FuncMixNorm1Schatt, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
+% See LinOp, LinOpConv, LinOpHess, Cost, CostL2, CostNonNeg,  
+% CostMixNorm1Schatt, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
 %------------------------------------------------------------
 clear all; close all; clc;warning('off');
 help Deconv_LS_HessSchatt_NonNeg
@@ -50,25 +50,25 @@ imdisp(y(idx,idx),'Convolved and noisy data',1);
 fftHty=conj(H.mtf).*fft2(y);
 
 % -- Functions definition
-F_LS=FuncLeastSquares(y,H);      % Least-Sqaures data term
+F_LS=CostL2(H,y);                % Least-Sqaures data term
 Hess=LinOpHess(size(impad));     % Hessian Operator
-R_1sch=FuncMixNorm1Schatt([],1); % Mixed Norm 1-Schatten (p=1)
-R_POS=FuncNonNeg();              % Non-Negativity
+R_1sch=CostMixNorm1Schatt([],1); % Mixed Norm 1-Schatten (p=1)
+R_POS=CostNonNeg();              % Non-Negativity
 lamb=1e-3;                       % Hyperparameter
 
 % -- ADMM LS + ShattenHess + NonNeg
-Fn={FuncLeastSquares(y),MultScalarFunc(R_1sch,lamb),R_POS};
+Fn={CostL2([],y),MultScalarCost(R_1sch,lamb),R_POS};
 Hn={H,Hess,LinOpIdentity(size(impad))};
 rho_n=[1e-1,1e-1,1e-1];
 OutADMM=OutputOpti(1,impad,40);
 ADMM=OptiADMM([],[],Fn,Hn,rho_n,[],OutADMM);
-ADMM.maxiterCG=2;       % 2 CG iterations are sufficient for this example
+ADMM.maxiterCG=5;       % 2 CG iterations are sufficient for this example
 ADMM.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 
 
 % -- PrimalDual Condat LS + ShattenHess + NonNeg
-Fn={MultScalarFunc(R_1sch,lamb)};
+Fn={MultScalarCost(R_1sch,lamb)};
 Hn={Hess};
 OutPDC=OutputOpti(1,impad,40);
 PDC=OptiPrimalDualCondat(F_LS,R_POS,Fn,Hn,OutPDC);

@@ -49,10 +49,10 @@ imdisp(y(idx,idx),'Convolved and noisy data',1);
 fftHty=conj(H.mtf).*fft2(y);
 
 % -- Functions definition
-F_LS=CostL2(H,y);  % Least-Sqaures data term
-R_N12=CostMixNorm12([3]);    % Mixed Norm 2-1
-G=LinOpGrad(size(y));        % Operator Gradient
-lamb=1e-3;                   % Hyperparameter
+F_LS=CostL2(H,y);                         % Least-Squares data term
+R_N12=CostMixNorm12([3]);                 % Mixed Norm 2-1
+G=LinOpGrad(size(y),[],'circular');       % Operator Gradient
+lamb=1e-3;                                % Hyperparameter
 
 % -- Chambolle-Pock  LS + TV
 OutCP=OutputOpti(1,impad,40);
@@ -66,13 +66,13 @@ CP.run(y);                            % run the algorithm
 % -- ADMM LS + TV
 Fn={MultScalarCost(R_N12,lamb)};
 Hn={G};rho_n=[1e-1];
-lap=zeros(size(impad)); lap(1,1)=4; lap(1,2)=-1;lap(2,1)=-1; lap(1,end)=-1;lap(end,1)=-1; Flap=fft2(lap);  
-solver = @(z,rho,x) real(ifft2((fftHty + rho(1)*fft2(G'*z{1}))./(abs(H.mtf).^2 + rho(1)*Flap)));            % solver to solve the x update
+fGtG=fftn(G.fHtH);     % Fourier of the filter G'G (Laplacian)
+solver = @(z,rho,x) real(ifft2((fftHty + rho(1)*fft2(G'*z{1}))./(abs(H.mtf).^2 + rho(1)*fGtG)));            % solver to solve the x update
 OutADMM=OutputOpti(1,impad,40);
 ADMM=OptiADMM(CostL2(size(y),y),H,Fn,Hn,rho_n,solver,OutADMM);
-ADMM.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
-ADMM.maxiter=200;  % max number of iterations
-ADMM.run(y);       % run the algorithm 
+ADMM.ItUpOut=10;       % call OutputOpti update every ItUpOut iterations
+ADMM.maxiter=200;      % max number of iterations
+ADMM.run(y);           % run the algorithm 
 
 
 % -- Display

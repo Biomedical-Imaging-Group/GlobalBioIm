@@ -50,20 +50,20 @@ imdisp(y(idx,idx),'Convolved and noisy data',1);
 fftHty=conj(H.mtf).*fft2(y);
 
 % -- Functions definition
-F_LS=CostL2(H,y);            % Least-Sqaures data term
-R_N12=CostMixNorm12([3]);    % Mixed Norm 2-1
-G=LinOpGrad(size(y));        % Operator Gradient
-R_POS=CostNonNeg();          % Non-Negativity
-lamb=7e-4;                   % Hyperparameter
+F_LS=CostL2(H,y);                         % Least-Sqaures data term
+R_N12=CostMixNorm12([3]);                 % Mixed Norm 2-1
+G=LinOpGrad(size(y),[],'circular');       % Operator Gradient
+R_POS=CostNonNeg();                       % Non-Negativity
+lamb=7e-4;                                % Hyperparameter
 
 % -- ADMM LS + TV + NonNeg
-Fn={CostL2([],y),MultScalarCost(R_N12,lamb),R_POS};
-Hn={H,G,LinOpIdentity(size(impad))};
-rho_n=[1e-1,1e-1,1e-1];
-lap=zeros(size(impad)); lap(1,1)=4; lap(1,2)=-1;lap(2,1)=-1; lap(1,end)=-1;lap(end,1)=-1; Flap=fft2(lap);
-solver = @(z,rho,x) real(ifft2((rho(1)*conj(H.mtf).*fft2(z{1}) + fft2(rho(2)*G'*z{2} + rho(3)*z{3}) )./(rho(1)*abs(H.mtf).^2 + rho(2)*Flap + rho(3))));  % solver to solve the x update
+Fn={MultScalarCost(R_N12,lamb),R_POS};
+Hn={G,LinOpIdentity(size(impad))};
+rho_n=[1e-1,1e-1];
+fGtG=fftn(G.fHtH);      % Fourier of the filter G'G (Laplacian)
+solver = @(z,rho,x) real(ifft2((fftHty + fft2(rho(1)*G'*z{1} + rho(2)*z{2}) )./(abs(H.mtf).^2 + rho(1)*fGtG + rho(2))));  % solver to solve the x update
 OutADMM=OutputOpti(1,impad,40);
-ADMM=OptiADMM([],[],Fn,Hn,rho_n,solver,OutADMM);
+ADMM=OptiADMM(CostL2([],y),H,Fn,Hn,rho_n,solver,OutADMM);
 ADMM.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 

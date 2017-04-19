@@ -57,12 +57,13 @@ R_POS=CostNonNeg();              % Non-Negativity
 lamb=1e-3;                       % Hyperparameter
 
 % -- ADMM LS + ShattenHess + NonNeg
-Fn={CostL2([],y),MultScalarCost(R_1sch,lamb),R_POS};
-Hn={H,Hess,LinOpIdentity(size(impad))};
-rho_n=[1e-1,1e-1,1e-1];
+Fn={MultScalarCost(R_1sch,lamb),R_POS};
+Hn={Hess,LinOpIdentity(size(impad))};
+rho_n=[1e-1,1e-1];
+fHesstHess=fftn(Hess.fHtH);     % Fourier of the filter Hess'Hess 
+solver = @(z,rho,x) real(ifft2((fftHty + fft2(rho(1)*Hess'*z{1} + rho(2)*z{2}) )./(abs(H.mtf).^2 + rho(1)*fHesstHess + rho(2))));  % solver to solve the x update
 OutADMM=OutputOpti(1,impad,40);
-ADMM=OptiADMM([],[],Fn,Hn,rho_n,[],OutADMM);
-ADMM.maxiterCG=5;       % 2 CG iterations are sufficient for this example
+ADMM=OptiADMM(CostL2([],y),H,Fn,Hn,rho_n,solver,OutADMM);
 ADMM.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 

@@ -46,6 +46,7 @@ H=LinOpConv(psf);
 % -- Generate data
 load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
+fftHty=conj(H.mtf).*fft2(y);
 
 % -- Functions definition
 F_LS=CostL2(H,y);                % Least-Sqaures data term
@@ -63,11 +64,12 @@ CP.maxiter=200;  % max number of iterations
 CP.run(y);       % run the algorithm 
 
 % -- ADMM LS + ShattenHess
-Fn={CostL2([],y),MultScalarCost(R_1sch,lamb)};
-Hn={H,Hess};rho_n=[1e-1,1e-1];
+Fn={MultScalarCost(R_1sch,lamb)};
+Hn={Hess};rho_n=[1e-1];
+fHesstHess=fftn(Hess.fHtH);     % Fourier of the filter Hess'Hess 
+solver = @(z,rho,x) real(ifft2((fftHty + fft2(rho(1)*Hess'*z{1}) )./(abs(H.mtf).^2 + rho(1)*fHesstHess)));  % solver to solve the x update
 OutADMM=OutputOpti(1,impad,40);
-ADMM=OptiADMM([],[],Fn,Hn,rho_n,[],OutADMM);
-ADMM.maxiterCG=5;  % 2 CG iterations are sufficient for this example
+ADMM=OptiADMM(CostL2([],y),H,Fn,Hn,rho_n,solver,OutADMM);
 ADMM.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;  % max number of iterations
 ADMM.run(y);       % run the algorithm 

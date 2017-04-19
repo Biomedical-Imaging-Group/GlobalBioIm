@@ -51,11 +51,11 @@ load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
 
 % -- Functions definition
-F_KL=CostKullLeib(H,y,1e-6);% Kullback-Leibler divergence data term
-R_POS=CostNonNeg();                       % Non-Negativity
-R_N12=CostMixNorm12([3]);                 % Mixed Norm 2-1
-G=LinOpGrad(size(y),[],'circular');       % Operator Gradient
-lamb=1e-2;                                % Hyperparameter  
+F_KL=CostKullLeib(H,y,1e-6); % Kullback-Leibler divergence data term
+R_POS=CostNonNeg();          % Non-Negativity
+R_N12=CostMixNorm12([3]);    % Mixed Norm 2-1
+G=LinOpGrad(size(y));        % Operator Gradient
+lamb=1e-2;                   % Hyperparameter  
 
 % -- ADMM KL + TV + NonNeg
 Fn={CostKullLeib([],y,1e-6),MultScalarCost(R_N12,lamb),R_POS};

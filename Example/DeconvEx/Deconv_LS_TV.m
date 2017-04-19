@@ -49,10 +49,10 @@ imdisp(y(idx,idx),'Convolved and noisy data',1);
 fftHty=conj(H.mtf).*fft2(y);
 
 % -- Functions definition
-F_LS=CostL2(H,y);                         % Least-Squares data term
-R_N12=CostMixNorm12([3]);                 % Mixed Norm 2-1
-G=LinOpGrad(size(y),[],'circular');       % Operator Gradient
-lamb=1e-3;                                % Hyperparameter
+F_LS=CostL2(H,y);           % Least-Squares data term
+R_N12=CostMixNorm12([3]);   % Mixed Norm 2-1
+G=LinOpGrad(size(y));       % Operator Gradient
+lamb=1e-3;                  % Hyperparameter
 
 % -- Chambolle-Pock  LS + TV
 OutCP=OutputOpti(1,impad,40);

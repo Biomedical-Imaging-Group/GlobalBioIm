@@ -50,11 +50,11 @@ imdisp(y(idx,idx),'Convolved and noisy data',1);
 fftHty=conj(H.mtf).*fft2(y);
 
 % -- Functions definition
-F_LS=CostL2(H,y);                         % Least-Sqaures data term
-R_N12=CostMixNorm12([3]);                 % Mixed Norm 2-1
-G=LinOpGrad(size(y),[],'circular');       % Operator Gradient
-R_POS=CostNonNeg();                       % Non-Negativity
-lamb=7e-4;                                % Hyperparameter
+F_LS=CostL2(H,y);           % Least-Sqaures data term
+R_N12=CostMixNorm12([3]);   % Mixed Norm 2-1
+G=LinOpGrad(size(y));       % Operator Gradient
+R_POS=CostNonNeg();         % Non-Negativity
+lamb=7e-4;                  % Hyperparameter
 
 % -- ADMM LS + TV + NonNeg
 Fn={MultScalarCost(R_N12,lamb),R_POS};

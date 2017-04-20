@@ -23,11 +23,11 @@ classdef OptiADMM < Opti
     %    $$ F_0(H_0*x) + \sum_{n=1}^N 0.5*\rho_n||H_n*x -z_n||^2 $$
     % Finally OutOp is a OutputOpti object.
     %
-    % Note: If F0=[], then solver is not mandatory and by default the ADMM algorithm will
-    %       use the Conjugate Gradient algorithm (see OptiConjGrad) to make the minimization task
-    %       of solver. However, if one has a faster method than applying a conjugate gradient to 
-    %       perform this step, it is recommended to provide a solver.
-    %       If F0 is nonempty, then solver is MANDATORY. 
+    % Note: If F0 not empty and F0 not CostL2, then solver is mandatory.
+    %       Otherwise not and by default the ADMM algorithm will use the Conjugate Gradient algorithm 
+    %       (see OptiConjGrad) to make the minimization task of solver. However, if one has a 
+    %       faster method than applying a conjugate gradient to perform this step, it is 
+    %       recommended to provide a solver. If F0 is nonempty, then solver is MANDATORY. 
     %
     % -- Properties
     % * |maxiterCG|   number of iteration for Conjugate Gradient (when used)
@@ -79,6 +79,7 @@ classdef OptiADMM < Opti
 		maxiterCG=20;          % max number of Conjugate Gradient iterates (when used)
 		OutOpCG=OutputOpti();  % OutputOpti object for Conjugate Gradient (when used)
 		ItUpOutCG=0;           % ItUpOut parameter for Conjugate Gradient (when used)
+        b0=[];
     end
     
     methods
@@ -94,8 +95,8 @@ classdef OptiADMM < Opti
     		this.Fn=Fn;
     		this.Hn=Hn;
     		this.rho_n=rho_n;
-    		if ~isempty(F0) % todo: can include quadratic F0 in this case as well.
-    			assert(~isempty(solver),'when F0 is nonempty a solver must be given (see help)');
+    		if ~isempty(F0) 
+    			assert(~isempty(solver) || isa(F0,'CostL2'),'when F0 is nonempty and is not CostL2 a solver must be given (see help)');
     			this.cost=F0.o(H0) + Fn{1}.o(Hn{1});
     		else
     			this.cost=Fn{1}.o(Hn{1});
@@ -108,7 +109,11 @@ classdef OptiADMM < Opti
 				this.A=SumLinOp({this.Hn{1}'*this.Hn{1}},[this.rho_n(1)]);
 				for n=2:length(this.Hn)
 					this.A=SumLinOp({this.A,this.Hn{n}'*this.Hn{n}},[1,this.rho_n(n)]);
-				end
+                end
+                if ~isempty(this.F0) && isa(this.F0,'CostL2')
+                    this.A=SumLinOp({this.A,this.H0'*this.H0},[1,1]);
+                    this.b0=this.H0'*this.F0.y;
+                end
 			end
     	end 
     	%% Run the algorithm
@@ -138,7 +143,10 @@ classdef OptiADMM < Opti
 					b=this.rho_n(1)*this.Hn{1}.adjoint(this.zn{1});
 					for n=2:length(this.Hn)
 						b=b+this.rho_n(n)*this.Hn{n}.adjoint(this.zn{n});
-					end
+                    end
+                    if ~isempty(this.b0)
+                        b=b+this.b0;
+                    end
 					CG=OptiConjGrad(this.A,b,[],this.OutOpCG);
 					CG.maxiter=this.maxiterCG;
 					CG.ItUpOut=this.ItUpOutCG;

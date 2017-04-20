@@ -3,7 +3,7 @@ classdef MulLinOp < LinOp
     %  Matlab Linear Operator Library
     %
     % Example
-    % Obj = SumLinop(LinOp1,LinOp2)
+    % Obj = MulLinOp(LinOp1,LinOp2)
     % Multiplication of LinOps:
     % Obj = LinOp1 * LinOp2
     %

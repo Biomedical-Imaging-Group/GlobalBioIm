@@ -32,6 +32,7 @@ classdef MultScalarCost < Cost
     methods 
     	%% Constructor
         function this = MultScalarCost(cost,s)
+            warning('MultScalarCost deprecated -> Use MulCost or operator * instead');
             this.name='Multiply Cost by Scalar';
 			this.cost = cost;
 			assert(isscalar(s),'s must be a scalar');

@@ -9,7 +9,7 @@
 % See LinOp, LinOpConv, LinOpHess, Cost, CostL2,   
 % CostMixNorm1Schatt, Opti, OptiChambPock, OptiADMM, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;warning('off');
+clear all; close all; clc;
 help Deconv_LS_HessSchatt
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -56,7 +56,7 @@ lamb=2e-3;                       % Hyperparameter
 
 % -- Chambolle-Pock  LS + ShattenHess
 OutCP=OutputOpti(1,impad,40);
-CP=OptiChambPock(MultScalarCost(R_1sch,lamb),Hess,F_LS,OutCP);
+CP=OptiChambPock(lamb*R_1sch,Hess,F_LS,OutCP);
 CP.tau=1;        % algorithm parameters
 CP.sig=0.02;     %
 CP.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
@@ -64,7 +64,7 @@ CP.maxiter=200;  % max number of iterations
 CP.run(y);       % run the algorithm 
 
 % -- ADMM LS + ShattenHess
-Fn={MultScalarCost(R_1sch,lamb)};
+Fn={lamb*R_1sch};
 Hn={Hess};rho_n=[1e-1];
 fHesstHess=fftn(Hess.fHtH);     % Fourier of the filter Hess'Hess 
 solver = @(z,rho,x) real(ifft2((fftHty + fft2(rho(1)*Hess'*z{1}) )./(abs(H.mtf).^2 + rho(1)*fHesstHess)));  % solver to solve the x update

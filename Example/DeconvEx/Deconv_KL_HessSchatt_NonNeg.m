@@ -10,7 +10,7 @@
 % See LinOp, LinOpConv, LinOpHess, Cost, CostKullLeib, CostNonNeg,  
 % CostMixNorm1Schatt, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;warning('off');
+clear all; close all; clc;
 help Deconv_KL_HessSchatt_NonNeg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -57,7 +57,7 @@ R_POS=CostNonNeg();              % Non-Negativity
 lamb=5e-3;                       % Hyperparameter
 
 % -- ADMM KL + ShattenHess + NonNeg
-Fn={CostKullLeib([],y,1e-6),MultScalarCost(R_1sch,lamb),R_POS};
+Fn={CostKullLeib([],y,1e-6),lamb*R_1sch,R_POS};
 Hn={H,Hess,LinOpIdentity(size(impad))};
 rho_n=[1e-2,1e-2,1e-2];
 fHesstHess=fftn(Hess.fHtH);     % Fourier of the filter Hess'Hess 
@@ -70,7 +70,7 @@ ADMM.run(y);            % run the algorithm
 
 
 % -- PrimalDual Condat KL + ShattenHess + NonNeg
-Fn={MultScalarCost(R_1sch,lamb)};
+Fn={lamb*R_1sch};
 Hn={Hess};
 OutPDC=OutputOpti(1,impad,40);
 PDC=OptiPrimalDualCondat(F_KL,R_POS,Fn,Hn,OutPDC);

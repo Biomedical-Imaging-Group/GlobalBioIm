@@ -10,7 +10,7 @@
 % See LinOp, LinOpConv, LinOpHess, Cost, CostL2, CostNonNeg,  
 % CostMixNorm1Schatt, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;warning('off');
+clear all; close all; clc;
 help Deconv_LS_HessSchatt_NonNeg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -57,7 +57,7 @@ R_POS=CostNonNeg();              % Non-Negativity
 lamb=1e-3;                       % Hyperparameter
 
 % -- ADMM LS + ShattenHess + NonNeg
-Fn={MultScalarCost(R_1sch,lamb),R_POS};
+Fn={lamb*R_1sch,R_POS};
 Hn={Hess,LinOpIdentity(size(impad))};
 rho_n=[1e-1,1e-1];
 fHesstHess=fftn(Hess.fHtH);     % Fourier of the filter Hess'Hess 
@@ -69,7 +69,7 @@ ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 
 
 % -- PrimalDual Condat LS + ShattenHess + NonNeg
-Fn={MultScalarCost(R_1sch,lamb)};
+Fn={lamb*R_1sch};
 Hn={Hess};
 OutPDC=OutputOpti(1,impad,40);
 PDC=OptiPrimalDualCondat(F_LS,R_POS,Fn,Hn,OutPDC);

@@ -10,7 +10,7 @@
 % See LinOp, LinOpConv, LinOpGrad, Cost, CostL2, CostNonNeg,  
 % CostMixNorm12, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;warning('off');
+clear all; close all; clc;
 help Deconv_LS_TV_NonNeg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -57,7 +57,7 @@ R_POS=CostNonNeg();         % Non-Negativity
 lamb=7e-4;                  % Hyperparameter
 
 % -- ADMM LS + TV + NonNeg
-Fn={MultScalarCost(R_N12,lamb),R_POS};
+Fn={lamb*R_N12,R_POS};
 Hn={G,LinOpIdentity(size(impad))};
 rho_n=[1e-1,1e-1];
 fGtG=fftn(G.fHtH);      % Fourier of the filter G'G (Laplacian)
@@ -69,7 +69,7 @@ ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 
 
 % -- PrimalDual Condat LS + TV + NonNeg
-Fn={MultScalarCost(R_N12,lamb)};
+Fn={lamb*R_N12};
 Hn={G};
 OutPDC=OutputOpti(1,impad,40);
 PDC=OptiPrimalDualCondat(F_LS,R_POS,Fn,Hn,OutPDC);

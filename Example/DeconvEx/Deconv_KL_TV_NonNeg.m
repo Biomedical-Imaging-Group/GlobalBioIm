@@ -12,7 +12,7 @@
 % CostMixNorm12, Opti, OptiADMM, OptiRichLucy, OutpuOpti
 % OptiPrimalDualCondat.
 %------------------------------------------------------------
-clear all; close all; clc;%warning('off');
+clear all; close all; clc;
 help Deconv_KL_TV_NonNeg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -58,7 +58,7 @@ G=LinOpGrad(size(y));        % Operator Gradient
 lamb=1e-2;                   % Hyperparameter  
 
 % -- ADMM KL + TV + NonNeg
-Fn={CostKullLeib([],y,1e-6),MultScalarCost(R_N12,lamb),R_POS};
+Fn={CostKullLeib([],y,1e-6),lamb*R_N12,R_POS};
 Hn={H,G,LinOpIdentity(size(impad))};
 rho_n=[1e-2,1e-2,1e-2];
 fGtG=fftn(G.fHtH);     % Fourier of the filter G'G (Laplacian)
@@ -70,7 +70,7 @@ ADMM.maxiter=200;                                 % max number of iterations
 ADMM.run(y);                                      % run the algorithm
 
 % -- PrimalDual Condat KL + TV + NonNeg
-Fn={MultScalarCost(R_N12,lamb)};
+Fn={lamb*R_N12};
 Hn={G};
 OutPDC=OutputOpti(1,impad,40);
 PDC=OptiPrimalDualCondat(F_KL,R_POS,Fn,Hn,OutPDC);

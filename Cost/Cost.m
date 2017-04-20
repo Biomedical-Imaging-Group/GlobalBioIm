@@ -84,15 +84,16 @@ classdef Cost < handle
             assert(isa(x,'Cost'),'Subtraction of Cost is only define with other Cost');
             y = SumCost({this,x},[1,-1]);
         end
+        %% Overload the operator *
+        function y = mtimes(this,x)
+            y = MulCost(this,x);
+        end
         %% Function that set properly the operator H (has to be modified if new properties is???H are added)
-        function set_H(this,H,y)
-  
+        function set_H(this,H,y)  
             if (nargin <3 || isempty(y))
                 y =0;
-            end
-            
-            assert(isnumeric(y),' y must be a numeric');
-            
+            end            
+            assert(isnumeric(y),' y must be a numeric');            
             if isa(H, 'LinOp')  
                 assert( (isscalar(y)) || (isequal(H.sizeout,size(y))),'y must be equal to H.sizeout');
             else if issize(H)
@@ -102,12 +103,9 @@ classdef Cost < handle
                         H =LinOpIdentity(size(y));
                     end
                 end
-            end
-            
+            end           
             this.H=H;
-            this.y = y;
-            
-            
+            this.y = y;                   
         end
     end
 end

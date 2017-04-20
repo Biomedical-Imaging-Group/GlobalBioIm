@@ -9,7 +9,7 @@
 % See LinOp, LinOpConv, LinOpGrad, Cost, CostL2,   
 % CostMixNorm12, Opti, OptiChambPock, OptiADMM, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;warning('off');
+clear all; close all; clc;
 help Deconv_LS_TV
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -56,7 +56,7 @@ lamb=1e-3;                  % Hyperparameter
 
 % -- Chambolle-Pock  LS + TV
 OutCP=OutputOpti(1,impad,40);
-CP=OptiChambPock(MultScalarCost(R_N12,lamb),G,F_LS,OutCP);
+CP=OptiChambPock(lamb*R_N12,G,F_LS,OutCP);
 CP.tau=15;                            % algorithm parameters
 CP.sig=1/(CP.tau*G.norm^2)*0.99;      %
 CP.ItUpOut=10;                        % call OutputOpti update every ItUpOut iterations
@@ -64,7 +64,7 @@ CP.maxiter=200;                       % max number of iterations
 CP.run(y);                            % run the algorithm 
 
 % -- ADMM LS + TV
-Fn={MultScalarCost(R_N12,lamb)};
+Fn={lamb*R_N12};
 Hn={G};rho_n=[1e-1];
 fGtG=fftn(G.fHtH);     % Fourier of the filter G'G (Laplacian)
 solver = @(z,rho,x) real(ifft2((fftHty + rho(1)*fft2(G'*z{1}))./(abs(H.mtf).^2 + rho(1)*fGtG)));            % solver to solve the x update

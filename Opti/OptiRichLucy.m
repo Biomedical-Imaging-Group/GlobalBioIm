@@ -69,9 +69,9 @@ classdef OptiRichLucy < Opti
     		if this.TV
     			this.G=LinOpGrad(this.Fkl.H.sizein);
     			if length(this.Fkl.H.sizein)==2  % 2D
-    				this.cost=this.cost + MultScalarCost(CostMixNorm12([3],this.G),this.lamb);
+    				this.cost=this.cost + this.lamb*CostMixNorm12([3],this.G);
     			elseif length(this.Fkl.H.sizein)==3
-    				this.cost=this.cost + MultScalarCost(CostMixNorm12([4],this.G),this.lamb);
+    				this.cost=this.cost + this.lamb*CostMixNorm12([4],this.G);
     			end
     		end
     	end 

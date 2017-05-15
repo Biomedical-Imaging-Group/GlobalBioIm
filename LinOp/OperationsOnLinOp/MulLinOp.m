@@ -45,10 +45,10 @@ classdef MulLinOp < LinOp
             
 			% strcmp is different than isa because it doesn't check all
 			% superclasses as well
-			if strcmp(class(LinOp1), 'adjoint') && LinOp1.TLinOp == LinOp2
+			if strcmp(class(LinOp1), 'Adjoint') && LinOp1.TLinOp == LinOp2
 				this.isHTH = true;
 				this.issquare = true;
-			elseif strcmp(class(LinOp2), 'adjoint') && LinOp2.TLinOp == LinOp1
+			elseif strcmp(class(LinOp2), 'Adjoint') && LinOp2.TLinOp == LinOp1
 				this.isHHt = true;
 				this.issquare = true;
 			end

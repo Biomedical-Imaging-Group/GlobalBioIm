@@ -37,8 +37,9 @@ end
         function this = LinOpMatrix(M,index)
             this.name='Linop Matrix';
             this.M = M;
-            this.sz =size(M);
+            this.sz = size(M);
             this.ndms = ndims(M);
+            this.norm = norm(M);
             
                 if isreal(M)
                     this.iscomplex= false;

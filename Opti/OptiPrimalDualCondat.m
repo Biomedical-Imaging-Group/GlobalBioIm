@@ -100,9 +100,9 @@ classdef OptiPrimalDualCondat < Opti
 				end
 			end; 
 			% Check parameters
-        	assert(~isempty(this.sig),'parameter sig is not setted');
-        	assert(~isempty(this.tau),'parameter tau is not setted');
-        	assert(~isempty(this.rho),'parameter rho is not setted');
+        	assert(~isempty(this.sig),'parameter sig is not set');
+        	assert(~isempty(this.tau),'parameter tau is not set');
+        	assert(~isempty(this.rho),'parameter rho is not set');
 			assert(~isempty(this.xopt),'Missing starting point x0');
 			tstart=tic;
 			this.OutOp.init();

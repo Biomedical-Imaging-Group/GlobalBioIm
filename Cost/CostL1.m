@@ -33,7 +33,7 @@ classdef CostL1 < Cost
     methods
         function this = CostL1(H,y, varargin)
             this.name='Cost L1';
-            
+            this.isconvex=true;
             % -- Set entries
             if nargin<2
                 y=[];

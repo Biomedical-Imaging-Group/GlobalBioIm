@@ -32,7 +32,6 @@ classdef LinOpScaling <  LinOp
     methods
         function this = LinOpScaling(scale,sz)
             this.name ='LinOp Scaling';
-            this.issquare = true;
             if isscalar(scale)
                 this.scale = scale;
                 if isreal(scale)

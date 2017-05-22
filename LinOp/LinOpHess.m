@@ -50,7 +50,6 @@ classdef LinOpHess <  LinOp
             end
             this.name='LinOp Hessian';
             this.iscomplex=false;
-            this.issquare=false;
             this.sizein=sz;
             this.ndms = length(this.sizein);
             this.bc=bc;

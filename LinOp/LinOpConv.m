@@ -40,15 +40,11 @@ classdef LinOpConv <  LinOp
             end
             this.name ='LinOp Convolution';
             this.isinvertible=false;
-            this.issquare = true;
             
             assert(isnumeric(psf),'The psf should be a');
             this.psf = psf;
-            if isreal(psf)
-            this.iscomplex= false;
-            end
+            if ~isreal(psf), this.iscomplex= true; end
             this.sizeout =size( this.psf);
-            
             this.sizein = this.sizeout;
             
             this.ndms = length(this.sizein);
@@ -71,13 +67,13 @@ classdef LinOpConv <  LinOp
             
             this.mtf = Sfft(this.psf, this.Notindex);
             
-                if all(this.mtf)
-                    this.isinvertible=true;
-                else
-                    this.isinvertible=false;
-                end
+            if all(this.mtf)
+                this.isinvertible=true;
+            else
+                this.isinvertible=false;
+            end
             
-            % -- Norm of the operator 
+            % -- Norm of the operator
             this.norm=max(abs(this.mtf(:)));
             
         end
@@ -101,6 +97,9 @@ classdef LinOpConv <  LinOp
             if (~this.iscomplex)&&isreal(x)
                 y = real(y);
             end
+        end
+        function y = HHt(this,x)
+            y=this.HtH(x);
         end
         function y=inverse(this,x) % apply the inverse
             if this.isinvertible

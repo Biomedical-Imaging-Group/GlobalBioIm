@@ -38,9 +38,7 @@ classdef LinOpDiag <  LinOp
     end
     methods
         function this = LinOpDiag(diag,sz)
-            this.name ='LinOp Diagonal';
-            this.issquare = true;
-            
+            this.name ='LinOp Diagonal';            
             if ~isnumeric(diag)
                 error('diag must be numeric');
             end
@@ -109,6 +107,9 @@ classdef LinOpDiag <  LinOp
             else
                 error('x should be the same size as diag: [%d, %d, %d, %d]',this.sizein);
             end
+        end
+        function y=HHt(this,x)
+            y=this.HtH(x);
         end
         
         function y = inverse(this,x)

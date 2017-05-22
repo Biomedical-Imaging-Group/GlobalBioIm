@@ -42,7 +42,6 @@ classdef LinOpSum <  LinOp
             this.name ='LinOp Sum ';
             this.iscomplex= true;
             this.isinvertible=false;
-            this.issquare = false;
             
             assert(issize(sz),'The input size sz should be a conformable  to a size ');
             this.sizein = sz;

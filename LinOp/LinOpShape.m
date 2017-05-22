@@ -35,7 +35,6 @@ classdef LinOpShape <  LinOp
             this.name ='LinOp Shape';
             this.iscomplex= false;
             this.isinvertible=true;
-            this.issquare = false;
 			
 			this.norm = 1;
             

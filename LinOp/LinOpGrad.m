@@ -59,7 +59,6 @@ classdef LinOpGrad <  LinOp
             this.name ='LinOp Gradient';
             this.iscomplex= false;
             this.isinvertible=false;
-            this.issquare = false;
             this.res=res;
             this.bc=bc;
             

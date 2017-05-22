@@ -50,7 +50,6 @@ classdef LinOpSDFT <  LinOp
             this.name ='LinOp SDFT';
             this.iscomplex= true;
             this.isinvertible=true;
-            this.issquare = true;
         end
         function y = apply(this,x)
              if (~isempty(this.index))

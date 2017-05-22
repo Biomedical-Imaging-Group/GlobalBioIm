@@ -47,10 +47,8 @@ classdef MulLinOp < LinOp
 			% superclasses as well
 			if strcmp(class(LinOp1), 'Adjoint') && LinOp1.TLinOp == LinOp2
 				this.isHTH = true;
-				this.issquare = true;
 			elseif strcmp(class(LinOp2), 'Adjoint') && LinOp2.TLinOp == LinOp1
 				this.isHHt = true;
-				this.issquare = true;
 			end
 
 			if isnumeric(LinOp1) && LinOp2.norm ~= -1
@@ -74,9 +72,7 @@ classdef MulLinOp < LinOp
                     this.isinvertible= true;
                 else
                     this.isinvertible= false;
-                end
-                
-                this.issquare= LinOp2.issquare;             
+                end    
                 
                 %                 if isscalar(LinOp1)
                 %              LinOp1 = Scaling(LinOp1);
@@ -100,13 +96,7 @@ classdef MulLinOp < LinOp
                     this.isinvertible= true;
                 else
                     this.isinvertible= false;
-                end
-                
-                if LinOp1.issquare && LinOp2.issquare
-                    this.issquare= true;
-                else
-                    this.issquare= false;
-                end               
+                end           
             end                 
         end
         

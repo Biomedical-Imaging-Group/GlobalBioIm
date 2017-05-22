@@ -61,7 +61,7 @@ classdef LinOp < handle
         end
         function y = HtH(this,x) %  apply the HtH matrix
             y = this.adjoint(this.apply(x));
-            ends
+        end
         function y = HHt(this,x) %  apply the HHt matrix
             y = this.apply(this.adjoint(x));
         end

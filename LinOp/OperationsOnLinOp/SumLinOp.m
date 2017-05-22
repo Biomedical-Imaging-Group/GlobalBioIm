@@ -73,7 +73,6 @@ classdef SumLinOp < LinOp
 			
 			this.ALinOp = ALinOp;
 			this.iscomplex= this.ALinOp{1}(1).iscomplex;
-            this.issquare = this.ALinOp{1}(1).issquare;
             this.isinvertible=false;
             this.sizein =  this.ALinOp{1}(1).sizein;
             this.sizeout =  this.ALinOp{1}(1).sizeout;
@@ -110,14 +109,10 @@ classdef SumLinOp < LinOp
 		end
 		
 		function y = HHt(this,x) %  apply the HHt matrix
-			if this.issquare   % HtH =HHt
-				y = this.HtH(x);
-			else
-				y =  zeros(this.sizeout);
-				for n = 1:this.numLinOp
-					y = y + this.alpha(n) .* this.ALinOp{n}.HHt(x);
-				end
-			end
+            y =  zeros(this.sizeout);
+            for n = 1:this.numLinOp
+                y = y + this.alpha(n) .* this.ALinOp{n}.HHt(x);
+            end
 		end
 		
 		

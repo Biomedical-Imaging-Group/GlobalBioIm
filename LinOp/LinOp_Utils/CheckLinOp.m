@@ -66,13 +66,12 @@ else
     error('Error in HtH matrix computation: diff = %d', normDiff);
 end
 
-if ~LinOp.issquare
-    if  (dot((LinOp.apply(HtOut) - LinOp.HHt(Out)),conj(LinOp.apply(HtOut) - LinOp.HHt(Out)))<tol)
-        disp('HHt matrix OK');
-    else
-        error('Error in HHt matrix computation');
-    end
+if  (dot((LinOp.apply(HtOut) - LinOp.HHt(Out)),conj(LinOp.apply(HtOut) - LinOp.HHt(Out)))<tol)
+    disp('HHt matrix OK');
+else
+    error('Error in HHt matrix computation');
 end
+
 
 if LinOp.isinvertible
     if abs(LinOp.inverse(HIn)-In)<tol

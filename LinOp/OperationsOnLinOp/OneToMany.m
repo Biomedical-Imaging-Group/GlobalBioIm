@@ -56,7 +56,6 @@ classdef OneToMany < LinOp
                 this.alpha = alpha;
             end
             this.iscomplex= this.ALinOp{1}(1).iscomplex;
-            this.issquare = this.ALinOp{1}(1).issquare;
             this.isinvertible=false;
             this.sizein =  this.ALinOp{1}(1).sizein;
             for n =2:this.numLinOp

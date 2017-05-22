@@ -86,9 +86,9 @@ classdef Cost < handle
         end
         %% Overload the operator *
         function y = mtimes(this,x)
-            y = MulCost(this,x);
+            y = MulCost(x,this);
         end
-        %% Function that set properly the operator H (has to be modified if new properties is???H are added)
+        %% Function that sets properly the operator H (has to be modified if new properties is???H are added)
         function set_H(this,H,y)  
             if (nargin <3 || isempty(y))
                 y =0;

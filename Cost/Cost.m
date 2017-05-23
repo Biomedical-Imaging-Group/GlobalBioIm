@@ -71,17 +71,18 @@ classdef Cost < handle
         end
         %% Operator compose with a LinOp
         function v=	o(this,x)
-            assert(isa(x,'LinOp'),' Composition of Cost(.o) is only define with a LinOp');
+            
+            assert(isa(x,'LinOp'),' Composition of Cost(.o) is only defined with a LinOp');
             v=ComposeLinOpCost(this,x);
         end
         %% Overload the operator +
         function y = plus(this,x)
-            assert(isa(x,'Cost'),'Addition of Cost is only define with other Cost');
+            assert(isa(x,'Cost'),'Addition of Cost is only defined with other Cost');
             y = SumCost({this,x});
         end
         %% Overload the operator -
         function y = minus(this,x)
-            assert(isa(x,'Cost'),'Subtraction of Cost is only define with other Cost');
+            assert(isa(x,'Cost'),'Subtraction of Cost is only defined with other Cost');
             y = SumCost({this,x},[1,-1]);
         end
         %% Overload the operator *
@@ -89,23 +90,23 @@ classdef Cost < handle
             y = MulCost(x,this);
         end
         %% Function that sets properly the operator H (has to be modified if new properties is???H are added)
-        function set_H(this,H,y)  
+        function set_H(this,H,y)
             if (nargin <3 || isempty(y))
                 y =0;
-            end            
-            assert(isnumeric(y),' y must be a numeric');            
-            if isa(H, 'LinOp')  
+            end
+            assert(isnumeric(y),' y must be a numeric');
+            if isa(H, 'LinOp')
                 assert( (isscalar(y)) || (isequal(H.sizeout,size(y))),'y must be equal to H.sizeout');
             else if issize(H)
-                H=LinOpIdentity(H);
-                assert( (isscalar(y)) || (isequal(H.sizeout,size(y))),'y must be equal to H.sizeout');
+                    H=LinOpIdentity(H);
+                    assert( (isscalar(y)) || (isequal(H.sizeout,size(y))),'y must be equal to H.sizeout');
                 else if isempty(H)
                         H =LinOpIdentity(size(y));
                     end
                 end
-            end           
+            end
             this.H=H;
-            this.y = y;                   
+            this.y = y;
         end
     end
 end

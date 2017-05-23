@@ -16,7 +16,7 @@ classdef OptiADMM < Opti
     %
     % -- Example
     %   ADMM= OptiADMM(F0,H0,Fn,Hn,rho_n,solver,OutOp)
-    % where F0 is a FUNC object, H0 a LINOP object, Fn a cell of N COST, Hn a cell of N LINOP, 
+    % where F0 is a FUNC object, H0 a LINOP object, Fn a cell of N COST, Hn a cell of N LINOP,
     % rho_n a vector of N nonnegative scalars and solver a function handle such that:
     %   solver(z_n,rho_n)
     % where z_n is a cell of N elements and rho_n as above, minimizes the following function:
@@ -24,10 +24,10 @@ classdef OptiADMM < Opti
     % Finally OutOp is a OutputOpti object.
     %
     % Note: If F0 not empty and F0 not CostL2, then solver is mandatory.
-    %       Otherwise not and by default the ADMM algorithm will use the Conjugate Gradient algorithm 
-    %       (see OptiConjGrad) to make the minimization task of solver. However, if one has a 
-    %       faster method than applying a conjugate gradient to perform this step, it is 
-    %       recommended to provide a solver. If F0 is nonempty, then solver is MANDATORY. 
+    %       Otherwise not and by default the ADMM algorithm will use the Conjugate Gradient algorithm
+    %       (see OptiConjGrad) to make the minimization task of solver. However, if one has a
+    %       faster method than applying a conjugate gradient to perform this step, it is
+    %       recommended to provide a solver. If F0 is nonempty, then solver is MANDATORY.
     %
     % -- Properties
     % * |maxiterCG|   number of iteration for Conjugate Gradient (when used)
@@ -36,8 +36,8 @@ classdef OptiADMM < Opti
     % * |ItUpOutCG|   ItUpOut parameter for Conjugate Gracdient (when used, default 0)
     %
     % -- References
-	% [1] Boyd, Stephen, et al. "Distributed optimization and statistical learning via the alternating direction 
-	%     method of multipliers." Foundations and Trends in Machine Learning, 2011.
+    % [1] Boyd, Stephen, et al. "Distributed optimization and statistical learning via the alternating direction
+    %     method of multipliers." Foundations and Trends in Machine Learning, 2011.
     %
     % Please refer to the OPTI superclass for general documentation about optimization class
     % See also Opti, OptiConjGrad, LinOp, Cost, OutputOpti
@@ -56,116 +56,120 @@ classdef OptiADMM < Opti
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-    % Protected Set and public Read properties     
+    
+    % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
-		F0=[];               % func F0
-		Fn;                  % Cell containing the Cost Fn
-		H0=[];               % LinOp H0
-		Hn;                  % Cell containing the LinOp Hn
-		solver=[];           % solver for the last step of the algorithm
+        F0=[];               % func F0
+        Fn;                  % Cell containing the Cost Fn
+        H0=[];               % LinOp H0. TODO : remove H0 (not needed)
+        Hn;                  % Cell containing the LinOp Hn
+        solver=[];           % solver for the last step of the algorithm
     end
-    % Full protected properties 
+    % Full protected properties
     properties (SetAccess = protected,GetAccess = protected)
-		yn;    % Internal parameters
-		zn;
-		wn;
-		Hnx;
-		A;     % LinOp for conjugate gradient (if used)
+        yn;    % Internal parameters
+        zn;
+        wn;
+        Hnx;
+        A;     % LinOp for conjugate gradient (if used)
     end
     % Full public properties
     properties
-		rho_n;                 % vector containing the multipliers
-		maxiterCG=20;          % max number of Conjugate Gradient iterates (when used)
-		OutOpCG=OutputOpti();  % OutputOpti object for Conjugate Gradient (when used)
-		ItUpOutCG=0;           % ItUpOut parameter for Conjugate Gradient (when used)
+        rho_n;                 % vector containing the multipliers
+        maxiterCG=20;          % max number of Conjugate Gradient iterates (when used)
+        OutOpCG=OutputOpti();  % OutputOpti object for Conjugate Gradient (when used)
+        ItUpOutCG=0;           % ItUpOut parameter for Conjugate Gradient (when used)
         b0=[];
     end
     
     methods
-    	%% Constructor
-    	function this=OptiADMM(F0,H0,Fn,Hn,rho_n,solver,OutOp)
-    		this.name='Opti ADMM';
-    		if ~isempty(F0), this.F0=F0; end
-    		if ~isempty(H0), this.H0=H0; end
-    		if nargin<=5, solver=[]; end
-    		if nargin==7 && ~isempty(OutOp),this.OutOp=OutOp;end   		
-    		assert(length(Fn)==length(Hn),'Fn, Hn and rho_n must have the same length');
-    		assert(length(Hn)==length(rho_n),'Fn, Hn and rho_n must have the same length');
-    		this.Fn=Fn;
-    		this.Hn=Hn;
-    		this.rho_n=rho_n;
-    		if ~isempty(F0) 
-    			assert(~isempty(solver) || isa(F0,'CostL2'),'when F0 is nonempty and is not CostL2 a solver must be given (see help)');
-    			this.cost=F0.o(H0) + Fn{1}.o(Hn{1});
-    		else
-    			this.cost=Fn{1}.o(Hn{1});
-    		end
-    		this.solver=solver;  		
-    		for n=2:length(Fn)
-    			this.cost=this.cost+Fn{n}.o(Hn{n});
-			end
-			if isempty(this.solver)
-				this.A=SumLinOp({this.Hn{1}'*this.Hn{1}},[this.rho_n(1)]);
-				for n=2:length(this.Hn)
-					this.A=SumLinOp({this.A,this.Hn{n}'*this.Hn{n}},[1,this.rho_n(n)]);
+        %% Constructor
+        function this=OptiADMM(F0,H0,Fn,Hn,rho_n,solver,OutOp)
+            this.name='Opti ADMM';
+            if ~isempty(F0)
+                this.F0=F0;
+                assert(~isempty(H0),'H0 operator needed');
+                this.H0=H0;
+            end
+            
+            if nargin<=5, solver=[]; end
+            if nargin==7 && ~isempty(OutOp),this.OutOp=OutOp;end
+            assert(length(Fn)==length(Hn),'Fn, Hn and rho_n must have the same length');
+            assert(length(Hn)==length(rho_n),'Fn, Hn and rho_n must have the same length');
+            this.Fn=Fn;
+            this.Hn=Hn;
+            this.rho_n=rho_n;
+            if ~isempty(F0)
+                assert(~isempty(solver) || isa(F0,'CostL2'),'when F0 is nonempty and is not CostL2 a solver must be given (see help)');
+                this.cost=F0.o(H0) + Fn{1}.o(Hn{1});
+            else
+                this.cost=Fn{1}.o(Hn{1});
+            end
+            this.solver=solver;
+            for n=2:length(Fn)
+                this.cost=this.cost+Fn{n}.o(Hn{n});
+            end
+            if isempty(this.solver)
+                this.A=SumLinOp({this.Hn{1}'*this.Hn{1}},[this.rho_n(1)]);
+                for n=2:length(this.Hn)
+                    this.A=SumLinOp({this.A,this.Hn{n}'*this.Hn{n}},[1,this.rho_n(n)]);
                 end
                 if ~isempty(this.F0) && isa(this.F0,'CostL2')
                     this.A=SumLinOp({this.A,this.H0'*this.H0},[1,1]);
                     this.b0=this.H0'*this.F0.y;
                 end
-			end
-    	end 
-    	%% Run the algorithm
-        function run(this,x0) 
-			if ~isempty(x0), % To restart from current state if wanted
-				this.xopt=x0;
-				for n=1:length(this.Hn)
-					this.yn{n}=this.Hn{n}.apply(this.xopt);
-					this.Hnx{n}=this.yn{n};
-					this.wn{n}=zeros(size(this.yn{n}));
-				end
-			end;  
-			assert(~isempty(this.xopt),'Missing starting point x0');
-			tstart=tic;
-			this.OutOp.init();
-			this.niter=1;
-			this.starting_verb();
-			while (this.niter<this.maxiter)
-				this.niter=this.niter+1;
-				xold=this.xopt;
-				% - Algorithm iteration
-				for n=1:length(this.Fn)
-					this.yn{n}=this.Fn{n}.prox(this.Hnx{n} + this.wn{n}/this.rho_n(n),1/this.rho_n(n));
-					this.zn{n}=this.yn{n}-this.wn{n}/this.rho_n(n);
-				end
-				if isempty(this.solver)
-					b=this.rho_n(1)*this.Hn{1}.adjoint(this.zn{1});
-					for n=2:length(this.Hn)
-						b=b+this.rho_n(n)*this.Hn{n}.adjoint(this.zn{n});
+            end
+        end
+        %% Run the algorithm
+        function run(this,x0)
+            if ~isempty(x0), % To restart from current state if wanted
+                this.xopt=x0;
+                for n=1:length(this.Hn)
+                    this.yn{n}=this.Hn{n}.apply(this.xopt);
+                    this.Hnx{n}=this.yn{n};
+                    this.wn{n}=zeros(size(this.yn{n}));
+                end
+            end;
+            assert(~isempty(this.xopt),'Missing starting point x0');
+            tstart=tic;
+            this.OutOp.init();
+            this.niter=1;
+            this.starting_verb();
+            while (this.niter<this.maxiter)
+                this.niter=this.niter+1;
+                xold=this.xopt;
+                % - Algorithm iteration
+                for n=1:length(this.Fn)
+                    this.yn{n}=this.Fn{n}.prox(this.Hnx{n} + this.wn{n}/this.rho_n(n),1/this.rho_n(n));
+                    this.zn{n}=this.yn{n}-this.wn{n}/this.rho_n(n);
+                end
+                if isempty(this.solver)
+                    b=this.rho_n(1)*this.Hn{1}.adjoint(this.zn{1});
+                    for n=2:length(this.Hn)
+                        b=b+this.rho_n(n)*this.Hn{n}.adjoint(this.zn{n});
                     end
                     if ~isempty(this.b0)
                         b=b+this.b0;
                     end
-					CG=OptiConjGrad(this.A,b,[],this.OutOpCG);
-					CG.maxiter=this.maxiterCG;
-					CG.ItUpOut=this.ItUpOutCG;
-					CG.run(this.xopt);
-					this.xopt=CG.xopt;
-				else
-					this.xopt=this.solver(this.zn,this.rho_n, this.xopt);
-				end
-				for n=1:length(this.wn)
-					this.Hnx{n}=this.Hn{n}.apply(this.xopt);
-					this.wn{n}=this.wn{n} + this.rho_n(n)*(this.Hnx{n}-this.yn{n});
-				end
-				% - Convergence test
-				if this.test_convergence(xold), break; end
-				% - Call OutputOpti object
-				if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
-			end 
-			this.time=toc(tstart);
-			this.ending_verb();
+                    CG=OptiConjGrad(this.A,b,[],this.OutOpCG);
+                    CG.maxiter=this.maxiterCG;
+                    CG.ItUpOut=this.ItUpOutCG;
+                    CG.run(this.xopt);
+                    this.xopt=CG.xopt;
+                else
+                    this.xopt=this.solver(this.zn,this.rho_n, this.xopt);
+                end
+                for n=1:length(this.wn)
+                    this.Hnx{n}=this.Hn{n}.apply(this.xopt);
+                    this.wn{n}=this.wn{n} + this.rho_n(n)*(this.Hnx{n}-this.yn{n});
+                end
+                % - Convergence test
+                if this.test_convergence(xold), break; end
+                % - Call OutputOpti object
+                if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
+            end
+            this.time=toc(tstart);
+            this.ending_verb();
         end
-	end
+    end
 end

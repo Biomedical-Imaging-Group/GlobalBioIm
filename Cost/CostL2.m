@@ -46,7 +46,7 @@ classdef CostL2 < Cost
             this.isconvex=true;
             % -- Set entries
             if nargin<2
-                y=[];
+                y=0;
             end
             if nargin<1
                 H=[];

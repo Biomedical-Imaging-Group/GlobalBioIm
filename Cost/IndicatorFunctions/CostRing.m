@@ -84,15 +84,26 @@ classdef CostRing < Cost
         function z = prox(this,x,~) % apply the operator
             assert(isnumeric(x),'x must be numeric');
             
-          if this.H.isinvertible
-              tmp =this.H.apply(x) - this.y;
-            z = this.H.inverse(max(min(this.outer,abs(tmp)),this.inner) .* exp(1i .* angle(tmp))+this.y);
+            if this.H.isinvertible
+                tmp =this.H.apply(x) - this.y;
+                z = this.H.inverse(max(min(this.outer,abs(tmp)),this.inner) .* exp(1i .* angle(tmp))+this.y);
             else
-        		error('Prox not implemented');
-          end
-            
-            
-            
+                error('Prox not implemented');
+            end
         end
+        function cost = eval(this,x) % get the function cost
+            cost = 0;
+            tmp =this.H.apply(x) - this.y;
+            if(any(tmp(:)> this.outer(:)))
+                cost= +inf;
+                return;
+            end
+            
+            if(any(tmp(:)< this.inner(:)))
+                cost= +inf;
+                return;
+            end
+        end
+                
     end
 end

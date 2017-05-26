@@ -59,7 +59,12 @@ classdef OptiConjGrad < Opti
     		this.cost=CostL2(this.A,b);
     		assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
     		this.b=b;
-    	end 
+        end 
+        %% Set data b
+        function set_b(this,b)
+            assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
+            this.b=b;
+        end
     	%% Run the algorithm
         function run(this,x0) 
 			if ~isempty(x0) % To restart from current state if wanted

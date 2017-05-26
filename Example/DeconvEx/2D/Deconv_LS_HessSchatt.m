@@ -69,7 +69,7 @@ Hn={Hess};rho_n=[1e-1];
 fHesstHess=fftn(Hess.fHtH);     % Fourier of the filter Hess'Hess 
 solver = @(z,rho,x) real(ifft2((fftHty + fft2(rho(1)*Hess'*z{1}) )./(abs(H.mtf).^2 + rho(1)*fHesstHess)));  % solver to solve the x update
 OutADMM=OutputOpti(1,impad,40);
-ADMM=OptiADMM(CostL2([],y),H,Fn,Hn,rho_n,solver,OutADMM);
+ADMM=OptiADMM(F_LS,Fn,Hn,rho_n,solver,OutADMM);
 ADMM.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;  % max number of iterations
 ADMM.run(y);       % run the algorithm 

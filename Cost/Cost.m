@@ -86,7 +86,13 @@ classdef Cost < handle
         end
         %% Overload the operator *
         function y = mtimes(this,x)
-            y = MulCost(x,this);
+            if isa(x,'Cost')
+                y = MulCost(this,x);
+            elseif isscalar(x)
+                y = MulCost(x,this);
+            else
+                error('x must be a Cost object or a scalar');
+            end
         end
         %% Set data y (must be conformable with H sizeout)
         function set_y(this,y)

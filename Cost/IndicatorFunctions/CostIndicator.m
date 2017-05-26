@@ -40,12 +40,13 @@ classdef CostIndicator < Cost
             
              % -- Set entries
             if nargin<4
-                y=[];
+                y=0;
             end
             if nargin<3
                 H=[];
             end
-            set_H(this,H,y);
+            set_y(this,y);
+            set_H(this,H);
             
             if nargin<2
                 xmax=[];

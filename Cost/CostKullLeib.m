@@ -47,19 +47,20 @@ classdef CostKullLeib < Cost
             this.isconvex=true;
             % -- Set entries
             if nargin<2
-                    y=[];
+                y=0;
             end
             if nargin<1
-                    H=[];
+                H=[];
             end
-            set_H(this,H,y);
+            set_y(this,y);
+            set_H(this,H);
             
             if nargin==3
                 this.bet=bet;
-            end         
-           tmp=ones(this.H.sizeout);
-           this.He1=this.H.adjoint(tmp);
-                
+            end
+            tmp=ones(this.H.sizeout);
+            this.He1=this.H.adjoint(tmp);
+            
             % -- Compute Lipschitz constant of the gradient (if the norm of H is known)
             if ((this.bet>0)&&(this.H.norm>=0));
                 this.lip=max(this.y(:))./this.bet^2*this.H.norm^2;

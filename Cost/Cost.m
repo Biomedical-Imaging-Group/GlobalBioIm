@@ -71,41 +71,42 @@ classdef Cost < handle
         end
         %% Operator compose with a LinOp
         function v=	o(this,x)
-            assert(isa(x,'LinOp'),' Composition of Cost(.o) is only define with a LinOp');
+            assert(isa(x,'LinOp'),' Composition is only with a LinOp');
             v=ComposeLinOpCost(this,x);
         end
         %% Overload the operator +
         function y = plus(this,x)
-            assert(isa(x,'Cost'),'Addition of Cost is only define with other Cost');
+            assert(isa(x,'Cost'),'Addition is only between two Costs');
             y = SumCost({this,x});
         end
         %% Overload the operator -
         function y = minus(this,x)
-            assert(isa(x,'Cost'),'Subtraction of Cost is only define with other Cost');
+            assert(isa(x,'Cost'),'Subtraction is only between two Costs');
             y = SumCost({this,x},[1,-1]);
         end
         %% Overload the operator *
         function y = mtimes(this,x)
             y = MulCost(this,x);
         end
-        %% Function that set properly the operator H (has to be modified if new properties is???H are added)
-        function set_H(this,H,y)  
-            if (nargin <3 || isempty(y))
-                y =0;
-            end            
-            assert(isnumeric(y),' y must be a numeric');            
-            if isa(H, 'LinOp')  
-                assert( (isscalar(y)) || (isequal(H.sizeout,size(y))),'y must be equal to H.sizeout');
-            else if issize(H)
+        %% Set data y (must be conformable with H sizeout)
+        function set_y(this,y)
+            assert(isnumeric(y),' y must be a numeric');
+            assert(isempty(this.H) || ((isscalar(y)) || (isequal(this.H.sizeout,size(y)))),'size y must be equal to this.H.sizeout');
+            this.y=y;
+        end
+        %% Set operator H (sizein of H must be conformable with size of data y)
+        % H can be a LinOp, a size (to define identity) or empty (identity
+        % will be defined with the size of this.y)
+        function set_H(this,H)
+            if isa(H, 'LinOp')
+                assert( (isscalar(this.y)) || (isequal(H.sizeout,size(this.y))),'H.sizeout must be equal to size of this.y');
+            elseif issize(H)
+                assert( (isscalar(this.y)) || (isequal(H,size(this.y))),'the given size must be equal to the size of this.y');
                 H=LinOpIdentity(H);
-                assert( (isscalar(y)) || (isequal(H.sizeout,size(y))),'y must be equal to H.sizeout');
-                else if isempty(H)
-                        H =LinOpIdentity(size(y));
-                    end
-                end
-            end           
+            elseif isempty(H) 
+                H =LinOpIdentity(size(this.y));
+            end
             this.H=H;
-            this.y = y;                   
         end
     end
 end

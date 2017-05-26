@@ -5,12 +5,12 @@ classdef LinOpDiag <  LinOp
     % Example:
     % Obj = LinOpDiag(diag)
     %
-    % Build the diagonal operator that multiply element wise the input by
+    % Build the diagonal operator that multiplies element wise the input by
     % the vector DIAG  or
     %
     % Obj = LinOpDiag(diag,sz)
     %
-    % Build the diagonal operator that multiply element wise an input of size SZby
+    % Build the diagonal operator that multiplies element wise an input of size SZ by
     % the scalar DIAG
     %
     % Please refer to the LinOp superclass for documentation

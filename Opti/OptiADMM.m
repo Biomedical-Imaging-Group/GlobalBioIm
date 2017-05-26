@@ -15,6 +15,7 @@ classdef OptiADMM < Opti
     % where the \rho_n >0 n=1...N are the multipliers.
     %
     % -- Example
+<<<<<<< HEAD
     %   ADMM= OptiADMM(F0,Fn,Hn,rho_n,solver,OutOp)
     % where F0 is a FUNC object, Fn a cell of N COST, Hn a cell of N LINOP, 
     % rho_n a vector of N nonnegative scalars and solver a function handle such that:
@@ -22,12 +23,22 @@ classdef OptiADMM < Opti
     % where z_n is a cell of N elements and rho_n as above, minimizes the following function:
     %    $$ F_0(x) + \sum_{n=1}^N 0.5*\rho_n||H_n*x -z_n||^2 $$
     % Finally OutOp is a OutputOpti object.
+=======
+    %   ADMM= OptiADMM(F0,H0,Fn,Hn,rho_n,solver,OutOp)
+    % where F0 is a FUNC object, H0 a LINOP object, Fn a cell of N COST, Hn a cell of N LINOP,
+    % rho_n a vector of N nonnegative scalars and solver a function handle such that:
+    %   solver(z_n,rho_n,x0)
+    % where z_n is a cell of N elements, rho_n is as above.
+    % The solver minimizes the following function starting from x0:
+    %    $$ F_0(H_0*x) + \sum_{n=1}^N 0.5*\rho_n||H_n*x -z_n||^2 $$
+    % Finally OutOp is an OutputOpti object.
+>>>>>>> f9af6383d21965ce5679ba31e024bec3972eb722
     %
     % Note: If F0 not empty and F0 not CostL2, then solver is mandatory.
-    %       Otherwise not and by default the ADMM algorithm will use the Conjugate Gradient algorithm 
-    %       (see OptiConjGrad) to make the minimization task of solver. However, if one has a 
-    %       faster method than applying a conjugate gradient to perform this step, it is 
-    %       recommended to provide a solver. If F0 is nonempty, then solver is MANDATORY. 
+    %       Otherwise not and by default the ADMM algorithm will use the Conjugate Gradient algorithm
+    %       (see OptiConjGrad) to make the minimization task of solver. However, if one has a
+    %       faster method than applying a conjugate gradient to perform this step, it is
+    %       recommended to provide a solver. If F0 is nonempty, then solver is MANDATORY.
     %
     % -- Properties
     % * |maxiterCG|   number of iteration for Conjugate Gradient (when used)
@@ -36,8 +47,8 @@ classdef OptiADMM < Opti
     % * |ItUpOutCG|   ItUpOut parameter for Conjugate Gracdient (when used, default 0)
     %
     % -- References
-	% [1] Boyd, Stephen, et al. "Distributed optimization and statistical learning via the alternating direction 
-	%     method of multipliers." Foundations and Trends in Machine Learning, 2011.
+    % [1] Boyd, Stephen, et al. "Distributed optimization and statistical learning via the alternating direction
+    %     method of multipliers." Foundations and Trends in Machine Learning, 2011.
     %
     % Please refer to the OPTI superclass for general documentation about optimization class
     % See also Opti, OptiConjGrad, LinOp, Cost, OutputOpti
@@ -56,16 +67,25 @@ classdef OptiADMM < Opti
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-    % Protected Set and public Read properties     
+    
+    % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
+<<<<<<< HEAD
 		F0=[];               % func F0
 		Fn;                  % Cell containing the Cost Fn
 		Hn;                  % Cell containing the LinOp Hn
 		solver=[];           % solver for the last step of the algorithm
+=======
+        F0=[];               % func F0
+        Fn;                  % Cell containing the Cost Fn
+        H0=[];               % LinOp H0. TODO : remove H0 (not needed)
+        Hn;                  % Cell containing the LinOp Hn
+        solver=[];           % solver for the last step of the algorithm
+>>>>>>> f9af6383d21965ce5679ba31e024bec3972eb722
     end
-    % Full protected properties 
+    % Full protected properties
     properties (SetAccess = protected,GetAccess = protected)
+<<<<<<< HEAD
 		yn;    % Internal parameters
 		zn;
 		wn;
@@ -86,6 +106,35 @@ classdef OptiADMM < Opti
             if ~isempty(F0), this.F0=F0; end
             if nargin<=4, solver=[]; end
             if nargin==6 && ~isempty(OutOp),this.OutOp=OutOp;end
+=======
+        yn;    % Internal parameters
+        zn;
+        wn;
+        Hnx;
+        A;     % LinOp for conjugate gradient (if used)
+    end
+    % Full public properties
+    properties
+        rho_n;                 % vector containing the multipliers
+        maxiterCG=20;          % max number of Conjugate Gradient iterates (when used)
+        OutOpCG=OutputOpti();  % OutputOpti object for Conjugate Gradient (when used)
+        ItUpOutCG=0;           % ItUpOut parameter for Conjugate Gradient (when used)
+        b0=[];
+    end
+    
+    methods
+        %% Constructor
+        function this=OptiADMM(F0,H0,Fn,Hn,rho_n,solver,OutOp)
+            this.name='Opti ADMM';
+            if ~isempty(F0)
+                this.F0=F0;
+                assert(~isempty(H0),'H0 operator needed');
+                this.H0=H0;
+            end
+            
+            if nargin<=5, solver=[]; end
+            if nargin==7 && ~isempty(OutOp),this.OutOp=OutOp;end
+>>>>>>> f9af6383d21965ce5679ba31e024bec3972eb722
             assert(length(Fn)==length(Hn),'Fn, Hn and rho_n must have the same length');
             assert(length(Hn)==length(rho_n),'Fn, Hn and rho_n must have the same length');
             this.Fn=Fn;
@@ -93,7 +142,11 @@ classdef OptiADMM < Opti
             this.rho_n=rho_n;
             if ~isempty(F0)
                 assert(~isempty(solver) || isa(F0,'CostL2'),'when F0 is nonempty and is not CostL2 a solver must be given (see help)');
+<<<<<<< HEAD
                 this.cost=F0 +Fn{1}.o(Hn{1});
+=======
+                this.cost=F0.o(H0) + Fn{1}.o(Hn{1});
+>>>>>>> f9af6383d21965ce5679ba31e024bec3972eb722
             else
                 this.cost=Fn{1}.o(Hn{1});
             end
@@ -110,12 +163,18 @@ classdef OptiADMM < Opti
                     this.A=SumLinOp({this.A,this.F0.H'*this.F0.H},[1,1]);
                     this.b0=this.F0.H'*this.F0.y;
                 end
+<<<<<<< HEAD
                 this.CG=OptiConjGrad(this.A,zeros(this.A.sizeout),[],OutputOpti());
                 this.CG.maxiter=20;
                 this.CG.ItUpOut=0;
             end
         end
     	%% Run the algorithm
+=======
+            end
+        end
+        %% Run the algorithm
+>>>>>>> f9af6383d21965ce5679ba31e024bec3972eb722
         function run(this,x0)
             if ~isempty(x0), % To restart from current state if wanted
                 this.xopt=x0;
@@ -146,9 +205,17 @@ classdef OptiADMM < Opti
                     if ~isempty(this.b0)
                         b=b+this.b0;
                     end
+<<<<<<< HEAD
                     this.CG.set_b(b);
                     this.CG.run(this.xopt);
                     this.xopt=this.CG.xopt;
+=======
+                    CG=OptiConjGrad(this.A,b,[],this.OutOpCG);
+                    CG.maxiter=this.maxiterCG;
+                    CG.ItUpOut=this.ItUpOutCG;
+                    CG.run(this.xopt);
+                    this.xopt=CG.xopt;
+>>>>>>> f9af6383d21965ce5679ba31e024bec3972eb722
                 else
                     this.xopt=this.solver(this.zn,this.rho_n, this.xopt);
                 end

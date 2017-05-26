@@ -86,7 +86,7 @@ classdef Cost < handle
         end
         %% Overload the operator *
         function y = mtimes(this,x)
-            y = MulCost(this,x);
+            y = MulCost(x,this);
         end
         %% Set data y (must be conformable with H sizeout)
         function set_y(this,y)

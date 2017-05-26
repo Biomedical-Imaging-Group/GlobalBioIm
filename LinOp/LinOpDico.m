@@ -46,6 +46,9 @@ classdef LinOpDico <  LinOp
             % Note: actually this operator can be invertible for some given
             % dictionnary D, but the inverse is not implemented 
             this.D=D;
+            if this.numelAtom<1000 && sz(end)<1000  % the norm is computed if the dictionary is of reasonable size
+                this.norm=norm(reshape(this.D,[this.numelAtom,sz(end)]));
+            end
         end
         function y = apply(this,x)   
             if isequal(size(x),this.sizein)
@@ -57,6 +60,7 @@ classdef LinOpDico <  LinOp
         end
         function y = adjoint(this,x)
             y=sum(reshape(bsxfun(@times,this.D,x),[this.numelAtom,ones(this.ndms-2),this.sizein(end)]),1);
+            y=y(:);
         end
     end
 end

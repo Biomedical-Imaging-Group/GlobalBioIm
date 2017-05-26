@@ -18,10 +18,11 @@ classdef OptiADMM < Opti
     %   ADMM= OptiADMM(F0,H0,Fn,Hn,rho_n,solver,OutOp)
     % where F0 is a FUNC object, H0 a LINOP object, Fn a cell of N COST, Hn a cell of N LINOP,
     % rho_n a vector of N nonnegative scalars and solver a function handle such that:
-    %   solver(z_n,rho_n)
-    % where z_n is a cell of N elements and rho_n as above, minimizes the following function:
+    %   solver(z_n,rho_n,x0)
+    % where z_n is a cell of N elements, rho_n is as above.
+    % The solver minimizes the following function starting from x0:
     %    $$ F_0(H_0*x) + \sum_{n=1}^N 0.5*\rho_n||H_n*x -z_n||^2 $$
-    % Finally OutOp is a OutputOpti object.
+    % Finally OutOp is an OutputOpti object.
     %
     % Note: If F0 not empty and F0 not CostL2, then solver is mandatory.
     %       Otherwise not and by default the ADMM algorithm will use the Conjugate Gradient algorithm

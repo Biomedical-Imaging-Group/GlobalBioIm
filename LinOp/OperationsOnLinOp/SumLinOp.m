@@ -45,7 +45,7 @@ classdef SumLinOp < LinOp
 			end
 			
 			this.numLinOp = numel(ALinOp);
-			assert(isnumeric(alpha)&& ( isscalar(alpha) || ( isvector(alpha) && (numel(alpha)== this.numLinOp))),'second input should be a scalar or an array of scalar of the same size as the first input');
+			assert(isnumeric(alpha)&& ( isscalar(alpha) || ( isvector(alpha) && (numel(alpha)== this.numLinOp))),'second input should be a scalar or an array of scalars of the same size as the first input');
 			if  isscalar(alpha)
 				this.alpha = repmat(alpha, 1, this.numLinOp) ;
 			else
@@ -73,10 +73,9 @@ classdef SumLinOp < LinOp
 			
 			this.ALinOp = ALinOp;
 			this.iscomplex= this.ALinOp{1}(1).iscomplex;
-            this.issquare = this.ALinOp{1}(1).issquare;
             this.isinvertible=false;
-            this.sizein =  this.ALinOp{1}(1).sizein;
-            this.sizeout =  this.ALinOp{1}(1).sizeout;
+            this.sizein = this.ALinOp{1}(1).sizein;
+            this.sizeout = this.ALinOp{1}(1).sizeout;
             for n =2:this.numLinOp
                 assert(isempty(this.ALinOp{n}(1).sizein)  || isequal(this.sizein,this.ALinOp{n}(1).sizein),'%d-th input does not have the right hand side size ', n) ;
                 assert(isempty(this.ALinOp{n}(1).sizeout) ||isequal(this.sizeout,this.ALinOp{n}(1).sizeout),'%d-th input does not have the left hand side size ', n);
@@ -110,14 +109,10 @@ classdef SumLinOp < LinOp
 		end
 		
 		function y = HHt(this,x) %  apply the HHt matrix
-			if this.issquare   % HtH =HHt
-				y = this.HtH(x);
-			else
-				y =  zeros(this.sizeout);
-				for n = 1:this.numLinOp
-					y = y + this.alpha(n) .* this.ALinOp{n}.HHt(x);
-				end
-			end
+            y =  zeros(this.sizeout);
+            for n = 1:this.numLinOp
+                y = y + this.alpha(n) .* this.ALinOp{n}.HHt(x);
+            end
 		end
 		
 		

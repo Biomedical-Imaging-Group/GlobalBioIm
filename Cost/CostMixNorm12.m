@@ -47,12 +47,13 @@ classdef CostMixNorm12 < Cost
             this.isconvex=true;
             % -- Set entries
             if nargin<3
-                y=[];
+                y=0;
             end
             if nargin<2
                 H=[];
             end
-            set_H(this,H,y);
+            set_y(this,y);
+            set_H(this,H);
             
             assert(isnumeric(index)&&isvector(index),'The index should be a vector of integers');
             this.index=index;

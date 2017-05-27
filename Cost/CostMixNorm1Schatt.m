@@ -64,7 +64,7 @@ classdef CostMixNorm1Schatt < Cost
             this.isconvex= true;
             % -- Set entries
             if nargin<3
-                y=[];
+                y=0;
             end
             if nargin<2 || isempty(p), p=1; end;
             assert(p>=1,'p should be >=1');
@@ -72,7 +72,8 @@ classdef CostMixNorm1Schatt < Cost
             if nargin<1
                 H=[];
             end
-            set_H(this,H,y);
+            set_y(this,y);
+            set_H(this,H);
             
             if ~isa(this.H, 'LinOpIdentity')
                 assert((length(this.H.sizeout)==3 || length(this.H.sizeout)==4) && (this.H.sizeout(3)==3 || this.H.sizeout(4)==6),'sizeout of H should be [?,?,(?),3 or 6]');

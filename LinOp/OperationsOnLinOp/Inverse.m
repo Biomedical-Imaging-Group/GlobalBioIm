@@ -41,7 +41,6 @@ classdef Inverse < LinOp
             this.TLinOp = TLinOp;
             this.iscomplex= this.TLinOp.iscomplex;
             this.isinvertible=this.TLinOp.isinvertible;
-            this.issquare = this.TLinOp.issquare;
             this.sizein =  this.TLinOp.sizein;
             this.sizeout =  this.TLinOp.sizeout;
             

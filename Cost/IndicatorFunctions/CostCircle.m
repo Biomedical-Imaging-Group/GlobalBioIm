@@ -32,6 +32,7 @@ classdef CostCircle < CostRing
     methods
         function this = CostCircle(radius,sz)
             this.name='Cost Circle';
+			this.isconvex= false; 
             
             
             if nargin >0

@@ -39,10 +39,10 @@ classdef LinOpSelector <  LinOp
             addOptional(p,'KeepDimensions',false); %true or false.
             parse(p,varargin{:});
 
-             this.KeepDimensions = p.Results.KeepDimensions;
+            this.KeepDimensions = p.Results.KeepDimensions;
             this.name ='LinOp Selector';
-            this.issquare = false;
             this.iscomplex= false;
+
             assert(islogical(sel),'The input selector should be boolean');
             
 			this.norm = 1;

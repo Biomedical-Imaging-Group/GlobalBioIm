@@ -38,7 +38,6 @@ classdef Adjoint < LinOp
             this.TLinOp = TLinOp;
             this.iscomplex= this.TLinOp.iscomplex;
             this.isinvertible=this.TLinOp.isinvertible;
-            this.issquare = this.TLinOp.issquare;
             this.sizein =  this.TLinOp.sizeout;
             this.sizeout =  this.TLinOp.sizein;			
 			this.norm = this.TLinOp.norm;        

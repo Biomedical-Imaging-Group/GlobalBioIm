@@ -37,17 +37,13 @@ classdef MulCost < Cost
             this.name='Multiply Costs';
 			this.cost1 = cost1;
             this.cost2 = cost2;
-            
             if isnumeric(cost1)
                 this.isnum =1;
                 this.isconvex=cost2.isconvex;
                 if cost2.lip~=-1
                     this.lip=cost2.lip*cost1;
                 end
-            else
-                assert(isa(cost1,'Cost'),'MulCost: First input should be a Cost');
-                assert(isa(cost2,'Cost'),'MulCost: Second input should be a Cost');
-                
+            else               
                 this.isconvex=0;  % It can be but we cannot conclude in a generic way ...
                 this.lip=-1;     
             end		          

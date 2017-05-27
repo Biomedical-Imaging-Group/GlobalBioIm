@@ -11,7 +11,6 @@ classdef LinOp < handle
     % * |sizein|        - dimension of the right hand side vector space $\mathcal{X}$
     % * |sizeout|       - dimension of the left hand side vector space $\mathcal{Y}$
     % * |isinvertible|  - true if the operator is invertible
-    % * |issquare|      - true if the operator is square
     % * |iscomplex|     - true is the operator is complex
     % * |norm|          - norm of the operator (if known, otherwise -1)
     %
@@ -49,7 +48,6 @@ classdef LinOp < handle
         sizein;                 % dimension of the right hand side vector space
         sizeout;                % dimension of the left hand side vector space
         isinvertible = false;   % true if the operator is invertible
-        issquare = false;       % true if the operator is square
         iscomplex = false;      % true is the operator is complex
         norm=-1;                % norm of the operator
     end
@@ -65,11 +63,7 @@ classdef LinOp < handle
             y = this.adjoint(this.apply(x));
         end
         function y = HHt(this,x) %  apply the HHt matrix
-            if this.issquare   % HtH =HHt
-                y = this.HtH(x);
-            else
             y = this.apply(this.adjoint(x));
-            end
         end
         function y = HtWH(this,x,W) %  apply the HtH matrix
             if (isscalar(W) && isreal(W))

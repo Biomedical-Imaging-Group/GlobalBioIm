@@ -30,7 +30,6 @@ classdef LinOpIdentity <  LinOp
             this.name='LinOp Identity';
             this.iscomplex=false;
             this.isinvertible=true;
-            this.issquare = true;
             this.norm=1;
             if nargin>0
                 this.sizeout=sz;
@@ -46,6 +45,9 @@ classdef LinOpIdentity <  LinOp
             y =x;
         end
         function y = HtH(~,x)
+            y =x;
+        end
+        function y = HHt(~,x)
             y =x;
         end
         function y = inverse(~,x)

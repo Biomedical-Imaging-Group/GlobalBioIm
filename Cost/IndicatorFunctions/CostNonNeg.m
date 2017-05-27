@@ -32,12 +32,14 @@ classdef CostNonNeg < CostIndicator
     	%% Constructor
         function this = CostNonNeg(H,y) 
             if nargin<2
-                y=[];
+                y=0;
             end
             if nargin<1
                 H=[];
             end
-            set_H(this,H,y);
+            set_y(this,y);
+            set_H(this,H);
+
             this.name='Cost NonNegativity';
 			 
             this.xmin=0;

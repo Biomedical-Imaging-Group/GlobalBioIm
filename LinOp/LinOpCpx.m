@@ -35,7 +35,6 @@ classdef LinOpCpx <  LinOp
     methods
         function this = LinOpCpx(sz)
             this.name ='LinOp Complrx';
-            this.issquare = true;
             this.iscomplex = false;
             this.isinvertible = true;
             

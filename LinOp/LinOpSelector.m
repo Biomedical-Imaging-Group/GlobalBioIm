@@ -42,7 +42,7 @@ classdef LinOpSelector <  LinOp
              this.KeepDimensions = p.Results.KeepDimensions;
             this.name ='LinOp Selector';
             this.issquare = false;
-            this.iscomplex= true;
+            this.iscomplex= false;
             assert(islogical(sel),'The input selector should be boolean');
             
 			this.norm = 1;

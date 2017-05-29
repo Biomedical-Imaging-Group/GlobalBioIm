@@ -60,7 +60,14 @@ classdef CostMixNorm12 < Cost
         end
         %% Evaluation of the Functional
         function y=eval(this,x)
-            u=abs(this.H.apply(x)-this.y).^2;
+            
+            if(isscalar(this.y)&&(this.y==0))
+                u=abs(this.H.apply(x)).^2;
+            else
+                u=abs(this.H.apply(x)-this.y).^2;
+            end
+            
+            
             % Computes the l2-norm along the dimensions given by index
             for n=1:length(this.index)
                 u = sum(u,this.index(n));
@@ -81,7 +88,13 @@ classdef CostMixNorm12 < Cost
                 imdims = sz; imdims(~T)=1;
                 
                 % Computes the l2-norm along the dimensions given by index
-                sx = abs(x-this.y).^2;
+                if(isscalar(this.y)&&(this.y==0))
+                    sx = abs(x).^2;
+                else
+                    sx = abs(x-this.y).^2;
+                end
+                
+                
                 for n=1:length(this.index)
                     sx = sum(sx,this.index(n));
                 end
@@ -92,7 +105,11 @@ classdef CostMixNorm12 < Cost
                 b = zeros(size(sx));
                 
                 b(t) = 1-alpha./sx(t);
+                if(isscalar(this.y)&&(this.y==0))
+                z = reshape(repmat(reshape(b ,imdims),kerdims),sz).*x;
+                else
                 z = reshape(repmat(reshape(b ,imdims),kerdims),sz).*x+this.y;
+                end
             end
             if isempty(z),error('Prox not implemented');end
             % result:

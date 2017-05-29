@@ -54,7 +54,7 @@ classdef Cost < handle
         end
         %% Gradient of the Functional
         function grad(~,~)
-            error('Prox not implemented');
+            error('Grad not implemented');
         end
         %% Compute the functional and its gradient
         function [cost , gradient] = eval_grad(this,x)

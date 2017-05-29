@@ -54,7 +54,12 @@ classdef Cost < handle
         end
         %% Gradient of the Functional
         function grad(~,~)
-            error('Prox not implemented');
+            error('Grad not implemented');
+        end
+        %% Compute the functional and its gradient
+        function [cost , gradient] = eval_grad(this,x)
+            cost = this.eval(x) ;
+            gradient = this.grad(x) ;
         end
         %% Proximity operator of the functional
         function prox(~,~,~)
@@ -109,7 +114,7 @@ classdef Cost < handle
             elseif issize(H)
                 assert( (isscalar(this.y)) || (isequal(H,size(this.y))),'the given size must be equal to the size of this.y');
                 H=LinOpIdentity(H);
-            elseif isempty(H) 
+            elseif isempty(H)
                 H =LinOpIdentity(size(this.y));
             end
             this.H=H;

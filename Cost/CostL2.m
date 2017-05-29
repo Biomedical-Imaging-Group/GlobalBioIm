@@ -53,7 +53,7 @@ classdef CostL2 < Cost
             end
             set_y(this,y);
             set_H(this,H);
-
+            
             if nargin==3
                 assert(isscalar(wght)||isa(wght,'LinOp'),'weight WGHT must be scalar or linop');
                 this.W=wght;
@@ -75,7 +75,11 @@ classdef CostL2 < Cost
         end
         %% Evaluation of the Functional
         function f=eval(this,x)
-            r=this.H.apply(x)-this.y;            
+            if(isscalar(this.y)&&(this.y==0))
+                r=this.H.apply(x);
+            else
+                r=this.H.apply(x)-this.y;
+            end
             this.wr=this.W*r;
             f=0.5*dot(r(:),this.wr(:));
         end

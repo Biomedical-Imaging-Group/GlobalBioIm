@@ -1,11 +1,11 @@
-classdef CostDisk < CostRing
+classdef CostComplexCircle < CostComplexRing
     %% Circle indicator function
     %  Matlab Inverse Problems Library
     %
-    % Obj = CostDisk(c):
-    % Implement the proximity operator on the complex disk of radius c
-    % $$ \phi(x) = 0 \textrm{ if } ||x||_2<=c  textrm{ and }  +\inf \textrm{ otherwise } $$
-    % Following Matlab angle function if x=0 then CostDisk(x) = 1
+    % Obj = CostComplexCircle(c):
+    % Implement the proximity operator on the complex circle of radius c
+    % $$ \phi(x) = 0 \textrm{ if } ||x||_2=c  textrm{ and }  +\inf \textrm{ otherwise } $$
+    % Following Matlab angle function if x=0 then Circle(x) = 1
     %
     %% Properties
     %
@@ -30,8 +30,10 @@ classdef CostDisk < CostRing
     end
     
     methods
-        function this = CostDisk(radius)
-            this.name='Cost Disk';
+        function this = CostComplexCircle(radius,sz)
+            this.name='Cost Complex Circle';
+			this.isconvex= false; 
+            
             
             if nargin >0
                 assert(isnumeric(radius),'C should be numeric');
@@ -46,11 +48,12 @@ classdef CostDisk < CostRing
             if isempty(sz)
                 sz = size(radius);
             end
-            set_H(this,sz,[]);
+            set_H(this,sz );
           
             
+            
              this.outer = radius;
-             this.inner = 0.;
+             this.inner = radius;
         end
     end
 end

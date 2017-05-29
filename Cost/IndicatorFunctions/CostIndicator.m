@@ -1,19 +1,11 @@
 classdef CostIndicator < Cost
-    %% CostIndicator : Indicator function  
+    %% CostIndicator : Indicator function
     %  Matlab Inverse Problems Library
-    % 
-    % Obj = CostIndicator(xmin, xmax,H,y):
-    % Implement the indicator function of the retangle set defined by xmin and xmax for the 
-    % $$ \phi(x) = 0 \textrm{ if } xmin <= (x-y) <= xmax textrm{ and }  +\inf \textrm{ otherwise } $$
+    % The CostIndicator meta class implements generic methods for all
+    % indicator cost functions
     %
     %
-    %% Properties
-    % * |xmin|         - minimum value (default 0)
-    % * |xmax|         - minimum value (default +inf)
-    %
-    %%
-    
-    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+    %     Copyright (C) 2017 F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -29,49 +21,17 @@ classdef CostIndicator < Cost
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     properties (SetAccess = protected,GetAccess = public)
-        xmin=0
-        xmax=+inf;
     end
     
+    
     methods
-        function this = CostIndicator(xmin, xmax,H,y)
-          
-            this.name='Cost Indicator';
-            
-             % -- Set entries
-            if nargin<4
-                y=0;
-            end
-            if nargin<3
-                H=[];
-            end
-            set_y(this,y);
-            set_H(this,H);
-            
-            if nargin<2
-                xmax=[];
-            end 
-            if nargin==0
-                xmin =0;
-            end
-            
-            if isempty(xmax)
-                xmax = +inf;
-            end
-            this.xmin = xmin;
-            this.xmax = xmax;
-            
+        %% Gradient of the Functional
+        function grad(~,~)
+            error('Cannot evaluate gradient of an indicator function');
         end
-        function z = prox(this,x,~) % apply the operator
-            
-        	if this.H.isinvertible
-				z = this.H.inverse(min(max(this.H.apply(x)-this.y, this.xmin),this.xmax)+this.y);
-            else
-        		error('Prox not implemented');
-        	end
-            
-          
-                
+        %% Compute the functional and its gradient
+        function  eval_grad(~,~)       
+            error('Cannot evaluate gradient of an indicator function');
         end
     end
 end

@@ -1,8 +1,8 @@
-classdef CostRing < Cost
-    %% Complex Ring indicator 
+classdef CostComplexRing < CostIndicator
+    %% Complex Ring indicator
     %  Matlab Inverse Problems Library
     %
-    % Obj = CostRing(inner, outer,H,y):
+    % Obj = CostComplexRing(inner, outer,H,y):
     % Implement the proximity operator on the complex ring of inner radius INNER and outer radius OUTER
     % $$ \phi(x) = 0 \textrm{ if } inner<=||x||_2<=outer  textrm{ and }  +\inf \textrm{ otherwise } $$
     % Following Matlab angle function if x=0 then Circle(x) = 1
@@ -32,9 +32,9 @@ classdef CostRing < Cost
     end
     
     methods
-        function this = CostRing(inner, outer, H,y)
-            this.name='Cost Ring';
-             % -- Set entries
+        function this = CostComplexRing(inner, outer, H,y)
+            this.name='Cost Complex Ring';
+            % -- Set entries
             if nargin<4
                 y=0;
             end
@@ -46,65 +46,76 @@ classdef CostRing < Cost
             
             if nargin<2
                 inner=0;
-            end 
+            end
             if nargin==0
                 outer =1;
             end
             
             
-                if isscalar(inner)
+            if isscalar(inner)
+                this.inner = inner;
+            else
+                if isnumeric(inner)
                     this.inner = inner;
-                else
-                    if isnumeric(inner)
-                        this.inner = inner; 
-                        if ~isempty(this.H.sizeout)
-                            assert(isequal(this.H.sizeout,size(inner)), 'inner must be equal to H.sizeout');
-                        else
-                            this.sizein = size(inner);
-                        end
+                    if ~isempty(this.H.sizeout)
+                        assert(isequal(this.H.sizeout,size(inner)), 'inner must be equal to H.sizeout');
                     else
-                        error('C should be numeric');
+                        this.sizein = size(inner);
                     end
+                else
+                    error('C should be numeric');
                 end
-                
-                if isscalar(outer)
+            end
+            
+            if isscalar(outer)
+                this.outer = outer;
+            else
+                if isnumeric(outer)
                     this.outer = outer;
-                else
-                    if isnumeric(outer)
-                        this.outer = outer; 
-                        if ~isempty(this.H.sizeout)
-                            assert(isequal(this.H.sizeout,size(outer)), 'outer must be equal to H.sizeout');
-                        else
-                            this.sizein = size(outer);
-                        end
+                    if ~isempty(this.H.sizeout)
+                        assert(isequal(this.H.sizeout,size(outer)), 'outer must be equal to H.sizeout');
                     else
-                        error('C should be numeric');
+                        this.sizein = size(outer);
                     end
+                else
+                    error('C should be numeric');
                 end
+            end
         end
         function z = prox(this,x,~) % apply the operator
             assert(isnumeric(x),'x must be numeric');
             
             if this.H.isinvertible
-                tmp =this.H.apply(x) - this.y;
-                z = this.H.inverse(max(min(this.outer,abs(tmp)),this.inner) .* exp(1i .* angle(tmp))+this.y);
+                
+                if(isscalar(this.y)&&(this.y==0))
+                    res=this.H.apply(x);
+                    z = this.H.inverse(max(min(this.outer,abs(res)),this.inner) .* exp(1i .* angle(res)));
+                else
+                    res=this.H.apply(x)-this.y;
+                    z = this.H.inverse(max(min(this.outer,abs(res)),this.inner) .* exp(1i .* angle(res))+this.y);
+                end
             else
                 error('Prox not implemented');
             end
         end
         function cost = eval(this,x) % get the function cost
             cost = 0;
-            tmp =this.H.apply(x) - this.y;
-            if(any(tmp(:)> this.outer(:)))
+            
+            if(isscalar(this.y)&&(this.y==0))
+                res=this.H.apply(x);
+            else
+                res=this.H.apply(x)-this.y;
+            end
+            if(any(res(:)> this.outer(:)))
                 cost= +inf;
                 return;
             end
             
-            if(any(tmp(:)< this.inner(:)))
+            if(any(res(:)< this.inner(:)))
                 cost= +inf;
                 return;
             end
         end
-                
+        
     end
 end

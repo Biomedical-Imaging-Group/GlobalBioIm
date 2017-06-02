@@ -79,18 +79,18 @@ classdef CostRectangle < CostIndicator
                 if(isscalar(this.y)&&(this.y==0))
                     if this.iscomplex
                         res = this.H.apply(x);
-                        tmp = min(max(real(res, real(this.xmin)),real(this.xmax))) + 1i.* min(max(imag(res, imag(this.xmin)),imag(this.xmax)));
+                        tmp = min(max(real(res), real(this.xmin)),real(this.xmax)) + 1i.* min(max(imag(res), imag(this.xmin)),imag(this.xmax));
                         z = this.H.inverse(tmp);
                     else
-                        z = this.H.inverse(min(max(real(this.H.apply(x), this.xmin),this.xmax)));
+                        z = this.H.inverse(min(max(real(this.H.apply(x)), this.xmin),this.xmax));
                     end
                 else
                     if this.iscomplex
                         res = this.H.apply(x)-this.y;
-                        tmp = min(max(real(res, real(this.xmin)),real(this.xmax))) + 1i.* min(max(imag(res, imag(this.xmin)),imag(this.xmax)));
+                        tmp = min(max(real(res), real(this.xmin)),real(this.xmax)) + 1i.* min(max(imag(res), imag(this.xmin)),imag(this.xmax));
                         z = this.H.inverse(tmp+this.y);
                     else
-                        z = this.H.inverse(min(max(real(this.H.apply(x)-this.y, this.xmin),this.xmax))+this.y);
+                        z = this.H.inverse(min(max(real(this.H.apply(x)-this.y), this.xmin),this.xmax)+this.y);
                     end
                 end
             else

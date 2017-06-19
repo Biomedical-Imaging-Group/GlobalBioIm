@@ -7,6 +7,7 @@ classdef VMLMB<handle
         OP_TASK_WARN   = 4; % search aborted with warning
         OP_TASK_ERROR  = 5; % search aborted with error
     end
+     % Full public properties
     properties
         m=3;
         gtol=0;

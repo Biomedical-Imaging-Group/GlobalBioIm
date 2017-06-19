@@ -5,12 +5,12 @@ classdef LinOpDiag <  LinOp
     % Example:
     % Obj = LinOpDiag(diag)
     %
-    % Build the diagonal operator that multiply element wise the input by
+    % Build the diagonal operator that multiplies element wise the input by
     % the vector DIAG  or
     %
     % Obj = LinOpDiag(diag,sz)
     %
-    % Build the diagonal operator that multiply element wise an input of size SZby
+    % Build the diagonal operator that multiplies element wise an input of size SZ by
     % the scalar DIAG
     %
     % Please refer to the LinOp superclass for documentation
@@ -38,17 +38,16 @@ classdef LinOpDiag <  LinOp
     end
     methods
         function this = LinOpDiag(diag,sz)
-            this.name ='LinOp Diagonal';
-            this.issquare = true;
-            
+            this.name ='LinOp Diagonal';            
             if ~isnumeric(diag)
                 error('diag must be numeric');
             end
             
             % collapse repeated diagonal element to a scalar
-            if length(unique(diag)) == 1
-                diag = unique(diag);
-            end
+            % Very slow
+            %if length(unique(diag)) == 1
+            %    diag = unique(diag);
+            %end
             
             if isscalar(diag)
                 if isempty(sz) || ~issize(sz)
@@ -76,7 +75,7 @@ classdef LinOpDiag <  LinOp
             this.diag = diag;
             
             % -- Norm of the operator
-            this.norm=max(diag(:));
+            this.norm=max(abs(diag(:)));
         end
         function y = apply(this,x)
             if isequal(size(x),this.sizein)
@@ -108,6 +107,9 @@ classdef LinOpDiag <  LinOp
             else
                 error('x should be the same size as diag: [%d, %d, %d, %d]',this.sizein);
             end
+        end
+        function y=HHt(this,x)
+            y=this.HtH(x);
         end
         
         function y = inverse(this,x)

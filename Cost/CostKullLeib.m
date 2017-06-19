@@ -6,7 +6,7 @@ classdef CostKullLeib < Cost
     % Implements the Kullback-Leibler divergence between H.x and y .
     % $$ \sum_n -y_n log((H*x)_n + bet) + (H*x)_n,
     % where H is a LinOp object (default LinOpIdentity), y are the data
-    % and bet is a small scalar (default 1e-10) to smooth the function at zero.
+    % and bet is a scalar (default 0) to smooth the function at zero.
     %
     % -- Example
     % F=CostKullLeib(H,y,bet)
@@ -37,6 +37,7 @@ classdef CostKullLeib < Cost
     % Full protected properties
     properties (SetAccess = protected,GetAccess = protected)
         He1;     % Application of the adjoint of H to a vector of ones
+        Hx;     % H.apply(x)
     end
     
     methods
@@ -46,21 +47,20 @@ classdef CostKullLeib < Cost
             this.isconvex=true;
             % -- Set entries
             if nargin<2
-                    y=[];
+                y=0;
             end
             if nargin<1
-                    H=[];
+                H=[];
             end
-            set_H(this,H,y);
+            set_y(this,y);
+            set_H(this,H);
             
             if nargin==3
                 this.bet=bet;
             end
+            tmp=ones(this.H.sizeout);
+            this.He1=this.H.adjoint(tmp);
             
-          
-                tmp=ones(this.H.sizeout);
-                this.He1=this.H.adjoint(tmp);
-                
             % -- Compute Lipschitz constant of the gradient (if the norm of H is known)
             if ((this.bet>0)&&(this.H.norm>=0));
                 this.lip=max(this.y(:))./this.bet^2*this.H.norm^2;
@@ -68,29 +68,37 @@ classdef CostKullLeib < Cost
         end
         %% Evaluation of the Functional
         function f=eval(this,x)
-            tmp=this.H.apply(x);
-            assert(any(tmp(:)<0) ,'H.x must be non-negative');
-            if (all(this.bet(:)))
-                f=sum(-this.y(:).*log(tmp(:)+this.bet) + tmp(:));
+            this.Hx=this.H.apply(x);
+            if ~any(this.Hx(:)<0)
+                f=Inf;
             else
-                f = zeros(size(tmp));
-                zidx = (tmp(:)~=0);
-                f(zidx)=sum(-this.y(zidx).*log(tmp(zidx)+this.bet(zidx)) + tmp(zidx));
+                if (this.bet~=0)
+                    f=sum(-this.y(:).*log(this.Hx(:)+this.bet) + this.Hx(:));
+                else
+                    ft = zeros(size(this.Hx));
+                    zidx = (this.Hx~=0);
+                    ft(zidx)=-this.y(zidx).*log(this.Hx(zidx)) + this.Hx(zidx);
+                    f=sum(ft(:));
+                end
             end
-            
         end
         %% Gradient of the Functional
         function g=grad(this,x)
-            g= this.He1 - this.H.adjoint(this.y./(this.H.apply(x)+this.bet));
+            if nargin ==2
+            this.Hx=this.H.apply(x);
+            end
+            g= this.He1 - this.H.adjoint(this.y./(this.Hx+this.bet));
         end
         %% Proximity operator of the functional
         function z=prox(this,x,alpha)
             z=[];
             if isa(this.H,'LinOpIdentity') % if operator identity
-                delta=(x-alpha-this.bet).^2+4*(x*this.bet + alpha*(this.y-this.bet));
-                z=zeros(size(x));
-                mask=delta>=0;
-                z(mask)=0.5*(x(mask)-alpha-this.bet + sqrt(delta(mask)));
+                if (this.bet~=0)
+                    delta=(x-alpha-this.bet).^2+4*(x*this.bet + alpha*(this.y-this.bet));
+                    z=zeros(size(x));
+                    mask=delta>=0;
+                    z(mask)=0.5*(x(mask)-alpha-this.bet + sqrt(delta(mask)));
+                end
             end
             if isempty(z),error('Prox not implemented');end
         end

@@ -17,7 +17,7 @@ classdef CostNAME < Cost
     % -- References
     % TODO ADD REFERENCES IF NEEDED
     %
-    % Please refer to the FUNC superclass for general documentation about
+    % Please refer to the COST superclass for general documentation about
     % functional class
     % See also Cost
 	%
@@ -49,20 +49,20 @@ classdef CostNAME < Cost
     
     methods 
     	%% Constructor
-        function this = CostNAME(~)
+        function this = CostNAME(H,y)
         	% TODO SET THE INHERITED PROPERTIES (IF APPLICABLE)
             this.name='Cost NAME';
-			this.isconvex= ???; 
-			this.lip= ???;
-             % -- Set entries
+            this.isconvex= ???;
+            this.lip= ???;
+            % -- Set entries
             if nargin<2
-                    y=[];
+                y=0;
             end
             if nargin<1
-                    H=[];
+                H=[];
             end
-            set_H(this,H,y);
-			% call this.set_H (will also set the sizein parameter)
+            set_y(this,y);
+            set_H(this,H);
 			% TODO SET NEW DEFINED PROPERTIES
     	end
     	%% Evaluation of the Functional

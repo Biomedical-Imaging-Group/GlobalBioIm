@@ -11,7 +11,7 @@ classdef Opti < matlab.mixin.SetGet
     % * |ItUpOut|   - every ItUpOut iterations the update method of a OutputOpti object is called 
     %                 (see Class OutputOpti, default 0) public property
     % * |OutOp|     - OutputOpti object
-    % * |cost|      - whole minimized functional (Func)
+    % * |cost|      - whole minimized functional (Cost)
     % * |time|      - execution time of the algorithm (last run)
     % * |niter|     - iteration counter
     % * |xopt|      - optimization variable
@@ -49,7 +49,7 @@ classdef Opti < matlab.mixin.SetGet
     % Protected Set and public Read properties     
     properties (SetAccess = protected,GetAccess = public)
         name = 'none'        % name of the optimization algorithm
-    	cost;                % minimized functional
+    	cost;                % minimized cost
     	time;                % running time of the algorithm (last run)
     	niter;               % iteration counter
     	xopt=[];             % optimization variable

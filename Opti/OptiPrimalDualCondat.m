@@ -11,7 +11,7 @@ classdef OptiPrimalDualCondat < Opti
 	%
     % -- Example
     % Op=OptiPrimalDualCondat(F0,G,Fn,Hn,OutOp)
-    % where F0 and G are FUNC objects, Fn a cell of FUNC and Hn a cell of LINOP (same length as Fn)
+    % where F0 and G are COST objects, Fn a cell of COST and Hn a cell of LINOP (same length as Fn)
     % Finally OutOp a OutputOpti object.
     %
     % -- Properties
@@ -32,7 +32,6 @@ classdef OptiPrimalDualCondat < Opti
 	%    [1] Laurent Condat, "A Primal-Dual Splitting Method for Convex Optimization Involving Lipchitzian, Proximable and Linear 
 	%        Composite Terms", Journal of Optimization Theory and Applications, vol 158, no 2, pp 460-479 (2013).
     %
-    % Please refer to the OPTI superclass for general documentation about optimization class
     % See also Opti, OutputOpti, LinOp
     %
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -52,9 +51,9 @@ classdef OptiPrimalDualCondat < Opti
 
     % Protected Set and public Read properties     
     properties (SetAccess = protected,GetAccess = public)
-		F0;    % function F0
-		G;     % function G
-		Fn;    % functions F_n (cell)
+		F0;    % cost F0
+		G;     % cost G
+		Fn;    % costs F_n (cell)
 		Hn;    % associated LinOp (cell))
     end
     % Full protected properties 
@@ -97,13 +96,13 @@ classdef OptiPrimalDualCondat < Opti
 				this.xopt=x0;
 				% initialization of the dual variables y
 				for n=1:length(this.Hn)
-    				this.y{n}=this.Hn{n}.Apply(x0); 	 
+    				this.y{n}=this.Hn{n}.apply(x0); 	 
 				end
 			end; 
 			% Check parameters
-        	assert(~isempty(this.sig),'parameter sig is not setted');
-        	assert(~isempty(this.tau),'parameter tau is not setted');
-        	assert(~isempty(this.rho),'parameter rho is not setted');
+        	assert(~isempty(this.sig),'parameter sig is not set');
+        	assert(~isempty(this.tau),'parameter tau is not set');
+        	assert(~isempty(this.rho),'parameter rho is not set');
 			assert(~isempty(this.xopt),'Missing starting point x0');
 			tstart=tic;
 			this.OutOp.init();
@@ -131,7 +130,7 @@ classdef OptiPrimalDualCondat < Opti
 				this.xopt=this.rho*xtilde+(1-this.rho)*this.xopt;
 				% Update ytilde and y
 				for n=1:length(this.Fn) 
-					ytilde{n}=this.Fn{n}.prox_fench(this.y{n}+this.sig*this.Hn{n}.Apply(2*xtilde-xold),this.sig);
+					ytilde{n}=this.Fn{n}.prox_fench(this.y{n}+this.sig*this.Hn{n}.apply(2*xtilde-xold),this.sig);
 					this.y{n}=this.rho*ytilde{n}+(1-this.rho)*this.y{n};
 				end
 				% - Convergence test

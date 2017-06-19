@@ -3,7 +3,7 @@ classdef MulLinOp < LinOp
     %  Matlab Linear Operator Library
     %
     % Example
-    % Obj = SumLinop(LinOp1,LinOp2)
+    % Obj = MulLinOp(LinOp1,LinOp2)
     % Multiplication of LinOps:
     % Obj = LinOp1 * LinOp2
     %
@@ -45,74 +45,59 @@ classdef MulLinOp < LinOp
             
 			% strcmp is different than isa because it doesn't check all
 			% superclasses as well
-			if strcmp(class(LinOp1), 'adjoint') && LinOp1.TLinOp == LinOp2
+			if strcmp(class(LinOp1), 'Adjoint') && LinOp1.TLinOp == LinOp2
 				this.isHTH = true;
-				this.issquare = true;
-			elseif strcmp(class(LinOp2), 'adjoint') && LinOp2.TLinOp == LinOp1
+			elseif strcmp(class(LinOp2), 'Adjoint') && LinOp2.TLinOp == LinOp1
 				this.isHHt = true;
-				this.issquare = true;
 			end
-			
+
 			if isnumeric(LinOp1) && LinOp2.norm ~= -1
 				this.norm = LinOp1 * LinOp2.norm;
-			elseif isnumeric(LinOp2) && LinOp1.norm ~= -1
-				this.norm = LinOp2 * LinOp1.norm;
-			elseif LinOp1.norm ~= -1 && this.LinOp2.norm ~= -1
+			elseif ~isnumeric(LinOp1) && LinOp1.norm ~= -1 && this.LinOp2.norm ~= -1
 				this.norm = this.LinOp1.norm * this.LinOp2.norm;
+            else
+                this.norm=-1;
 			end
 					
-			
+		
             if isnumeric(LinOp1)
-             this.isnum =1;
-             if (~isreal(LinOp1)) || LinOp2.iscomplex
-                this.iscomplex= true;
+                this.isnum =1;
+                if (~isreal(LinOp1)) || LinOp2.iscomplex
+                    this.iscomplex= true;
+                else
+                    this.iscomplex= false;
+                end
+                
+                if all(LinOp1) && LinOp2.isinvertible
+                    this.isinvertible= true;
+                else
+                    this.isinvertible= false;
+                end    
+                
+                %                 if isscalar(LinOp1)
+                %              LinOp1 = Scaling(LinOp1);
+                %                 else
+                %              LinOp1 = Diagonal(LinOp1);
+                %                 end
             else
-                this.iscomplex= false;
-            end
-            
-            if all(LinOp1) && LinOp2.isinvertible
-                this.isinvertible= true;
-            else
-                this.isinvertible= false;
-            end
-            
-                this.issquare= LinOp2.issquare;
-            
-             
-             
-%                 if isscalar(LinOp1)
-%              LinOp1 = Scaling(LinOp1);
-%                 else
-%              LinOp1 = Diagonal(LinOp1);                    
-%                 end
-            else
-            assert(isa(LinOp1,'LinOp'),'MulLinOp: First input should be a LinOp');
-            assert(isa(LinOp2,'LinOp'),'MulLinOp: Second input should be a LinOp');
-            
-            assert(isempty(LinOp1.sizein) || isequal(LinOp1.sizein, LinOp2.sizeout),'size of LinOp not conformable');
-            this.sizein = LinOp2.sizein;
-            this.sizeout = LinOp1.sizeout;
-            if LinOp1.iscomplex || LinOp2.iscomplex
-                this.iscomplex= true;
-            else
-                this.iscomplex= false;
-            end
-            
-            if LinOp1.isinvertible && LinOp2.isinvertible
-                this.isinvertible= true;
-            else
-                this.isinvertible= false;
-            end
-            
-            if LinOp1.issquare && LinOp2.issquare
-                this.issquare= true;
-            else
-                this.issquare= false;
-            end
-            
-            end
-            
-            
+                assert(isa(LinOp1,'LinOp'),'MulLinOp: First input should be a LinOp');
+                assert(isa(LinOp2,'LinOp'),'MulLinOp: Second input should be a LinOp');
+                
+                assert(isempty(LinOp1.sizein) || isequal(LinOp1.sizein, LinOp2.sizeout),'size of LinOp not conformable');
+                this.sizein = LinOp2.sizein;
+                this.sizeout = LinOp1.sizeout;
+                if LinOp1.iscomplex || LinOp2.iscomplex
+                    this.iscomplex= true;
+                else
+                    this.iscomplex= false;
+                end
+                
+                if LinOp1.isinvertible && LinOp2.isinvertible
+                    this.isinvertible= true;
+                else
+                    this.isinvertible= false;
+                end           
+            end                 
         end
         
 		function y = apply(this,x) % apply the operator

@@ -59,7 +59,6 @@ classdef StackLinOp < LinOp
 			
 			this.ALinOp = ALinOp;
 			this.iscomplex= this.ALinOp{1}(1).iscomplex;
-            this.issquare = false;
             this.isinvertible=false;
             this.sizein =  this.ALinOp{1}(1).sizein;
             this.sizeout =  [this.ALinOp{1}(1).sizeout this.numLinOp];

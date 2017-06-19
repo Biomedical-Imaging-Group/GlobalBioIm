@@ -33,15 +33,16 @@ classdef CostL1 < Cost
     methods
         function this = CostL1(H,y, varargin)
             this.name='Cost L1';
-            
+            this.isconvex=true;
             % -- Set entries
             if nargin<2
-                y=[];
+                y=0;
             end
             if nargin<1
                 H=[];
             end
-            set_H(this,H,y);
+            set_y(this,y);
+            set_H(this,H);            
             
             for c=1:length(varargin)
                 switch varargin{c}

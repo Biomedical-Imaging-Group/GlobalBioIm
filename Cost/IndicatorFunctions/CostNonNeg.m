@@ -1,4 +1,4 @@
-classdef CostNonNeg < CostIndicator
+classdef CostNonNeg < CostReals
     %% CostNonNeg : Non negativity indicator 
     %  Matlab Inverse Problems Library
     %
@@ -32,23 +32,19 @@ classdef CostNonNeg < CostIndicator
     	%% Constructor
         function this = CostNonNeg(H,y) 
             if nargin<2
-                y=[];
+                y=0;
             end
             if nargin<1
                 H=[];
             end
-            set_H(this,H,y);
+            set_y(this,y);
+            set_H(this,H);
+
             this.name='Cost NonNegativity';
 			 
             this.xmin=0;
 			 this.xmax =+inf;
-    	end
-    	%% Evaluation of the Functional
-        function f=eval(this,x)
-			f = 0; % We should put -> (norm(min(this.H*x,0.))>0)*realmax; But for some algorithm there is small negative residuals
-			% which would cause unreadability of the evolution of the cost function along iterates
-			f = inf * any(reshape(this.H*x-this.y, [], 1) < 0);
+             this.iscomplex=false;
         end
-       
     end
 end

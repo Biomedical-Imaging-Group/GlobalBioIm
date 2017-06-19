@@ -1,9 +1,9 @@
-classdef CostReals < Cost
-    %% CostReals : Reals Indicator function  
+classdef CostReals < CostRectangle
+    %% CostReals : Reals Indicator function
     %  Matlab Inverse Problems Library
-    % 
+    %
     % Obj = CostReals(xmin, xmax,H,y):
-    % Implement the indicator function of the Real set defined by xmin and xmax for the 
+    % Implement the indicator function of the Real set defined by xmin and xmax for the
     % $$ \phi(x) = 0 \textrm{ if } xmin <= (x-y) <= xmax textrm{ and }  +\inf \textrm{ otherwise } $$
     %
     %
@@ -29,27 +29,26 @@ classdef CostReals < Cost
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     properties (SetAccess = protected,GetAccess = public)
-        xmin=0
-        xmax=+inf;
     end
     
     methods
-        function this = CostIndicator(xmin, xmax,H,y)
-          
-            this.name='Cost Indicator';
+        function this = CostReals(xmin, xmax,H,y)
             
-             % -- Set entries
+            this.name='Cost Reals';
+            
+            % -- Set entries
             if nargin<4
-                y=[];
+                y=0;
             end
             if nargin<3
                 H=[];
             end
-            set_H(this,H,y);
+            set_y(this,y);
+            set_H(this,H);
             
             if nargin<2
                 xmax=[];
-            end 
+            end
             if nargin==0
                 xmin =-inf;
             end
@@ -60,17 +59,8 @@ classdef CostReals < Cost
             this.xmin = xmin;
             this.xmax = xmax;
             
-        end
-        function z = prox(this,x,~) % apply the operator
+        this.iscomplex = false;
             
-        	if this.H.isinvertible
-				z = this.H.inverse(min(max(real(this.H.apply(x)-this.y, this.xmin),this.xmax))+this.y);
-            else
-        		error('Prox not implemented');
-        	end
-            
-          
-                
         end
     end
 end

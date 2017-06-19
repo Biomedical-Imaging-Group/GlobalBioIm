@@ -1,9 +1,9 @@
 classdef OptiVMLMB<Opti
-        %% OptiVMLMB : VMLMB Optimizer
+    %% OptiVMLMB : VMLMB Optimizer
     %  Matlab inverse Problems Library
     %
     % Variable Metric Limited Memory Bounded (VMLMB) algorithm by Éric Thiébaut.
-    % It is a limited memory BFGS (variable metric) method possibly with bound 
+    % It is a limited memory BFGS (variable metric) method possibly with bound
     % constraints and/or preconditioning.
     % See https://github.com/emmt/OptimPackLegacy
     %
@@ -28,7 +28,7 @@ classdef OptiVMLMB<Opti
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+    
     properties (Constant)
         OP_TASK_START  = 0; % first entry, start search
         OP_TASK_FG     = 1; % computation of F and G requested
@@ -37,7 +37,7 @@ classdef OptiVMLMB<Opti
         OP_TASK_WARN   = 4; % search aborted with warning
         OP_TASK_ERROR  = 5; % search aborted with error
     end
-     % Full public properties
+    % Full public properties
     properties
         m=3;
         gtol=0;
@@ -65,9 +65,9 @@ classdef OptiVMLMB<Opti
         dsave;
     end
     methods
-        function this = OptiVMLMB(nparam,xmin,xmax)
+        function this = OptiVMLMB(nparam,xmin,xmax,OutOp)
             
-    		this.name='OptiVMLMB'; 
+            this.name='OptiVMLMB';
             this.nparam =nparam;
             if(nargin>1)
                 if(~isempty(xmin))
@@ -78,6 +78,7 @@ classdef OptiVMLMB<Opti
                     this.bounds=bitor(this.bounds,2);
                     this.xmax = xmax;
                 end
+                if nargin==4 && ~isempty(OutOp),this.OutOp=OutOp;end
             end
             [this.csave, this.isave, this.dsave] = m_vmlmb_first(this.nparam, this.m, this.fatol, this.frtol,...
                 this.sftol, this.sgtol, this.sxtol, this.epsilon, this.costheta);
@@ -88,15 +89,17 @@ classdef OptiVMLMB<Opti
                 this.sftol, this.sgtol, this.sxtol, this.epsilon, this.costheta);
             this.task =  this.isave(3);
         end
-        function bestx =run(this,F,x0)
-            bestx = x0;
+        function  run(this,F,x0)
+            this.xopt = x0;
             x = x0;
             x(1)= x0(1); % Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
             this.task = this.OP_TASK_FG;
+            tstart=tic;
+            this.OutOp.init();
             nbeval=0;
             iter =1;
             if(this.verb)
-                fprintf('it\t nbeval\t cost\t\t  normg\t\t task\tstage\n');
+                starting_verb(this);
             end
             while(iter< this.nbitermax)
                 if (this.task == this.OP_TASK_FG)
@@ -113,23 +116,24 @@ classdef OptiVMLMB<Opti
                     this.cost = F.eval(x);     % evaluate the function at X;
                     grad = F.grad(x);   % evaluate the gradient of F at X;
                     normg= sum(grad(:).^2);
-
+                    
                     nbeval=nbeval+1;
                     if (normg< this.gtol)
                         fprintf('Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d\t%d \n',iter,nbeval,this.cost,normg,this.task,this.isave(4));
+                        this.time=toc(tstart);
+                        this.ending_verb();
                         break;
                     end
                 elseif (this.task == this.OP_TASK_NEWX)
                     iter = iter +1;
-                    bestx = x;
-                    if (mod(iter,this.verb)==0)
-                        fprintf('%d\t%d\t%7.2e\t%6.2g\t\t%d\t%d \n',iter,nbeval,this.cost,normg,this.task,this.isave(4));
-                    end
-                    % New successful step: the approximation X, function F, and
+                    this.xopt = x;
+                    if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end% New successful step: the approximation X, function F, and
                     % gradient G, are available for inspection.
                 else
                     % Convergence, or error, or warning
-                    fprintf('Convergence, or error, or warning : %d  , %s\n',this.task,this.csave);
+                    fprintf('Convergence, or error, or warning : %d  , %s\n',this.task,this.csave);                    
+                    this.time=toc(tstart);
+                    this.ending_verb();
                     break;
                 end
                 if ( (nbeval==1) || (this.task == this.OP_TASK_NEWX))

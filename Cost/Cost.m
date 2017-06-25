@@ -1,27 +1,18 @@
 classdef Cost < handle
-    %% Cost : Cost function generic class
-    %  Matlab Inverse Problems Library
-    %  The Cost meta class implements generic methods for all cost function
-    %  Cost functions  $\mathbb{C}^N\rightarrow\mathbb{R}$
-    %                                 $cost \rightarrow f( H.x , y )$
-    % return a real scalar  f( H.x , y )
-    % -- Properties
-    % * |name|       - name of the function
-    % * |H|          - LinOp composed with the functional if H is a size it
-    % implicitly make H=LinOpIdentity(H);
-    % * |y|          - a vector of size H.sizeout
-    % * |lip|        - Lipschitz constant of the gradient (if known, otherwise -1)
-    % * |isconvex|   - boolean true is the function is convex
+    % Abstract class for Cost functions
+    % $$ C : \\mathrm{X} \\longrightarrow \\mathbb{R}$$
+    % with the following special structure
+    % $$ C(\\mathrm{x}) := F( \\mathrm{Hx} , \\mathrm{y} ) $$
+	% where \\(F\\) is a function takin two variables.
+	%
+    % :param H: a :class:`LinOp` object (default :class:`LinOpIdentity`)
+    % :param y: data vector of size H.sizeout (default 0)
+    % :param name: name of the cost function
+    % :param lip: Lipschitz constant of the gradient (when applicable and known, otherwise -1)
+	% :param isconvex: boolean true is the function is convex
     %
-    % -- Methods
-    % * |eval|       - evaluates the functional
-    % * |grad|       - evaluates the gradient of the functional
-    % * |o|          - compose with a LinOp
-    % * |prox|       - computes the proximity operator
-    % * |prox_fench| - computes the proximity operator of the fenchel transform
-    %                  (default for convex Cost: uses the Moreau's identity
-    %                       prox_{alpha F*}(y) = y - alpha prox_{F/alpha}(y/alpha)
-    %
+	% See also :class:`LinOp`.
+
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch & F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -41,32 +32,64 @@ classdef Cost < handle
     properties (SetAccess = protected,GetAccess = public)
         name = 'none'       % name of the functional
         lip=-1;             % Lipschitz constant of the gradient
-        % LinOp Infos
-        y=0;
-        H=[];  % linear operator
-        isconvex=false;
+        y=0;				% data y
+        H=[];  				% linear operator
+        isconvex=false;     % boolean
     end
     
     methods
-        %% Evaluation of the Functional
-        function eval(~,~)
-            error('Eval not implemented');
+        function f=eval(this,x)
+        	% **(Abstract Method)** Evaluates the cost function
+       	 	%
+        	% :param x: \\(\\in \\mathrm{X}\\)
+        	% :returns y: \\(= C(\\mathrm{x})\\)
+           
+            error('Eval not implemented');         
         end
-        %% Gradient of the Functional
-        function grad(~,~)
+
+        function g=grad(this,x)
+        	% **(Abstract Method)** Evaluates the gradient of the cost function (when applicable)
+        	%
+        	% :param x: \\(\\in \\mathrm{X}\\)
+        	% :returns y: \\(= \\nabla C(\\mathrm{x})\\)
+        	
             error('Grad not implemented');
         end
-        %% Compute the functional and its gradient
+
         function [cost , gradient] = eval_grad(this,x)
+            % Evaluates both the cost function and its gradient (when applicable)
+            %
+        	% **Note**: For some derived classes this function is reimplemented in a faster way than running both :meth:`eval` and :meth:`grad` successively (default).
+        	%
+        	% :param x: \\(\\in \\mathrm{X}\\)
+        	% :returns y: \\(= \\left[C(\\mathrm{x}), \\nabla C(\\mathrm{x})\\right]\\)
+        	
             cost = this.eval(x) ;
             gradient = this.grad(x) ;
         end
-        %% Proximity operator of the functional
-        function prox(~,~,~)
+        
+        function y=prox(this,x,alpha)
+        	% **(Abstract Method)** Evaluates the proximity operator of the cost (when applicable)
+            % $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{x}) =  \\mathrm{arg} \\, \\mathrm{min}_{\\mathrm{u} \\in \\mathrm{X}} \\; \\frac{1}{2\\alpha} \\| \\mathrm{u} - \\mathrm{x} \\|_2^2 + C(\\mathrm{u}). $$
+        	%
+        	% :param x: \\(\\in \\mathrm{X}\\)
+        	% :param alpha: \\(\\in \\mathbb{R}\\)
+        	% :returns y: \\(= \\mathrm{prox}_{\\alpha C}(\\mathrm{x})\\)
+        	
             error('Prox not implemented');
         end
-        %% Proximity operator of the Fenchel transform of the functional prox_{alpha F*}
+
         function y=prox_fench(this,x,alpha)
+        	% Evaluates the proximity operator of the Fenchel Transform \\(C^*\\) (when applicable) which is computed using Moreau's identity:
+        	% $$\\mathrm{prox}_{\\alpha C^*}(\\mathrm{x}) = \\mathrm{x} - \\alpha \\,\\mathrm{prox}_{\\frac{1}{\\alpha}C}\\left(\\frac{\\mathrm{x}}{\\alpha}\\right).$$
+        	% **Note-1**: Only defined if :attr:`isconvex` =True.
+        	%
+        	% **Note-2** When defining a new class :class:`Cost`, one only requires to implements the prox.
+        	%
+        	% :param x: \\(\\in \\mathrm{X}\\)
+        	% :param alpha: \\(\\in \\mathbb{R}\\)
+        	% :returns y: \\(= \\mathrm{prox}_{\\alpha C^*}(\\mathrm{x})\\)
+        	
             assert(isscalar(alpha),'alpha must be a scalar');
             if this.isconvex
                 y= x - alpha*(this.prox((x-this.y)/alpha,1/alpha)+this.y);
@@ -74,31 +97,64 @@ classdef Cost < handle
                 error('Prox Fenchel not implemented');
             end
         end
-        %% Operator compose with a LinOp
-        function v=	o(this,x)
-            assert(isa(x,'LinOp'),' Composition is only with a LinOp');
-            v=ComposeLinOpCost(this,x);
+
+        function Cnew=	o(this,L)
+        	% Compose the cost \\(C\\) with a :class:`LinOp` \\(\\mathrm{L}\\)
+        	% $$ C_{new}(\\mathrm{x}) := C(\\mathrm{Lx}) $$
+        	%
+        	% :param L: :class:`LinOp` object.
+        	% :returns Cnew: the new :class:`Cost`.
+        	%
+        	% See also: :class:`ComposeLinOpCost`
+        	
+            assert(isa(L,'LinOp'),' Composition is only with a LinOp');
+            Cnew=ComposeLinOpCost(this,L);
         end
-        %% Overload the operator +
-        function y = plus(this,x)
-            assert(isa(x,'Cost'),'Addition is only between two Costs');
-            y = SumCost({this,x});
+        
+        function Cnew = plus(this,C2)
+        	% Overload operator (+) for :class:`Cost` objects
+        	% $$ C_{new}(\\mathrm{x}) := C(\\mathrm{x}) + C_2(\\mathrm{x})$$
+        	%
+        	% :param C2: :class:`Cost` object.
+        	% :returns Cnew: :class:`Cost`.
+        	%
+        	% See also: :class:`SumCost`
+        	
+            assert(isa(C2,'Cost'),'Addition is only between two Costs');
+            Cnew = SumCost({this,C2});
         end
-        %% Overload the operator -
-        function y = minus(this,x)
-            assert(isa(x,'Cost'),'Subtraction is only between two Costs');
-            y = SumCost({this,x},[1,-1]);
+
+        function C = minus(this,C2)
+            % Overload operator (-) for :class:`Cost` objects
+        	% $$ C_{new}(\\mathrm{x}) := C(\\mathrm{x}) - C_2(\\mathrm{x})$$
+        	%
+        	% :param C2: :class:`Cost` object.
+        	% :returns Cnew: :class:`Cost`.
+        	%
+        	% See also: :class:`SumCost`
+        	
+            assert(isa(C2,'Cost'),'Subtraction is only between two Costs');
+            V = SumCost({this,C2},[1,-1]);
         end
-        %% Overload the operator *
-        function y = mtimes(this,x)
-            if isa(x,'Cost')
-                y = MulCost(this,x);
-            elseif isscalar(x)
-                y = MulCost(x,this);
+
+        function y = mtimes(this,C2)
+            % Overload operator (-) for :class:`Cost` objects
+        	% $$ C_{new}(\\mathrm{x}) := C(\\mathrm{x}) \\times C_2(\\mathrm{x})$$
+        	%
+        	% :param C2: :class:`Cost` object or a scalar in \\(\\mathbb{R}\\).
+        	% :returns Cnew: :class:`Cost`.
+        	%
+        	% See also: :class:`MultCost`
+        	
+            if isa(C2,'Cost')
+                y = MulCost(this,C2);
+            elseif isscalar(C2)
+                y = MulCost(C2,this);
             else
-                error('x must be a Cost object or a scalar');
+                error('C2 must be a Cost object or a scalar');
             end
         end
+        
         %% Set data y (must be conformable with H sizeout)
         function set_y(this,y)
             assert(isnumeric(y),' y must be a numeric');

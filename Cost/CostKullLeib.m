@@ -1,20 +1,18 @@
 classdef CostKullLeib < Cost
-    %% CostKullLeib : KullbackLeibler divergence
-    %  Matlab Inverse Problems Library
+    % KullbackLeibler divergence
+    % $$ C(\\mathrm{x}) :=\\sum_n D_{KL}((\\mathrm{Hx})_n)$$
+    % where
+    % $$ D_{KL}(\\mathrm{z}_n) := \\left\\lbrace \\begin{array}[ll]
+    % \\mathrm{z}_n - \\mathrm{y}_n \\log(\\mathrm{z}_n + \\beta) & \\text{ if } \\mathrm{z}_n + \\beta >0  \\newline
+    % + \\infty &  \\text{otherwise}.
+    % \\end{array} \\right.$$
     %
-    % -- Description
-    % Implements the Kullback-Leibler divergence between H.x and y .
-    % $$ \sum_n -y_n log((H*x)_n + bet) + (H*x)_n,
-    % where H is a LinOp object (default LinOpIdentity), y are the data
-    % and bet is a scalar (default 0) to smooth the function at zero.
+    % All attributes of parent class :class:`Cost` are inherited. 
     %
-    % -- Example
-    % F=CostKullLeib(H,y,bet)
+    % :param bet: smoothing parameter \\(\\beta\\) (default 0) 
     %
-    % Please refer to the COST superclass for general documentation about
-    % functional class
-    % See also Cost
-    %
+    % See also :class:`Cost` :class:`LinOp`
+
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -66,8 +64,10 @@ classdef CostKullLeib < Cost
                 this.lip=max(this.y(:))./this.bet^2*this.H.norm^2;
             end
         end
-        %% Evaluation of the Functional
+
         function f=eval(this,x)
+        	% Reimplemented from parent class :class:`Cost`.
+        	
             this.Hx=this.H.apply(x);
             if ~any(this.Hx(:)<0)
                 f=Inf;
@@ -82,15 +82,19 @@ classdef CostKullLeib < Cost
                 end
             end
         end
-        %% Gradient of the Functional
+
         function g=grad(this,x)
+        	% Reimplemented from parent class :class:`Cost`.
+        	
             if nargin ==2
             this.Hx=this.H.apply(x);
             end
             g= this.He1 - this.H.adjoint(this.y./(this.Hx+this.bet));
         end
-        %% Proximity operator of the functional
+        
         function z=prox(this,x,alpha)
+        	% Reimplemented from parent class :class:`Cost`.
+        	
             z=[];
             if isa(this.H,'LinOpIdentity') % if operator identity
                 if (this.bet~=0)

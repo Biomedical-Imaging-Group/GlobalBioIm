@@ -1,15 +1,13 @@
 classdef CostL1 < Cost
-    %% CostL1 : CostL1 norm Proximity Operator
-    %  Matlab Inverse Problems Library
+    % L1 norm cost function
+    % $$C(x) := \\|\\mathrm{Hx} - \\mathrm{y}\\|_1 $$
     %
-    % Obj = CostL1(H,y):
-    % Implement the proximity operator for the L1 norm
-    % $$ \phi(x) = |H.x-y| $$
+    % All attributes of parent class :class:`Cost` are inherited. 
     %
-    % The option 'NonNegativity' add the non negativity constraint (default
-    % false)
-    
-    %
+    % :param nonneg: boolean (varargin parameter) to combine a nonnegativity constraint to the cost (default false).
+	%
+    % See also :class:`Cost` :class:`LinOp`    
+
     %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -31,7 +29,7 @@ classdef CostL1 < Cost
     end
     
     methods
-        function this = CostL1(H,y, varargin)
+        function this = CostL1(H,y,varargin)
             this.name='Cost L1';
             this.isconvex=true;
             % -- Set entries
@@ -52,9 +50,11 @@ classdef CostL1 < Cost
             end
             
         end
-        function z = prox(this,x,alpha) % apply the operator
-            assert(isscalar(alpha),'alpha must be a scalar');
-            
+        
+        function z = prox(this,x,alpha) 
+        	% Reimplemented from parent class :class:`Cost` if the operator :attr:`H`  is invertible.
+        	
+            assert(isscalar(alpha),'alpha must be a scalar');           
             if this.H.isinvertible
                  tmp = this.H.apply(x)-this.y ;
                 if this.nonneg
@@ -67,13 +67,14 @@ classdef CostL1 < Cost
             end
         end
         function f=eval(this,x)
+        	% Reimplemented from parent class :class:`Cost`.
+        	
             if ~this.nonneg
                  tmp = this.H.apply(x)-this.y;
                  f=sum(abs(tmp(:)));
             else
                 error('eval L1 not implemented');
-            end
-                 
+            end                
         end       
     end
 end

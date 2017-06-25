@@ -1,18 +1,13 @@
 classdef CostL2 < Cost
-    %% CostL2 : Least Squares functional
-    %  Matlab Inverse Problems Library
+    % Weighted L2 norm cost function
+    % $$C(\\mathrm{x}) := \\frac12\\|\\mathrm{Hx} - \\mathrm{y}\\|^2_W $$
     %
-    % -- Description
-    % Implement the cost function for the weighted L2 norm
-    % $$ 1/2||Hx - y||^2_W $$
-    % where H is a LinOp object (default LinOpIdentity), y are the data and W
-    % is a weight matrix (LinOp, default LinOpIdentity).
+    % All attributes of parent class :class:`Cost` are inherited. 
     %
-    % -- Example
-    % F = CostL2(H,y,W);
+    % :param W: weighting :class:`LinOpDiag` object or scalar (default :class:`LinOpIdentity`)
     %
-    % See also Cost, LinOp
-    %
+    % See also :class:`Cost` :class:`LinOp`
+
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch & Ferreol
     %     Soulez ferreol.soulez@epfl.ch
     %
@@ -31,7 +26,7 @@ classdef CostL2 < Cost
     
     % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
-        W=1;          % weight matrix
+        W=1;    % weight matrix      
     end
     % Full protected properties
     properties (SetAccess = protected,GetAccess = protected)
@@ -41,7 +36,6 @@ classdef CostL2 < Cost
     end
     
     methods
-        %% Constructor
         function this = CostL2(H,y,wght)
             this.isconvex=true;
             % -- Set entries
@@ -55,7 +49,7 @@ classdef CostL2 < Cost
             set_H(this,H);
             
             if nargin==3
-                assert(isscalar(wght)||isa(wght,'LinOp'),'weight WGHT must be scalar or linop');
+                assert(isscalar(wght)||isa(wght,'LinOpDiag'),'weight WGHT must be scalar or Diagonal LinOp');
                 this.W=wght;
                 this.isW=true;
             end
@@ -65,16 +59,18 @@ classdef CostL2 < Cost
             % -- Compute Lipschitz constant of the gradient (if the norm of H is known)
             if this.H.norm>=0;
                 if isscalar(this.W)
-                    this.lip=this.W.^2.*this.H.norm^2;
+                    this.lip=this.W.*this.H.norm^2;
                 else
                     if this.W.norm>=0
-                        this.lip=this.H.norm^2*this.W.norm^2;
+                        this.lip=this.H.norm^2*this.W.norm;
                     end
                 end
             end
         end
-        %% Evaluation of the Functional
+        
         function f=eval(this,x)
+        	% Reimplemented from parent class :class:`Cost`.
+        	
             if(isscalar(this.y)&&(this.y==0))
                 r=this.H.apply(x);
             else
@@ -83,15 +79,29 @@ classdef CostL2 < Cost
             this.wr=this.W*r;
             f=0.5*dot(r(:),this.wr(:));
         end
-        %% Gradient of the Functional
+
         function g=grad(this,x)
+        	% Reimplemented from parent class :class:`Cost`.
+        	% $$ \\nabla C(\\mathrm{x}) = \\mathrm{H^* W (Hx - y)} $$
+        	% It is L-Lipschitz continuous with \\( L \\leq \\|\\mathrm{H}\\|^2 \\|\\mathrm{W}\\|\\).
+        	
             if nargin ==2
                 this.wr = this.W*(this.H.apply(x)-this.y);
             end
             g = this.H.adjoint(this.wr) ;
         end
-        %% Proximity operator of the functional
+
         function y=prox(this,x,alpha)
+        	% Reimplemented from parent class :class:`Cost` if
+        	%
+        	% - the operator :attr:`H`  is a :class:`LinOpIdentity`,
+        	% $$\\mathrm{prox}_{\\alpha C}(\\mathrm{x}) = \\frac{\\mathrm{x}+\\alpha \\mathrm{W}\\mathrm{y}}{1+\\alpha \\mathrm{W}}$$
+        	% where the division is component-wise.
+        	%
+        	% - the operator :attr:`H`  is a :class:`LinOpConv` and :attr:`W`  is a :class:`LinOpIdentity`;
+        	% $$\\mathrm{prox}_{\\alpha C}(\\mathrm{x}) = \\mathcal{F}^{-1}\\left(\\frac{\\mathcal{F}(\\mathrm{x}) + \\alpha  \\mathcal{F}(\\mathrm{H}^*)\\mathcal{F}(\\mathrm{y})  }{1+\\alpha \\vert\\mathcal{F}(\\mathrm{H})\\vert^2} \\right)$$
+        	% where \\(\\mathcal{F} \\) stands for the Fourier transform.
+        	
             assert(isscalar(alpha),'alpha must be a scalar');
             y=[];
             if isa(this.H,'LinOpIdentity')

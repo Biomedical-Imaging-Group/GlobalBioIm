@@ -1,0 +1,541 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>GlobalBioIm Library’s documentation &mdash; GlobalBioIm Library 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="GlobalBioIm Library 0.1 documentation" href="#"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document"  style="text-align:justify">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> GlobalBioIm Library
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+
+<li><a class="reference internal" href="#">GlobalBioIm Library’s documentation</a></li>
+<li><a class="reference internal" href="#linear-operators-linop">Linear Operators (LinOp)</a></li>
+<li><a class="reference internal" href="#cost-functions-cost">Cost Functions (Cost)</a><ul>
+<li><a class="reference internal" href="#cost-abstract-class">Cost (abstract class)</a></li>
+<li><a class="reference internal" href="#costl2">CostL2</a></li>
+<li><a class="reference internal" href="#costl1">CostL1</a></li>
+<li><a class="reference internal" href="#costkullleib">CostKullLeib</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="#">GlobalBioIm Library</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="#">Docs</a> &raquo;</li>
+      
+    <li>GlobalBioIm Library’s documentation</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="globalbioim-library-s-documentation">
+<h1>GlobalBioIm Library’s documentation<a class="headerlink" href="#globalbioim-library-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This page contains detailled documentation of each function/class of the Library. The documentation is generated automatically from comments within M-files. It thus constitues the most up-to date documentation of the Library.</p>
+</div>
+<div class="section" id="linear-operators-linop">
+<h1>Linear Operators (LinOp)<a class="headerlink" href="#linear-operators-linop" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="cost-functions-cost">
+<h1>Cost Functions (Cost)<a class="headerlink" href="#cost-functions-cost" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div>This section contains cost functions classes which all derive from the abstract class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a>.</div></blockquote>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Some methods defined in the main class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a> are <strong>abstract</strong> which means that they need to be implemented in the derived classes. However, all the derived costs do not implement all these abstract methods. For example, if one implements a non-differentiable cost, the method <code class="xref mat mat-meth docutils literal"><span class="pre">grad()</span></code> do not have any sense and is thus not implemented for this cost. Hence, in the following, abstract methods which are <strong>not mentionned</strong> into the <strong>documentation</strong> of a derived cost are <strong>not implemented</strong> for this cost. Concerning the non-abstract methods of class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a>, they are always inherited by all subclasses and are not mentionned in their respective documentation (except if there is a reimplementation for any reasons).</p>
+</div>
+<span class="target" id="module-Cost"></span><div class="section" id="cost-abstract-class">
+<h2>Cost (abstract class)<a class="headerlink" href="#cost-abstract-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="Cost.Cost">
+<em class="property">class </em><code class="descclassname">Cost.</code><code class="descname">Cost</code><a class="headerlink" href="#Cost.Cost" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal"><span class="pre">handle</span></code></p>
+<p>Abstract class for Cost functions
+$$ C : \mathrm{X} \longrightarrow \mathbb{R}$$
+with the following special structure
+$$ C(\mathrm{x}) := F( \mathrm{Hx} , \mathrm{y} ) $$
+where \(F\) is a function takin two variables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>H</strong> – a <code class="xref mat mat-class docutils literal"><span class="pre">LinOp</span></code> object (default <code class="xref mat mat-class docutils literal"><span class="pre">LinOpIdentity</span></code>)</li>
+<li><strong>y</strong> – data vector of size H.sizeout (default 0)</li>
+<li><strong>name</strong> – name of the cost function</li>
+<li><strong>lip</strong> – Lipschitz constant of the gradient (when applicable and known, otherwise -1)</li>
+<li><strong>isconvex</strong> – boolean true is the function is convex</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>See also <code class="xref mat mat-class docutils literal"><span class="pre">LinOp</span></code>.</p>
+<dl class="method">
+<dt id="Cost.Cost.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>this</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.Cost.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>(Abstract Method)</strong> Evaluates the cost function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> – \(\in \mathrm{X}\)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns y:</th><td class="field-body">\(= C(\mathrm{x})\)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Cost.Cost.eval_grad">
+<code class="descname">eval_grad</code><span class="sig-paren">(</span><em>this</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.Cost.eval_grad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluates both the cost function and its gradient (when applicable)</p>
+<p><strong>Note</strong>: For some derived classes this function is reimplemented in a faster way than running both <a class="reference internal" href="#Cost.Cost.eval" title="Cost.Cost.eval"><code class="xref mat mat-meth docutils literal"><span class="pre">eval()</span></code></a> and <a class="reference internal" href="#Cost.Cost.grad" title="Cost.Cost.grad"><code class="xref mat mat-meth docutils literal"><span class="pre">grad()</span></code></a> successively (default).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> – \(\in \mathrm{X}\)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns y:</th><td class="field-body">\(= \left[C(\mathrm{x}), \nabla C(\mathrm{x})\right]\)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Cost.Cost.grad">
+<code class="descname">grad</code><span class="sig-paren">(</span><em>this</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.Cost.grad" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>(Abstract Method)</strong> Evaluates the gradient of the cost function (when applicable)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> – \(\in \mathrm{X}\)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns y:</th><td class="field-body">\(= \nabla C(\mathrm{x})\)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Cost.Cost.minus">
+<code class="descname">minus</code><span class="sig-paren">(</span><em>this</em>, <em>C2</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.Cost.minus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overload operator (-) for <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a> objects
+$$ C_{new}(\mathrm{x}) := C(\mathrm{x}) - C_2(\mathrm{x})$$</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>C2</strong> – <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a> object.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns Cnew:</th><td class="field-body"><a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+<p>See also: <code class="xref mat mat-class docutils literal"><span class="pre">SumCost</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Cost.Cost.mtimes">
+<code class="descname">mtimes</code><span class="sig-paren">(</span><em>this</em>, <em>C2</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.Cost.mtimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overload operator (-) for <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a> objects
+$$ C_{new}(\mathrm{x}) := C(\mathrm{x}) \times C_2(\mathrm{x})$$</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>C2</strong> – <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a> object or a scalar in \(\mathbb{R}\).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns Cnew:</th><td class="field-body"><a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+<p>See also: <code class="xref mat mat-class docutils literal"><span class="pre">MultCost</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Cost.Cost.o">
+<code class="descname">o</code><span class="sig-paren">(</span><em>this</em>, <em>L</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.Cost.o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compose the cost \(C\) with a <code class="xref mat mat-class docutils literal"><span class="pre">LinOp</span></code> \(\mathrm{L}\)
+$$ C_{new}(\mathrm{x}) := C(\mathrm{Lx}) $$</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>L</strong> – <code class="xref mat mat-class docutils literal"><span class="pre">LinOp</span></code> object.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns Cnew:</th><td class="field-body">the new <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+<p>See also: <code class="xref mat mat-class docutils literal"><span class="pre">ComposeLinOpCost</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Cost.Cost.plus">
+<code class="descname">plus</code><span class="sig-paren">(</span><em>this</em>, <em>C2</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.Cost.plus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overload operator (+) for <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a> objects
+$$ C_{new}(\mathrm{x}) := C(\mathrm{x}) + C_2(\mathrm{x})$$</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>C2</strong> – <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a> object.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns Cnew:</th><td class="field-body"><a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+<p>See also: <code class="xref mat mat-class docutils literal"><span class="pre">SumCost</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Cost.Cost.prox">
+<code class="descname">prox</code><span class="sig-paren">(</span><em>this</em>, <em>x</em>, <em>alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.Cost.prox" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>(Abstract Method)</strong> Evaluates the proximity operator of the cost (when applicable)
+$$ \mathrm{prox}_{\alpha C}(\mathrm{x}) =  \mathrm{arg} \, \mathrm{min}_{\mathrm{u} \in \mathrm{X}} \; \frac{1}{2\alpha} \| \mathrm{u} - \mathrm{x} \|_2^2 + C(\mathrm{u}). $$</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – \(\in \mathrm{X}\)</li>
+<li><strong>alpha</strong> – \(\in \mathbb{R}\)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns y:</th><td class="field-body"><p class="first last">\(= \mathrm{prox}_{\alpha C}(\mathrm{x})\)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Cost.Cost.prox_fench">
+<code class="descname">prox_fench</code><span class="sig-paren">(</span><em>this</em>, <em>x</em>, <em>alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.Cost.prox_fench" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluates the proximity operator of the Fenchel Transform \(C^*\) (when applicable) which is computed using Moreau’s identity:
+$$\mathrm{prox}_{\alpha C^*}(\mathrm{x}) = \mathrm{x} - \alpha \,\mathrm{prox}_{\frac{1}{\alpha}C}\left(\frac{\mathrm{x}}{\alpha}\right).$$
+<strong>Note-1</strong>: Only defined if <code class="xref mat mat-attr docutils literal"><span class="pre">isconvex</span></code> =True.</p>
+<p><strong>Note-2</strong> When defining a new class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a>, one only requires to implements the prox.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – \(\in \mathrm{X}\)</li>
+<li><strong>alpha</strong> – \(\in \mathbb{R}\)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns y:</th><td class="field-body"><p class="first last">\(= \mathrm{prox}_{\alpha C^*}(\mathrm{x})\)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="costl2">
+<h2>CostL2<a class="headerlink" href="#costl2" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="Cost.CostL2">
+<em class="property">class </em><code class="descclassname">Cost.</code><code class="descname">CostL2</code><span class="sig-paren">(</span><em>H</em>, <em>y</em>, <em>wght</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Cost.Cost" title="Cost.Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost.Cost</span></code></a></p>
+<p>Weighted L2 norm cost function
+$$C(\mathrm{x}) := \frac12\|\mathrm{Hx} - \mathrm{y}\|^2_W $$</p>
+<p>All attributes of parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a> are inherited.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>W</strong> – weighting <code class="xref mat mat-class docutils literal"><span class="pre">LinOpDiag</span></code> object or scalar (default <code class="xref mat mat-class docutils literal"><span class="pre">LinOpIdentity</span></code>)</td>
+</tr>
+</tbody>
+</table>
+<p>See also <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a> <code class="xref mat mat-class docutils literal"><span class="pre">LinOp</span></code></p>
+<dl class="method">
+<dt id="Cost.CostL2.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>this</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Cost.CostL2.grad">
+<code class="descname">grad</code><span class="sig-paren">(</span><em>this</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2.grad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a>.
+$$ \nabla C(\mathrm{x}) = \mathrm{H^* W (Hx - y)} $$
+It is L-Lipschitz continuous with \( L \leq \|\mathrm{H}\|^2 \|\mathrm{W}\|\).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Cost.CostL2.prox">
+<code class="descname">prox</code><span class="sig-paren">(</span><em>this</em>, <em>x</em>, <em>alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2.prox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a> if</p>
+<ul class="simple">
+<li>the operator <code class="xref mat mat-attr docutils literal"><span class="pre">H</span></code>  is a <code class="xref mat mat-class docutils literal"><span class="pre">LinOpIdentity</span></code>,</li>
+</ul>
+<p>$$\mathrm{prox}_{\alpha C}(\mathrm{x}) = \frac{\mathrm{x}+\alpha \mathrm{W}\mathrm{y}}{1+\alpha \mathrm{W}}$$
+where the division is component-wise.</p>
+<ul class="simple">
+<li>the operator <code class="xref mat mat-attr docutils literal"><span class="pre">H</span></code>  is a <code class="xref mat mat-class docutils literal"><span class="pre">LinOpConv</span></code> and <code class="xref mat mat-attr docutils literal"><span class="pre">W</span></code>  is a <code class="xref mat mat-class docutils literal"><span class="pre">LinOpIdentity</span></code>;</li>
+</ul>
+<p>$$\mathrm{prox}_{\alpha C}(\mathrm{x}) = \mathcal{F}^{-1}\left(\frac{\mathcal{F}(\mathrm{x}) + \alpha  \mathcal{F}(\mathrm{H}^*)\mathcal{F}(\mathrm{y})  }{1+\alpha \vert\mathcal{F}(\mathrm{H})\vert^2} \right)$$
+where \(\mathcal{F} \) stands for the Fourier transform.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="costl1">
+<h2>CostL1<a class="headerlink" href="#costl1" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="Cost.CostL1">
+<em class="property">class </em><code class="descclassname">Cost.</code><code class="descname">CostL1</code><span class="sig-paren">(</span><em>H</em>, <em>y</em>, <em>varargin</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Cost.Cost" title="Cost.Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost.Cost</span></code></a></p>
+<p>L1 norm cost function
+$$C(x) := \|\mathrm{Hx} - \mathrm{y}\|_1 $$</p>
+<p>All attributes of parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a> are inherited.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nonneg</strong> – boolean (varargin parameter) to combine a nonnegativity constraint to the cost (default false).</td>
+</tr>
+</tbody>
+</table>
+<p>See also <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a> <code class="xref mat mat-class docutils literal"><span class="pre">LinOp</span></code></p>
+<dl class="method">
+<dt id="Cost.CostL1.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>this</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL1.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Cost.CostL1.prox">
+<code class="descname">prox</code><span class="sig-paren">(</span><em>this</em>, <em>x</em>, <em>alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL1.prox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a> if the operator <code class="xref mat mat-attr docutils literal"><span class="pre">H</span></code>  is invertible.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="costkullleib">
+<h2>CostKullLeib<a class="headerlink" href="#costkullleib" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="Cost.CostKullLeib">
+<em class="property">class </em><code class="descclassname">Cost.</code><code class="descname">CostKullLeib</code><span class="sig-paren">(</span><em>H</em>, <em>y</em>, <em>bet</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostKullLeib" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Cost.Cost" title="Cost.Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost.Cost</span></code></a></p>
+<p>KullbackLeibler divergence
+$$ C(\mathrm{x}) :=\sum_n D_{KL}((\mathrm{Hx})_n)$$
+where
+$$ D_{KL}(\mathrm{z}_n) := \left\lbrace \begin{array}[ll]
+\mathrm{z}_n - \mathrm{y}_n \log(\mathrm{z}_n + \beta) &amp; \text{ if } \mathrm{z}_n + \beta &gt;0  \newline
++ \infty &amp;  \text{otherwise}.
+\end{array} \right.$$</p>
+<p>All attributes of parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a> are inherited.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bet</strong> – smoothing parameter \(\beta\) (default 0)</td>
+</tr>
+</tbody>
+</table>
+<p>See also <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a> <code class="xref mat mat-class docutils literal"><span class="pre">LinOp</span></code></p>
+<dl class="method">
+<dt id="Cost.CostKullLeib.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>this</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostKullLeib.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Cost.CostKullLeib.grad">
+<code class="descname">grad</code><span class="sig-paren">(</span><em>this</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostKullLeib.grad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Cost.CostKullLeib.prox">
+<code class="descname">prox</code><span class="sig-paren">(</span><em>this</em>, <em>x</em>, <em>alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostKullLeib.prox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal"><span class="pre">Cost</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Biomedical Imaging Group (EPFL).
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

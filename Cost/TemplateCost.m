@@ -1,26 +1,12 @@
-classdef CostNAME < Cost
-    %% CostNAME : TODO ADD DESCRIPTION
-    %  Matlab Inverse Problems Library
+classdef TemplateCost < Cost
+	% TODO: Put here the description of your Cost
     %
-    % -- Description
-    % TODO ADD A DESCRIPTION
-    %
-    % -- Example
-    % TODO ADD INSTANTIATION EXAMPLE
-    %
-    % -- Properties
-    % TODO ADD NEW PROPERTIES
-    %
-    % -- Methods
-    % TODO ADD NEW METHODS
-    %
-    % -- References
-    % TODO ADD REFERENCES IF NEEDED
-    %
-    % Please refer to the COST superclass for general documentation about
-    % functional class
-    % See also Cost
+    % All attributes of parent class :class:`Cost` are inherited. 
 	%
+	% :param MyNewParam: TODO: details new parameter specific to this class
+    %
+    % See also :class:`Cost` :class:`LinOp`
+    
     %     Copyright (C) TODO YEAR NAME EMAIL
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -49,7 +35,7 @@ classdef CostNAME < Cost
     
     methods 
     	%% Constructor
-        function this = CostNAME(H,y)
+        function this = TemplateCost(H,y)
         	% TODO SET THE INHERITED PROPERTIES (IF APPLICABLE)
             this.name='Cost NAME';
             this.isconvex= ???;
@@ -65,22 +51,13 @@ classdef CostNAME < Cost
             set_H(this,H);
 			% TODO SET NEW DEFINED PROPERTIES
     	end
-    	%% Evaluation of the Functional
+
         function y=eval(this,x)
-			% TODO IMPLEMENT THE EVAL METHOD
+			% Reimplemented from parent class :class:`Cost`.
+			
         end
-        %% Gradient of the Functional
-        function g=grad(this,x)
-			% TODO IMPLEMENTS THE GRADIENT (IF APPLICABLE)
-        end
-        %% Proximity operator of the functional
-        function y=prox(this,x,alpha)
-        	assert(isscalar(alpha),'alpha must be a scalar');
-			% TODO IMPLEMENTS THE PROX (IF APPLICABLE)
-        end
-        %% Function that set properly the operator H (has to be modified if new properties is???H are added)
-        function set_H(this,H)
-        	% TODO REIMPLEMENTS THE METHOD SET_H (IF NEEDED)
-        end
+
+		% TODO: Reimplements any method of class Cost that is relevant (prescise in method docstring any new specificities compared to class Cost. Otherwise put simply: Reimplemented from parent class :class:`Cost`.
+		
     end
 end

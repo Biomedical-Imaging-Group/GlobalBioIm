@@ -1,14 +1,11 @@
 
 classdef LinOpIdentity <  LinOp
-    %% LinOpIdentity : identity operator
-    %  Matlab Linear Operator Library
-    % Build the identity operator such that x = Id.apply(x)
+    % Identity operator
+    % $$\\mathrm{H} : \\mathrm{x} \\mapsto \\mathrm{x}$$
     %
-    % Example
-    % Id = LinOpIdentity()
+    % :param sz: size of \\(\mathrm{x}\\) on which the :class:`LinOpIdentity` applies.
     %
-    % Please refer to the LinOp superclass for documentation
-    % See also LinOp
+    % See also :class:`LinOp`
     
     %     Copyright (C) 2015 F. Soulez  ferreol.soulez@epfl.ch
     %
@@ -38,22 +35,40 @@ classdef LinOpIdentity <  LinOp
                 error('a size SZ should be given');
             end
         end
-        function y = apply(~,x)
+        
+        function y = apply(this,x)
+        	% Reimplemented from parent class :class:`LinOp`.
+        	
             y =x;
         end
-        function y = adjoint(~,x)
+        
+        function y = adjoint(this,x)
+        	% Reimplemented from parent class :class:`LinOp`.
+        	
             y =x;
         end
-        function y = HtH(~,x)
+        
+        function y = HtH(this,x)
+        	% Reimplemented from parent class :class:`LinOp`.
+        	
             y =x;
         end
-        function y = HHt(~,x)
+        
+        function y = HHt(this,x)
+        	% Reimplemented from parent class :class:`LinOp`.
+        	
             y =x;
         end
-        function y = inverse(~,x)
+        
+        function y = inverse(this,x)
+        	% Reimplemented from parent class :class:`LinOp`.
+        	
             y =x;
         end
-        function y = adjointInverse(~,x)
+        
+        function y = adjointInverse(this,x)
+        	% Reimplemented from parent class :class:`LinOp`.
+        	
             y =x;
         end
     end

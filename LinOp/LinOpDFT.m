@@ -72,7 +72,7 @@ classdef LinOpDFT <  LinOp
         function y = inverse(this,x)
             y = ifftn(x,this.pad);
         end
-        function y = HtH(this,x)%Beware of unitary fft of Matlab
+        function y = HtH(this,x) %Beware of unitary fft of Matlab
             this.N=numel(x);
             
             if this.unitary
@@ -81,7 +81,7 @@ classdef LinOpDFT <  LinOp
                 y =this.N *x;
             end
         end
-        function y = adjointInverse(this,x)%Beware of unitary fft of Matlab
+        function y = adjointInverse(this,x) %Beware of unitary fft of Matlab
             this.N=numel(x);
             y = 1/this.N *fftn(x,this.pad);
         end

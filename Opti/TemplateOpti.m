@@ -1,4 +1,4 @@
-classdef OptiNAME < Opti
+classdef TemplateOpti < Opti
     %% OptiNAME : TODO ADD DESCRIPTION
     %  Matlab inverse Problems Library
     %
@@ -53,7 +53,7 @@ classdef OptiNAME < Opti
     
     methods
     	%% Constructor
-    	function this=OptiNAME(~)
+    	function this=TemplateOpti(~)
     		% TODO SET THE INHERITED PROPERTIES
     		this.name='Opti NAME';
     		this.cost=????;

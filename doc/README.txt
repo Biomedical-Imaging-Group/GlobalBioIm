@@ -7,7 +7,7 @@ Documentation is generated from Matlab's comments
 
 ###### COMPILATION
 
-	sphinx-build -b html . _build
+	sphinx-build -b html source _build
 	
 	after compiling open the file index.html (in build) and remove the 
 	<!-- Local TOC -->
@@ -19,6 +19,15 @@ Documentation is generated from Matlab's comments
     add style="text-align:justify" in the body "basile":
     <body class="wy-body-for-nav" role="document" style="text-align:justify">
     I did not find a nicer way to do that... 
+    
+    add <img src="logo.png"  width="300" /> at the following position
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+    <div class="wy-side-scroll">
+       <img src="logo.png"  width="300" />  <<<------- HERE
+    <div class="wy-side-nav-search">
+    
+    set the href of  <a href="#" class="icon icon-home"> GlobalBioIm Library </a> to 
+    http://bigwww.epfl.ch/algorithms/globalbioim/
 
 ###### HOW TO USE
 

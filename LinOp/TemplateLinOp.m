@@ -1,4 +1,4 @@
-classdef LinOpNAME <  LinOp
+classdef TemplateLinOp <  LinOp
     %% LinOpNAME : Template for Linear  Operator
     %  Matlab Linear Operator Library 
     %
@@ -38,7 +38,7 @@ classdef LinOpNAME <  LinOp
        % Add your extra properties
     end
     methods
-        function this = LinOpNAME() %change the name of the constructor
+        function this = TemplateLinOp() %change the name of the constructor
             this.name ='';             
             this.issquare = false;     % is your operator square?
             this.iscomplex= true;      % is your operator complex?

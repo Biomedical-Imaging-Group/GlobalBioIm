@@ -1,36 +1,18 @@
 classdef Opti < matlab.mixin.SetGet
-    %% Opti : Optimization algorithm generic class
-    %  Matlab inverse Problems Library
-    %  The Opti meta class implements generic methods for all optimization algorithms
+    % Abstract class for optimization algorithms to minimize :class:`Cost` objects
     %
-    % -- Properties
-    % * |name|      - name of the optimization algorithm  
-    % * |maxiter|   - maximal number of iterations (default 50) public property
-    % * |xtol|      - stopping criteria tolerance on the relative difference between two 
-    %                 iterates (see TestConvergence function, default 1e-5) public property
-    % * |ItUpOut|   - every ItUpOut iterations the update method of a OutputOpti object is called 
-    %                 (see Class OutputOpti, default 0) public property
-    % * |OutOp|     - OutputOpti object
-    % * |cost|      - whole minimized functional (Cost)
-    % * |time|      - execution time of the algorithm (last run)
-    % * |niter|     - iteration counter
-    % * |xopt|      - optimization variable
+    % :param name: name of the algorithm
+    % :param cost: minimized :class:`Cost`
+    % :param maxiter: maximal number of iterations (default 50)
+    % :param xtol: tolerance on the relative difference between two iterates (default 1e-5)
+    % :param OutOp: :class:`OutputOpti` object
+    % :param ItUpOut: number of iterations between two calls to the update method of the  :class:`OutputOpti` object :attr:`OutOp` (default 0)
+	% :param time: execution time of the algorithm
+	% :param niter: iteration counter
+	% :param xopt: optimization variable
     %
-    % Note: in each derived class the minimized functional(s) are defined as properties and combined to 
-    %       form the cost functional (that can be used by the update method of OutputOpti object).
-    %       For example let us consider the OptiChambollePock class that allows to minimize F(Kx)+G(x). In this 
-    %       situation F, G and the LinOp K have to be given separately to the Opti class (they will define
-    %       new properties of the derivate class). Moreover, we will define cost = F(K) + G in order to have a generic
-    %       way to evaluate the cost for all the algorithms (which can be used by the method update of OutputOpti)
-    %
-    % -- Methods
-    % * |run(x0)|          - run the algorithm from the initial point x0. If x0=[], should restart from current state. 
-    % * |starting_verb|    - generic method to display a starting message in verb mode
-    % * |ending_verb|      - idem for ending message
-    % * |test_convergence| - generic function to test convergence based on the relative difference between two successive iterates
-    %
-    % See also OutputOpti
-    %
+    % See also :class:`OutputOpti` :class:`Cost`
+
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -63,25 +45,41 @@ classdef Opti < matlab.mixin.SetGet
     end
     
     methods
-    	%% Run the algorithm
-        function run(~,~) 
+
+        function run(this,x0) 
+        	% **(Abstract method)** Run the algorithm. 
+        	%
+        	% :param x0: initial point in \\(\\in X\\), if x0=[] restarts from the current value :attr:`xopt`.
+        	%
+			% **note**: this method does not return anything, the result being stored in public attribute :attr:`xopt`.
+
             error(['In ',this.name,': run method is not implemented']);
         end
-        %% Display starting message
-        function starting_verb(this)     	
+
+        function starting_verb(this)  
+        	% Generic method to display a starting message in verbose mode.
+        	   	
         	if this.ItUpOut~=0
         		fprintf('---> Start %s ... \n',this.name);
 				this.OutOp.update(this);
 			end
         end
-        %% Display ending message
+
         function ending_verb(this)
+        	% Generic method to display a ending message in verbose mode.
+        	
         	if this.ItUpOut~=0
 				fprintf('... Optimization finished \nElapsed time (s): %4.2d (%i iterations). \n',this.time, this.niter);
         	end
         end
-        %% Test Convergence with the relative difference btw two successive iterates
+
         function stop=test_convergence(this,xold)
+        	% Tests algorithm convergence from the relative difference between two successive iterates 
+        	%
+        	% :param xold: iterate \\( \\mathrm{x}^{k-1}\\).
+        	% :returns stop: boolean true if
+        	% $$ \\frac{\\| \\mathrm{x}^{k} - \\mathrm{x}^{k-1}\\|}{\\|\\mathrm{x}^{k-1}\\|} < x_{tol}.$$
+        	
         	r=this.xopt-xold;
         	xdiff=norm(r(:))/(norm(xold(:))+eps);
         	stop=xdiff<this.xtol;

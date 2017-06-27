@@ -5,9 +5,16 @@ together with the matlabdomain extension
      https://pypi.python.org/pypi/sphinxcontrib-matlabdomain
 Documentation is generated from Matlab's comments
 
+###### SETUP
+some commands that worked on macOSX
+
+sudo -H pip install --ignore-installed Sphinx
+sudo -H pip install --ignore-installed -U sphinxcontrib-matlabdomain
+sudo -H pip install --ignore-installed sphinx_rtd_theme
+
 ###### COMPILATION
 
-	sphinx-build -b html source _build
+       make html
 	
 	after compiling open the file index.html (in build) and remove the 
 	<!-- Local TOC -->
@@ -39,7 +46,7 @@ Documentation is generated from Matlab's comments
 	- You can insert latex within $$ $$ or \\(  \\) (inline) and this will be correctly interpreted.
 	  Note that backslashes have to be doubled '\\' (i.e. \int_x --> \\int_x)
 	  
-	- Let an empty line (i.e. without any %) before the copiright paragraph:
+	- Let an empty line (i.e. without any %) before the copyright paragraph:
 	% See also :class:`LinOp`.
 
     %     Copyright (C) 2017 ...

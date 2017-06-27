@@ -103,9 +103,9 @@ classdef OptiADMM < Opti
                 this.cost=this.cost+Fn{n}.o(Hn{n});
             end
             if isempty(this.solver)
-                this.A=SumLinOp({this.Hn{1}'*this.Hn{1}},[this.rho_n(1)]);
+	    this.A=SumLinOp({ (this.Hn{1})' *this.Hn{1}},[this.rho_n(1)]);
                 for n=2:length(this.Hn)
-                    this.A=SumLinOp({this.A,this.Hn{n}'*this.Hn{n}},[1,this.rho_n(n)]);
+                    this.A=SumLinOp({ this.A, (this.Hn{n})' * this.Hn{n}},[1,this.rho_n(n)]);
                 end
                 if ~isempty(this.F0) && isa(this.F0,'CostL2')
                     this.A=SumLinOp({this.A,this.F0.H'*this.F0.H},[1,1]);

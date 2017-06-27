@@ -92,7 +92,7 @@ autodoc_member_order = 'bysource'
 html_theme = 'sphinx_rtd_theme'
 html_theme_options = {
 	'sticky_navigation': True,
-    'collapse_navigation': False,
+    'collapse_navigation': True,
     'display_version': True,
 }
 

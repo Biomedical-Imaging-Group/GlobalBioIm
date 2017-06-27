@@ -14,14 +14,13 @@ sudo -H pip install --ignore-installed sphinx_rtd_theme
 
 ###### COMPILATION
 
+    1. To make the documentation, type
+    
        make html
-	
-	after compiling open the file index.html (in build) and remove the 
-	<!-- Local TOC -->
-    <div class="local-toc"><ul>
-       ...
-    </div>
-    but let the content that is between these two div (I don't known why there is this problem. It allows to hide subcontents in the TOC)
+
+    1a. To see the results, open Doc/build/index.html in a web browser.
+
+    2. To clean up for release:
     
     add style="text-align:justify" in the body "basile":
     <body class="wy-body-for-nav" role="document" style="text-align:justify">

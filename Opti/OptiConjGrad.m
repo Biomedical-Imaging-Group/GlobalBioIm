@@ -1,24 +1,19 @@
 classdef OptiConjGrad < Opti
-    %% OptiConjGrad : Conjugate gradient optimization algorithm
-    %  Matlab inverse Problems Library
+    % Conjugate gradient optimization algorithm which solves the linear
+    % system \\(\\mathrm{Ax=b}\\) by minimizing
+    % $$ C(\\mathrm{x})= \\frac12 \\mathrm{x^TAx - b^Tx} $$
     %
-    % -- Description
-    % Solves the linear system A*x=b by minimizing 
-    %   $$ 0.5 x'*A*w - b'*x $$
-    % using the Conjugate Gradient algorithm
+    % :param A: symmetric definite positive :class:`LinOp`
+    % :param b: right-hand term
+    % :param W: :class:`LinOpDiag`, if set then the algorithm solves \\(\\mathrm{A^TWAx=b}\\)
     %
-    % Note: In this algorithm the parameter cost is not fixed to the above functional
-    %       but to the squered resildual:
-    %         $$ 0.5||A*x - b||^2
+    % All attributes of parent class :class:`Opti` are inherited. 
     %
-    % -- Example
-    % CG = OptiConjGrad(A,b,W,OutOp)
-    % where A is a LINOP object, b the data, W a LINOP so that the algorithm solves A'*W*Ax=b
-    % and OutOp a OutputOpti object
+    % **Note**: In this algorithm the parameter cost is not fixed to the above functional
+    % but to the squared resildual \\( 0.5\\Vert \\mathrm{Ax - b}\\Vert^2 \\)
     %
-    % Please refer to the OPTI superclass for general documentation about optimization class
-    % See also Opti, OutputOpti
-    %
+    % See also :class:`Opti`, :class:`OutputOpti` :class:`Cost`
+
 	%     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -53,7 +48,7 @@ classdef OptiConjGrad < Opti
     		if isempty(W)
     			this.A=A;
     		else
-    			assert(isa(W,'LinOp'),'W must be a LinOp object');
+    			assert(isa(W,'LinOpDiag'),'W must be a LinOpDiag object');
     			this.A=A'*W*A; 			
     		end
     		this.cost=CostL2(this.A,b);
@@ -62,11 +57,15 @@ classdef OptiConjGrad < Opti
         end 
         %% Set data b
         function set_b(this,b)
+            % Set the right-hand side \\(\\mathrm{b}\\)
+        	
             assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
             this.b=b;
         end
     	%% Run the algorithm
         function run(this,x0) 
+            % Reimplementation from :class:`Opti`.
+            
 			if ~isempty(x0) % To restart from current state if wanted
 				this.xopt=x0;
 				this.r= this.b - this.A.apply(this.xopt);
@@ -81,13 +80,10 @@ classdef OptiConjGrad < Opti
 				% - Algorithm iteration
    				rho = dot(this.r(:),this.r(:));
     			if this.niter == 2 && ~isempty(x0)
-        			this.xtol = eps*rho;
         			p = this.r;
-    			elseif rho <= this.xtol
-        			break
-    			else
-        		beta = rho/rho_prec;
-        		p = this.r + beta*p;
+                else
+                    beta = rho/rho_prec;
+                    p = this.r + beta*p;
     			end
         		q = this.A*p;
     			alpha = rho/dot(p(:), q(:));

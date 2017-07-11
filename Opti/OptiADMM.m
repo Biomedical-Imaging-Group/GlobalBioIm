@@ -1,48 +1,39 @@
 classdef OptiADMM < Opti
-    %% OptiADMM : Alternating Direction Method of Multipliers algorithm
-    %  Matlab inverse Problems Library
+    % Alternating Direction Method of Multipliers [1] algorithm which minimizes :class:`Cost` of the form
+    % $$ C(\\mathrm{x}) = F_0(\\mathrm{x}) + \\sum_{n=1}^N F_n(\\mathrm{H_n x}) $$
     %
-    % -- Description
-    % Implements the ADMM algorithm [1] to minimize:
-    %    $$ F_0(x) + \sum_{n=1}^N F_n(y_n) $$
-    % subject to:
-    %    $$ H_n*x=y_n \forall n \in {1,...,N}$$
-    % where the H_n are linear operators and F_n are functional with an implementation of the
-    % proximity operator for n = 1,...,N (and not necessarily for n=0)
+    % :param F_0: :class:`Cost` object
+    % :param F_n: cell of N :class:`Cost` with an implementation of the :meth:`prox` for each one
+    % :param H_n: cell of N :class:`LinOp`
+    % :param rho_n: array of N positive scalars
+    % :param solver: a handle function taking parameters solver(z_n,rho_n,x0) (see the note below)
+    % :param maxiterCG: max number of iterations for conjugate-gradient (CG) (when used)
+    % :param OutOpCG: :class:`OutputOpti` object for CG (when used)
+    % :param ItUpOutCG: :attr:`ItUpOut` parameter for CG (when used, default 0)
     %
-    % In fact the algorithm aims to minimize the Lagrangian formulation of the above problem:
-    % $$ L(x,y_1...y_n,w_1...w_) = F_0(x) + \sum_{n=1}^N 0.5*\rho_n*||H_n*x - y_n + w_n/rho_n||^2 + F_n(y_n)$$
-    % where the \rho_n >0 n=1...N are the multipliers.
+    % All attributes of parent class :class:`Opti` are inherited. 
     %
-    % -- Example
-    %   ADMM= OptiADMM(F0,H0,Fn,Hn,rho_n,solver,OutOp)
-    % where F0 is a FUNC object, H0 a LINOP object, Fn a cell of N COST, Hn a cell of N LINOP,
-    % rho_n a vector of N nonnegative scalars and solver a function handle such that:
-    %   solver(z_n,rho_n,x0)
-    % where z_n is a cell of N elements, rho_n is as above.
-    % The solver minimizes the following function starting from x0:
-    %    $$ F_0(x) + \sum_{n=1}^N 0.5*\rho_n||H_n*x -z_n||^2 $$
-    % Finally OutOp is an OutputOpti object.
+    % **Principle** 
+    % The algorithm aims at minimizing the Lagrangian formulation of the above problem:
+    % $$ \\mathcal{L}(\\mathrm{x,y_1...y_n,w_1...w_n}) = F_0(\\mathrm{x}) + \\sum_{n=1}^N \\frac12\\rho_n\\Vert \\mathrm{H_nx - y_n + w_n/\\rho_n} \\Vert^2 + F_n(\\mathrm{y_n})$$
+    % using an alternating minimization scheme [1].
     %
-    % Note: If F0 not empty and F0 not CostL2, then solver is mandatory.
-    %       Otherwise not and by default the ADMM algorithm will use the Conjugate Gradient algorithm
-    %       (see OptiConjGrad) to make the minimization task of solver. However, if one has a
-    %       faster method than applying a conjugate gradient to perform this step, it is
-    %       recommended to provide a solver. If F0 is nonempty, then solver is MANDATORY.
+    % **Note** The minimization of \\(\\mathcal{L}\\) over \\(\\mathrm{x}\\), 
+    % $$ F_0(\\mathrm{x}) + \\sum_{n=1}^N \\frac12\\rho_n\\Vert \\mathrm{H_nx -z_n}\\Vert^2, \\quad \\mathrm{z_n= y_n - w_n/\\rho_n} $$
+    % is performed  either using the conjugate-gradient :class:`OptiConjGrad` algoriothm or the given solver
     %
-    % -- Properties
-    % * |maxiterCG|   number of iteration for Conjugate Gradient (when used)
-    % * |rho_n|       vector containing the multipliers
-    % * |OutOpCG|     OutputOpti object for Conjugate Gradient (when used)
-    % * |ItUpOutCG|   ItUpOut parameter for Conjugate Gracdient (when used, default 0)
+    %  - If \\(F_0\\) is empty or is a :class:`CostL2`, then :class:`OptiConjGrad` is used by
+    %    default if no more efficient solver is provided. 
     %
-    % -- References
+    %  - Otherwithe the solver is required.
+    %
+    % **Reference**
+    %
     % [1] Boyd, Stephen, et al. "Distributed optimization and statistical learning via the alternating direction
-    %     method of multipliers." Foundations and Trends in Machine Learning, 2011.
+    % method of multipliers." Foundations and Trends in Machine Learning, 2011.
     %
-    % Please refer to the OPTI superclass for general documentation about optimization class
-    % See also Opti, OptiConjGrad, LinOp, Cost, OutputOpti
-    %
+    % See also :class:`Opti`, :class:`OptiConjGrad` :class:`OutputOpti`, :class:`Cost`
+    
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -118,7 +109,9 @@ classdef OptiADMM < Opti
         end
     	%% Run the algorithm
         function run(this,x0)
-            if ~isempty(x0), % To restart from current state if wanted
+            % Reimplementation from :class:`Opti`.
+            
+            if ~isempty(x0) % To restart from current state if wanted
                 this.xopt=x0;
                 for n=1:length(this.Hn)
                     this.yn{n}=this.Hn{n}.apply(this.xopt);

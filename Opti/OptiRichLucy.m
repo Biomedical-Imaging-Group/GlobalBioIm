@@ -1,29 +1,32 @@
 classdef OptiRichLucy < Opti
-    %% OptiRichLucy : Richardson-Lucy algorithm
-    %  Matlab inverse Problems Library
+    % Richardson-Lucy algorithm [1,2] which minimizes the KullbackLeibler
+    % divergence :class:`CostKullLeib` (with TV regularization [3]).
+    % $$ C(\\mathrm{x})= F(\\mathrm{x}) + \\lambda \\Vert \\mathrm{x} \\Vert_{\\mathrm{TV}} $$
     %
-    % -- Description
-    % Implements the Richardson-Lucy algorithm [1] to minimize the functional (CostKullLeib):
-	% $$\sum_n -d_n log((H*x)_n + bet) + (Hx)_n$$
-    % where H is a LinOp object (default LinOpIdentity), d are the data
-    % and bet is a small scalar (default 1e-3) to smooth the function at zero.
+    % :param F: :class:`CostKullLeib` object
+    % :param TV: boolean true if TV regularization used  (default false)
+    % :param lambda: regularization parameter (when TV used)
+    % :param epsl: smoothing parameter to make TV differentiable at 0 (default \\(10^{-6}\\))
     %
-    % -- Example
-    % OptiRL=OptiRichLucy(F,TV,lamb,OutOp)
-    % where F is a CostKullLeib object, TV a boolean to activate the TV regularized version or not
-    % (default false), lamb the regularization parameter used when TV and OutOp a OutputOpti object.
+    % All attributes of parent class :class:`Opti` are inherited. 
     %
-    % -- Properties
-    % *|lamb|   regularization parameter when TV is activated
-    % *|epsl|   smoothing parameter for TV
+    % **Note** An interesting property of this algorithm is that it ensures 
+    % the positivity of the solution from any positive initialization.
+    % However, when TV is used, the positivity of the iterates is not ensured 
+    % anymore if \\(\\lambda \\) is too large. Hence, \\(\\lambda \\) needs to be carefully chosen.
     %
-    % -- References
+    % **References**
+    %
 	% [1] Lucy, Leon B. "An iterative technique for the rectification of observed distributions" The astronomical journal (1974)
+    %
 	% [2] Richardson, William Hadley. "Bayesian-based iterative method of image restoration." JOSA (1972): 55-59.
     %
-    % Please refer to the OPTI superclass for general documentation about optimization class
-    % See also Opti, CostKullLeib, OutputOpti
+    % [3] N. Dey et al. "Richardson-Lucy Algorithm With Total Variation Regularization for 3D Confocal Microscope 
+    % Deconvolution." Microscopy research and technique (2006).
     %
+    % See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`,
+    % :class:`CostKullLeib`
+    
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -41,7 +44,7 @@ classdef OptiRichLucy < Opti
     
     % Full public properties     
     properties (SetAccess = public,GetAccess = public)
-		epsl=1e-10; % smoothing parameter for TV
+		epsl=1e-6; % smoothing parameter for TV
     end
     % Protected set public read    
     properties (SetAccess = public,GetAccess = public)
@@ -77,6 +80,8 @@ classdef OptiRichLucy < Opti
     	end 
     	%% Run the algorithm
         function run(this,x0) 
+            % Reimplementation from :class:`Opti`.
+            
 			if ~isempty(x0),this.xopt=x0;end;  % To restart from current state if wanted
 			assert(~isempty(this.xopt),'Missing starting point x0');
         	data=this.Fkl.y;

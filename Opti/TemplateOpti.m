@@ -1,25 +1,19 @@
 classdef TemplateOpti < Opti
-    %% OptiNAME : TODO ADD DESCRIPTION
-    %  Matlab inverse Problems Library
-    %
-    % -- Description
-    % TODO ADD A DESCRIPTION
-    %
-    % -- Example
-    % TODO ADD INSTANTIATION EXAMPLE
+    % OptiNAME which minimizes :class:`Cost`of the form
+    % $$ C(\\mathrm{x}) = TODO $$
     % 
-    % -- Properties
-    % TODO ADD NEW PROPERTIES
+    % :param parNAME: DESCRIPTION
     %
-    % -- Methods
-    % TODO ADD NEW METHODS
+    % All attributes of parent class :class:`Opti` are inherited. 
     %
-    % -- References
-    % TODO ADD REFERENCES IF NEEDED
+    % **Note**: YOU CAN PUT A NOTE HERE
     %
-    % Please refer to the OPTI superclass for general documentation about optimization class
-    % See also Opti, OutputOpti
+    % **References**
     %
+    % [1] Ref1 ...
+    %
+    % See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`
+    
     %     Copyright (C) TODO YEAR NAME EMAIL
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -37,18 +31,18 @@ classdef TemplateOpti < Opti
 
     % Protected Set and public Read properties     
     properties (SetAccess = protected,GetAccess = public)
-		%% TODO SET HERE NEW PROTECTED SET AND PUBLIC READ PROPERTIES
-		%% IF NEEDED.
-		%% EXAMPLE THE MINIMIZED FUNC
+		% TODO SET HERE NEW PROTECTED SET AND PUBLIC READ PROPERTIES
+		% IF NEEDED.
+		% EXAMPLE THE MINIMIZED FUNC
     end
     % Full protected properties 
     properties (SetAccess = protected,GetAccess = protected)
-		%% TODO SET HERE NEW FULLY PROTECTED PROPERTIES 
-		%% (E.G. INTERNAL VARIABLE USED TO AVOID MULTIPLE COMPUTATION)
+		% TODO SET HERE NEW FULLY PROTECTED PROPERTIES 
+		% (E.G. INTERNAL VARIABLE USED TO AVOID MULTIPLE COMPUTATION)
     end
     % Full public properties
     properties
-		%% TODO SET FULLY PUBLIC PROPERTIES
+		% TODO SET FULLY PUBLIC PROPERTIES
     end
     
     methods
@@ -62,6 +56,8 @@ classdef TemplateOpti < Opti
     	end 
     	%% Run the algorithm
         function run(this,x0) 
+            % Reimplementation from :class:`Opti`.
+            
 			if ~isempty(x0)   % To restart from current state if wanted
 				this.xopt=x0;
 				% + other initialization that should be avoided for restarting

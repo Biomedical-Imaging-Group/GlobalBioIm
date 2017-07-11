@@ -5,9 +5,11 @@ classdef OptiFBS < Opti
     % :param F: a differentiable :class:`Cost` (i.e. with an implementation of :meth:`grad`).
     % :param G: a :class:`Cost` with an implementation of the :meth:`prox`.
     % :param gam: descent step
-    % :param fista: boolean true if the accelerated version FISTA [3] is used (default false)  
+    % :param fista: boolean true if the accelerated version FISTA [3] is used (default false) 
+    %
+    % All attributes of parent class :class:`Opti` are inherited. 
 	%
-	% **Note**: When the functional are convex and F has a Lipschitz continuous gradient, convergence is
+	% **Note**: When the functional are convex and \\(F\\) has a Lipschitz continuous gradient, convergence is
 	% ensured by taking \\(\\gamma \\in (0,2/L] \\) where \\(L\\) is the Lipschitz constant of \\(\\nabla F\\) (see [1]).
 	% When FISTA is used [3], \\(\\gamma \\) should be in \\((0,1/L]\\). For nonconvex functions [2] take \\(\\gamma \\in (0,1/L]\\).    
     % If \\(L\\) is known (i.e. F.lip different from -1), parameter \\(\\gamma\\) is automatically set to \\(1/L\\).

@@ -1,30 +1,22 @@
 classdef OptiGradDsct < Opti
-    %% OptiGradDsct : Gradient Descent optimization algorithm
-    %  Matlab inverse Problems Library
-    %  Implements a Gradient Decsent
+    % Gradient Descent optimization algorithm to minimize a differentiable :class:`Cost` \\(C(\\mathrm{x})\\)
     %
-    % -- Example
-    % OptiGD=OptiGradDsct(F,OutOp)
-    % where F is a Cost object and OutOp a OutputOpti object 
-    % 
-    % -- Properties
-    % * |name|      - name of the optimization algorithm (inherited from parent Opti class)
-    % * |cost|      - functional to minimize (inherited from parent Opti class,should have
-    %                 an implementation of the gradient)
-    % * |gam|       - descent step (public to be setted by the user if necessary)
+    % :param C: a differentiable :class:`Cost` (i.e. with an implementation of :meth:`grad`).
+    % :param gam: descent step
     %
-    % Note: If the cost F is gradient Lipschitz, gam has to be lower than 2/L where
-    %       L is the Lipschitz constant of the gradient. The optimal choice is 1/L (see [1]).
-    %       If F.lip is known (i.e. different from -1), parameter gam is automatically setted to 1/L
+    % All attributes of parent class :class:`Opti` are inherited. 
     %
-    % -- Methods
-    % * |run(x0)|   - run the algorithm from the initial point x0. If x0=[], restarts from the current state
+    % **Note** If the cost \\(C\\) is gradient Lipschitz, convergence is ensured by taking 
+    % \\(\\gamma \\in (0,2/L] \\) where \\(L\\) is the Lipschitz constant of \\(\\nabla C\\) (see [1]).
+	% The optimal choice is \\(\\gamma = 1/L \\) (see [1]). If \\(L\\) is known (i.e. F.lip different from -1), 
+    % parameter \\(\\gamma\\) is automatically set to \\(1/L\\).
     %
-    % -- References 
+    % **Reference**
+    %
     % [1] Nesterov, Yurii. "Introductory lectures on convex programming." Lecture Notes (1998): 119-120.
     %
-    % Please refer to the OPTI superclass for general documentation about optimization class
-    % See also Opti, OutputOpti
+    % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
+    
     %
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -60,6 +52,8 @@ classdef OptiGradDsct < Opti
     	end 
     	%% Run the algorithm
         function xopt = run(this,x0) 
+            % Reimplementation from :class:`Opti`.
+            
         	if isempty(this.gam), error('Parameter gam is not setted'); end
 			if ~isempty(x0),this.xopt=x0;end;  % To restart from current state if wanted
 			assert(~isempty(this.xopt),'Missing starting point x0');

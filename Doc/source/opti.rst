@@ -16,6 +16,20 @@ Opti (abstract class)
     :show-inheritance:
     :members: run, starting_verb, ending_verb, test_convergence
     
+OptiGradDsct
+------------
+
+.. autoclass:: OptiGradDsct
+    :show-inheritance:
+    :members: run, 
+
+OptiConjGrad
+------------
+
+.. autoclass:: OptiConjGrad
+    :show-inheritance:
+    :members: run, set_b
+
 OptiFBS
 -------
 
@@ -23,3 +37,38 @@ OptiFBS
     :show-inheritance:
     :members: run, 
 
+OptiChambPock
+-------------
+
+.. autoclass:: OptiChambPock
+    :show-inheritance:
+    :members: run, 
+
+OptiPrimalDualCondat
+--------------------
+
+.. autoclass:: OptiPrimalDualCondat
+    :show-inheritance:
+    :members: run, 
+
+OptiADMM
+--------
+
+.. autoclass:: OptiADMM
+    :show-inheritance:
+    :members: run, 
+
+OptiDouglasRachford
+-------------------
+
+.. autoclass:: OptiDouglasRachford
+    :show-inheritance:
+    :members: run, 
+
+
+OptiRichLucy
+------------
+
+.. autoclass:: OptiRichLucy
+    :show-inheritance:
+    :members: run, 

@@ -22,7 +22,7 @@ classdef LinOpGrad <  LinOp
     % See also LinOp
     
     %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch, E. Soubies
-    %     emmanuel.soubies@epfl.ch
+    %     emmanuel.soubies@epfl.ch, M. McCann michael.mccann@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -89,13 +89,10 @@ classdef LinOpGrad <  LinOp
 				this.sizeout(end+1) = this.lgthidx;
 			end
             
-            switch(this.ndms)
-                case(1), this.norm=2/res(1);
-                case(2), this.norm=2*sqrt(1/res(1)^2+1/res(2)^2);
-                case(3), this.norm=2*sqrt(1/res(1)^2+1/res(2)^2+1/res(3)^2);
-                case(4), this.norm=2*sqrt(1/res(1)^2+1/res(2)^2+1/res(3)^2+1/res(4)^2);
-            end
+			this.norm = 2 * sqrt( sum(1./res.^2) );
             
+			validatestring(this.bc, {'mirror', 'circular', 'zeros'});
+			
             if strcmp(this.bc,'circular')
                 % Set the filter for HtH
                 this.fHtH=zeros(this.sizein);
@@ -106,515 +103,161 @@ classdef LinOpGrad <  LinOp
                              this.fHtH(1,1,2)=-1/res(3)^2;this.fHtH(1,1,end)=-1/res(3)^2;
                     case(4), this.fHtH(1,1,1,1)=2/res(1)^2+2/res(2)^2+2/res(3)^2+2/res(4)^2;this.fHtH(1,2,1,1)=-1/res(2)^2;this.fHtH(2,1,1,1)=-1/res(1)^2;this.fHtH(1,end,1,1)=-1/res(2)^2;this.fHtH(end,1,1,1)=-1/res(1)^2;
                              this.fHtH(1,1,2,1)=-1/res(3)^2;this.fHtH(1,1,end,1)=-1/res(3)^2;this.fHtH(1,1,1,2)=-1/res(4)^2;this.fHtH(1,1,1,end)=-1/res(4)^2;
+					otherwise
+						warning('this.fHtH not set because input is more than 4D');
                 end
             end
         end
-
-        function y = apply(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
-            y = zeros(this.sizeout);
-            nidx = 0;
-            % switch according to the boundary condition
-            switch(this.bc)
-                case('mirror')
-                    % switch according to the number of dimension of the input
-                    switch(this.ndms)
-                        % 1 dimension
-                        case(1)
-                            y(:,1) = (x([2:end,end])-x)/this.res(1);
-                            % 2 dimensions
-                        case(2)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(:,:,nidx) = (x([2:end,end],:)-x)/this.res(1);
-                                    case(2)
-                                        y(:,:,nidx) = (x(:,[2:end,end])-x)/this.res(2);
-                                end
-                            end
-                            % 3 dimensions
-                        case(3)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(:,:,:,nidx) = (x([2:end,end],:,:)-x)/this.res(1);
-                                    case(2)
-                                        y(:,:,:,nidx) = (x(:,[2:end,end],:)-x)/this.res(2);
-                                    case(3)
-                                        y(:,:,:,nidx) = (x(:,:,[2:end,end])-x)/this.res(3);
-                                end
-                            end
-                            % 4 dimensions
-                        case(4)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(:,:,:,:,nidx) = (x([2:end,end],:,:,:)-x)/this.res(1);
-                                    case(2)
-                                        y(:,:,:,:,nidx) = (x(:,[2:end,end],:,:)-x)/this.res(2);
-                                    case(3)
-                                        y(:,:,:,:,nidx) = (x(:,:,[2:end,end],:)-x)/this.res(3);
-                                    case(4)
-                                        y(:,:,:,:,nidx) = (x(:,:,:,[2:end,end])-x)/this.res(4);
-                                end
-                            end
-                    end
-                case('circular')
-                    % switch according to the number of dimension of the input
-                    switch(this.ndms)
-                        % 1 dimension
-                        case(1)
-                            y(:,1) = (x([2:end,1])-x)/this.res(1);
-                            % 2 dimensions
-                        case(2)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(:,:,nidx) = (x([2:end,1],:)-x)/this.res(1);
-                                    case(2)
-                                        y(:,:,nidx) = (x(:,[2:end,1])-x)/this.res(2);
-                                end
-                            end
-                            % 3 dimensions
-                        case(3)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(:,:,:,nidx) = (x([2:end,1],:,:)-x)/this.res(1);
-                                    case(2)
-                                        y(:,:,:,nidx) = (x(:,[2:end,1],:)-x)/this.res(2);
-                                    case(3)
-                                        y(:,:,:,nidx) = (x(:,:,[2:end,1])-x)/this.res(3);
-                                end
-                            end
-                            % 4 dimensions
-                        case(4)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(:,:,:,:,nidx) = (x([2:end,1],:,:,:)-x)/this.res(1);
-                                    case(2)
-                                        y(:,:,:,:,nidx) = (x(:,[2:end,1],:,:)-x)/this.res(2);
-                                    case(3)
-                                        y(:,:,:,:,nidx) = (x(:,:,[2:end,1],:)-x)/this.res(3);
-                                    case(4)
-                                        y(:,:,:,:,nidx) = (x(:,:,:,[2:end,1])-x)/this.res(4);
-                                end
-                            end
-                    end
-                case('zeros')
-                    % switch according to the number of dimension of the input
-                    switch(this.ndms)
-                        % 1 dimension
-                        case(1)
-                            y(1:end-1,1) = (x(2:end)-x(1:end-1))/this.res(1);
-                            y(end,1) = -x(end)/this.res(1);
-                            % 2 dimensions
-                        case(2)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(1:end-1,:,nidx) = (x(2:end,:)-x(1:end-1,:))/this.res(1);
-                                        y(end,:,nidx) = -x(end,:)/this.res(1);
-                                    case(2)
-                                        y(:,1:end-1,nidx) = (x(:,2:end)-x(:,1:end-1))/this.res(2);
-                                        y(:,end,nidx) = -x(:,end)/this.res(2);
-                                end
-                            end
-                            % 3 dimensions
-                        case(3)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(1:end-1,:,:,nidx) = (x(2:end,:,:)-x(1:end-1,:,:))/this.res(1);
-                                        y(end,:,:,nidx) = -x(end,:,:)/this.res(1);
-                                    case(2)
-                                        y(:,1:end-1,:,nidx) = (x(:,2:end,:)-x(:,1:end-1,:))/this.res(2);
-                                        y(:,end,:,nidx) = -x(:,end,:)/this.res(2);
-                                    case(3)
-                                        y(:,:,1:end-1,nidx) = (x(:,:,2:end)-x(:,:,1:end-1))/this.res(3);
-                                        y(:,:,end,nidx) = -x(:,:,end)/this.res(3);
-                                end
-                            end
-                            % 4 dimensions
-                        case(4)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(1:end-1,:,:,:,nidx) = (x(2:end,:,:,:)-x(1:end-1,:,:,:))/this.res(1);
-                                        y(end,:,:,:,nidx) = -x(end,:,:,:)/this.res(1);
-                                    case(2)
-                                        y(:,1:end-1,:,:,nidx) = (x(:,2:end,:,:)-x(:,1:end-1,:,:))/this.res(2);
-                                        y(:,end,:,:,nidx) = -x(:,end,:,:)/this.res(2);
-                                    case(3)
-                                        y(:,:,1:end-1,:,nidx) = (x(:,:,2:end,:)-x(:,:,1:end-1,:))/this.res(3);
-                                        y(:,:,end,:,nidx) = -x(:,:,end,:)/this.res(3);
-                                    case(4)
-                                        y(:,:,:,1:end-1,nidx) = (x(:,:,:,2:end)-x(:,:,:,1:end-1))/this.res(4);
-                                        y(:,:,:,end,nidx) = -x(:,:,:,end)/this.res(4);
-                                end
-                            end
-                    end
-            end
-        end
+		
+		function y = apply(this,x)
+			assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
+		
+			y = zeros(this.sizeout);
+			
+			
+			allElements = repmat({':'}, 1, this.ndms);
+			for diffDimInd = 1:length(this.index)
+				diffDim = this.index(diffDimInd);
+				
+				midElements = allElements;
+				midElements{diffDim} = 1:this.sizeout(diffDim)-1; 
+				y(midElements{:}, diffDimInd)  = diff(x, 1, diffDim)  / this.res(diffDimInd);
+				
+				lastElement = allElements;
+				lastElement{diffDim} = this.sizeout(diffDim); 
+				switch(this.bc)
+					case('mirror')
+						% y(:,1) = (x([2:end,end])-x)/this.res(1);
+						y(lastElement{:}, diffDimInd)  = 0;
+					case('circular')
+						% y(:,1) = (x([2:end,1])-x)/this.res(1);
+						firstElement = allElements;
+						firstElement{diffDim} = 1;
+						y(lastElement{:}, diffDimInd)  =  (x(firstElement{:}) - x(lastElement{:})) / this.res(diffDimInd);
+					case('zeros')
+						y(lastElement{:}, diffDimInd)  = -x(lastElement{:})  / this.res(diffDimInd);
+				end
+				
+			end
+		
+		end
         
         
         function y = adjoint(this,x)
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
-            nidx = 0;
             y = zeros(this.sizein);
-            switch(this.bc)
-                case('mirror')
-                    % switch according to the number of dimension of the input
-                    switch(this.ndms)
-                        % 1 dimension
-                        case(1)
-                            y= [[-x(1) ; (-x(2:end-1)+x(1:end-2))] ; x(end-1)]/this.res(1);
-                            % 2 dimensions
-                        case(2)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(1,:)       = y(1,:)  - x(1,:,nidx)/this.res(1);
-                                        y(2:end-1,:) = y(2:end-1,:) + (-x(2:end-1,:,nidx)+x(1:end-2,:,nidx))/this.res(1);
-                                        y(end,:)     = y(end,:) + x(end-1,:,nidx)/this.res(1);
-                                    case(2)
-                                        y(:,1)       = y(:,1)  - x(:,1,nidx)/this.res(2);
-                                        y(:,2:end-1) = y(:,2:end-1) + (-x(:,2:end-1,nidx)+x(:,1:end-2,nidx))/this.res(2);
-                                        y(:,end)     = y(:,end) + x(:,end-1,nidx)/this.res(2);
-                                end
-                            end
-                            % 3 dimensions
-                        case(3)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(1,:,:)       = y(1,:,:) - x(1,:,:,nidx)/this.res(1);
-                                        y(2:end-1,:,:) = y(2:end-1,:,:) + (-x(2:end-1,:,:,nidx)+x(1:end-2,:,:,nidx))/this.res(1);
-                                        y(end,:,:)     = y(end,:,:) + x(end-1,:,:,nidx)/this.res(1);
-                                    case(2)
-                                        y(:,1,:)       = y(:,1,:)  - x(:,1,:,nidx)/this.res(2);
-                                        y(:,2:end-1,:) = y(:,2:end-1,:) + (-x(:,2:end-1,:,nidx)+x(:,1:end-2,:,nidx))/this.res(2);
-                                        y(:,end,:)     = y(:,end,:) + x(:,end-1,:,nidx)/this.res(2);
-                                    case(3)
-                                        y(:,:,1)       = y(:,:,1)  - x(:,:,1,nidx)/this.res(3);
-                                        y(:,:,2:end-1) = y(:,:,2:end-1) + (-x(:,:,2:end-1,nidx)+x(:,:,1:end-2,nidx))/this.res(3);
-                                        y(:,:,end)     = y(:,:,end) + x(:,:,end-1,nidx)/this.res(3);
-                                end
-                            end
-                            % 4 dimensions
-                        case(4)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(1,:,:,:)       = y(1,:,:,:) - x(1,:,:,:,nidx)/this.res(1);
-                                        y(2:end-1,:,:,:) = y(2:end-1,:,:,:) + (-x(2:end-1,:,:,:,nidx)+x(1:end-2,:,:,:,nidx))/this.res(1);
-                                        y(end,:,:,:)     = y(end,:,:,:) + x(end-1,:,:,:,nidx)/this.res(1);
-                                    case(2)
-                                        y(:,1,:,:)       = y(:,1,:,:)  - x(:,1,:,:,nidx)/this.res(2);
-                                        y(:,2:end-1,:,:) = y(:,2:end-1,:,:) + (-x(:,2:end-1,:,:,nidx)+x(:,1:end-2,:,:,nidx))/this.res(2);
-                                        y(:,end,:,:)     = y(:,end,:,:) + x(:,end-1,:,:,nidx)/this.res(2);
-                                    case(3)
-                                        y(:,:,1,:)       = y(:,:,1,:)  - x(:,:,1,:,nidx)/this.res(3);
-                                        y(:,:,2:end-1,:) = y(:,:,2:end-1,:) + (-x(:,:,2:end-1,:,nidx)+x(:,:,1:end-2,:,nidx))/this.res(3);
-                                        y(:,:,end,:)     = y(:,:,end,:) + x(:,:,end-1,:,nidx)/this.res(3);
-                                    case(4)
-                                        y(:,:,:,1)       = y(:,:,:,1)  - x(:,:,:,1,nidx)/this.res(4);
-                                        y(:,:,:,2:end-1) = y(:,:,:,2:end-1) + (-x(:,:,:,2:end-1,nidx)+x(:,:,:,1:end-2,nidx))/this.res(4);
-                                        y(:,:,:,end)     = y(:,:,:,end) + x(:,:,:,end-1,nidx)/this.res(4);
-                                end
-                            end
-                    end
-                case('circular')
-                    % switch according to the number of dimension of the input
-                    switch(this.ndms)
-                        % 1 dimension
-                        case(1)
-                            y= [[x(end)-x(1) ; (-x(2:end-1)+x(1:end-2))] ; (x(end-1)-x(end))]/this.res(1);
-                            % 2 dimensions
-                        case(2)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(1,:)       = y(1,:) + (x(end,:,nidx) - x(1,:,nidx))/this.res(1);
-                                        y(2:end-1,:) = y(2:end-1,:) + (-x(2:end-1,:,nidx)+x(1:end-2,:,nidx))/this.res(1);
-                                        y(end,:)     = y(end,:) + (x(end-1,:,nidx)-x(end,:,nidx))/this.res(1);
-                                    case(2)
-                                        y(:,1)       = y(:,1) + (x(:,end,nidx) - x(:,1,nidx))/this.res(2);
-                                        y(:,2:end-1) = y(:,2:end-1) + (-x(:,2:end-1,nidx)+x(:,1:end-2,nidx))/this.res(2);
-                                        y(:,end)     = y(:,end) + (x(:,end-1,nidx)-x(:,end,nidx))/this.res(2);
-                                end
-                            end
-                            % 3 dimensions
-                        case(3)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(1,:,:)       = y(1,:,:) + (x(end,:,:,nidx) - x(1,:,:,nidx))/this.res(1);
-                                        y(2:end-1,:,:) = y(2:end-1,:,:) + (-x(2:end-1,:,:,nidx)+x(1:end-2,:,:,nidx))/this.res(1);
-                                        y(end,:,:)     = y(end,:,:) + (x(end-1,:,:,nidx)-x(end,:,:,nidx))/this.res(1);
-                                    case(2)
-                                        y(:,1,:)       = y(:,1,:) + (x(:,end,:,nidx) - x(:,1,:,nidx))/this.res(2);
-                                        y(:,2:end-1,:) = y(:,2:end-1,:) + (-x(:,2:end-1,:,nidx)+x(:,1:end-2,:,nidx))/this.res(2);
-                                        y(:,end,:)     = y(:,end,:) + (x(:,end-1,:,nidx)-x(:,end,:,nidx))/this.res(2);
-                                    case(3)
-                                        y(:,:,1)       = y(:,:,1) + (x(:,:,end,nidx) - x(:,:,1,nidx))/this.res(3);
-                                        y(:,:,2:end-1) = y(:,:,2:end-1) + (-x(:,:,2:end-1,nidx)+x(:,:,1:end-2,nidx))/this.res(3);
-                                        y(:,:,end)     = y(:,:,end) + (x(:,:,end-1,nidx)-x(:,:,end,nidx))/this.res(3);
-                                end
-                            end
-                            % 4 dimensions
-                        case(4)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(1,:,:,:)       = y(1,:,:,:) +(x(end,:,:,:,nidx) - x(1,:,:,:,nidx))/this.res(1);
-                                        y(2:end-1,:,:,:) = y(2:end-1,:,:,:) + (-x(2:end-1,:,:,:,nidx)+x(1:end-2,:,:,:,nidx))/this.res(1);
-                                        y(end,:,:,:)     = y(end,:,:,:) + (x(end-1,:,:,:,nidx)-x(end,:,:,:,nidx))/this.res(1);
-                                    case(2)
-                                        y(:,1,:,:)       = y(:,1,:,:) +(x(:,end,:,:,nidx) - x(:,1,:,:,nidx))/this.res(2);
-                                        y(:,2:end-1,:,:) = y(:,2:end-1,:,:) + (-x(:,2:end-1,:,:,nidx)+x(:,1:end-2,:,:,nidx))/this.res(2);
-                                        y(:,end,:,:)     = y(:,end,:,:) + (x(:,end-1,:,:,nidx)-x(:,end,:,:,nidx))/this.res(2);
-                                    case(3)
-                                        y(:,:,1,:)       = y(:,:,1,:) +(x(:,:,end,:,nidx) - x(:,:,1,:,nidx))/this.res(3);
-                                        y(:,:,2:end-1,:) = y(:,:,2:end-1,:) + (-x(:,:,2:end-1,:,nidx)+x(:,:,1:end-2,:,nidx))/this.res(3);
-                                        y(:,:,end,:)     = y(:,:,end,:) + (x(:,:,end-1,:,nidx)-x(:,:,end,:,nidx))/this.res(3);
-                                    case(4)
-                                        y(:,:,:,1)       = y(:,:,:,1) +(x(:,:,:,end,nidx) - x(:,:,:,1,nidx))/this.res(4);
-                                        y(:,:,:,2:end-1) = y(:,:,:,2:end-1) + (-x(:,:,:,2:end-1,nidx)+x(:,:,:,1:end-2,nidx))/this.res(4);
-                                        y(:,:,:,end)     = y(:,:,:,end) + (x(:,:,:,end-1,nidx)-x(:,:,:,end,nidx))/this.res(4);
-                                end
-                            end
-                    end
-                case('zeros')
-                    % switch according to the number of dimension of the input
-                    switch(this.ndms)
-                        % 1 dimension
-                        case(1)
-                            y= [[-x(1) ; (-x(2:end-1)+x(1:end-2))] ; x(end-1)-x(end)]/this.res(1);
-                            % 2 dimensions
-                        case(2)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(1,:)       = y(1,:)  - x(1,:,nidx)/this.res(1);
-                                        y(2:end-1,:) = y(2:end-1,:) + (-x(2:end-1,:,nidx)+x(1:end-2,:,nidx))/this.res(1);
-                                        y(end,:)     = y(end,:) + (x(end-1,:,nidx)-x(end,:,nidx))/this.res(1);
-                                    case(2)
-                                        y(:,1)       = y(:,1)  - x(:,1,nidx)/this.res(2);
-                                        y(:,2:end-1) = y(:,2:end-1) + (-x(:,2:end-1,nidx)+x(:,1:end-2,nidx))/this.res(2);
-                                        y(:,end)     = y(:,end) + (x(:,end-1,nidx)-x(:,end,nidx))/this.res(2);
-                                end
-                            end
-                            % 3 dimensions
-                        case(3)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(1,:,:)       = y(1,:,:)  - x(1,:,:,nidx)/this.res(1);
-                                        y(2:end-1,:,:) = y(2:end-1,:,:) + (-x(2:end-1,:,:,nidx)+x(1:end-2,:,:,nidx))/this.res(1);
-                                        y(end,:,:)     = y(end,:,:) + (x(end-1,:,:,nidx)-x(end,:,:,nidx))/this.res(1);
-                                    case(2)
-                                        y(:,1,:)       = y(:,1,:)  - x(:,1,:,nidx)/this.res(2);
-                                        y(:,2:end-1,:) = y(:,2:end-1,:) + (-x(:,2:end-1,:,nidx)+x(:,1:end-2,:,nidx))/this.res(2);
-                                        y(:,end,:)     = y(:,end,:) + (x(:,end-1,:,nidx)-x(:,end,:,nidx))/this.res(2);
-                                    case(3)
-                                        y(:,:,1)       = y(:,:,1)  - x(:,:,1,nidx)/this.res(3);
-                                        y(:,:,2:end-1) = y(:,:,2:end-1) + (-x(:,:,2:end-1,nidx)+x(:,:,1:end-2,nidx))/this.res(3);
-                                        y(:,:,end)     = y(:,:,end) + (x(:,:,end-1,nidx)-x(:,:,end,nidx))/this.res(3);
-                                end
-                            end
-                            % 4 dimensions
-                        case(4)
-                            for n=this.index
-                                nidx = nidx +1;
-                                switch(n)
-                                    case(1)
-                                        y(1,:,:,:)       = y(1,:,:,:)  - x(1,:,:,:,nidx)/this.res(1);
-                                        y(2:end-1,:,:,:) = y(2:end-1,:,:,:) + (-x(2:end-1,:,:,:,nidx)+x(1:end-2,:,:,:,nidx))/this.res(1);
-                                        y(end,:,:,:)     = y(end,:,:,:) + (x(end-1,:,:,:,nidx)-x(end,:,:,:,nidx))/this.res(1);
-                                    case(2)
-                                        y(:,1,:,:)       = y(:,1,:,:)  - x(:,1,:,:,nidx)/this.res(2);
-                                        y(:,2:end-1,:,:) = y(:,2:end-1,:,:) + (-x(:,2:end-1,:,:,nidx)+x(:,1:end-2,:,:,nidx))/this.res(2);
-                                        y(:,end,:,:)     = y(:,end,:,:) + (x(:,end-1,:,:,nidx)-x(:,end,:,:,nidx))/this.res(2);
-                                    case(3)
-                                        y(:,:,1,:)       = y(:,:,1,:)  - x(:,:,1,:,nidx)/this.res(3);
-                                        y(:,:,2:end-1,:) = y(:,:,2:end-1,:) + (-x(:,:,2:end-1,:,nidx)+x(:,:,1:end-2,:,nidx))/this.res(3);
-                                        y(:,:,end,:)     = y(:,:,end,:) + (x(:,:,end-1,:,nidx)-x(:,:,end,:,nidx))/this.res(3);
-                                    case(4)
-                                        y(:,:,:,1)       = y(:,:,:,1)  - x(:,:,:,1,nidx)/this.res(4);
-                                        y(:,:,:,2:end-1) = y(:,:,:,2:end-1) + (-x(:,:,:,2:end-1,nidx)+x(:,:,:,1:end-2,nidx))/this.res(4);
-                                        y(:,:,:,end)     = y(:,:,:,end) + (x(:,:,:,end-1,nidx)-x(:,:,:,end,nidx))/this.res(4);
-                                end
-                            end
-                    end
-            end
-        end
-        
+			
+			
+			allElements = repmat({':'}, 1, this.ndms);
+			
+			for diffDimInd = 1:length(this.index)
+				diffDim = this.index(diffDimInd);
+				
+				midElements = allElements;
+				midElements{diffDim} = 2:this.sizein(diffDim)-1; 
+				
+				
+				leftElements = allElements;
+				leftElements{diffDim} = 1:this.sizein(diffDim)-1; 
+				
+				y(midElements{:})  = y(midElements{:}) + diff(-x(leftElements{:}, diffDimInd), 1, diffDim) / this.res(diffDimInd);
+				
+				% handle boundary conditions
+				lastElement = allElements;
+				lastElement{diffDim} = this.sizeout(diffDim);
+				
+				firstElement = allElements;
+				firstElement{diffDim} = 1;
+				
+				secondToLastElement = allElements;
+				secondToLastElement{diffDim} = this.sizeout(diffDim) - 1;
+				switch(this.bc)
+					case('mirror')
+						%y= [[-x(1) ; (-x(2:end-1)+x(1:end-2))] ; x(end-1)]/this.res(1);
+						
+						y(firstElement{:})  =  y(firstElement{:}) + -x(firstElement{:}, diffDimInd)/this.res(diffDimInd);
+						y(lastElement{:})   = y(lastElement{:}) + x(secondToLastElement{:}, diffDimInd)/this.res(diffDimInd);
+					case('circular')
+						%y= [[x(end)-x(1) ; (-x(2:end-1)+x(1:end-2))] ; (x(end-1)-x(end))]/this.res(1);
+						y(firstElement{:})  =  y(firstElement{:}) ...
+							+ (x(lastElement{:}, diffDimInd)-x(firstElement{:}, diffDimInd))/this.res(diffDimInd);
+						
+						y(lastElement{:}) = y(lastElement{:}) ...
+							+ (x(secondToLastElement{:}, diffDimInd) -  x(lastElement{:}, diffDimInd))/this.res(diffDimInd);
+					
+					case('zeros')
+						%y= [[-x(1) ; (-x(2:end-1)+x(1:end-2))] ; x(end-1)-x(end)]/this.res(1);
+						y(firstElement{:})  =  y(firstElement{:}) ...
+							+ (-x(firstElement{:}, diffDimInd))/this.res(diffDimInd);
+						
+						y(lastElement{:}) = y(lastElement{:}) ...
+							+ (x(secondToLastElement{:}, diffDimInd) -  x(lastElement{:}, diffDimInd))/this.res(diffDimInd);
+						
+				end
+				
+			end
+			
+			
+			
+		end
+		
         function y = HtH(this,x) %  apply the HtH matrix
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizein);
             y = zeros(this.sizein);
-            switch(this.bc)
-                case('mirror')
-                    % switch according to the number of dimension of the input
-                    switch(this.ndms)
-                        % 1 dimension
-                        case(1)
-                            y = (2*x - x([1,1:end-1]) - x([2:end,end]))/this.res(1)^2;
-                            % 2 dimensions
-                        case(2)
-                            for n=this.index
-                                switch(n)
-                                    case(1)
-                                        y = y + (2*x - x([1,1:end-1],:) - x([2:end,end],:))/this.res(1)^2;
-                                    case(2)
-                                        y = y + (2*x - x(:,[1,1:end-1]) - x(:,[2:end,end]))/this.res(2)^2;
-                                end
-                            end
-                            % 3 dimensions
-                        case(3)
-                            for n=this.index
-                                switch(n)
-                                    case(1)
-                                        y = y + (2*x - x([1,1:end-1],:,:) - x([2:end,end],:,:))/this.res(1)^2;
-                                    case(2)
-                                        y = y + (2*x - x(:,[1,1:end-1],:) - x(:,[2:end,end],:))/this.res(2)^2;
-                                    case(3)
-                                        y = y + (2*x - x(:,:,[1,1:end-1]) - x(:,:,[2:end,end]))/this.res(3)^2;
-                                end
-                            end
-                            % 4 dimensions
-                        case(4)
-                            for n=this.index
-                                switch(n)
-                                    case(1)
-                                        y = y + (2*x - x([1,1:end-1],:,:,:) - x([2:end,end],:,:,:))/this.res(1)^2;
-                                    case(2)
-                                        y = y + (2*x - x(:,[1,1:end-1],:,:) - x(:,[2:end,end],:,:))/this.res(2)^2;
-                                    case(3)
-                                        y = y + (2*x - x(:,:,[1,1:end-1],:) - x(:,:,[2:end,end],:))/this.res(3)^2;
-                                    case(4)
-                                        y = y + (2*x - x(:,:,:,[1,1:end-1]) - x(:,:,:,[2:end,end]))/this.res(4)^2;
-                                end
-                            end
-                    end
-                case('circular')
-                    % switch according to the number of dimension of the input
-                    switch(this.ndms)
-                        % 1 dimension
-                        case(1)
-                            y = (2*x - x([end,1:end-1]) - x([2:end,1]))/this.res(1)^2;
-                            % 2 dimensions
-                        case(2)
-                            for n=this.index
-                                switch(n)
-                                    case(1)
-                                        y = y + (2*x - x([end,1:end-1],:) - x([2:end,1],:))/this.res(1)^2;
-                                    case(2)
-                                        y = y + (2*x - x(:,[end,1:end-1]) - x(:,[2:end,1]))/this.res(2)^2;
-                                end
-                            end
-                            % 3 dimensions
-                        case(3)
-                            for n=this.index
-                                switch(n)
-                                    case(1)
-                                        y = y + (2*x - x([end,1:end-1],:,:) - x([2:end,1],:,:))/this.res(1)^2;
-                                    case(2)
-                                        y = y + (2*x - x(:,[end,1:end-1],:) - x(:,[2:end,1],:))/this.res(2)^2;
-                                    case(3)
-                                        y = y + (2*x - x(:,:,[end,1:end-1]) - x(:,:,[2:end,1]))/this.res(3)^2;
-                                end
-                            end
-                            % 4 dimensions
-                        case(4)
-                            for n=this.index
-                                switch(n)
-                                    case(1)
-                                        y = y + (2*x - x([end,1:end-1],:,:,:) - x([2:end,1],:,:,:))/this.res(1)^2;
-                                    case(2)
-                                        y = y + (2*x - x(:,[end,1:end-1],:,:) - x(:,[2:end,1],:,:))/this.res(2)^2;
-                                    case(3)
-                                        y = y + (2*x - x(:,:,[end,1:end-1],:) - x(:,:,[2:end,1],:))/this.res(3)^2;
-                                    case(4)
-                                        y = y + (2*x - x(:,:,:,[end,1:end-1]) - x(:,:,:,[2:end,1]))/this.res(4)^2;
-                                end
-                            end
-                    end
-                case('zeros')
-                    % switch according to the number of dimension of the input
-                    switch(this.ndms)
-                        % 1 dimension
-                        case(1)
-                            y(1:end-1) = (2*x(1:end-1) - x([1,1:end-2]) - x(2:end))/this.res(1)^2;
-                            y(end)=(2*x(end)-x(end-1))/this.res(1)^2;
-                            % 2 dimensions
-                        case(2)
-                            for n=this.index
-                                switch(n)
-                                    case(1)
-                                        y(1:end-1,:) = y(1:end-1,:) + (2*x(1:end-1,:) - x([1,1:end-2],:) - x(2:end,:))/this.res(1)^2;
-                                        y(end,:)=y(end,:)+(2*x(end,:)-x(end-1,:))/this.res(1)^2;
-                                    case(2)
-                                        y(:,1:end-1) = y(:,1:end-1) + (2*x(:,1:end-1) - x(:,[1,1:end-2]) - x(:,2:end))/this.res(2)^2;
-                                        y(:,end)=y(:,end)+(2*x(:,end)-x(:,end-1))/this.res(2)^2;
-                                end
-                            end
-                            % 3 dimensions
-                        case(3)
-                            for n=this.index
-                                switch(n)
-                                    case(1)
-                                        y(1:end-1,:,:) = y(1:end-1,:,:) + (2*x(1:end-1,:,:) - x([1,1:end-2],:,:) - x(2:end,:,:))/this.res(1)^2;
-                                        y(end,:,:)=y(end,:,:)+(2*x(end,:,:)-x(end-1,:,:))/this.res(1)^2;
-                                    case(2)
-                                        y(:,1:end-1,:) = y(:,1:end-1,:) + (2*x(:,1:end-1,:) - x(:,[1,1:end-2],:) - x(:,2:end,:))/this.res(2)^2;
-                                        y(:,end,:)=y(:,end,:)+(2*x(:,end,:)-x(:,end-1,:))/this.res(2)^2;
-                                    case(3)
-                                        y(:,:,1:end-1) = y(:,:,1:end-1) + (2*x(:,:,1:end-1) - x(:,:,[1,1:end-2]) - x(:,:,2:end))/this.res(3)^2;
-                                        y(:,:,end)=y(:,:,end)+(2*x(:,:,end)-x(:,:,end-1))/this.res(3)^2;
-                                end
-                            end
-                            % 4 dimensions
-                        case(4)
-                            for n=this.index
-                                switch(n)
-                                    case(1)
-                                        y(1:end-1,:,:,:) = y(1:end-1,:,:,:) + (2*x(1:end-1,:,:,:) - x([1,1:end-2],:,:,:) - x(2:end,:,:,:))/this.res(1)^2;
-                                        y(end,:,:,:)=y(end,:,:,:)+(2*x(end,:,:,:)-x(end-1,:,:,:))/this.res(1)^2;
-                                    case(2)
-                                        y(:,1:end-1,:,:) = y(:,1:end-1,:,:) + (2*x(:,1:end-1,:,:) - x(:,[1,1:end-2],:,:) - x(:,2:end,:,:))/this.res(2)^2;
-                                        y(:,end,:,:)=y(:,end,:,:)+(2*x(:,end,:,:)-x(:,end-1,:,:))/this.res(2)^2;
-                                    case(3)
-                                        y(:,:,1:end-1,:) = y(:,:,1:end-1,:) + (2*x(:,:,1:end-1,:) - x(:,:,[1,1:end-2],:) - x(:,:,2:end,:))/this.res(3)^2;
-                                        y(:,:,end,:)=y(:,:,end,:)+(2*x(:,:,end,:)-x(:,:,end-1,:))/this.res(3)^2;
-                                    case(4)
-                                        y(:,:,:,1:end-1) = y(:,:,:,1:end-1) + (2*x(:,:,:,1:end-1) - x(:,:,:,[1,1:end-2]) - x(:,:,:,2:end))/this.res(4)^2;
-                                        y(:,:,:,end)=y(:,:,:,end)+(2*x(:,:,:,end)-x(:,:,:,end-1))/this.res(4)^2;
-                                end
-                            end
-                    end
-            end
-            
+			
+			allElements = repmat({':'}, 1, this.ndms);
+			
+			for diffDimInd = 1:length(this.index)
+				diffDim = this.index(diffDimInd);
+				midElements = allElements;
+				midElements{diffDim} = 2:this.sizein(diffDim)-1;
+				y(midElements{:}) = y(midElements{:}) + -diff(x, 2, diffDim)/this.res(diffDimInd)^2;
+				
+				lastElement = allElements;
+				lastElement{diffDim} = this.sizeout(diffDim);
+				
+				firstElement = allElements;
+				firstElement{diffDim} = 1;
+				
+				secondElement = allElements;
+				secondElement{diffDim} = 2;
+				
+				secondToLastElement = allElements;
+				secondToLastElement{diffDim} = this.sizeout(diffDim) - 1;
+				switch(this.bc)
+					case('mirror')
+						% y = (2*x - x([1,1:end-1]) - x([2:end,end]))/this.res(1)^2;
+						
 
-        end
-    end
-    
+						
+						y(firstElement{:}) = y(firstElement{:}) ...
+							+ ( x(firstElement{:}) - x(secondElement{:}) ) / this.res(diffDimInd)^2;
+						y(lastElement{:}) = y(lastElement{:}) ...
+							+ (x(lastElement{:}) - x(secondToLastElement{:})) / this.res(diffDimInd)^2;
+						
+					case('circular')
+						% y = (2*x - x([end,1:end-1]) - x([2:end,1]))/this.res(1)^2;
+						y(firstElement{:}) = y(firstElement{:}) ...
+							+ ( 2*x(firstElement{:}) - x(lastElement{:}) - x(secondElement{:}) ) / this.res(diffDimInd)^2;
+						y(lastElement{:}) = y(lastElement{:}) ...
+							+ (2*x(lastElement{:}) - x(secondToLastElement{:}) - x(firstElement{:}) ) / this.res(diffDimInd)^2;
+						
+						
+					case('zeros')
+						% y(1:end-1) = (2*x(1:end-1) - x([1,1:end-2]) - x(2:end))/this.res(1)^2;
+						% y(end)=(2*x(end)-x(end-1))/this.res(1)^2;
+						
+						y(firstElement{:}) = y(firstElement{:}) ...
+							+ ( x(firstElement{:}) - x(secondElement{:}) ) / this.res(diffDimInd)^2;
+						y(lastElement{:}) = y(lastElement{:}) ...
+							+ (2*x(lastElement{:}) - x(secondToLastElement{:}) ) / this.res(diffDimInd)^2;
+						
+				end
+			end
+		end
+		
+	end
+		
+		
+		
 end

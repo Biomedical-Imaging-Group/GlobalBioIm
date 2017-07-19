@@ -1,6 +1,6 @@
 
 classdef LinOpIdentity <  LinOp
-    % Identity operator
+    % Identity linear operator
     % $$\\mathrm{H} : \\mathrm{x} \\mapsto \\mathrm{x}$$
     %
     % :param sz: size of \\(\mathrm{x}\\) on which the :class:`LinOpIdentity` applies.

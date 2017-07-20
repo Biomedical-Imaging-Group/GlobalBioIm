@@ -1,9 +1,10 @@
-
 classdef LinOpIdentity <  LinOp
     % Identity linear operator
     % $$\\mathrm{H} : \\mathrm{x} \\mapsto \\mathrm{x}$$
     %
     % :param sz: size of \\(\mathrm{x}\\) on which the :class:`LinOpIdentity` applies.
+    %
+    % All attributes of parent class :class:`LinOp` are inherited. 
     %
     % See also :class:`LinOp`
     

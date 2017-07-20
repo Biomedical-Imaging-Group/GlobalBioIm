@@ -34,4 +34,17 @@ CostKullLeib
 .. autoclass:: CostKullLeib
     :show-inheritance:
     :members: eval, grad, eval_grad, prox, prox_fench, o, plus, minus, mtimes
+
+CostMixNorm12
+-------------
     
+.. autoclass:: CostMixNorm12
+    :show-inheritance:
+    :members: eval, grad, eval_grad, prox, prox_fench, o, plus, minus, mtimes
+    
+CostComplexHyperBolic
+---------------------
+    
+.. autoclass:: CostComplexHyperBolic
+    :show-inheritance:
+    :members: eval, grad, eval_grad, prox, prox_fench, o, plus, minus, mtimes

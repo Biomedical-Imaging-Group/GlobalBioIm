@@ -72,3 +72,10 @@ OptiRichLucy
 .. autoclass:: OptiRichLucy
     :show-inheritance:
     :members: run, 
+
+OptiVMLMB
+---------
+
+.. autoclass:: OptiVMLMB
+    :show-inheritance:
+    :members: run, 

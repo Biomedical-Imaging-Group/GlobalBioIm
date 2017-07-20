@@ -1,25 +1,13 @@
 classdef CostMixNorm12 < Cost
-    %% CostMixNorm12 : Mixed norm 1-2
-    %  Matlab Inverse Problems Library
+    % Mixed norm 1-2 cost function
+    % $$C(\\mathrm{x}) := \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{Hx}-y)_{k,l}^2}= \\sum_{k=1}^K \\Vert (\\mathrm{Hx-y})_{k\\cdot} \\Vert_2$$
     %
-    % -- Description
-    % Implements the mixed norm ||Hx||_{1,2}:
-    % $$ \sum_k \sqrt( \sum_l (Hx)_{k,l}^2 ) $$
-    % where H is a LinOp object (default LinOpIdentity)
-    % It corresponds to an l2-norm along some dimensions (idexed by l in the example)
-    % combined by an l1-norm along the remaining dimensions (sum over k in the example)
+    % :param index: dimensions along which the l2-norm will be applied (inner sum over l)
     %
-    % -- Example
-    % F = CostMixNorm21(index,H);
-    % INDEX with indicate on which dimensions will the inner sum (l is the example)
+    % All attributes of parent class :class:`Cost` are inherited.
     %
-    % -- Properties
-    % * |index|     dimensions along which the l2-norm will be applied
-    %
-    % Please refer to the FUNC superclass for general documentation about
-    % functional class
-    % See also Cost
-    %
+    % See also :class:`Cost` :class:`LinOp`
+    
     %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -60,6 +48,7 @@ classdef CostMixNorm12 < Cost
         end
         %% Evaluation of the Functional
         function y=eval(this,x)
+            % Reimplemented from parent class :class:`Cost`.
             
             if(isscalar(this.y)&&(this.y==0))
                 u=abs(this.H.apply(x)).^2;
@@ -77,6 +66,19 @@ classdef CostMixNorm12 < Cost
         end
         %% Proximity operator of the functional
         function z=prox(this,x,alpha)
+            % Reimplemented from parent class :class:`Cost` if
+        	% the operator :attr:`H`  is a :class:`LinOpIdentity`,
+        	% $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{x}) = \\left\\lbrace
+            % \\begin{array}{ll}
+            % \\mathrm{x}_{k\\cdot}
+            % \\left(1-\\frac{\\alpha}{\\Vert(\\mathrm{Hx}-y)_{k\\cdot}\\Vert_2}
+            % \\right) & \\; \\mathrm{if } \\;
+            % \\Vert(\\mathrm{Hx})_{k\\cdot}\\Vert_2 > \\alpha,
+            % \\newline
+            % 0 & \\; \\mathrm{otherwise},
+            % \\end{array}\\right. \\; \\forall \\, k $$
+        	% where the division is component-wise.
+            
             assert(isscalar(alpha),'alpha must be a scalar');
             z=[];
             if isa(this.H,'LinOpIdentity')

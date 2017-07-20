@@ -21,3 +21,9 @@ LinOpIdentity
     :show-inheritance:
     :members: apply, adjoint, HtH, HHt, inverse, adjointinverse, transpose, ctranspose, plus, mtimes, 
     
+LinOpSum
+--------
+
+.. autoclass:: LinOpSum
+    :show-inheritance:
+    :members: apply, adjoint, HtH, HHt, inverse, adjointinverse, transpose, ctranspose, plus, mtimes, 

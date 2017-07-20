@@ -3,6 +3,7 @@
 pathToDir=pwd;
 addpath([pathToDir,'/Util/']);
 addpath([pathToDir,'/Opti/']);
+addpath([pathToDir,'/Opti/MatlabOptimPack']);
 addpath([pathToDir,'/LinOp/']);
 addpath([pathToDir,'/LinOp/LinOp_Utils/']);
 addpath([pathToDir,'/LinOp/OperationsOnLinOp/']);

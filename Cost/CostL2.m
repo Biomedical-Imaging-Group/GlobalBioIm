@@ -31,7 +31,6 @@ classdef CostL2 < Cost
     % Full protected properties
     properties (SetAccess = protected,GetAccess = protected)
         fftHstardata=[]; % if LinOp is convolution, store the product conj(fftn(psf)).*fftn(data)
-        wr;              % weighted residual
         isW=false;       % boolean true if a LinOp wght is given
     end
     
@@ -76,8 +75,8 @@ classdef CostL2 < Cost
             else
                 r=this.H.apply(x)-this.y;
             end
-            this.wr=this.W*r;
-            f=0.5*dot(r(:),this.wr(:));
+            wr=this.W*r;
+            f=0.5*dot(r(:),wr(:));
         end
 
         function g=grad(this,x)
@@ -85,10 +84,26 @@ classdef CostL2 < Cost
         	% $$ \\nabla C(\\mathrm{x}) = \\mathrm{H^* W (Hx - y)} $$
         	% It is L-Lipschitz continuous with \\( L \\leq \\|\\mathrm{H}\\|^2 \\|\\mathrm{W}\\|\\).
         	
-            if nargin ==2
-                this.wr = this.W*(this.H.apply(x)-this.y);
+            if(isscalar(this.y)&&(this.y==0))
+                r=this.H.apply(x);
+            else
+                r=this.H.apply(x)-this.y;
             end
-            g = this.H.adjoint(this.wr) ;
+            wr=this.W*r;
+            g = this.H.adjoint(wr) ;
+        end
+        
+        function [cost , gradient] = eval_grad(this,x)
+        	% Reimplemented from parent class :class:`Cost`.
+            
+            if(isscalar(this.y)&&(this.y==0))
+                r=this.H.apply(x);
+            else
+                r=this.H.apply(x)-this.y;
+            end
+            wr=this.W*r;
+            cost=0.5*dot(r(:),wr(:));
+            gradient = this.H.adjoint(wr);
         end
 
         function y=prox(this,x,alpha)

@@ -88,7 +88,7 @@ classdef CostComplexHyperBolic < Cost
             R = this.sumOp.apply(abs(z).^2);
             
             F = sqrt(R + this.epsilon.^2);
-            gradient = this.H.adjoint(z.*this.sumOp.adjoint(1./F)+ this.y);           
+            gradient = this.H.adjoint(z.*this.sumOp.adjoint(1./F));           
         end
         
         function [cost , gradient] = eval_grad(this,x) 
@@ -104,7 +104,7 @@ classdef CostComplexHyperBolic < Cost
             F = sqrt(R + this.epsilon.^2);
             cost = sum(F(:)) - numel(F).*this.epsilon;
             
-            gradient = this.H.adjoint(z.*this.sumOp.adjoint(1./F)+ this.y);          
+            gradient = this.H.adjoint(z.*this.sumOp.adjoint(1./F));          
         end
     end
 end

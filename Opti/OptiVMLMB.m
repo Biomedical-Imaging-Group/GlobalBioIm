@@ -10,7 +10,6 @@ classdef OptiVMLMB<Opti
     % All attributes of parent class :class:`Opti` are inherited. 
     %
     % **Note** 
-    %
     % This Optimizer has many other variables that are set by
     % default to reasonable values. See the function m_vmlmb_first.m in the
     % MatlabOptimPack folder for more details.

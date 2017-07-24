@@ -3,7 +3,7 @@ classdef LinOpSum <  LinOp
     % given directions.
     % $$\\mathrm{H} : \\mathrm{x} \\mapsto \\mathrm{y_k} = \\sum_l \\mathrm{x}_{k,l} $$
     %
-    % :param sz: size of \\(\mathrm{x}\\) on which the :class:`LinOpSum` applies.
+    % :param sz: size of \\(\\mathrm{x}\\) on which the :class:`LinOpSum` applies.
     % :param index: dimensions along which the sum will be performed (inner sum over l)
     % 
     % All attributes of parent class :class:`LinOp` are inherited. 

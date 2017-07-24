@@ -4,7 +4,7 @@ classdef CostComplexHyperBolic < Cost
     %
     % :param index: dimensions along which the l2-norm will be applied (inner sum over l)
     % :param epsilon: \\(\\in \\mathbb{R}_+\\) smoothing parameter (default
-    % \\(10^{-3}\\))
+    %                 \\(10^{-3}\\))
     %
     % All attributes of parent class :class:`Cost` are inherited. 
     %

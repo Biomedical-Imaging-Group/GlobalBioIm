@@ -21,9 +21,36 @@ LinOpIdentity
     :show-inheritance:
     :members: apply, adjoint, HtH, HHt, inverse, adjointinverse, transpose, ctranspose, plus, mtimes, 
     
+
 LinOpSum
 --------
 
 .. autoclass:: LinOpSum
+    :show-inheritance:
+    :members: apply, adjoint, HtH, HHt, inverse, adjointinverse, transpose, ctranspose, plus, mtimes, 
+
+.. automodule:: LinOp.SelectorLinOps
+
+SelectorLinOps
+--------------
+
+LinOpSelector
+.............
+
+.. autoclass:: LinOpSelector
+    :show-inheritance:
+    :members: apply, adjoint, HtH, HHt, inverse, adjointinverse, transpose, ctranspose, plus, mtimes, 
+
+LinOpDownsample
+...............
+
+.. autoclass:: LinOpDownsample
+    :show-inheritance:
+    :members: apply, adjoint, HtH, HHt, inverse, adjointinverse, transpose, ctranspose, plus, mtimes, 
+
+LinOpSelectorPatch
+..................
+
+.. autoclass:: LinOpSelectorPatch
     :show-inheritance:
     :members: apply, adjoint, HtH, HHt, inverse, adjointinverse, transpose, ctranspose, plus, mtimes, 

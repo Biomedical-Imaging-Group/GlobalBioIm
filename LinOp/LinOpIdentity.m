@@ -23,21 +23,27 @@ classdef LinOpIdentity <  LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    methods
-        function this = LinOpIdentity(sz)
-            this.name='LinOp Identity';
-            this.iscomplex=false;
-            this.isinvertible=true;
-            this.norm=1;
-            if nargin>0
-                this.sizeout=sz;
-                this.sizein=sz;
-            else
-                error('a size SZ should be given');
-            end
-        end
+	
+	methods
+	  function this = LinOpIdentity(sz)
+		this.name='LinOp Identity';
+		this.iscomplex=false;
+		this.isinvertible=true;
+		this.norm=1;
+		if nargin>0
+		  this.sizeout=sz;
+		  this.sizein=sz;
+		else
+		  error('a size SZ should be given');
+		end
+	  end
+	end
+	
+	
+    methods (Access = protected)
+
         
-        function y = apply(this,x)
+        function y = apply_(this,x)
         	% Reimplemented from parent class :class:`LinOp`.
         	
             y =x;

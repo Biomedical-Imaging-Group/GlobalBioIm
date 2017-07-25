@@ -1,4 +1,4 @@
-classdef LinOp < handle
+classdef LinOp < Map
     % Abstract class for linear operators
 	% $$ \\mathrm{H}: \\mathrm{X}\\rightarrow \\mathrm{Y}.$$
     %
@@ -26,25 +26,13 @@ classdef LinOp < handle
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     properties (SetAccess = protected,GetAccess = public)
-        name = 'none'           % name of the linear operator
-        sizein;                 % dimension of the right hand side vector space
-        sizeout;                % dimension of the left hand side vector space
-        isinvertible = false;   % true if the operator is invertible
-        iscomplex = false;      % true is the operator is complex
-        norm=-1;                % norm of the operator
+        
     end
     
-    methods
-        function y=apply(this,x) 
-        	% **(Abstract method)** Apply the linear operator
-        	%
-        	% :param x: \\(\\in X\\)
-        	% :returns y: \\(= \\mathrm{Hx}\\)
-        	
-            error('Operator not implemented');
-        end
+    methods (Access = protected)
+
         
-        function y=adjoint(this,x) 
+        function y = adjoint(this, x) 
             % **(Abstract method)** Apply the adjoint of the linear operator
         	%
         	% :param x: \\(\\in Y\\)
@@ -117,8 +105,12 @@ classdef LinOp < handle
             else
                 error('Operator not invertible');
             end
-        end
+		end
         
+	end
+		
+		methods 
+		
         function this = transpose(this) 
         	% Overload operator (.') for :class:`LinOp` objects (i.e. :meth:`adjoint`).
         	% 
@@ -168,10 +160,6 @@ classdef LinOp < handle
 		end
 	end
 		
-	methods (Static, Access=protected)
-		function checkSize(x, sz)
-			assert( isequal(size(x),sz),  'x does not have the correct size, [%s]', num2str(sz));			
-		end
-	end
+
 end
 

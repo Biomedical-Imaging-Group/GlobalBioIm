@@ -1,6 +1,7 @@
 %% Script which update matlab path to work with the InvPbLib
 
 pathToDir=pwd;
+addpath([pathToDir,'/Abstract/']);
 addpath([pathToDir,'/Util/']);
 addpath([pathToDir,'/Opti/']);
 addpath([pathToDir,'/Opti/MatlabOptimPack']);

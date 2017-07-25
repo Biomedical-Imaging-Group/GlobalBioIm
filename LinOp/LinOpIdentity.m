@@ -30,6 +30,7 @@ classdef LinOpIdentity <  LinOp
 		this.iscomplex=false;
 		this.isinvertible=true;
 		this.norm=1;
+		
 		if nargin>0
 		  this.sizeout=sz;
 		  this.sizein=sz;
@@ -40,7 +41,7 @@ classdef LinOpIdentity <  LinOp
 	end
 	
 	
-    methods (Access = protected)
+    methods (Access = private)
 
         
         function y = apply_(this,x)
@@ -49,31 +50,31 @@ classdef LinOpIdentity <  LinOp
             y =x;
         end
         
-        function y = adjoint(this,x)
+        function y = adjoint_(this,x)
         	% Reimplemented from parent class :class:`LinOp`.
         	
             y =x;
         end
         
-        function y = HtH(this,x)
+        function y = HtH_(this,x)
         	% Reimplemented from parent class :class:`LinOp`.
         	
             y =x;
         end
         
-        function y = HHt(this,x)
+        function y = HHt_(this,x)
         	% Reimplemented from parent class :class:`LinOp`.
         	
             y =x;
         end
         
-        function y = inverse(this,x)
+        function y = inverse_(this,x)
         	% Reimplemented from parent class :class:`LinOp`.
         	
             y =x;
         end
         
-        function y = adjointInverse(this,x)
+        function y = adjointInverse_(this,x)
         	% Reimplemented from parent class :class:`LinOp`.
         	
             y =x;

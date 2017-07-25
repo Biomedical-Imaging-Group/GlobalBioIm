@@ -1,4 +1,4 @@
-classdef LinOp < Map
+classdef (Abstract) LinOp < Map
     % Abstract class for linear operators
 	% $$ \\mathrm{H}: \\mathrm{X}\\rightarrow \\mathrm{Y}.$$
     %
@@ -27,12 +27,75 @@ classdef LinOp < Map
     
     properties (SetAccess = protected,GetAccess = public)
         
-    end
+	end
     
-    methods (Access = protected)
-
-        
-        function y = adjoint(this, x) 
+	methods (Sealed)
+	  function x = adjoint(this, y)
+		%% TODO: add input, output checking, memoizing
+		x = this.adjoint_(y);
+		
+	  end
+	  
+	  function this = transpose(this)
+		% Overload operator (.') for :class:`LinOp` objects (i.e. :meth:`adjoint`).
+		%
+		% **Note**: operators (.') and (') (see :meth:`ctranspose`) are identical for :class:`LinOp`.
+		
+		if this.iscomplex
+		  warning('Warning: Do you mean adjoint? For LinOp object transpose() is an alias of adjoint method');
+		end
+		this = Adjoint(this);
+	  end
+	  
+	  function this = ctranspose(this)
+		% Overload operator (') for :class:`LinOp` objects (i.e. :meth:`adjoint`).
+		%
+		% **Note**: operators (') and (.') (see :meth:`transpose`) are identical for :class:`LinOp`.
+		
+		this = Adjoint(this);
+	  end
+	  
+	  function Hnew = mtimes(this,H2)
+		% Overload operator (*) for :class:`LinOp` objects.
+		% $$ \\mathrm{H}_{new} =  \\mathrm{H_2} \\mathrm{H}$$
+		%
+		% :param H2: :class:`LinOp` object or a scalar in \\(\\mathbb{R}\\)
+		% :returns Hnew: :class:`LinOp`
+		
+		if isa(H2,'LinOp')
+		  Hnew = MulLinOp(this, H2);
+		else
+		  Hnew = this.apply(H2);
+		end
+	  end
+	  
+	  function Hnew = plus(this,H2)
+		% Overload operator (+) for :class:`LinOp` objects.
+		% $$ \\mathrm{H}_{new} =  \\mathrm{H_2} + \\mathrm{H}$$
+		%
+		% :param H2: :class:`LinOp` object
+		% :returns Hnew: :class:`LinOp`
+		
+		assert(isa(H2,'LinOp'),'addition of LinOp is only define with other LinOp');
+		Hnew = SumLinOp({this,H2});
+	  end
+	  
+	  
+	  
+	  %HtH
+	  
+	  %HHt
+	end
+	
+	methods (Access = private, Sealed)
+	  function x = applyJacobianT_(this, y, v)
+		x = this.adjoint_(y);
+	  end
+	end
+	  
+    methods (Access = private) % all the other underscore methods
+	  
+        function x = adjoint_(this, y) 
             % **(Abstract method)** Apply the adjoint of the linear operator
         	%
         	% :param x: \\(\\in Y\\)
@@ -61,37 +124,26 @@ classdef LinOp < Map
         	% **Note**: There is a default implementation in the abstract class :class:`LinOp` which calls successively the :meth:`adjoint` and :meth:`apply` methods. However, it can be reimplemented in derived classes if there exists a faster way to perform computation.
         	
             y = this.apply(this.adjoint(x));
-        end
+		end
         
-        function y = HtWH(this,x,W) 
-        	% Apply \\(\\mathrm{H}^*\\mathrm{WH}\\)
-        	%
-        	% :param x: \\(\\in X\\)
-        	% :param W: a :class:`LinOp` object
-        	% :returns y: \\(= \\mathrm{H^*WHx}\\)
-        	%
-
-            if (isscalar(W) && isreal(W))
-                y = W.*this.HtH(x);
-            else
-                assert(isa(W,'LinOp'),'W must be a LinOp');
-                y = this.adjoint(W.apply(this.apply(x)));
-            end
-        end
+		% todo: ask ferreol: is this needed? when do we have fast HT W H?
+%         function y = HtWH(this,x,W) 
+%         	% Apply \\(\\mathrm{H}^*\\mathrm{WH}\\)
+%         	%
+%         	% :param x: \\(\\in X\\)
+%         	% :param W: a :class:`LinOp` object
+%         	% :returns y: \\(= \\mathrm{H^*WHx}\\)
+%         	%
+% 
+%             if (isscalar(W) && isreal(W))
+%                 y = W.*this.HtH(x);
+%             else
+%                 assert(isa(W,'LinOp'),'W must be a LinOp');
+%                 y = this.adjoint(W.apply(this.apply(x)));
+%             end
+%         end
         
-        function y=inverse(thisx) 
-            % **(Abstract method)** Apply \\(\\mathrm{H}^{-1}\\) (if applicable)
-        	%
-        	% :param x: \\(\\in Y\\)
-        	% :returns y: \\(= \\mathrm{H^{-1}x}\\)
-        	%
-        	
-            if this.isinvertible
-                error('inverse not implemented');
-            else
-                error('Operator not invertible');
-            end
-        end
+      
         
         function y= adjointInverse(this,x) 
             % **(Abstract method)** Apply \\(\\mathrm{H}^{-*}\\) (if applicable)
@@ -111,53 +163,8 @@ classdef LinOp < Map
 		
 		methods 
 		
-        function this = transpose(this) 
-        	% Overload operator (.') for :class:`LinOp` objects (i.e. :meth:`adjoint`).
-        	% 
-        	% **Note**: operators (.') and (') (see :meth:`ctranspose`) are identical for :class:`LinOp`.
-        	
-            if this.iscomplex
-            warning('Warning: Do you mean adjoint? For LinOp object transpose() is an alias of adjoint method');
-            end
-            this = Adjoint(this);
-        end
-        
-        function this = ctranspose(this) 
-           % Overload operator (') for :class:`LinOp` objects (i.e. :meth:`adjoint`).
-           %
-           % **Note**: operators (') and (.') (see :meth:`transpose`) are identical for :class:`LinOp`.
-           
-           this = Adjoint(this);
-        end
-        
-        function Hnew = mtimes(this,H2)
-        	% Overload operator (*) for :class:`LinOp` objects.
-        	% $$ \\mathrm{H}_{new} =  \\mathrm{H_2} \\mathrm{H}$$
-        	%
-        	% :param H2: :class:`LinOp` object or a scalar in \\(\\mathbb{R}\\)
-        	% :returns Hnew: :class:`LinOp` 
-        	
-            if isa(H2,'LinOp')
-            	Hnew = MulLinOp(this, H2);
-            else
-                Hnew = this.apply(H2);
-            end
-        end
-        
-        function Hnew = plus(this,H2) 
-        	% Overload operator (+) for :class:`LinOp` objects.
-        	% $$ \\mathrm{H}_{new} =  \\mathrm{H_2} + \\mathrm{H}$$
-        	%
-        	% :param H2: :class:`LinOp` object
-        	% :returns Hnew: :class:`LinOp` 
-        	
-            assert(isa(H2,'LinOp'),'addition of LinOp is only define with other LinOp');
-			Hnew = SumLinOp({this,H2});
-		end
+   
 		
-		function this = setNorm(this, x)
-			this.norm = x;
-		end
 	end
 		
 

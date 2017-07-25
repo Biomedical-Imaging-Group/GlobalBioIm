@@ -1,4 +1,4 @@
-classdef Cost < handle
+classdef Cost < Map
     % Abstract class for Cost functions
     % $$ C : \\mathrm{X} \\longrightarrow \\mathbb{R}$$
     % with the following special structure
@@ -35,40 +35,42 @@ classdef Cost < handle
         y=0;				% data y
         H=[];  				% linear operator
         isconvex=false;     % boolean
-    end
+	end
     
-    methods
-        function f=eval(this,x)
-        	% **(Abstract Method)** Evaluates the cost function
-       	 	%
-        	% :param x: \\(\\in \\mathrm{X}\\)
-        	% :returns y: \\(= C(\\mathrm{x})\\)
-           
-            error('Eval not implemented');         
-        end
-
-        function g=grad(this,x)
-        	% **(Abstract Method)** Evaluates the gradient of the cost function (when applicable)
-        	%
-        	% :param x: \\(\\in \\mathrm{X}\\)
-        	% :returns y: \\(= \\nabla C(\\mathrm{x})\\)
-        	
-            error('Grad not implemented');
-        end
-
-        function [cost , gradient] = eval_grad(this,x)
-            % Evaluates both the cost function and its gradient (when applicable)
-            %
-        	% **Note**: For some derived classes this function is reimplemented in a faster way than running both :meth:`eval` and :meth:`grad` successively (default).
-        	%
-        	% :param x: \\(\\in \\mathrm{X}\\)
-        	% :returns y: \\(= \\left[C(\\mathrm{x}), \\nabla C(\\mathrm{x})\\right]\\)
-        	
-            cost = this.eval(x) ;
-            gradient = this.grad(x) ;
-        end
-        
-        function y=prox(this,x,alpha)
+	methods (Sealed)
+	  function g = grad(this,x)
+		% **(Abstract Method)** Evaluates the gradient of the cost function (when applicable)
+		%
+		% :param x: \\(\\in \\mathrm{X}\\)
+		% :returns y: \\(= \\nabla C(\\mathrm{x})\\)
+		
+		% todo: input checking, output checking, memoize
+		
+	  end
+	  
+	  function y=prox(this,x,alpha)
+		% **(Abstract Method)** Evaluates the proximity operator of the cost (when applicable)
+		% $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{x}) =  \\mathrm{arg} \\, \\mathrm{min}_{\\mathrm{u} \\in \\mathrm{X}} \\; \\frac{1}{2\\alpha} \\| \\mathrm{u} - \\mathrm{x} \\|_2^2 + C(\\mathrm{u}). $$
+		%
+		% :param x: \\(\\in \\mathrm{X}\\)
+		% :param alpha: \\(\\in \\mathbb{R}\\)
+		% :returns y: \\(= \\mathrm{prox}_{\\alpha C}(\\mathrm{x})\\)
+		
+			% todo: input checking, output checking, memoize
+	  end
+	  
+	end
+	  methods (Access = private)
+		function g=grad_(this,x)
+		  % **(Abstract Method)** Evaluates the gradient of the cost function (when applicable)
+		  %
+		  % :param x: \\(\\in \\mathrm{X}\\)
+		  % :returns y: \\(= \\nabla C(\\mathrm{x})\\)
+		  
+		  error('Grad not implemented');
+		end
+	
+		function y=prox_(this,x,alpha)
         	% **(Abstract Method)** Evaluates the proximity operator of the cost (when applicable)
             % $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{x}) =  \\mathrm{arg} \\, \\mathrm{min}_{\\mathrm{u} \\in \\mathrm{X}} \\; \\frac{1}{2\\alpha} \\| \\mathrm{u} - \\mathrm{x} \\|_2^2 + C(\\mathrm{u}). $$
         	%
@@ -77,7 +79,13 @@ classdef Cost < handle
         	% :returns y: \\(= \\mathrm{prox}_{\\alpha C}(\\mathrm{x})\\)
         	
             error('Prox not implemented');
-        end
+		end
+		
+		
+    methods
+  
+        
+
 
         function y=prox_fench(this,x,alpha)
         	% Evaluates the proximity operator of the Fenchel Transform \\(C^*\\) (when applicable) which is computed using Moreau's identity:

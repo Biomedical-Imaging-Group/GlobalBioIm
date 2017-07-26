@@ -85,7 +85,7 @@ classdef StackLinOp < LinOp
         end
         
         function y = apply(this,x) % apply the operator
-			LinOp.checkSize(x, this.sizein)
+			assert(checkSize(x, this.sizein));
             
             y = zeros(prod(this.ALinOp{1}.sizeout),this.numLinOp);
             for n = 1:this.numLinOp
@@ -101,7 +101,7 @@ classdef StackLinOp < LinOp
             end
         end
         function y = adjoint(this,x) % apply the adjoint
-			LinOp.checkSize(x, this.sizeout);
+			assert(checkSize(x, this.sizeout));
             y =  zeros(this.sizein);
             
             if ~this.usecomplex

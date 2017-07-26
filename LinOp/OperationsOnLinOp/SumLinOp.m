@@ -86,7 +86,7 @@ classdef SumLinOp < LinOp
         end
         
         function y = apply(this,x) % apply the operator
-			LinOp.checkSize(x, this.sizein)
+			assert(checkSize(x, this.sizein));
             y = zeros(this.sizeout);
             for n = 1:this.numLinOp
                 y = y + this.alpha(n) .* this.ALinOp{n}(1).apply(x);
@@ -94,7 +94,7 @@ classdef SumLinOp < LinOp
 		end
 		
         function y = adjoint(this,x) % apply the adjoint
-			LinOp.checkSize(x, this.sizeout);
+			assert(checkSize(x, this.sizeout);
             y =  zeros(this.sizein);
             for n = 1:this.numLinOp
                 y = y + this.alpha(n) .* this.ALinOp{n}(1).adjoint(x);

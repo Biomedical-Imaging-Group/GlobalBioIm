@@ -34,7 +34,7 @@ classdef (Abstract) Map < handle
 	
 	function y = apply(this, x)
 	  % check input size
-	  if ~Map.checkSize(x, this.sizein) 
+	  if ~checkSize(x, this.sizein) 
 		error('Input to apply was size [%s], didn''t match stated sizein: [%s].',...
 		  num2str(size(x)), num2str(this.sizein));
 	  end
@@ -43,7 +43,7 @@ classdef (Abstract) Map < handle
 	  y = this.memoize('apply', @this.apply_, x);
 		
 	  % check output size
-	  if ~Map.checkSize(y, this.sizeout)
+	  if ~checkSize(y, this.sizeout)
 		warning('Output of apply was size [%s], didn''t match stated sizeout: [%s].',...
 		  num2str(size(y)), num2str(this.sizeout));
 	  end
@@ -53,12 +53,12 @@ classdef (Abstract) Map < handle
 	  % x = J(v)^*{y}
 	  
 	  % check input size
-	  if ~Map.checkSize(y, this.sizeout)
+	  if ~checkSize(y, this.sizeout)
 		error('Input of y applyJacobianT was size [%s], didn''t match stated sizeout: [%s].',...
 		  num2str(size(y)), num2str(this.sizeout));
 	  end
 	  
-	  if ~Map.checkSize(v, this.sizein)
+	  if ~checkSize(v, this.sizein)
 		error('Input to v applyJacobianT was size [%s], didn''t match stated sizein: [%s].',...
 		  num2str(size(v)), num2str(this.sizein));
 	  end
@@ -67,7 +67,7 @@ classdef (Abstract) Map < handle
 	  x = this.memoize('applyJacobianT', @this.applyJacobianT_, {y, v});
 
 	  % check output size
-	  if ~Map.checkSize(x, this.sizein)
+	  if ~checkSize(x, this.sizein)
 		warning('Output of applyJacobianT was size [%s], didn''t match stated sizein: [%s].',...
 		  num2str(size(x)), num2str(this.sizein));
 	  end
@@ -148,18 +148,5 @@ classdef (Abstract) Map < handle
 		
 		
   end
-  
- 	methods (Static)
-	  function sizeOK = checkSize(x, sz)
-		  xSize = size(x);
-		  if length(xSize) < length(sz)
-			xSize(end+1:length(sz)) = 1;
-		  elseif length(sz) < length(xSize)
-			sz(end+1:length(xSize)) = 1;
-		  end
-		  
-		  sizeOK = isequal(xSize,sz);
-		  
-		end
-	end
+
 end

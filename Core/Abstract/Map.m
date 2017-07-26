@@ -2,26 +2,27 @@ classdef (Abstract) Map < handle
   % comments
   %
   
-	properties
-	name = 'none'           % name of the linear operator
-
-	isinvertible = false;   % true if the operator is invertible
-	
-	% todo: decide on how to handle checking for inverse, grad, ... being
-	% implemented and working (no divide by zero).
-	%implementedMetods = struct('applyJacobianT', false);
-	
-	iscomplex = false;      % true is the operator is complex
-	
-	
-	norm=-1;                % norm of the operator
-	
-	sizein;                 % dimension of the right hand side vector space
-	sizeout;                % dimension of the left hand side vector space
-	
-	memoizeOpts = struct('apply', false);
-	doPrecomputation = false;
-	
+  properties
+	  name = 'none'           % name of the linear operator
+	  
+	  isInvertible = false;   % true if H.applyInverse(  ) will work %todo fix capitalization everywhere
+	  isDifferentiable = false; % true if H.applyJacobianT(   ) will work 
+	  
+	  % todo: decide on how to handle checking for inverse, grad, ... being
+	  % implemented and working (no divide by zero).
+	  %implementedMetods = struct('applyJacobianT', false);
+	  
+	  isComplex = false;      % true is the operator is complex %todo fix capitalization everywhere
+	  
+	  
+	  norm=-1;                % norm of the operator
+	  
+	  sizein;                 % dimension of the right hand side vector space
+	  sizeout;                % dimension of the left hand side vector space
+	  
+	  memoizeOpts = struct('apply', false);
+	  doPrecomputation = false;
+	  
 	
 	end
 	
@@ -75,60 +76,57 @@ classdef (Abstract) Map < handle
 	  
 	end
 	
-	function G = compose(this, H)
+	function G = makeComposition(this, H)
 	  % TODO: check conformable size
-	  
-	  G = this.compose_(H);
+	  G = this.makeComposition_(this, H);
 	  
 	end
 	
-	  function y = inverse(this, x) 
+	function x = inverse(this, y)
 		% TODO: size checking
 		
-            % **(Abstract method)** Apply \\(\\mathrm{H}^{-1}\\) (if applicable)
-        	%
-        	% :param x: \\(\\in Y\\)
-        	% :returns y: \\(= \\mathrm{H^{-1}x}\\)
-        	%
-        	
-            if this.isinvertible
-                error('inverse not implemented');
-            else
-                error('Operator not invertible');
-            end
-        end
+		% **(Abstract method)** Apply \\(\\mathrm{H}^{-1}\\) (if applicable)
+		%
+		% :param x: \\(\\in Y\\)
+		% :returns y: \\(= \\mathrm{H^{-1}x}\\)
+		%
+		
+		if this.isinvertible
+			error('inverse not implemented');
+		else
+			error('Operator not invertible');
+		end
+	end
 
 
 	
   end
   
-  methods (Access = private)
-        function y = apply_(this, x) 
-        	% **(Abstract method)** Apply the linear operator
-        	%
-        	% :param x: \\(\\in X\\)
-        	% :returns y: \\(= \\mathrm{Hx}\\)
-        	
-            error('Apply method not implemented');
-		end
-		
-		function x = applyJacobianT_(this, y, v)
-		     error('Jacobian method not implemented');
-		end
-		
-		function G = this.compose_(this, H)
-		  % todo: G = MapComposition({this, H});
-		end
-		
-		function x = this.inverse_(this, y)
-		  error('inverse method not implemented');
-		end
-  end
   
   methods (Access = protected)
+	  function y = apply_(this, x)
+		  error('apply method not implemented');
+	  end
+	  
+	  function x = applyJacobianT_(this, y, v)
+		  error('Jacobian method not implemented');
+	  end
+	  
+	  
+	  function x = applyInverse_(this, y)
+		  error('Inverse method not implemented');
+	  end
+	  
+	  % composition methods
+	  function G = makeComposition_(this, H)
+		  G = MapComposition({this, H});
+	  end
+	  
+
+	  
 		
 		
-		% utility functions		
+		% utility methods		
 		function y = memoize(this, fieldName, fcn, xs)
 		  
 		  if ~iscell(xs) % handle single input case

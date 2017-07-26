@@ -35,6 +35,7 @@ classdef LinOpConv <  LinOp
     end
     methods
         function this = LinOpConv(psf,index)
+			% todo: should be based on mtf, not psf
             if nargin == 1
                 index = [];
             end
@@ -116,6 +117,17 @@ classdef LinOpConv <  LinOp
             else
                 error('Operator not invertible');
             end
-        end
-    end
+		end
+		
+	end
+	methods (Access = protected)
+		function G = makeComposition_(this, H)
+			if isa(H, 'LinOpConv')
+				G = LinOpConv(this.mtf .* H.mtf); % todo: wrong
+			else
+				G = makeComposition_@LinOp(this, H);
+			end
+		end
+	end
+	
 end

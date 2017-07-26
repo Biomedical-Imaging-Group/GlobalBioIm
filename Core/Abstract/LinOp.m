@@ -25,8 +25,13 @@ classdef (Abstract) LinOp < Map
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (SetAccess = protected,GetAccess = public)
+    properties
         
+			memoizeOpts = struct('apply', false,...
+				'adjoint', false); % todo etc
+	end
+	properties (SetAccess = private)
+			memoCache = struct('apply', struct('in', [], 'out', [])); % etc
 	end
     
 	methods (Sealed)
@@ -87,13 +92,13 @@ classdef (Abstract) LinOp < Map
 	  %HHt
 	end
 	
-	methods (Access = private, Sealed)
+	methods (Access = protected, Sealed)
 	  function x = applyJacobianT_(this, y, v)
 		x = this.adjoint_(y);
 	  end
 	end
 	  
-    methods (Access = private) % all the other underscore methods
+    methods (Access = protected) % all the other underscore methods
 	  
         function x = adjoint_(this, y) 
             % **(Abstract method)** Apply the adjoint of the linear operator
@@ -104,7 +109,7 @@ classdef (Abstract) LinOp < Map
             error('adjoint not implemented');
         end
         
-        function y = HtH(this,x) 
+        function y = HtH_(this,x) 
             % Apply \\(\\mathrm{H}^*\\mathrm{H}\\)
         	%
         	% :param x: \\(\\in X\\)
@@ -115,7 +120,7 @@ classdef (Abstract) LinOp < Map
             y = this.adjoint(this.apply(x));
         end
         
-        function y = HHt(this,x) 
+        function y = HHt_(this,x) 
             % Apply \\(\\mathrm{H}\\mathrm{H}^*\\)
         	%
         	% :param x: \\(\\in Y\\)
@@ -124,6 +129,15 @@ classdef (Abstract) LinOp < Map
         	% **Note**: There is a default implementation in the abstract class :class:`LinOp` which calls successively the :meth:`adjoint` and :meth:`apply` methods. However, it can be reimplemented in derived classes if there exists a faster way to perform computation.
         	
             y = this.apply(this.adjoint(x));
+		end
+		
+		function G = makeComposition_(this, H)
+			if isa(H, 'LinOp')
+				G = MulLinOp({this, H});
+			else
+				G = makeComposition_@Map(this, H);
+			end
+				
 		end
         
 		% todo: ask ferreol: is this needed? when do we have fast HT W H?

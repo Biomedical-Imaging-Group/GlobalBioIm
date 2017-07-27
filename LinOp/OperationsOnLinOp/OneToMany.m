@@ -77,10 +77,10 @@ classdef OneToMany < LinOp
         function y = adjoint(this,x) % apply the adjoint
             assert( iscell(x), 'adjoint of a OneToMany must be applied to a cell array',this.sizeout);
            assert( numel(x)==this.numLinOp, 'OneToMany LinOp: input does not have the right number of cell: %d',this.numLinOp); 
-            y =  this.alpha(1) .* this.ALinOp{1}(1).adjoint(x{1});
+            y =  this.alpha(1) .* this.ALinOp{1}(1).applyAdjoint(x{1});
             for n =2:this.numLinOp
             assert( isequal(size(x{n}),this.ALinOp{n}.sizeout),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizeout);
-                y = y + this.alpha(n) .* this.ALinOp{n}(1).adjoint(x{n});
+                y = y + this.alpha(n) .* this.ALinOp{n}(1).applyAdjoint(x{n});
             end
         end
         function y = HtH(this,x) % apply the operator

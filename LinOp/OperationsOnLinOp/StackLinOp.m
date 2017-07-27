@@ -111,7 +111,7 @@ classdef StackLinOp < LinOp
             for n = 1:this.numLinOp
                 xtmp = zeros(this.ALinOp{1}.sizeout);
                 xtmp(:) = x(:,n);
-                y = y + this.alpha(n) .* this.ALinOp{n}(1).adjoint(xtmp);
+                y = y + this.alpha(n) .* this.ALinOp{n}(1).applyAdjoint(xtmp);
             end
         end
     end

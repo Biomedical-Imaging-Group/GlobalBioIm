@@ -97,7 +97,7 @@ classdef SumLinOp < LinOp
 			assert(checkSize(x, this.sizeout);
             y =  zeros(this.sizein);
             for n = 1:this.numLinOp
-                y = y + this.alpha(n) .* this.ALinOp{n}(1).adjoint(x);
+                y = y + this.alpha(n) .* this.ALinOp{n}(1).applyAdjoint(x);
             end
 		end
 		

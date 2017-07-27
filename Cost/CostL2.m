@@ -90,7 +90,7 @@ classdef CostL2 < Cost
                 r=this.H.apply(x)-this.y;
             end
             wr=this.W*r;
-            g = this.H.adjoint(wr) ;
+            g = this.H.applyAdjoint(wr) ;
         end
         
         function [cost , gradient] = eval_grad(this,x)
@@ -103,7 +103,7 @@ classdef CostL2 < Cost
             end
             wr=this.W*r;
             cost=0.5*dot(r(:),wr(:));
-            gradient = this.H.adjoint(wr);
+            gradient = this.H.applyAdjoint(wr);
         end
 
         function y=prox(this,x,alpha)

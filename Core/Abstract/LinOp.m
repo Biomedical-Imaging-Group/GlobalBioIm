@@ -33,13 +33,30 @@ classdef (Abstract) LinOp < Map
 	properties (SetAccess = private)
 			%memoCache = struct('apply', struct('in', [], 'out', [])); % etc
 	end
-    
+	
 	methods (Sealed)
-	  function x = adjoint(this, y)
-		%% TODO: add input, output checking, memoizing
-		x = this.adjoint_(y);
+		function x = applyAdjoint(this, y)
+			% x = H.applyAdjoint(y) returns the application of the adjoint of
+			% the LinOp H to the vector y. 
+			%
+			
+			% check input size
+			if ~checkSize(y, this.sizeout)
+				error('Input to applyAdjoint was size [%s], didn''t match stated sizeout: [%s].',...
+					num2str(size(y)), num2str(this.sizeout));
+			end
+			
+			% memoize
+			x = this.memoize('applyAdjoint', @this.applyAdjoint_, y);
+			
+			% check output size
+			if ~checkSize(x, this.sizein)
+				warning('Output of applyAdjoint was size [%s], didn''t match stated sizein: [%s].',...
+					num2str(size(x)), num2str(this.sizein));
+			end
+			
+		end
 		
-	  end
 	  
 	  function this = transpose(this)
 		% Overload operator (.') for :class:`LinOp` objects (i.e. :meth:`adjoint`).
@@ -94,7 +111,7 @@ classdef (Abstract) LinOp < Map
 	
 	methods (Access = protected, Sealed)
 	  function x = applyJacobianT_(this, y, v)
-		x = this.adjoint_(y);
+		x = this.applyAdjoint_(y);
 	  end
 	end
 	  
@@ -106,8 +123,18 @@ classdef (Abstract) LinOp < Map
         	% :param x: \\(\\in Y\\)
         	% :returns y: \\(= \\mathrm{H^*x}\\) where \\(\\mathrm{H}^*\\) is defined such that $$\\langle\\mathrm{Hx},\\mathrm{y}\\rangle_{\\mathrm{Y}} = \\langle \\mathrm{x}, \\mathrm{H}^*\\mathrm{y} \\rangle_{\\mathrm{X}}$$
         	
-            error('adjoint not implemented');
-        end
+			% todo: general case possible
+		end
+		
+		function x = applyAdjoint_(this, y)
+			% **(Abstract method)** Apply the adjoint of the linear operator
+			%
+			% :param x: \\(\\in Y\\)
+			% :returns y: \\(= \\mathrm{H^*x}\\) where \\(\\mathrm{H}^*\\) is defined such that $$\\langle\\mathrm{Hx},\\mathrm{y}\\rangle_{\\mathrm{Y}} = \\langle \\mathrm{x}, \\mathrm{H}^*\\mathrm{y} \\rangle_{\\mathrm{X}}$$
+			
+			error('adjoint not implemented');
+		end
+		
         
         function y = HtH_(this,x) 
             % Apply \\(\\mathrm{H}^*\\mathrm{H}\\)
@@ -117,7 +144,7 @@ classdef (Abstract) LinOp < Map
         	%
         	% **Note**: There is a default implementation in the abstract class :class:`LinOp` which calls successively the :meth:`apply` and :meth:`adjoint` methods. However, it can be reimplemented in derived classes if there exists a faster way to perform computation.
         	
-            y = this.adjoint(this.apply(x));
+            y = this.applyAdjoint(this.apply(x));
         end
         
         function y = HHt_(this,x) 
@@ -128,7 +155,7 @@ classdef (Abstract) LinOp < Map
         	%
         	% **Note**: There is a default implementation in the abstract class :class:`LinOp` which calls successively the :meth:`adjoint` and :meth:`apply` methods. However, it can be reimplemented in derived classes if there exists a faster way to perform computation.
         	
-            y = this.apply(this.adjoint(x));
+            y = this.apply(this.applyAdjoint(x));
 		end
 		
 		function G = makeComposition_(this, H)

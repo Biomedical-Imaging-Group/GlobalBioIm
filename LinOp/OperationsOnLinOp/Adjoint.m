@@ -33,7 +33,7 @@ classdef Adjoint < LinOp
     
     methods 
         function this = Adjoint(TLinOp)
-            this.name ='Adjoint';           
+            this.name =sprintf('%s Adjoint', TLinOp.name);           
             assert(isa(TLinOp,'LinOp'),'Input should be a  LinOp');
             this.TLinOp = TLinOp;
             this.isComplex= this.TLinOp.isComplex;
@@ -41,25 +41,28 @@ classdef Adjoint < LinOp
             this.sizein =  this.TLinOp.sizeout;
             this.sizeout =  this.TLinOp.sizein;			
 			this.norm = this.TLinOp.norm;        
-          end
+		end
         
-        function y = apply(this,x) % apply the operator         
-            y =this.TLinOp.adjoint(x);
+	end
+	
+	methods (Access = protected)
+        function y = apply_(this,x) % apply the operator         
+            y =this.TLinOp.applyAdjoint(x);
         end
-        function y = adjoint(this,x) % apply the adjoint
+        function y = adjoint_(this,x) % apply the adjoint
             y =this.TLinOp.apply(x);
         end
-        function y = HtH(this,x)
+        function y = HtH_(this,x)
             y =this.TLinOp.HHt(x);
         end
-        function y = HHt(this,x)
+        function y = HHt_(this,x)
             y =this.TLinOp.HtH(x);
         end
-        function y = inverse(this,x)
-            y =this.TLinOp.adjointInverse(x);
+        function y = inverse_(this,x)
+            y =this.TLinOp.applyInverse(x);
         end
-        function y = adjointInverse(this,x)
-            y =this.TLinOp.adjointInverse(x); 
+        function y = adjointInverse_(this,x)
+            y =this.TLinOp.applyAdjointInverse(x); 
         end
     end
 end

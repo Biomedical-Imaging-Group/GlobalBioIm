@@ -115,18 +115,18 @@ classdef MulLinOp < LinOp
 			if this.isHTH || this.isHHt
 				y = this.apply(x); % because self-adjoint
 			elseif this.isnum
-				y = this.LinOp2.adjoint(this.LinOp1.*x);
+				y = this.LinOp2.applyAdjoint(this.LinOp1.*x);
 			else
-				y = this.LinOp2.adjoint(this.LinOp1.adjoint(x));
+				y = this.LinOp2.applyAdjoint(this.LinOp1.adjoint(x));
 			end
 		end
 		function y = HtH(this,x)
 			if this.isHTH || this.isHTH 
 				y = this.apply(this.apply(x)); % because self-adjoint
 			elseif this.isnum
-				y = this.LinOp2.adjoint(this.LinOp1.^2.*( this.LinOp2.apply(x)));
+				y = this.LinOp2.applyAdjoint(this.LinOp1.^2.*( this.LinOp2.apply(x)));
 			else
-				y = this.LinOp2.adjoint(this.LinOp1.HtH( this.LinOp2.apply(x)));
+				y = this.LinOp2.applyAdjoint(this.LinOp1.HtH( this.LinOp2.apply(x)));
 			end
         end
 		function y = HHt(this,x)
@@ -135,7 +135,7 @@ classdef MulLinOp < LinOp
 			elseif this.isnum
 				y = this.LinOp1.*(this.LinOp2.HHt( this.LinOp1.*x));
 			else
-				y = this.LinOp1.apply(this.LinOp2.HHt( this.LinOp1.adjoint(x)));
+				y = this.LinOp1.apply(this.LinOp2.HHt( this.LinOp1.applyAdjoint(x)));
 			end
 		end
 		function y = inverse(this,x) % apply the inverse
@@ -147,7 +147,7 @@ classdef MulLinOp < LinOp
 		end
         function y = adjointInverse(this,x) % apply the inverse
             if this.isInvertible             
-                y = this.LinOp2.adjointInverse(this.LinOp1.adjointInverse(x));
+                y = this.LinOp2.applyAdjointInverse(this.LinOp1.applyAdjointInverse(x));
             else
                 error('Operator not invertible');
             end

@@ -42,9 +42,9 @@ end
             this.norm = norm(M);
             
                 if isreal(M)
-                    this.iscomplex= false;
+                    this.isComplex= false;
                 else
-                    this.iscomplex= true;
+                    this.isComplex= true;
                 end
             
             if nargin == 1

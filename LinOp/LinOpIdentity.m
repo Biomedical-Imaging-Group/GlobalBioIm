@@ -27,8 +27,8 @@ classdef LinOpIdentity <  LinOp
 	methods
 	  function this = LinOpIdentity(sz)
 		this.name='LinOp Identity';
-		this.iscomplex=false;
-		this.isinvertible=true;
+		this.isComplex=false;
+		this.isInvertible=true;
 		this.norm=1;
 		
 		if nargin>0

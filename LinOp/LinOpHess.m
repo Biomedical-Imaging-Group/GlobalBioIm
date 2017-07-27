@@ -49,7 +49,7 @@ classdef LinOpHess <  LinOp
                 bc='circular';
             end
             this.name='LinOp Hessian';
-            this.iscomplex=false;
+            this.isComplex=false;
             this.sizein=sz;
             this.ndms = length(this.sizein);
             this.bc=bc;

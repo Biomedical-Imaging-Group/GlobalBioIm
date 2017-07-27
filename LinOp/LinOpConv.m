@@ -41,11 +41,11 @@ classdef LinOpConv <  LinOp
                 index = [];
             end
             this.name ='LinOp Convolution';
-            this.isinvertible=false;
+            this.isInvertible=false;
             
             assert(isnumeric(psf),'The psf should be a');
             this.psf = psf;
-            if ~isreal(psf), this.iscomplex= true; end
+            if ~isreal(psf), this.isComplex= true; end
             this.sizeout =size( this.psf);
             this.sizein = this.sizeout;
             
@@ -70,9 +70,9 @@ classdef LinOpConv <  LinOp
             this.mtf = Sfft(this.psf, this.Notindex);
             
             if all(this.mtf)
-                this.isinvertible=true;
+                this.isInvertible=true;
             else
-                this.isinvertible=false;
+                this.isInvertible=false;
             end
             
             % -- Norm of the operator
@@ -84,14 +84,14 @@ classdef LinOpConv <  LinOp
 	methods (Access = protected)
         function y = apply_(this,x)
             y = iSfft( this.mtf .* Sfft(x, this.Notindex), this.Notindex );
-            if (~this.iscomplex)&&isreal(x)
+            if (~this.isComplex)&&isreal(x)
                 y = real(y);
             end
 		end
 		
         function y = adjoint_(this,x)
             y = iSfft( conj(this.mtf) .* Sfft(x, this.Notindex), this.Notindex );
-            if (~this.iscomplex)&&isreal(x)
+            if (~this.isComplex)&&isreal(x)
                 y = real(y);
             end
 		end
@@ -99,7 +99,7 @@ classdef LinOpConv <  LinOp
         function y = HtH_(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
             y = iSfft( (real(this.mtf).^2 + imag(this.mtf).^2) .* Sfft(x, this.Notindex), this.Notindex );
-            if (~this.iscomplex)&&isreal(x)
+            if (~this.isComplex)&&isreal(x)
                 y = real(y);
             end
 		end
@@ -109,7 +109,7 @@ classdef LinOpConv <  LinOp
 		end
 		
         function y = inverse_(this,x)
-			if this.isinvertible
+			if this.isInvertible
 				
 				y = iSfft( 1./this.mtf .* Sfft(x, this.Notindex), this.Notindex );
 			else
@@ -118,7 +118,7 @@ classdef LinOpConv <  LinOp
 		end
 		
         function y = adjointInverse_(this,x) % apply the inverse
-            if this.isinvertible
+            if this.isInvertible
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
             y = iSfft( 1./conj(this.mtf) .* Sfft(x, this.Notindex), this.Notindex );
             else

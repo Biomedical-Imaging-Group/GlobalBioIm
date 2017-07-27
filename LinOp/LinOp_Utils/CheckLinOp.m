@@ -38,7 +38,7 @@ sizeout = LinOp.sizeout;
 In = rand(sizein);
 Out = rand(sizeout);
 
-if LinOp.iscomplex
+if LinOp.isComplex
 	disp('Complex LinOp');
 	In = In + 1i * rand(sizein);
 	Out = Out + 1i * rand(sizeout);	
@@ -73,7 +73,7 @@ else
 end
 
 
-if LinOp.isinvertible
+if LinOp.isInvertible
     if abs(LinOp.inverse(HIn)-In)<tol
         disp('inverse OK');
     else

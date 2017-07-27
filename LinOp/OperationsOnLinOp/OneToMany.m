@@ -55,12 +55,12 @@ classdef OneToMany < LinOp
             else
                 this.alpha = alpha;
             end
-            this.iscomplex= this.ALinOp{1}(1).iscomplex;
-            this.isinvertible=false;
+            this.isComplex= this.ALinOp{1}(1).isComplex;
+            this.isInvertible=false;
             this.sizein =  this.ALinOp{1}(1).sizein;
             for n =2:this.numLinOp
                 assert(isempty(this.ALinOp{n}(1).sizein) ||isequal(this.sizein,this.ALinOp{n}(1).sizein),'%d-th input does not have the right right hand side size ') ;
-                this.iscomplex= this.ALinOp{n}(1).iscomplex ||  this.iscomplex ;
+                this.isComplex= this.ALinOp{n}(1).isComplex ||  this.isComplex ;
             end
             
             

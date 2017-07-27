@@ -33,8 +33,8 @@ classdef LinOpShape <  LinOp
     methods
         function this = LinOpShape(sizein, sizeout)
             this.name ='LinOp Shape';
-            this.iscomplex= false;
-            this.isinvertible=true;
+            this.isComplex= false;
+            this.isInvertible=true;
 			
 			this.norm = 1;
             

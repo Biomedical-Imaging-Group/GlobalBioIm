@@ -131,7 +131,7 @@ classdef CostL2 < Cost
                 end
                 if ~this.isW     % if no weight
                     y=iSfft((Sfft(x,this.H.Notindex) + alpha*this.fftHstardata)./(1+alpha*(abs(this.H.mtf).^2)), this.H.Notindex);
-                    if ~this.H.iscomplex, y=real(y);end
+                    if ~this.H.isComplex, y=real(y);end
                 end
             end
             if isempty(y),error('Prox not implemented');end

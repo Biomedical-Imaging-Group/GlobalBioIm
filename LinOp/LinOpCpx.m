@@ -35,7 +35,7 @@ classdef LinOpCpx <  LinOp
     methods
         function this = LinOpCpx(sz)
             this.name ='LinOp Complrx';
-            this.iscomplex = false;
+            this.isComplex = false;
             this.isinvertible = true;
             
             assert(issize(sz),'The input size sz should be a conformable  to a size ');

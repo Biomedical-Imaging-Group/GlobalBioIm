@@ -13,7 +13,7 @@ classdef CostRectangle < CostIndicator
     %% Properties
     % * |xmin|         - minimum value (default -inf + 0i)
     % * |xmax|         - minimum value (default +inf + 0i)
-    % * |iscomplex|    - true if acts on complex numbers 
+    % * |isComplex|    - true if acts on complex numbers 
     %
     %%
     %     Copyright (C) 2017 F. Soulez ferreol.soulez@epfl.ch
@@ -34,7 +34,7 @@ classdef CostRectangle < CostIndicator
     properties (SetAccess = protected,GetAccess = public)
         xmin=-inf;  % lower bound (default -inf + 0i)
         xmax=+inf;  % higher bound  (default +inf + 0i)
-        iscomplex = false;  % complex number flag
+        isComplex = false;  % complex number flag
     end
     
     methods
@@ -64,7 +64,7 @@ classdef CostRectangle < CostIndicator
             end
             
             if((~isreal(xmin))||(~isreal(xmax)))
-                this.iscomplex = true;
+                this.isComplex = true;
             end
             this.xmin = xmin;
             this.xmax = xmax;
@@ -74,10 +74,10 @@ classdef CostRectangle < CostIndicator
         
         function z = prox(this,x,~) % apply the operator
             
-            if this.H.isinvertible
+            if this.H.isInvertible
                 
                 if(isscalar(this.y)&&(this.y==0))
-                    if this.iscomplex
+                    if this.isComplex
                         res = this.H.apply(x);
                         tmp = min(max(real(res), real(this.xmin)),real(this.xmax)) + 1i.* min(max(imag(res), imag(this.xmin)),imag(this.xmax));
                         z = this.H.inverse(tmp);
@@ -85,7 +85,7 @@ classdef CostRectangle < CostIndicator
                         z = this.H.inverse(min(max(real(this.H.apply(x)), this.xmin),this.xmax));
                     end
                 else
-                    if this.iscomplex
+                    if this.isComplex
                         res = this.H.apply(x)-this.y;
                         tmp = min(max(real(res), real(this.xmin)),real(this.xmax)) + 1i.* min(max(imag(res), imag(this.xmin)),imag(this.xmax));
                         z = this.H.inverse(tmp+this.y);
@@ -110,7 +110,7 @@ classdef CostRectangle < CostIndicator
             end
             
             
-            if this.iscomplex
+            if this.isComplex
                 if(any(real(res(:))< real(this.xmin(:))))
                     cost= +inf;
                     return;

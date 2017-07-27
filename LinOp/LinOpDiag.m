@@ -61,15 +61,15 @@ classdef LinOpDiag <  LinOp
             end
             
             if isreal(diag)
-                this.iscomplex= false;
+                this.isComplex= false;
             else
-                this.iscomplex= true;
+                this.isComplex= true;
             end
             
             if all(diag)
-                this.isinvertible=true;
+                this.isInvertible=true;
             else
-                this.isinvertible=false;
+                this.isInvertible=false;
             end
             
             this.diag = diag;
@@ -88,7 +88,7 @@ classdef LinOpDiag <  LinOp
 		function y = adjoint_(this,x)
 			
 			
-			if this.iscomplex
+			if this.isComplex
 				y =conj(this.diag) .*x;
 			else
 				y =this.diag .*x;
@@ -98,7 +98,7 @@ classdef LinOpDiag <  LinOp
 		
 		function y = HtH_(this,x) %  apply the HtH matrix
 			
-			if this.iscomplex
+			if this.isComplex
 				y =abs(this.diag).^2 .*x;
 			else
 				y =this.diag.^2 .*x;
@@ -117,7 +117,7 @@ classdef LinOpDiag <  LinOp
 		
         function y = adjointInverse_(this,x)
 
-            if this.iscomplex
+            if this.isComplex
                 y =conj(1./this.diag) .*x;
             else
                 y = (1./this.diag) .*x;

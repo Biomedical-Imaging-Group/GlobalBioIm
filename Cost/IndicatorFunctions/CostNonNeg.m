@@ -44,7 +44,7 @@ classdef CostNonNeg < CostReals
 			 
             this.xmin=0;
 			 this.xmax =+inf;
-             this.iscomplex=false;
+             this.isComplex=false;
         end
     end
 end

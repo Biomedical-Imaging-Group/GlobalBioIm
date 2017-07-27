@@ -57,8 +57,8 @@ classdef LinOpGrad <  LinOp
             	res=ones(size(sz));
             end
             this.name ='LinOp Gradient';
-            this.iscomplex= false;
-            this.isinvertible=false;
+            this.isComplex= false;
+            this.isInvertible=false;
             this.res=res;
             this.bc=bc;
             

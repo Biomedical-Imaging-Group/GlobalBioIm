@@ -35,12 +35,12 @@ classdef LinOpScaling <  LinOp
             if isscalar(scale)
                 this.scale = scale;
                 if isreal(scale)
-                    this.iscomplex=false;
+                    this.isComplex=false;
                 else
-                    this.iscomplex=true;
+                    this.isComplex=true;
                 end
                 if scale == 0
-                    this.isinvertible= false;
+                    this.isInvertible= false;
                 end
             else
                 error('LinOpScale value must be a scalar');
@@ -62,7 +62,7 @@ classdef LinOpScaling <  LinOp
         function y = adjoint_(this,x)
             this.sizeout=size(x);
             this.sizein=size(x);
-            if this.iscomplex
+            if this.isComplex
                 y =this.scale .*x;
             else
                 y =conj(this.scale) .*x;
@@ -74,7 +74,7 @@ classdef LinOpScaling <  LinOp
         end
         function y = adjointInverse_(this,x)
            
-            if this.iscomplex
+            if this.isComplex
                 y = (1./this.scale) .*x;
             else
                 y =conj(1./this.scale) .*x;

@@ -5,14 +5,9 @@ classdef (Abstract) Map < handle
   properties
 	  name = 'none'           % name of the linear operator
 	  
-	  isInvertible = false;   % true if H.applyInverse(  ) will work %todo fix capitalization everywhere
+	  isInvertible = false;   % true if H.applyInverse(  ) will work 
 	  isDifferentiable = false; % true if H.applyJacobianT(   ) will work 
-	  
-	  % todo: decide on how to handle checking for inverse, grad, ... being
-	  % implemented and working (no divide by zero).
-	  %implementedMetods = struct('applyJacobianT', false);
-	  
-	  isComplex = false;      % true is the operator is complex %todo fix capitalization everywhere
+	  isComplex = false;      % true is the operator is complex 
 	  
 	  
 	  norm=-1;                % norm of the operator
@@ -91,7 +86,7 @@ classdef (Abstract) Map < handle
 		% :returns y: \\(= \\mathrm{H^{-1}x}\\)
 		%
 		
-		if this.isinvertible
+		if this.isInvertible
 			x = this.inverse_(y);
 		else
 			error('Operator not invertible');

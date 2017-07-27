@@ -5,8 +5,8 @@ classdef (Abstract) LinOp < Map
     % :param name: name of the linear operator \\(\\mathbf{H}\\)
     % :param sizein:  dimension of the left hand side vector space \\(\\mathrm{X}\\) 
     % :param sizeout:  dimension of the right hand side vector space \\(\\mathrm{Y}\\) 
-    % :param isinvertible: true if the operator is invertible
-    % :param iscomplex: true if the operator is complex
+    % :param isInvertible: true if the operator is invertible
+    % :param isComplex: true if the operator is complex
     % :param norm: norm of the operator \\(\\|\\mathrm{H}\\|\\) (if known, otherwise -1)
 	%
  
@@ -27,11 +27,11 @@ classdef (Abstract) LinOp < Map
     
 	properties
 		
-		memoizeOpts = struct('apply', false,... % todo: can't change the default value in this way
-			'adjoint', false); % todo etc
+		%memoizeOpts = struct('apply', false,... % todo: can't change the default value in this way
+		%	'adjoint', false); % todo etc
 	end
 	properties (SetAccess = private)
-			memoCache = struct('apply', struct('in', [], 'out', [])); % etc
+			%memoCache = struct('apply', struct('in', [], 'out', [])); % etc
 	end
     
 	methods (Sealed)
@@ -46,7 +46,7 @@ classdef (Abstract) LinOp < Map
 		%
 		% **Note**: operators (.') and (') (see :meth:`ctranspose`) are identical for :class:`LinOp`.
 		
-		if this.iscomplex
+		if this.isComplex
 		  warning('Warning: Do you mean adjoint? For LinOp object transpose() is an alias of adjoint method');
 		end
 		this = Adjoint(this);
@@ -166,7 +166,7 @@ classdef (Abstract) LinOp < Map
         	% :returns y: \\(= \\mathrm{H^{-*}x}\\)
         	%
         	
-            if this.isinvertible
+            if this.isInvertible
                 error('adjointInverse not implemented');
             else
                 error('Operator not invertible');

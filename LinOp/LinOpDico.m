@@ -39,9 +39,9 @@ classdef LinOpDico <  LinOp
             this.sizein=[ones(1,this.ndms-1),sz(end)]; 
             this.sizeout = sz(1:end-1);   
             this.numelAtom=prod(this.sizeout);
-            % By default iscomplex and isinvertible are false
+            % By default isComplex and isInvertible are false
             if ~isreal(D)
-                this.iscomplex= true;     
+                this.isComplex= true;     
             end
             % Note: actually this operator can be invertible for some given
             % dictionnary D, but the inverse is not implemented 

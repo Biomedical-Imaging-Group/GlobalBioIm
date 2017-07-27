@@ -37,8 +37,8 @@ classdef LinOpDFT <  LinOp
         function this = LinOpDFT(sz, pad)
             
             this.name ='Complex DFT';
-            this.iscomplex= true;
-            this.isinvertible=true;            
+            this.isComplex= true;
+            this.isInvertible=true;            
             assert(issize(sz),'The input size sz should be a conformable  to a size ');
             this.sizein = sz;`
             if nargin>1

@@ -48,8 +48,8 @@ classdef LinOpSDFT <  LinOp
             this.sizein=sz;
 
             this.name ='LinOp SDFT';
-            this.iscomplex= true;
-            this.isinvertible=true;
+            this.isComplex= true;
+            this.isInvertible=true;
 		end
 	end
 	

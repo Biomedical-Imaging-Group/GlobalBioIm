@@ -62,16 +62,16 @@ classdef MulLinOp < LinOp
 		
             if isnumeric(LinOp1)
                 this.isnum =1;
-                if (~isreal(LinOp1)) || LinOp2.iscomplex
-                    this.iscomplex= true;
+                if (~isreal(LinOp1)) || LinOp2.isComplex
+                    this.isComplex= true;
                 else
-                    this.iscomplex= false;
+                    this.isComplex= false;
                 end
                 
-                if all(LinOp1) && LinOp2.isinvertible
-                    this.isinvertible= true;
+                if all(LinOp1) && LinOp2.isInvertible
+                    this.isInvertible= true;
                 else
-                    this.isinvertible= false;
+                    this.isInvertible= false;
                 end    
                 
                 %                 if isscalar(LinOp1)
@@ -86,16 +86,16 @@ classdef MulLinOp < LinOp
                 assert(isempty(LinOp1.sizein) || isequal(LinOp1.sizein, LinOp2.sizeout),'size of LinOp not conformable');
                 this.sizein = LinOp2.sizein;
                 this.sizeout = LinOp1.sizeout;
-                if LinOp1.iscomplex || LinOp2.iscomplex
-                    this.iscomplex= true;
+                if LinOp1.isComplex || LinOp2.isComplex
+                    this.isComplex= true;
                 else
-                    this.iscomplex= false;
+                    this.isComplex= false;
                 end
                 
-                if LinOp1.isinvertible && LinOp2.isinvertible
-                    this.isinvertible= true;
+                if LinOp1.isInvertible && LinOp2.isInvertible
+                    this.isInvertible= true;
                 else
-                    this.isinvertible= false;
+                    this.isInvertible= false;
                 end           
             end                 
         end
@@ -139,14 +139,14 @@ classdef MulLinOp < LinOp
 			end
 		end
 		function y = inverse(this,x) % apply the inverse
-			if this.isinvertible
+			if this.isInvertible
 				y = this.LinOp2.inverse(this.LinOp1.inverse(x));
 			else
 				error('Operator not invertible');
 			end
 		end
         function y = adjointInverse(this,x) % apply the inverse
-            if this.isinvertible             
+            if this.isInvertible             
                 y = this.LinOp2.adjointInverse(this.LinOp1.adjointInverse(x));
             else
                 error('Operator not invertible');

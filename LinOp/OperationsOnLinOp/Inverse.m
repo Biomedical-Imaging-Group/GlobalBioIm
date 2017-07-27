@@ -37,10 +37,10 @@ classdef Inverse < LinOp
             
             
             assert(isa(TLinOp,'LinOp'),'Input should be a  LinOp');
-            assert(TLinOp.isinvertible,'Input should be a  invertible');
+            assert(TLinOp.isInvertible,'Input should be a  invertible');
             this.TLinOp = TLinOp;
-            this.iscomplex= this.TLinOp.iscomplex;
-            this.isinvertible=this.TLinOp.isinvertible;
+            this.isComplex= this.TLinOp.isComplex;
+            this.isInvertible=this.TLinOp.isInvertible;
             this.sizein =  this.TLinOp.sizein;
             this.sizeout =  this.TLinOp.sizeout;
             

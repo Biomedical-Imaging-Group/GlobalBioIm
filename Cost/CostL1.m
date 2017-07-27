@@ -55,7 +55,7 @@ classdef CostL1 < Cost
         	% Reimplemented from parent class :class:`Cost` if the operator :attr:`H`  is invertible.
         	
             assert(isscalar(alpha),'alpha must be a scalar');           
-            if this.H.isinvertible
+            if this.H.isInvertible
                  tmp = this.H.apply(x)-this.y ;
                 if this.nonneg
                     z =   this.H.inverse(max(tmp- alpha,0)+this.y);

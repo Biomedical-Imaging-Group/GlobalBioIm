@@ -43,11 +43,10 @@ classdef LinOpIdentity <  LinOp
 	
     methods (Access = protected)
 
-        
-        function y = apply_(this,x,v)
+        function y = apply_(this,x)
         	% Reimplemented from parent class :class:`LinOp`.
         	
-            y =x+v;
+            y =x;
         end
         
         function y = adjoint_(this,x)

@@ -92,7 +92,7 @@ classdef (Abstract) Map < handle
 		%
 		
 		if this.isinvertible
-			error('inverse not implemented');
+			x = this.inverse_(y);
 		else
 			error('Operator not invertible');
 		end

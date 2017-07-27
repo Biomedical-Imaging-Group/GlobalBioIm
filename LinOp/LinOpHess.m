@@ -72,9 +72,12 @@ classdef LinOpHess <  LinOp
                              this.fHtH(1,1,end-1)=1;this.fHtH(end,1,end)=1;this.fHtH(3,1)=1;this.fHtH(1,1,3)=1;this.fHtH(1,end,end)=1;
                 end
             end
-        end
-        function y = apply(this,x)
-			assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
+		end
+	end
+	
+	methods (Access = protected)
+        function y = apply_(this,x)
+			
             y = zeros(this.sizeout);
             nidx = 0;
             % switch according to the boundary condition
@@ -180,9 +183,10 @@ classdef LinOpHess <  LinOp
                             y(:,:,end,6)=x(:,:,end);
                     end
             end
-        end
-        function y = adjoint(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
+		end
+		
+        function y = adjoint_(this,x)
+          
             nidx = 0;
             y = zeros(this.sizein);
             % switch according to the boundary condition
@@ -330,8 +334,9 @@ classdef LinOpHess <  LinOp
                     end
             end
 		end
-		 function y = HtH(this,x) %  apply the HtH matrix
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizein);
+		
+		 function y = HtH_(this,x) %  apply the HtH matrix
+            
             nidx = 0;
             y = zeros(this.sizein);
             % switch according to the number of dimension of the input

@@ -25,10 +25,10 @@ classdef (Abstract) LinOp < Map
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties
-        
-			memoizeOpts = struct('apply', false,...
-				'adjoint', false); % todo etc
+	properties
+		
+		memoizeOpts = struct('apply', false,... % todo: can't change the default value in this way
+			'adjoint', false); % todo etc
 	end
 	properties (SetAccess = private)
 			memoCache = struct('apply', struct('in', [], 'out', [])); % etc

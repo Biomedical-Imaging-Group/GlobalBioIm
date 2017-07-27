@@ -107,10 +107,11 @@ classdef LinOpGrad <  LinOp
 						warning('this.fHtH not set because input is more than 4D');
                 end
             end
-        end
+		end
 		
-		function y = apply(this,x)
-			assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
+	end
+	methods (Access = protected)
+		function y = apply_(this,x)
 		
 			y = zeros(this.sizeout);
 			
@@ -143,8 +144,7 @@ classdef LinOpGrad <  LinOp
 		end
         
         
-        function y = adjoint(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
+        function y = adjoint_(this,x)
             y = zeros(this.sizein);
 			
 			
@@ -201,8 +201,7 @@ classdef LinOpGrad <  LinOp
 			
 		end
 		
-        function y = HtH(this,x) %  apply the HtH matrix
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizein);
+        function y = HtH_(this,x) %  apply the HtH matrix
             y = zeros(this.sizein);
 			
 			allElements = repmat({':'}, 1, this.ndms);

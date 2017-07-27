@@ -74,27 +74,29 @@ classdef LinOpSum <  LinOp
             this.imdims = this.sizein;
             this.imdims(~T)=1;
             
-        end
-        function y = apply(this,x)
+		end
+	end
+	
+	methods (Access = protected)
+        function y = apply_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             
-            assert( isequal(size(x),this.sizein),  'x                                                                                                                                                                                   does not have the right size: [%d, %d, %d,%d]',this.sizein);
             for n=this.index
                 x = sum(x,n);
             end
             y = squeeze(x);
-        end
-        function y = adjoint(this,x)
+		end
+		
+        function y = adjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             % $$\\mathrm{H}^* : \\mathrm{x} \\mapsto \\mathrm{y_{k,l}} =  \\mathrm{x}_{k} \\; \\forall l$$
             
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
             y = reshape(repmat(reshape(x,this.imdims),this.kerdims),this.sizein);
-        end
-        function y = HHt(this,x)
+		end
+		
+        function y = HHt_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
             a = prod(this.kerdims);
             y = x.*a;
         end

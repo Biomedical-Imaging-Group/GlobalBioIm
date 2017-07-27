@@ -76,52 +76,47 @@ classdef LinOpDiag <  LinOp
             
             % -- Norm of the operator
             this.norm=max(abs(diag(:)));
-        end
-        function y = apply(this,x)
-            if isequal(size(x),this.sizein)
+		end
+	end
+	methods (Access = protected)
+		
+        function y = apply_(this,x)
+
                 y =this.diag .* x;
-            else
-                error('x should be the same size as diag: [%d, %d, %d, %d]',this.sizein);
-            end
-        end
-        function y = adjoint(this,x)
-            
-            if isequal(size(x),this.sizeout)
-                if this.iscomplex
-                    y =conj(this.diag) .*x;
-                else
-                    y =this.diag .*x;
-                end
-            else
-                error('x should be the same size as diag: [%d, %d, %d, %d]',this.sizein);
-            end
-        end
-        
-        function y = HtH(this,x) %  apply the HtH matrix
-            if isequal(size(x),this.sizeout)
-                if this.iscomplex
-                    y =abs(this.diag).^2 .*x;
-                else
-                    y =this.diag.^2 .*x;
-                end
-            else
-                error('x should be the same size as diag: [%d, %d, %d, %d]',this.sizein);
-            end
-        end
-        function y=HHt(this,x)
+
+		end
+		function y = adjoint_(this,x)
+			
+			
+			if this.iscomplex
+				y =conj(this.diag) .*x;
+			else
+				y =this.diag .*x;
+			end
+			
+		end
+		
+		function y = HtH_(this,x) %  apply the HtH matrix
+			
+			if this.iscomplex
+				y =abs(this.diag).^2 .*x;
+			else
+				y =this.diag.^2 .*x;
+			end
+			
+		end
+		
+        function y=HHt_(this,x)
             y=this.HtH(x);
         end
         
-        function y = inverse(this,x)
-            if ( ~this.isinvertible)
-                error('Operator non invertible');
-            end
+        function y = inverse_(this,x)
+			
             y =(1./this.diag) .*x;
-        end
-        function y = adjointInverse(this,x)
-            if ( ~this.isinvertible)
-                error('Operator non invertible');
-            end
+		end
+		
+        function y = adjointInverse_(this,x)
+
             if this.iscomplex
                 y =conj(1./this.diag) .*x;
             else

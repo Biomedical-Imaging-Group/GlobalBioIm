@@ -50,8 +50,11 @@ classdef LinOpSDFT <  LinOp
             this.name ='LinOp SDFT';
             this.iscomplex= true;
             this.isinvertible=true;
-        end
-        function y = apply(this,x)
+		end
+	end
+	
+	methods (Access = protected)
+        function y = apply_(this,x)
              if (~isempty(this.index))
                 dim = 1:ndims(x);
                 Iidx = true(ndims(x),1);
@@ -61,21 +64,21 @@ classdef LinOpSDFT <  LinOp
                 this.index = 1:ndims(x);
                 this.Notindex = [];
              end
-            this.sizein = size(x);
+            this.sizein = size(x); % remove delayed size checking
             this.sizeout = size(x);
             this.N= prod(this.sizein(this.index));
             y =  Sfft(x, this.Notindex);
         end
-        function y = adjoint(this,x)
+        function y = adjoint_(this,x)
             y =   this.N * iSfft(x,this.Notindex);
         end
-        function y = inverse(this,x)
+        function y = inverse_(this,x)
             y =  iSfft(x, this.Notindex);
         end
-        function y = HtH(this,x)
+        function y = HtH_(this,x)
             y = this.N * x;
         end
-        function y = adjointInverse(this,x)
+        function y = adjointInverse_(this,x)
             y =   1/this.N * Sfft(x, this.Notindex);
         end
     end

@@ -1,9 +1,9 @@
-classdef ComposeLinOpCost < Cost
-    %% ComposeLinOpCost : Compose a Functional with a linear operator
+classdef ComposeMapCost < Cost
+    %% ComposeMapCost : Compose a Functional with a Map
     %  Matlab Inverse Problems Library
     %
     % -- Example
-    % G =  ComposeLinOpCost(cost,Hcomp)
+    % G =  ComposeMapCost(cost,Hcomp)
     % where cost is a COST object and Hcomp a LINOP one
     %
     % See also Cost

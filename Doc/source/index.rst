@@ -19,9 +19,12 @@ Contents
 .. toctree::
    :maxdepth: 1
 
+   abstract
+   nonlinop
    linop
    cost
    opti
+   infos
 
    
 

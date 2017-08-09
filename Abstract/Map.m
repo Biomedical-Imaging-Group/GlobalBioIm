@@ -160,7 +160,7 @@ classdef (Abstract) Map < handle
             %    :class:`MapComposition`is intanciated
             if isa(G,'Map')
                 if (isnumeric(this) && isscalar(this)) % Left multiplication by scalar
-                    H=LinOpIdentity(this.sizeout);
+                    H=LinOpScaledIdentity(G.sizeout,this);
                     M=H.makeComposition(G);
                 else
                     M =this.makeComposition(G);
@@ -220,11 +220,6 @@ classdef (Abstract) Map < handle
                 error('mpower_ method not implemented');
             end
         end
-    end
-    
-    %% Special mtimes method (do not have a corresponding core method but can be overloaded in subclasses)
-    methods
-
     end
               
     %% Utility methods  

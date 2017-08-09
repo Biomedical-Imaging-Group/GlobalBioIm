@@ -170,14 +170,18 @@ classdef LinOp < Map
             % object to compose the current LinOp (this) with the given :class:`LinOp`\\(\\mathrm{G}\\). 
             % Otherwise the composition will be a :class:`MapComposition`.
             if isa(G,'LinOp')
-                if isa(G,'LinOpComposition') && isscalar(G.H1)  % to handle properly scalar multiplications
-                    if isa(this,'LinOpComposition') && isscalar(this.H1)
-                        M = LinOpComposition(this.H1*G.H1,this.H2.makeComposition(G.H2));
+                if isa(G,'LinOpComposition') && isa(G.H1,'LinOpScaledIdentity')  % to handle properly scalar multiplications
+                    if isa(this,'LinOpComposition') && isa(this.H1,'LinOpScaledIdentity')
+                        M = LinOpComposition(LinOpScaledIdentity(this.sizeout,this.H1.nu*G.H1.nu),this.H2.makeComposition(G.H2));
                     else
                         M = LinOpComposition(G.H1,this.makeComposition(G.H2));
                     end
                 else
-                    M = LinOpComposition(this,G);
+                    if isa(this,'LinOpComposition') && isa(this.H1,'LinOpScaledIdentity')
+                        M = LinOpComposition(this.H1,this.H2.makeComposition(G));
+                    else
+                        M = LinOpComposition(this,G);
+                    end
                 end
             else
                 M = makeComposition_@Map(G);

@@ -39,7 +39,13 @@ classdef LinOpComposition < MapComposition & LinOp
                 this=H2;
                 this.H1=this.H1*H1;
             else            
-            %TODO computing the IsHtH and isHHt
+            	% strcmp is different than isa because it doesn't check all
+                % superclasses as well
+                if strcmp(class(H1), 'Adjoint') && H1.TLinOp == H2
+                    this.isHTH = true;
+                elseif strcmp(class(H2), 'Adjoint') && H2.TLinOp == H1
+                    this.isHHt = true;
+                end
             end
         end
     end

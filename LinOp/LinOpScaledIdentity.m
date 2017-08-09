@@ -1,15 +1,17 @@
-classdef LinOpIdentity <  LinOp
+classdef LinOpScaledIdentity <  LinOp
     % Identity linear operator
-    % $$\\mathrm{H} : \\mathrm{x} \\mapsto \\mathrm{x}$$
+    % $$\\mathrm{H} : \\mathrm{x} \\mapsto \\nu\\mathrm{x}$$
+    % where \\(\\nu \\in \\mathbb{R}\\).
     %
     % :param sz: size of \\(\mathrm{x}\\) on which the :class:`LinOpIdentity` applies.
+    % :param nu: scaling parameter (default 1)
     %
     % All attributes of parent class :class:`LinOp` are inherited. 
     %
     % See also :class:`LinOp`, :class:`Map`
     
-    %%    Copyright (C) 2015 
-    %     F. Soulez  ferreol.soulez@epfl.ch
+    %%    Copyright (C) 2017
+    %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -24,14 +26,23 @@ classdef LinOpIdentity <  LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
+    properties
+        nu=1;
+    end
+    
 	%% Constructor
 	methods
-	  function this = LinOpIdentity(sz)
-		this.name='LinOp Identity';
+	  function this = LinOpScaledIdentity(sz,nu)
+		this.name='LinOp ScaledIdentity';
+        if nargin==2
+            this.nu=nu;
+        end
 		this.isComplexIn=true;
 		this.isComplexOut=true;
         this.isDifferentiable=true;
-        this.isInvertible=true;
+        if this.nu~=0
+            this.isInvertible=true;
+        end
 		this.norm=1;
 		if nargin>0
 		  this.sizeout=sz;
@@ -46,34 +57,31 @@ classdef LinOpIdentity <  LinOp
     methods (Access = protected)      
         function y = apply_(this,x)
         	% Reimplemented from parent class :class:`LinOp`.       	
-
-            y =x;
+            y =this.nu*x;
         end        
-        function y = applyAdjoint_(this,x)
+        function x = applyAdjoint_(this,y)
         	% Reimplemented from parent class :class:`LinOp`.      	
-            y =x;
+            x =this.nu*y;
         end        
         function y = applyHtH_(this,x)
         	% Reimplemented from parent class :class:`LinOp`.       	
-            y =x;
+            y =this.nu^2*x;
         end       
-        function y = applyHHt_(this,x)
+        function x = applyHHt_(this,y)
         	% Reimplemented from parent class :class:`LinOp`.       	
-            y =x;
+            x =this.nu^2*y;
         end       
-        function y = applyInverse_(this,x)
-        	% Reimplemented from parent class :class:`LinOp`.        	
-            y =x;
+        function x = applyInverse_(this,y)
+        	% Reimplemented from parent class :class:`LinOp`.
+            if this.isInvertible
+                x =y/this.nu;
+            end
         end        
         function y = applyAdjointInverse_(this,x)
-        	% Reimplemented from parent class :class:`LinOp`.        	
-            y =x;
-        end
-        function M = makeComposition_(this,G)
-            % Reimplemented from parent class :class:`LinOp`.
-            % Returns \\(\\mathrm{G}\\).
-            M = G;
+        	% Reimplemented from parent class :class:`LinOp`.
+            if this.isInvertible
+                y =x/this.nu;
+            end
         end
     end
 end
-

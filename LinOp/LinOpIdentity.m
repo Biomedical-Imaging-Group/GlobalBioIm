@@ -6,9 +6,10 @@ classdef LinOpIdentity <  LinOp
     %
     % All attributes of parent class :class:`LinOp` are inherited. 
     %
-    % See also :class:`LinOp`
+    % See also :class:`LinOp`, :class:`Map`
     
-    %     Copyright (C) 2015 F. Soulez  ferreol.soulez@epfl.ch
+    %%    Copyright (C) 2015 
+    %     F. Soulez  ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -22,60 +23,50 @@ classdef LinOpIdentity <  LinOp
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	
-	
+    
+	%% Constructor
 	methods
 	  function this = LinOpIdentity(sz)
 		this.name='LinOp Identity';
-		this.isComplex=false;
-		this.isInvertible=true;
+		this.isComplexIn=true;
+		this.isComplexOut=true;
+this.isDifferentiable=true;
+        this.isInvertible=true;
 		this.norm=1;
-		
 		if nargin>0
 		  this.sizeout=sz;
 		  this.sizein=sz;
 		else
-		  error('a size SZ should be given');
+		  error('A size SZ should be given');
 		end
 	  end
 	end
 	
-	
-    methods (Access = protected)
-
+	%% Core Methods containing implementations (Protected)
+    methods (Access = protected)      
         function y = apply_(this,x)
-        	% Reimplemented from parent class :class:`LinOp`.
-        	
+        	% Reimplemented from parent class :class:`LinOp`.       	
+
             y =x;
-        end
-        
-        function y = adjoint_(this,x)
-        	% Reimplemented from parent class :class:`LinOp`.
-        	
+        end        
+        function y = applyAdjoint_(this,x)
+        	% Reimplemented from parent class :class:`LinOp`.      	
             y =x;
-        end
-        
-        function y = HtH_(this,x)
-        	% Reimplemented from parent class :class:`LinOp`.
-        	
+        end        
+        function y = applyHtH_(this,x)
+        	% Reimplemented from parent class :class:`LinOp`.       	
             y =x;
-        end
-        
-        function y = HHt_(this,x)
-        	% Reimplemented from parent class :class:`LinOp`.
-        	
+        end       
+        function y = applyHHt_(this,x)
+        	% Reimplemented from parent class :class:`LinOp`.       	
             y =x;
-        end
-        
-        function y = inverse_(this,x)
-        	% Reimplemented from parent class :class:`LinOp`.
-        	
+        end       
+        function y = applyInverse_(this,x)
+        	% Reimplemented from parent class :class:`LinOp`.        	
             y =x;
-        end
-        
-        function y = adjointInverse_(this,x)
-        	% Reimplemented from parent class :class:`LinOp`.
-        	
+        end        
+        function y = applyAdjointInverse_(this,x)
+        	% Reimplemented from parent class :class:`LinOp`.        	
             y =x;
         end
     end

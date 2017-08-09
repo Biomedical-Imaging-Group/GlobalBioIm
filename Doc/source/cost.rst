@@ -9,13 +9,7 @@ Cost Functions (Cost)
 
 .. automodule:: Cost
 
-Cost (abstract class)
----------------------
 
-.. autoclass:: Cost
-    :show-inheritance:
-    :members: eval, grad, eval_grad, prox, prox_fench, o, plus, minus, mtimes
- 
 CostL2
 ------
 .. autoclass:: CostL2

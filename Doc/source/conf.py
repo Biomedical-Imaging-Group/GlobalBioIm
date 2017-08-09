@@ -18,7 +18,7 @@
 #
 # import os
 # import sys
-# sys.path.insert(0, os.path.abspath('.'))
+# sys.path.insert(0, os.path.abspath('/Users/emmanuel/Desktop/InvPbLib/'))
 
 
 # -- General configuration ------------------------------------------------
@@ -81,8 +81,6 @@ pygments_style = 'sphinx'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
-
-autodoc_member_order = 'bysource'
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -164,5 +162,7 @@ texinfo_documents = [
      'Miscellaneous'),
 ]
 
+
+autodoc_member_order = 'bysource'
 
 

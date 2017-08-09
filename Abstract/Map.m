@@ -67,6 +67,7 @@ classdef (Abstract) Map < handle
     % - minus(this,G)
     % - mpower(this,p)
     % - mtimes(this,G)
+	% - size(this, [dim])
     methods (Sealed)
         function y = apply(this, x)
             % Computes \\(\\mathrm{y}=\\mathrm{H}(\\mathrm{x})\\) for the given
@@ -171,7 +172,17 @@ classdef (Abstract) Map < handle
         end
         % TODO Overload operator .* to multiply term by term two Maps ? (avoid the use of LinOpDiag)
         % TODO Overload operator .^ to do (H(x)).^p ?
-    end
+		function sz = size(this, varargin)
+			sz = {this.sizeout, this.sizein};
+			if length(varargin) == 1
+				sz = sz{varargin{:}};
+				
+			end
+		end
+			
+
+	end
+	
     
     %% Core Methods containing implementations (Protected)
     % - apply_(this,x)
@@ -219,9 +230,10 @@ classdef (Abstract) Map < handle
             else
                 error('mpower_ method not implemented');
             end
-        end
-    end
-              
+		end
+	end
+
+		
     %% Utility methods  
     % - memoize(this, fieldName, fcn, xs)
     methods (Access = protected)          

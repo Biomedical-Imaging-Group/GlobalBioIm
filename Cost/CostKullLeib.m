@@ -57,7 +57,7 @@ classdef CostKullLeib < Cost
                 this.bet=bet;
             end
             tmp=ones(this.H.sizeout);
-            this.He1=this.H.adjoint(tmp);
+            this.He1=this.H.applyAdjoint(tmp);
             
             % -- Compute Lipschitz constant of the gradient (if the norm of H is known)
             if ((this.bet>0)&&(this.H.norm>=0));
@@ -89,7 +89,7 @@ classdef CostKullLeib < Cost
             if nargin ==2
             this.Hx=this.H.apply(x);
             end
-            g= this.He1 - this.H.adjoint(this.y./(this.Hx+this.bet));
+            g= this.He1 - this.H.applyAdjoint(this.y./(this.Hx+this.bet));
         end
         
         function z=prox(this,x,alpha)

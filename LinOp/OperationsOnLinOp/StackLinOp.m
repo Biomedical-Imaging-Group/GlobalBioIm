@@ -58,14 +58,14 @@ classdef StackLinOp < LinOp
 			
 			
 			this.ALinOp = ALinOp;
-			this.iscomplex= this.ALinOp{1}(1).iscomplex;
-            this.isinvertible=false;
+			this.isComplex= this.ALinOp{1}(1).isComplex;
+            this.isInvertible=false;
             this.sizein =  this.ALinOp{1}(1).sizein;
             this.sizeout =  [this.ALinOp{1}(1).sizeout this.numLinOp];
             for n =2:this.numLinOp
                 assert(isempty(this.ALinOp{n}(1).sizein)  || isequal(this.sizein,this.ALinOp{n}(1).sizein),'%d-th input does not have the right hand side size ', n) ;
                 assert(isempty(this.ALinOp{n}(1).sizeout) ||isequal(this.ALinOp{1}(1).sizeout,this.ALinOp{n}(1).sizeout),'%d-th input does not have the left hand side size ', n);
-                this.iscomplex= this.ALinOp{n}(1).iscomplex || this.iscomplex ;
+                this.isComplex= this.ALinOp{n}(1).isComplex || this.isComplex ;
             end
             
             for c=1:length(varargin)
@@ -74,7 +74,7 @@ classdef StackLinOp < LinOp
                         assert(this.sizein(end)==2, ' last dimension of input LinOp should be 2');
                         this.usecomplex = false;
                         this.sizeout = [this.sizeout(1:end-2),this.sizeout(end),this.sizeout(end-1)];
-                        this.iscomplex= false;
+                        this.isComplex= false;
                         nd= numel(this.sizeout);
                         this.prmtIndex = [1:(nd-2) nd (nd-1)];
                 end
@@ -111,7 +111,7 @@ classdef StackLinOp < LinOp
             for n = 1:this.numLinOp
                 xtmp = zeros(this.ALinOp{1}.sizeout);
                 xtmp(:) = x(:,n);
-                y = y + this.alpha(n) .* this.ALinOp{n}(1).adjoint(xtmp);
+                y = y + this.alpha(n) .* this.ALinOp{n}(1).applyAdjoint(xtmp);
             end
         end
     end

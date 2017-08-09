@@ -59,7 +59,7 @@ classdef CostReals < CostRectangle
             this.xmin = xmin;
             this.xmax = xmax;
             
-        this.iscomplex = false;
+        this.isComplex = false;
             
         end
     end

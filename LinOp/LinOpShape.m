@@ -33,8 +33,8 @@ classdef LinOpShape <  LinOp
     methods
         function this = LinOpShape(sizein, sizeout)
             this.name ='LinOp Shape';
-            this.iscomplex= false;
-            this.isinvertible=true;
+            this.isComplex= false;
+            this.isInvertible=true;
 			
 			this.norm = 1;
             
@@ -45,29 +45,30 @@ classdef LinOpShape <  LinOp
             
             assert(prod(sizeout)==prod(sizein),'The inputs sizein and sizeout should be a conformable');
             
-        end
-        function y = apply(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
+		end
+	end
+	methods (Access = protected)
+        function y = apply_(this,x)
             y = reshape(x, this.sizeout);
-        end
-        function y = adjoint(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
+		end
+		
+        function y = adjoint_(this,x)
             y = reshape(x, this.sizein);
-        end
-        function y = HHt(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
+		end
+		
+        function y = HHt_(this,x)
             y=x;
-        end
-        function y = HtH(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
+		end
+		
+        function y = HtH_(this,x)
             y=x;
-        end        
-        function y = inverse(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
+		end   
+		
+        function y = inverse_(this,x)
              y = reshape(x, this.sizein);
-        end
-        function y = adjointInverse(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
+		end
+		
+        function y = adjointInverse_(this,x)
             y = reshape(x, this.sizeout);
         end
     end

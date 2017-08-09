@@ -42,9 +42,9 @@ end
             this.norm = norm(M);
             
                 if isreal(M)
-                    this.iscomplex= false;
+                    this.isComplex= false;
                 else
-                    this.iscomplex= true;
+                    this.isComplex= true;
                 end
             
             if nargin == 1
@@ -80,13 +80,17 @@ end
             this.leftsz = prod(this.sizeout);
             this.M= reshape(M,this.leftsz,this.rightsz);
             
-        end
-        function y = apply(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
+		end
+	end
+	
+	methods (Access = protected)
+        function y = apply_(this,x)
+          
             y = reshape(this.M * reshape(x,[this.rightsz,1]),this.sizeout);
-        end
-        function y = adjoint(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
+		end
+		
+        function y = adjoint_(this,x)
+           
             y = reshape(this.M' * reshape(x,[this.leftsz,1]),this.sizein);
         end
     end

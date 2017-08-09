@@ -39,9 +39,9 @@ classdef LinOpDico <  LinOp
             this.sizein=[ones(1,this.ndms-1),sz(end)]; 
             this.sizeout = sz(1:end-1);   
             this.numelAtom=prod(this.sizeout);
-            % By default iscomplex and isinvertible are false
+            % By default isComplex and isInvertible are false
             if ~isreal(D)
-                this.iscomplex= true;     
+                this.isComplex= true;     
             end
             % Note: actually this operator can be invertible for some given
             % dictionnary D, but the inverse is not implemented 
@@ -49,16 +49,20 @@ classdef LinOpDico <  LinOp
             if this.numelAtom<1000 && sz(end)<1000  % the norm is computed if the dictionary is of reasonable size
                 this.norm=norm(reshape(this.D,[this.numelAtom,sz(end)]));
             end
-        end
-        function y = apply(this,x)   
+		end
+	end
+	
+	methods (Access = protected)
+        function y = apply_(this,x)   %todo: size problem here?
             if isequal(size(x),this.sizein)
                 y=sum(bsxfun(@times,this.D,x),3);
             else
                 assert(isvector(x) && this.sizein(end)==length(x),'x must be a vector of size the number of dictionnary atoms');
                 y=sum(bsxfun(@times,this.D,reshape(x,this.sizein)),3);
             end
-        end
-        function y = adjoint(this,x)
+		end
+		
+        function y = adjoint_(this,x)
             y=sum(reshape(bsxfun(@times,this.D,x),[this.numelAtom,ones(this.ndms-2),this.sizein(end)]),1);
             y=y(:);
         end

@@ -55,12 +55,12 @@ classdef OneToMany < LinOp
             else
                 this.alpha = alpha;
             end
-            this.iscomplex= this.ALinOp{1}(1).iscomplex;
-            this.isinvertible=false;
+            this.isComplex= this.ALinOp{1}(1).isComplex;
+            this.isInvertible=false;
             this.sizein =  this.ALinOp{1}(1).sizein;
             for n =2:this.numLinOp
                 assert(isempty(this.ALinOp{n}(1).sizein) ||isequal(this.sizein,this.ALinOp{n}(1).sizein),'%d-th input does not have the right right hand side size ') ;
-                this.iscomplex= this.ALinOp{n}(1).iscomplex ||  this.iscomplex ;
+                this.isComplex= this.ALinOp{n}(1).isComplex ||  this.isComplex ;
             end
             
             
@@ -77,10 +77,10 @@ classdef OneToMany < LinOp
         function y = adjoint(this,x) % apply the adjoint
             assert( iscell(x), 'adjoint of a OneToMany must be applied to a cell array',this.sizeout);
            assert( numel(x)==this.numLinOp, 'OneToMany LinOp: input does not have the right number of cell: %d',this.numLinOp); 
-            y =  this.alpha(1) .* this.ALinOp{1}(1).adjoint(x{1});
+            y =  this.alpha(1) .* this.ALinOp{1}(1).applyAdjoint(x{1});
             for n =2:this.numLinOp
             assert( isequal(size(x{n}),this.ALinOp{n}.sizeout),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizeout);
-                y = y + this.alpha(n) .* this.ALinOp{n}(1).adjoint(x{n});
+                y = y + this.alpha(n) .* this.ALinOp{n}(1).applyAdjoint(x{n});
             end
         end
         function y = HtH(this,x) % apply the operator

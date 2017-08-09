@@ -38,14 +38,14 @@ sizeout = LinOp.sizeout;
 In = rand(sizein);
 Out = rand(sizeout);
 
-if LinOp.iscomplex
+if LinOp.isComplex
 	disp('Complex LinOp');
 	In = In + 1i * rand(sizein);
 	Out = Out + 1i * rand(sizeout);	
 end
 
 HIn = LinOp.apply(In);
-HtOut = LinOp.adjoint(Out);
+HtOut = LinOp.applyAdjoint(Out);
 
 
 tol = 1e-3*max( max(max(abs(In(:))),max(abs(HIn(:)))),max(max(abs(Out(:))),max(abs(HtOut(:))))); % Tolerance for numerical equality
@@ -58,7 +58,7 @@ else
     error('adjoint error: <Hx.y> ~= <x.H^*y> : diff = %d', normDiff);
 end
 
-diff = LinOp.adjoint(HIn) - LinOp.HtH(In);
+diff = LinOp.applyAdjoint(HIn) - LinOp.HtH(In);
 normDiff = diff(:)' * diff(:);
 if  normDiff < tol
     disp('HtH matrix OK');
@@ -73,13 +73,13 @@ else
 end
 
 
-if LinOp.isinvertible
+if LinOp.isInvertible
     if abs(LinOp.inverse(HIn)-In)<tol
         disp('inverse OK');
     else
         error('Error in Inverse computation: H^-1 H ~= I');
     end
-    HIIn = LinOp.adjointInverse(In);
+    HIIn = LinOp.applyAdjointInverse(In);
     HItOut = LinOp.inverse(Out);
     if abs(dot(In(:) ,HItOut(:) ) - dot(HIIn(:) , Out(:)))<10*tol
         disp('adjoint Inverse  OK');

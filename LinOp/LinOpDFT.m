@@ -37,8 +37,8 @@ classdef LinOpDFT <  LinOp
         function this = LinOpDFT(sz, pad)
             
             this.name ='Complex DFT';
-            this.iscomplex= true;
-            this.isinvertible=true;            
+            this.isComplex= true;
+            this.isInvertible=true;            
             assert(issize(sz),'The input size sz should be a conformable  to a size ');
             this.sizein = sz;`
             if nargin>1
@@ -49,8 +49,10 @@ classdef LinOpDFT <  LinOp
                 end
             end
             
-        end
-        function y = apply(this,x)
+		end
+	end
+	methods (Access = protected)
+        function y = apply_(this,x)
             this.sizein = size(x);
             this.sizeout = size(x);
             this.N=numel(x);
@@ -61,7 +63,7 @@ classdef LinOpDFT <  LinOp
                 
             end
         end
-        function y = adjoint(this,x)
+        function y = adjoint_(this,x)
             this.N=numel(x);
             if this.unitary
                 y = sqrt(this.N) * ifftn(x,this.pad);
@@ -69,10 +71,10 @@ classdef LinOpDFT <  LinOp
                 y = this.N * ifftn(x,this.pad);
             end
         end
-        function y = inverse(this,x)
+        function y = inverse_(this,x)
             y = ifftn(x,this.pad);
         end
-        function y = HtH(this,x) %Beware of unitary fft of Matlab
+        function y = HtH_(this,x) %Beware of unitary fft of Matlab
             this.N=numel(x);
             
             if this.unitary
@@ -81,7 +83,7 @@ classdef LinOpDFT <  LinOp
                 y =this.N *x;
             end
         end
-        function y = adjointInverse(this,x) %Beware of unitary fft of Matlab
+        function y = adjointInverse_(this,x) %Beware of unitary fft of Matlab
             this.N=numel(x);
             y = 1/this.N *fftn(x,this.pad);
         end

@@ -35,12 +35,12 @@ classdef LinOpScaling <  LinOp
             if isscalar(scale)
                 this.scale = scale;
                 if isreal(scale)
-                    this.iscomplex=false;
+                    this.isComplex=false;
                 else
-                    this.iscomplex=true;
+                    this.isComplex=true;
                 end
-                if scale == 0;
-                    this.isinvertible= false;
+                if scale == 0
+                    this.isInvertible= false;
                 end
             else
                 error('LinOpScale value must be a scalar');
@@ -50,32 +50,31 @@ classdef LinOpScaling <  LinOp
             this.sizeout=sz;
             this.sizein=sz;
             
-        end
-        function y = apply(this,x)
-            this.sizeout=size(x);
+		end
+	end
+	
+	methods (Access = protected)
+        function y = apply_(this,x)
+            this.sizeout=size(x); % todo: remove this delayed size setting
             this.sizein=size(x);
             y =this.scale .* x;
         end
-        function y = adjoint(this,x)
+        function y = adjoint_(this,x)
             this.sizeout=size(x);
             this.sizein=size(x);
-            if this.iscomplex
+            if this.isComplex
                 y =this.scale .*x;
             else
                 y =conj(this.scale) .*x;
             end
         end
-        function y = inverse(this,x)
-            if ( ~this.isinvertible)
-                error('Operator non invertible');
-            end
+        function y = inverse_(this,x)
+
             y =(1./this.scale) .*x;
         end
-        function y = adjointInverse(this,x)
-            if (~this.isinvertible)
-                error('Operator non invertible');
-            end
-            if this.iscomplex
+        function y = adjointInverse_(this,x)
+           
+            if this.isComplex
                 y = (1./this.scale) .*x;
             else
                 y =conj(1./this.scale) .*x;

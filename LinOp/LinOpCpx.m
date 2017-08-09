@@ -35,7 +35,7 @@ classdef LinOpCpx <  LinOp
     methods
         function this = LinOpCpx(sz)
             this.name ='LinOp Complrx';
-            this.iscomplex = false;
+            this.isComplex = false;
             this.isinvertible = true;
             
             assert(issize(sz),'The input size sz should be a conformable  to a size ');
@@ -44,26 +44,27 @@ classdef LinOpCpx <  LinOp
             this.nbDim = numel(sz);
             
             
-        end
-        function y = apply(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein); 
+		end
+	end
+	methods (Access = protected)
+        function y = apply_(this,x)
+          
             y = cat(this.nbDim+1, real(x),imag(x));
         end
-        function y = adjoint(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizein); 
+        function y = adjoint_(this,x)
+        
             y = reshape(x,[],2);
             y = complex(y(:,1),y(:,2));
             y = reshape(y,this.sizein);
         end
-        function y = HtH(~,x)
+        function y = HtH_(~,x)
             y =x;
         end
-        function y = HHt(~,x)
+        function y = HHt_(~,x)
             y =x;
         end
         
-        function y = inverse(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizein); 
+        function y = inverse_(this,x)
             y = complex(x(:,:,1),x(:,:,2));
         end
     end

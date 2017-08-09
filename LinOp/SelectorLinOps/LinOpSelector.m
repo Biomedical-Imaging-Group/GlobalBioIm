@@ -40,13 +40,13 @@ classdef LinOpSelector <  LinOp
             if nargin==0
                 sel=false;
             end
-            this.iscomplex= false;
+            this.isComplex= false;
             assert(islogical(sel),'The input selector should be boolean');            
 			this.norm = 1;			
             this.sizeout=[sum(sel(:)), 1];
             this.sel = sel;
             this.sizein=size(sel);
-            this.isinvertible=false;
+            this.isInvertible=false;
         end        
         function y = apply(this,x)
             % Reimplemented from parent class :class:`LinOp`.           

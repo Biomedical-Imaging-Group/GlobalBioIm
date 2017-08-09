@@ -30,7 +30,7 @@ classdef LinOpIdentity <  LinOp
 		this.name='LinOp Identity';
 		this.isComplexIn=true;
 		this.isComplexOut=true;
-        this.isDifferentiable=true;
+this.isDifferentiable=true;
         this.isInvertible=true;
 		this.norm=1;
 		if nargin>0
@@ -46,6 +46,7 @@ classdef LinOpIdentity <  LinOp
     methods (Access = protected)      
         function y = apply_(this,x)
         	% Reimplemented from parent class :class:`LinOp`.       	
+
             y =x;
         end        
         function y = applyAdjoint_(this,x)

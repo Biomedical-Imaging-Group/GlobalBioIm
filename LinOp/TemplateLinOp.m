@@ -41,28 +41,33 @@ classdef TemplateLinOp <  LinOp
         function this = TemplateLinOp() %change the name of the constructor
             this.name ='';             
             this.issquare = false;     % is your operator square?
-            this.iscomplex= true;      % is your operator complex?
-            this.isinvertible = false; % true if the operator is invertible
+            this.isComplex= true;      % is your operator complex?
+            this.isInvertible = false; % true if the operator is invertible
             this.sizein = [];          % what is the size of the right hand side
             this.sizeout = [];         % what is the size of the left hand side
-        end
+		end
+	end
+	
+	methods (Access = protected)
         % MANDATORY METHODS
-        function y = apply(this,x)   
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
-        end
-        function y = adjoint(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
-        end
-%         FACULTATIVE METHODS
-%         function y = inverse(this,x)
+        function y = apply_(this,x)   
+			y = [];
+		end
+		
+        function y = adjoint_(this,x)
+           y = [];
+		end
+		
+%         OPTIONAL METHODS
+%         function y = inverse_(this,x)
 %         end
-%         function y = adjointInverse(this,x)
+%         function y = adjointInverse_(this,x)
 %         end
-%         function y = HtH(this,x) %  apply the HtH matrix
+%         function y = HtH_(this,x) %  apply the HtH matrix
 %         end
-%         function y = HHt(this,x) %  apply the HHt matrix
+%         function y = HHt_(this,x) %  apply the HHt matrix
 %         end
-%         function y = HtWH(this,x,W) %  apply the HtWH matrix
+%         function y = HtWH_(this,x,W) %  apply the HtWH matrix
 %         end
     end
 end

@@ -26,13 +26,14 @@ classdef LinOpConv <  LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (SetAccess = protected, GetAccess = public)
+    properties
         psf
         mtf
         index
         Notindex
         ndms
-    end
+	end
+	
     methods
         function this = LinOpConv(psf,index)
 			% todo: should be based on mtf, not psf
@@ -40,11 +41,11 @@ classdef LinOpConv <  LinOp
                 index = [];
             end
             this.name ='LinOp Convolution';
-            this.isinvertible=false;
+            this.isInvertible=false;
             
             assert(isnumeric(psf),'The psf should be a');
             this.psf = psf;
-            if ~isreal(psf), this.iscomplex= true; end
+            if ~isreal(psf), this.isComplex= true; end
             this.sizeout =size( this.psf);
             this.sizein = this.sizeout;
             
@@ -69,49 +70,55 @@ classdef LinOpConv <  LinOp
             this.mtf = Sfft(this.psf, this.Notindex);
             
             if all(this.mtf)
-                this.isinvertible=true;
+                this.isInvertible=true;
             else
-                this.isinvertible=false;
+                this.isInvertible=false;
             end
             
             % -- Norm of the operator
             this.norm=max(abs(this.mtf(:)));
             
-        end
-        function y = apply(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d]',this.sizein);
+		end
+	end
+	
+	methods (Access = protected)
+        function y = apply_(this,x)
             y = iSfft( this.mtf .* Sfft(x, this.Notindex), this.Notindex );
-            if (~this.iscomplex)&&isreal(x)
+            if (~this.isComplex)&&isreal(x)
                 y = real(y);
             end
-        end
-        function y = adjoint(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
+		end
+		
+        function y = adjoint_(this,x)
             y = iSfft( conj(this.mtf) .* Sfft(x, this.Notindex), this.Notindex );
-            if (~this.iscomplex)&&isreal(x)
+            if (~this.isComplex)&&isreal(x)
                 y = real(y);
             end
-        end
-        function y = HtH(this,x)
+		end
+		
+        function y = HtH_(this,x)
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
             y = iSfft( (real(this.mtf).^2 + imag(this.mtf).^2) .* Sfft(x, this.Notindex), this.Notindex );
-            if (~this.iscomplex)&&isreal(x)
+            if (~this.isComplex)&&isreal(x)
                 y = real(y);
             end
-        end
-        function y = HHt(this,x)
+		end
+		
+        function y = HHt_(this,x)
             y=this.HtH(x);
-        end
-        function y=inverse(this,x) % apply the inverse
-            if this.isinvertible
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d]',this.sizein);
-            y = iSfft( 1./this.mtf .* Sfft(x, this.Notindex), this.Notindex );       
-            else
-                error('Operator not invertible');
-            end
-        end
-        function y=adjointInverse(this,x) % apply the inverse
-            if this.isinvertible
+		end
+		
+        function y = inverse_(this,x)
+			if this.isInvertible
+				
+				y = iSfft( 1./this.mtf .* Sfft(x, this.Notindex), this.Notindex );
+			else
+				error('Operator not invertible');
+			end
+		end
+		
+        function y = adjointInverse_(this,x) % apply the inverse
+            if this.isInvertible
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
             y = iSfft( 1./conj(this.mtf) .* Sfft(x, this.Notindex), this.Notindex );
             else
@@ -119,8 +126,6 @@ classdef LinOpConv <  LinOp
             end
 		end
 		
-	end
-	methods (Access = protected)
 		function G = makeComposition_(this, H)
 			if isa(H, 'LinOpConv')
 				G = LinOpConv(this.mtf .* H.mtf); % todo: wrong

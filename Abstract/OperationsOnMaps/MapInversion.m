@@ -37,30 +37,30 @@ classdef Inverse < LinOp
             
             
             assert(isa(TLinOp,'LinOp'),'Input should be a  LinOp');
-            assert(TLinOp.isinvertible,'Input should be a  invertible');
+            assert(TLinOp.isInvertible,'Input should be a  invertible');
             this.TLinOp = TLinOp;
-            this.iscomplex= this.TLinOp.iscomplex;
-            this.isinvertible=this.TLinOp.isinvertible;
+            this.isComplex= this.TLinOp.isComplex;
+            this.isInvertible=this.TLinOp.isInvertible;
             this.sizein =  this.TLinOp.sizein;
             this.sizeout =  this.TLinOp.sizeout;
             
           end
         
         function y = apply(this,x) % apply the operator
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizein);            
+           
             y =this.TLinOp.inverse(x);
         end
-        function y = adjoint(this,x) % apply the adjoint
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizeout);
-            y =this.TLinOp.adjointInverse(x);
+        function y = applyAdjoint(this,x) % apply the adjoint
+           
+            y =this.TLinOp.applyAdjointInverse(x);
         end
-        function y = inverse(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizeout);
+        function y = applyInverse(this,x)
+            
             y =this.TLinOp.apply(x);
         end
-        function y = adjointInverse(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizein);   
-            y =this.TLinOp.adjoint(x); 
+        function y = applyAdjointInverse(this,x)
+            
+            y =this.TLinOp.applyAdjoint(x); 
         end
     end
 end

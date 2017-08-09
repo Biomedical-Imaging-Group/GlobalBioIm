@@ -49,6 +49,8 @@ classdef LinOp < Map
     % - transpose(this)
     % - ctranspose(this)
     % - applyAdjointInverse(this,x)
+    % - makeHtH(this)
+    % - makeHHt(this)
     methods (Sealed)
         function x = applyAdjoint(this, y)
             % Computes  \\(\\mathrm{y=H}^*\\mathrm{y}\\) for \\(\\mathrm{y} \\in \\mathrm{Y}\\)
@@ -104,30 +106,30 @@ classdef LinOp < Map
             if this.isComplexOut
                 warning('Warning: Do you mean adjoint? For LinOp objects transpose() is an alias of adjoint method');
             end
-            L = LinOpAdjoint(this);
+            L = this.makeAdjoint_();
         end
         function L = ctranspose(this)
-            % Do the same as :meth:`transpose`            
-            L = LinOpAdjoint(this);
-        end  
+            % Do the same as :meth:`transpose`
+            L = this.makeAdjoint_();
+        end
         function y= applyAdjointInverse(this,x)
             % Computes \\(\\mathrm{y} = \\mathrm{H}^{-\star} \\mathrm{x}\\) for the given
-            % \\(\\mathrm{x} \\in \\mathrm{X}\\). (if applicable)   
+            % \\(\\mathrm{x} \\in \\mathrm{X}\\). (if applicable)
             %
             % Calls the method :meth:`applyAdjointInverse_`
             if ~checkSize(x, this.sizein) % check input size
                 error('Input to applyAdjointInverse was size [%s], didn''t match stated sizein: [%s].',...
                     num2str(size(x)), num2str(this.sizein));
-            end            
+            end
             % memoize
-            y = this.memoize('applyAdjointInverse', @this.applyAdjointInverse_, x);            
+            y = this.memoize('applyAdjointInverse', @this.applyAdjointInverse_, x);
             % check output size
             if ~checkSize(y, this.sizeout)
                 warning('Output of applyAdjointInverse was size [%s], didn''t match stated sizeout: [%s].',...
                     num2str(size(y)), num2str(this.sizeout));
             end
             
-                        % **(Abstract method)** Apply \\(\\mathrm{H}^{-*}\\) (if applicable)
+            % **(Abstract method)** Apply \\(\\mathrm{H}^{-*}\\) (if applicable)
             %
             % :param x: \\(\\in X\\)
             % :returns y: \\(= \\mathrm{H^{-*}x}\\)
@@ -138,15 +140,32 @@ classdef LinOp < Map
             else
                 error('Operator not invertible');
             end
-        end       
+        end
+        function M=makeHtH(this)
+            % Compose the Adjoint Map \\(\\mathrm{H}^{\\star}\\) with 
+            % \\(\\mathrm{H}\\). Returns a new map \\(\\mathrm{M=H}^{\\star} \\mathrm{H}\\)
+            %
+            % Calls the method :meth:`makeHtH_`
+            M=this.makeHtH_();
+        end
+        function M=makeHHt(this)
+            % Compose the  Map \\(\\mathrm{H}\\)  with its adjoint
+            % \\(\\mathrm{H}^{\\star}\\). Returns a new map \\(\\mathrm{M=H}\\mathrm{H}^{\\star}\\)
+            %
+            % Calls the method :meth:`makeHHt_`
+            M=this.makeHHt_();
+        end
     end
     
     %% Core Methods containing implementations (Protected)
     % - applyAdjoint_(this, y)
     % - applyHtH_(this,x)
     % - applyHHt_(this,y)
-    % - makeComposition_(this, G)
     % - applyAdjointInverse_(this,x)
+    % - makeAdjoint_(this)
+    % - makeHtH_(this)
+    % - makeHHt_(this)
+    % - makeComposition_(this, G)
     methods (Access = protected) % all the other underscore methods
         function x = applyAdjoint_(this, y)
             % Not implemented in this Abstract class
@@ -165,12 +184,38 @@ classdef LinOp < Map
             % way to perform computation.
             x = this.apply(this.applyAdjoint(y));
         end
+        function y = applyAdjointInverse_(this,x)
+            % Not implemented in this Abstract class
+            error('applyAdjointInverse_ method not implemented');
+        end
+        function M = makeAdjoint_(this)
+            % Constructs a :class:`LinOpAdjoint` from the current
+            % current :class:`LinOp` \\(\\mathrm{H}\\) 
+            M=LinOpAdjoint(this);
+        end
+        function M = makeHtH_(this)
+            % Constructs a :class:`LinOpComposition` corresponding to 
+            % \\(\\mathrm{H}^{\\star}\\mathrm{H}\\)
+            M=LinOpComposition(this',this);
+        end
+        function M = makeHHt_(this)
+            % Constructs a :class:`LinOpComposition` corresponding to 
+            % \\(\\mathrm{H}\\mathrm{H}^{\\star}\\)
+            M=LinOpComposition(this,this');
+        end
         function M = makeComposition_(this, G)
             % If \\(\\mathrm{G}\\) is a :class:`LinOp`, constructs a :class:`LinOpComposition`
             % object to compose the current LinOp (this) with the given :class:`LinOp`\\(\\mathrm{G}\\). 
             % Otherwise the composition will be a :class:`MapComposition`.
             if isa(G,'LinOp')
-                if isa(G,'LinOpComposition') && isa(G.H1,'LinOpScaledIdentity')  % to handle properly scalar multiplications
+                % is HHt or HtH
+                if (isa(G,'LinOpAdjoint') && isequal(G.TLinOp,this)) || (isa(this,'LinOpAdjoint') && isequal(this.TLinOp,G))
+                    M=this.makeHHt();
+                % handle inversions
+                elseif isa(G,'LinOpInversion') && isequal(G.M,this)
+                    M=LinOpScaledIdentity(this.sizein,1);
+                % to handle properly scalar multiplications 
+                elseif isa(G,'LinOpComposition') && isa(G.H1,'LinOpScaledIdentity')  
                     if isa(this,'LinOpComposition') && isa(this.H1,'LinOpScaledIdentity')
                         M = LinOpComposition(LinOpScaledIdentity(this.sizeout,this.H1.nu*G.H1.nu),this.H2.makeComposition(G.H2));
                     else
@@ -184,12 +229,16 @@ classdef LinOp < Map
                     end
                 end
             else
-                M = makeComposition_@Map(G);
+                M = makeComposition_@Map(this,G);
             end
         end
-        function y= applyAdjointInverse_(this,x)
-            % Not implemented in this Abstract class
-            error('applyAdjointInverse_ method not implemented');
+        function M = mpower_(this,p)
+            % Reimplemented from :class:`Map`  
+            if p==-1
+                M=LinOpInversion(this);
+            else
+                M=mpower_@Map(this,p);
+            end
         end
     end
     

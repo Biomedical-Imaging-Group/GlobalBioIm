@@ -1,18 +1,12 @@
 classdef LinOpAdjoint < LinOp
-    % Adjoint : overload of adjoint function for LinOp
-    %  Matlab Linear Operator Library
+    % Adjoint : Builds the adjoint LinOp
     %
-    % Example
-    % Obj = Adjoint(LinOp)
-    % Obj is the adjoint of the LinOp
+    % :param TLinOp: :class:`LinOp` object
     %
-    %
-    %
-    % Please refer to the LINOP superclass for general documentation about
-    % linear operators class
-    % See also LinOp
+    % See also :class:`Map`, :class:`LinOp`
     
-    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+    %%    Copyright (C) 2015 
+    %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -31,38 +25,68 @@ classdef LinOpAdjoint < LinOp
         TLinOp     % linop
     end
     
+    %% Constructor
     methods 
         function this = LinOpAdjoint(TLinOp)
             this.name =sprintf('%s Adjoint', TLinOp.name);           
             assert(isa(TLinOp,'LinOp'),'Input should be a  LinOp');
             this.TLinOp = TLinOp;
-            this.isComplex= this.TLinOp.isComplex;
+            this.isComplexIn= this.TLinOp.isComplexOut;
+            this.isComplexOut= this.TLinOp.isComplexIn;
+            this.isDifferentiable= this.TLinOp.isDifferentiable;
             this.isInvertible=this.TLinOp.isInvertible;
             this.sizein =  this.TLinOp.sizeout;
             this.sizeout =  this.TLinOp.sizein;			
 			this.norm = this.TLinOp.norm;        
-		end
-        
-	end
+        end       
+    end
 	
+    %% Core Methods containing implementations (Protected)
+    % - apply_(this,x)
+    % - applyAdjoint_(this,x)
+    % - applyHtH_(this,x)
+    % - applyHHt_(this,x)
+    % - applyInverse_(this,x)
+    % - applyAdjointInverse_(this,x)
+    % - makeAdjoint_(this)
+    % - makeHHt_(this)
+    % - makeHtH_(this)
 	methods (Access = protected)
-        function y = apply_(this,x) % apply the operator         
+        function y = apply_(this,x) 
+            % Reimplemented from :class:`LinOp`
             y =this.TLinOp.applyAdjoint(x);
         end
-        function y = adjoint_(this,x) % apply the adjoint
+        function y = applyAdjoint_(this,x) 
+            % Reimplemented from :class:`LinOp`
             y =this.TLinOp.apply(x);
         end
-        function y = HtH_(this,x)
+        function y = applyHtH_(this,x)
+            % Reimplemented from :class:`LinOp`
             y =this.TLinOp.HHt(x);
         end
-        function y = HHt_(this,x)
+        function y = applyHHt_(this,x)
+            % Reimplemented from :class:`LinOp`
             y =this.TLinOp.HtH(x);
         end
-        function y = inverse_(this,x)
+        function y = applyInverse_(this,x)
+            % Reimplemented from :class:`LinOp`
             y =this.TLinOp.applyInverse(x);
         end
-        function y = adjointInverse_(this,x)
+        function y = applyAdjointInverse_(this,x)
+            % Reimplemented from :class:`LinOp`
             y =this.TLinOp.applyAdjointInverse(x); 
+        end
+        function M = makeAdjoint_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            M=this.TLinOp;
+        end
+        function M = makeHHt_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            M=this.TLinOp.makeHtH();
+        end
+        function M = makeHtH_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            M=this.TLinOp.makeHHt();
         end
     end
 end

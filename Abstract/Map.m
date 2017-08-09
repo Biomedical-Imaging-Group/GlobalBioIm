@@ -151,6 +151,9 @@ classdef (Abstract) Map < handle
             M = this.minus_(G);
         end      
         function M = mpower(this,p)
+            % Returns a new :class:`Map` which is the power p \\(\\mathrm{H}^{p}\\) of the
+            % current \\(\\mathrm{H}\\).  
+            M=this.mpower_(p);
         end
         function M = mtimes(this,G)
             % Overload operator (*) for :class:`Map` objects
@@ -177,11 +180,10 @@ classdef (Abstract) Map < handle
     % - apply_(this,x)
     % - applyJacobianT_(this, y, v)
     % - applyInverse_(this,y)
-    % - makeComposition_(this, H)
     % - plus_(this,G)
     % - minus_(this,G)
     % - mpower_(this,p)
-    % - mtimes(this,G)
+    % - makeComposition_(this, H)
     methods (Access = protected)
         function y = apply_(this, x)
             % Not implemented in this Abstract class
@@ -195,11 +197,6 @@ classdef (Abstract) Map < handle
             % Not implemented in this Abstract class
             error('applyInverse_ method not implemented');
         end      
-        function M = makeComposition_(this, G)
-            % Constructs a :class:`MapComposition` object to compose the
-            % current Map \\(\\mathrm{H}\\)  with the given \\(\\mathrm{G}\\). 
-            M = MapComposition(this,G);
-        end
         function M = plus_(this,G)
             % Constructs a :class:`MapSummation` object to sum the
             % current Map \\(\\mathrm{H}\\) with the given \\(\\mathrm{G}\\). 
@@ -217,7 +214,16 @@ classdef (Abstract) Map < handle
             if p==-1
                 M=MapInversion(this);
             else
-                error('mpower_ method not implemented');
+                error('mpower_ method not implemented for the given power==%d',p);
+            end
+        end
+        function M = makeComposition_(this, G)
+            % Constructs a :class:`MapComposition` object to compose the
+            % current Map \\(\\mathrm{H}\\)  with the given \\(\\mathrm{G}\\).
+            if isa(G,'MapInversion') && isequal(G.M,this)
+                M=LinOpScaledIdentity(this.sizein,1);
+            else
+                M = MapComposition(this,G);
             end
         end
     end

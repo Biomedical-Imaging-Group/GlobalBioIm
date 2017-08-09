@@ -1,18 +1,12 @@
-classdef Inverse < LinOp
-    %% Inverse : overload of Inverse function for LinOp
-    %  Matlab Linear Operator Library
+classdef MapInversion < Map
+    % MapInversion : Builds the inverse :class:`Map`
     %
-    % Example
-    % Obj = Inverse(LinOp)
-    % Obj is the Inverse of the LinOp
+    % :param M: :class:`Map` object
     %
-    %
-    %
-    % Please refer to the LINOP superclass for general documentation about
-    % linear operators class
-    % See also LinOp
+    % See also :class:`Map`
     
-    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+    %%    Copyright (C) 2017 
+    %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -28,39 +22,58 @@ classdef Inverse < LinOp
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     properties (SetAccess = protected,GetAccess = public)
-        TLinOp     % linop
+        M;     % Map
     end
     
+    %% Constructor
     methods 
-        function this = inverse(TLinOp)
-            this.name ='inverse';
-            
-            
-            assert(isa(TLinOp,'LinOp'),'Input should be a  LinOp');
-            assert(TLinOp.isInvertible,'Input should be a  invertible');
-            this.TLinOp = TLinOp;
-            this.isComplex= this.TLinOp.isComplex;
-            this.isInvertible=this.TLinOp.isInvertible;
-            this.sizein =  this.TLinOp.sizein;
-            this.sizeout =  this.TLinOp.sizeout;
-            
+        function this = MapInversion(M)
+            this.name ='MapInversion';                    
+            assert(isa(M,'Map'),'Input should be a Map');
+            assert(M.isInvertible,'Input should be invertible');
+            this.M = M;
+            this.isComplexIn= this.M.isComplexOut;
+            this.isComplexOut= this.M.isComplexIn;
+            this.isDifferentiable= this.M.isDifferentiable;
+            this.isInvertible=this.M.isInvertible;
+            this.sizein =this.M.sizeout;
+            this.sizeout =this.M.sizein;   
+            this.norm = 1/this.M.norm; 
           end
-        
-        function y = apply(this,x) % apply the operator
-           
-            y =this.TLinOp.inverse(x);
+    end
+    
+    %% Core Methods containing implementations (Protected)
+    % - apply_(this,x)
+    % - applyInverse_(this,x)
+    % - mpower_(this,p)
+    % - makeComposition_(this, G)
+    methods (Access = protected)
+        function y = apply_(this,x) % 
+            % Reimplemented from :class:`Map`
+            y =this.M.applyInverse(x);
         end
-        function y = applyAdjoint(this,x) % apply the adjoint
-           
-            y =this.TLinOp.applyAdjointInverse(x);
+        function y = applyInverse_(this,x)
+            % Reimplemented from :class:`Map`
+            y =this.M.apply(x);
         end
-        function y = applyInverse(this,x)
-            
-            y =this.TLinOp.apply(x);
+        % the two function reimplementations below are needed because of
+        % the multiple inheritance to specifies which methods to use from
+        % parent classes
+        function M = mpower_(this,p)
+           % Reimplemented from :class:`Map`
+            if p==-1
+                M=this.M;
+            else
+                M=mpower_@Map(this,p);
+            end
         end
-        function y = applyAdjointInverse(this,x)
-            
-            y =this.TLinOp.applyAdjoint(x); 
+        function M = makeComposition_(this, G)
+            % Reimplemented from parent class :class:`LinOp`.
+            if  isequal(this.M,G)
+                M=LinOpScaledIdentity(this.sizein,1);
+            else
+                M=makeComposition_@Map(this,G);
+            end
         end
     end
 end

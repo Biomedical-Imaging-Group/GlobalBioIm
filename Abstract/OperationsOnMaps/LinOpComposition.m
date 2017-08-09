@@ -31,8 +31,7 @@ classdef LinOpComposition < MapComposition & LinOp
     %% Constructor
     methods
         function this = LinOpComposition(H1,H2)
-            this@MapComposition(H1,H2);
-            this.name='LinOpComposition';          
+            this@MapComposition(H1,H2);               
             assert((isa(H1,'LinOp') || isscalar(H1)),'H1 have to be a LinOp object or a scalar');
             assert(isa(H2,'LinOp'),'H2 have to be a LinOp');
             if (isnumeric(H1) && isscalar(H1)) && isa(H2,'LinOpComposition') && (isnumeric(H2.H1) && isscalar(H2.H1))
@@ -41,11 +40,16 @@ classdef LinOpComposition < MapComposition & LinOp
             else            
             	% strcmp is different than isa because it doesn't check all
                 % superclasses as well
-                if strcmp(class(H1), 'Adjoint') && H1.TLinOp == H2
+                if strcmp(class(H1), 'LinOpAdjoint') && isequal(H1.TLinOp,H2)
                     this.isHTH = true;
-                elseif strcmp(class(H2), 'Adjoint') && H2.TLinOp == H1
+                elseif strcmp(class(H2), 'LinOpAdjoint') && isequal(H2.TLinOp,H1)
                     this.isHHt = true;
                 end
+            end
+            if (isnumeric(H1) && isscalar(H1))
+                this.name=sprintf('LinOpComposition: %s --- %s',num2str(H1),H2.name);      
+            else
+                this.name=sprintf('LinOpComposition: %s --- %s',H1.name,H2.name);      
             end
         end
     end

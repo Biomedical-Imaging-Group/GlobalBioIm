@@ -93,6 +93,14 @@ classdef (Abstract) Map < handle
 		end
 	end
 
+	% overloaded methods
+	function sz = size(this, varargin)
+		sz = {this.sizeout, this.sizein};
+		if length(varargin) == 1
+			sz = sz{varargin{:}};
+			
+		end
+	end
 
 	
   end

@@ -57,8 +57,14 @@ classdef (Abstract) LinOp < Map
 			
 		end
 		
+		function HT = adjoint(this)
+			HT = this.adjoint_();
+		end
+	
+		
+		% operator overloading
 	  
-	  function this = transpose(this)
+	  function HT = transpose(this)
 		% Overload operator (.') for :class:`LinOp` objects (i.e. :meth:`adjoint`).
 		%
 		% **Note**: operators (.') and (') (see :meth:`ctranspose`) are identical for :class:`LinOp`.
@@ -66,7 +72,8 @@ classdef (Abstract) LinOp < Map
 		if this.isComplex
 		  warning('Warning: Do you mean adjoint? For LinOp object transpose() is an alias of adjoint method');
 		end
-		this = Adjoint(this);
+		HT = adjoint(this);
+		
 	  end
 	  
 	  function this = ctranspose(this)
@@ -74,7 +81,7 @@ classdef (Abstract) LinOp < Map
 		%
 		% **Note**: operators (') and (.') (see :meth:`transpose`) are identical for :class:`LinOp`.
 		
-		this = Adjoint(this);
+		HT = adjoint(this);
 	  end
 	  
 	  function Hnew = mtimes(this,H2)
@@ -117,13 +124,13 @@ classdef (Abstract) LinOp < Map
 	  
     methods (Access = protected) % all the other underscore methods
 	  
-        function x = adjoint_(this, y) 
-            % **(Abstract method)** Apply the adjoint of the linear operator
-        	%
-        	% :param x: \\(\\in Y\\)
-        	% :returns y: \\(= \\mathrm{H^*x}\\) where \\(\\mathrm{H}^*\\) is defined such that $$\\langle\\mathrm{Hx},\\mathrm{y}\\rangle_{\\mathrm{Y}} = \\langle \\mathrm{x}, \\mathrm{H}^*\\mathrm{y} \\rangle_{\\mathrm{X}}$$
-        	
-			% todo: general case possible
+		function HT = adjoint_(this)
+			% **(Abstract method)** Apply the adjoint of the linear operator
+			%
+			% :param x: \\(\\in Y\\)
+			% :returns y: \\(= \\mathrm{H^*x}\\) where \\(\\mathrm{H}^*\\) is defined such that $$\\langle\\mathrm{Hx},\\mathrm{y}\\rangle_{\\mathrm{Y}} = \\langle \\mathrm{x}, \\mathrm{H}^*\\mathrm{y} \\rangle_{\\mathrm{X}}$$
+			
+			HT = LinOpAdjoint(this);
 		end
 		
 		function x = applyAdjoint_(this, y)

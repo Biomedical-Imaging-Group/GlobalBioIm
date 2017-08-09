@@ -1,4 +1,4 @@
-classdef Adjoint < LinOp
+classdef LinOpAdjoint < LinOp
     %% Adjoint : overload of adjoint function for LinOp
     %  Matlab Linear Operator Library
     %
@@ -32,7 +32,7 @@ classdef Adjoint < LinOp
     end
     
     methods 
-        function this = Adjoint(TLinOp)
+        function this = LinOpAdjoint(TLinOp)
             this.name =sprintf('%s Adjoint', TLinOp.name);           
             assert(isa(TLinOp,'LinOp'),'Input should be a  LinOp');
             this.TLinOp = TLinOp;

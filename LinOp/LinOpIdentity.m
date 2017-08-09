@@ -68,6 +68,11 @@ classdef LinOpIdentity <  LinOp
         	% Reimplemented from parent class :class:`LinOp`.        	
             y =x;
         end
+        function M = makeComposition_(this,G)
+            % Reimplemented from parent class :class:`LinOp`.
+            % Returns \\(\\mathrm{G}\\).
+            M = G;
+        end
     end
 end
 

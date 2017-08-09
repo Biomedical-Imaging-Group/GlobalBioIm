@@ -138,8 +138,7 @@ classdef LinOp < Map
             else
                 error('Operator not invertible');
             end
-        end
-        
+        end       
     end
     
     %% Core Methods containing implementations (Protected)
@@ -170,8 +169,16 @@ classdef LinOp < Map
             % If \\(\\mathrm{G}\\) is a :class:`LinOp`, constructs a :class:`LinOpComposition`
             % object to compose the current LinOp (this) with the given :class:`LinOp`\\(\\mathrm{G}\\). 
             % Otherwise the composition will be a :class:`MapComposition`.
-            if isa(G, 'LinOp')
-                M = LinOpComposition(this,G);
+            if isa(G,'LinOp')
+                if isa(G,'LinOpComposition') && isscalar(G.H1)  % to handle properly scalar multiplications
+                    if isa(this,'LinOpComposition') && isscalar(this.H1)
+                        M = LinOpComposition(this.H1*G.H1,this.H2.makeComposition(G.H2));
+                    else
+                        M = LinOpComposition(G.H1,this.makeComposition(G.H2));
+                    end
+                else
+                    M = LinOpComposition(this,G);
+                end
             else
                 M = makeComposition_@Map(G);
             end
@@ -184,24 +191,11 @@ classdef LinOp < Map
     
     %% Methods of superclass Map that do not need to be reimplemented in derived Costs
     % - applyJacobianT_(this, y, v)
-    % - mtimes(this,G)
     methods (Access = protected, Sealed)
         function x = applyJacobianT_(this, y, v)
             % Uses the method applyAdjoint (hence do not need to be
             % reimplemented in derived classes)
             x = this.applyAdjoint(y);
-        end
-        function M = mtimes(this,G)
-            % Overload operator (*) for :class:`Map` objects
-            % $$ \\mathrm{M}(\\mathrm{x}) := \\mathrm{H}(\\mathrm{G}(\\mathrm{x}))$$
-            %  - If \\(\\mathrm{G}\\) is numeric of size sizein, then :meth:`apply`is called
-            %  - If \\(\\mathrm{G}\\) is a :class:`Map`, then a
-            %    :class:`MapComposition`is intanciated
-            if isa(G,'LinOp') && ~isa(this,'LinOp') % Left multiplication by scalar
-                M = LinOpComposition(this,G);
-            else
-                M = mtimes@Map(this,G);
-            end
         end
     end
           

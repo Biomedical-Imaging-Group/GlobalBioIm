@@ -1,17 +1,11 @@
-classdef LinOpComposition < MapComposition
-    %% LinOpComposition : Composition of LinOps
-    %  Matlab Linear Operator Library
+classdef LinOpComposition < MapComposition & LinOp
+    % LinOpComposition : Composition of LinOps
+    % $$ \\mathrm{H}(\\mathrm{x}) = \\mathrm{H}_1 \\mathrm{H}_2\\mathrm{x} $$
     %
-    % Example
-    % Obj = MulLinOp(LinOp1,LinOp2)
-    % Multiplication of LinOps:
-    % Obj = LinOp1 * LinOp2
+    % :param H1:  left hand side :class:`LinOp` (or a scalar)
+    % :param H2:  right hand side :class:`LinOp`
     %
-    %
-    %
-    % Please refer to the LINOP superclass for general documentation about
-    % linear operators class
-    % See also LinOp
+    % See also :class:`Map`, :class:`LinOp`, :class:`MapComposition`
     
     %%    Copyright (C) 2015
     %     F. Soulez ferreol.soulez@epfl.ch
@@ -41,66 +35,74 @@ classdef LinOpComposition < MapComposition
             this.name='LinOpComposition';          
             assert((isa(H1,'LinOp') || isscalar(H1)),'H1 have to be a LinOp object or a scalar');
             assert(isa(H2,'LinOp'),'H2 have to be a LinOp');
-            
+            if (isnumeric(H1) && isscalar(H1)) && isa(H2,'LinOpComposition') && (isnumeric(H2.H1) && isscalar(H2.H1))
+                this=H2;
+                this.H1=this.H1*H1;
+            else            
             %TODO computing the IsHtH and isHHt
+            end
         end
     end
         
     %% Core Methods containing implementations (Protected)
     % - apply_(this,x)
-    % - applyJacobianT_(this, y, v)
-    % - applyInverse_(this,y)
+    % - applyAdjoint_(this,x)
+    % - applyHtH_(this,x)
+    % - applyHHt_(this,x)
+    % - applyAdjointInverse_(this,x)
     methods (Access = protected)
-		function y = apply_(this,x) % apply the operator
+		function y = apply_(this,x) 
+            % Reimplemented from :class:`LinOp`  
 			if this.isHTH
-				y = this.LinOp2.HtH(x);
+				y = this.H2.applyHtH(x);
 			elseif this.isHHt
-				y = this.LinOp1.HHt(x);
-			elseif this.isnum
-				y = this.LinOp1.*this.LinOp2.apply(x);
+				y = this.H1.applyHHt(x);
+			elseif this.isH1Scalar
+				y = this.H1*this.H2.apply(x);
 			else
-				y = this.LinOp1.apply( this.LinOp2.apply(x));
+				y = this.H1.apply(this.H2.apply(x));
 			end
 		end
-		function y = applyAdjoint_(this,x) % apply the adjoint
+		function y = applyAdjoint_(this,x) 
+            % Reimplemented from :class:`LinOp`  
 			if this.isHTH || this.isHHt
 				y = this.apply(x); % because self-adjoint
-			elseif this.isnum
-				y = this.LinOp2.adjoint(this.LinOp1.*x);
+			elseif this.isH1Scalar
+				y = this.H2.applyAdjoint(this.H1*x);
 			else
-				y = this.LinOp2.adjoint(this.LinOp1.adjoint(x));
+				y = this.H2.applyAdjoint(this.H1.applyAdjoint(x));
 			end
 		end
 		function y = applyHtH_(this,x)
+            % Reimplemented from :class:`LinOp`  
 			if this.isHTH || this.isHTH 
 				y = this.apply(this.apply(x)); % because self-adjoint
-			elseif this.isnum
-				y = this.LinOp2.adjoint(this.LinOp1.^2.*( this.LinOp2.apply(x)));
+			elseif this.isH1Scalar
+				y = this.H2.applyAdjoint(this.H1.^2*( this.H2.apply(x)));
 			else
-				y = this.LinOp2.adjoint(this.LinOp1.HtH( this.LinOp2.apply(x)));
+				y = this.H2.applyAdjoint(this.H1.applyHtH( this.H2.apply(x)));
 			end
         end
 		function y = applyHHt_(this,x)
+            % Reimplemented from :class:`LinOp`  
 			if this.isHTH || this.isHTH 
 				y = this.apply(this.apply(x)); % because self-adjoint
-			elseif this.isnum
-				y = this.LinOp1.*(this.LinOp2.HHt( this.LinOp1.*x));
+			elseif this.isH1Scalar
+				y = this.H1*(this.H2.applyHHt( this.H1*x));
 			else
-				y = this.LinOp1.apply(this.LinOp2.HHt( this.LinOp1.adjoint(x)));
+				y = this.H1.apply(this.H2.applyHHt( this.H1.applyAdjoint(x)));
 			end
-		end
-		function y = applyInverse_(this,x) % apply the inverse
-			if this.isinvertible
-				y = this.LinOp2.inverse(this.LinOp1.inverse(x));
-			else
-				error('Operator not invertible');
-			end
-		end
-        function y = applyAdjointInverse_(this,x) % apply the inverse
-            if this.isinvertible             
-                y = this.LinOp2.adjointInverse(this.LinOp1.adjointInverse(x));
+        end
+        function y = applyAdjointInverse_(this,x) 
+            % Reimplemented from :class:`LinOp`  
+            if this.isinvertible
+                if this.isH1Scalar
+                    y = this.H2.applyAdjointInverse(x/this.H1);
+                else
+                    y = this.H2.applyAdjointInverse(this.H1.applyAdjointInverse(x));
+                end
             else
-                error('Operator not invertible');
+                x = applyAdjointInverse_@LinOp(y);
             end
         end
     end

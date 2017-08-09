@@ -3,12 +3,12 @@ classdef MapComposition < Map
     % $$ \\mathrm{H}(\\mathrm{x}) = \\mathrm{H}_1 \\left( \\mathrm{H}_2(\\mathrm{x}) \\right) $$
     %
     % :param H1:  left hand side :class:`Map` (or a scalar)
-    % :param H2:  right hand side Map
+    % :param H2:  right hand side :class:`Map`
     %
     % See also :class:`Map`
     
-    %%    Copyright (C) 2017 
-    %     M. McCann michael.mccann@epfl.ch  
+    %%    Copyright (C) 2017
+    %     M. McCann michael.mccann@epfl.ch
     %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -32,10 +32,10 @@ classdef MapComposition < Map
     %% Constructor
     methods
         function this = MapComposition(H1,H2)
-            this.name='MapComposition';          
+            this.name='MapComposition';
             assert((isa(H1,'Map') || (isnumeric(H1) && isscalar(H1))),'H1 have to be a Map object or a scalar');
             assert(isa(H2,'Map'),'H2 have to be a Map');
-            if ~isscalar(H1)
+            if ~(isnumeric(H1) && isscalar(H1))
                 assert(isequal(H2.sizeout,H1.sizein),'H1 sizein is inconsistent with H2 sizeout');
                 assert(~H2.isComplexOut || (H1.isComplexIn==H2.isComplexOut),'isComplexOut of H2 is inconsistent with isComplexIn of H1');
             end
@@ -107,6 +107,8 @@ classdef MapComposition < Map
                 else
                     x=this.H2.applyInverse(this.H1.applyInverse(y));
                 end
+            else
+                x = applyInverse_@Map(y);
             end
         end
     end	

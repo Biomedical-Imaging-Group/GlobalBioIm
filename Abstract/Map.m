@@ -65,6 +65,8 @@ classdef (Abstract) Map < handle
     % - makeComposition(this, G)
     % - plus(this,G)
     % - minus(this,G)
+    % - mpower(this,p)
+    % - mtimes(this,G)
     methods (Sealed)
         function y = apply(this, x)
             % Computes \\(\\mathrm{y}=\\mathrm{H}(\\mathrm{x})\\) for the given
@@ -150,6 +152,23 @@ classdef (Abstract) Map < handle
         end      
         function M = mpower(this,p)
         end
+        function M = mtimes(this,G)
+            % Overload operator (*) for :class:`Map` objects
+            % $$ \\mathrm{M}(\\mathrm{x}) := \\mathrm{H}(\\mathrm{G}(\\mathrm{x}))$$
+            %  - If \\(\\mathrm{G}\\) is numeric of size sizein, then :meth:`apply`is called
+            %  - If \\(\\mathrm{G}\\) is a :class:`Map`, then a
+            %    :class:`MapComposition`is intanciated
+            if isa(G,'Map')
+                if (isnumeric(this) && isscalar(this)) % Left multiplication by scalar
+                    H=LinOpIdentity(this.sizeout);
+                    M=H.makeComposition(G);
+                else
+                    M =this.makeComposition(G);
+                end
+            else
+                M = this.apply(G);
+            end
+        end
         % TODO Overload operator .* to multiply term by term two Maps ? (avoid the use of LinOpDiag)
         % TODO Overload operator .^ to do (H(x)).^p ?
     end
@@ -203,24 +222,9 @@ classdef (Abstract) Map < handle
         end
     end
     
-    %% Special mtimes method (is derived in Abstract LinOp and Cost but not below)
+    %% Special mtimes method (do not have a corresponding core method but can be overloaded in subclasses)
     methods
-        function M = mtimes(this,G)
-            % Overload operator (*) for :class:`Map` objects
-            % $$ \\mathrm{M}(\\mathrm{x}) := \\mathrm{H}(\\mathrm{G}(\\mathrm{x}))$$
-            %  - If \\(\\mathrm{G}\\) is numeric of size sizein, then :meth:`apply`is called
-            %  - If \\(\\mathrm{G}\\) is a :class:`Map`, then a
-            %    :class:`MapComposition`is intanciated
-            if isa(G,'Map')
-                if ~isa(this,'Map') % Left multiplication by scalar
-                    M=MapComposition(this,G);
-                else
-                    M =this.makeComposition(G);
-                end
-            else
-                M = this.apply(G);
-            end
-        end
+
     end
               
     %% Utility methods  

@@ -1,4 +1,4 @@
-classdef Adjoint < LinOp
+classdef LinOpAdjoint < LinOp
     %% Adjoint : overload of adjoint function for LinOp
     %  Matlab Linear Operator Library
     %

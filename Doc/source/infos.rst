@@ -28,6 +28,13 @@ Memoize and Precomputation options
 
 Explain memoize and precomputation options
 
+About properties
+----------------
+
+Explain about isComplexIn and IsComplexOut
+
+List the "non protected" properties that could actually be modified for really specific reasons but should not in general.
+
 Use the provided templates!
 ---------------------------
 

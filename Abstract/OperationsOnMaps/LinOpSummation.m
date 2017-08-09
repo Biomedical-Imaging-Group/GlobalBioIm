@@ -1,4 +1,4 @@
-classdef SumLinOp < LinOp
+classdef LinOpSummation < LinOp
     %% SumLinop : Sum of linear operators
     %  Matlab Linear Operator Library
     %

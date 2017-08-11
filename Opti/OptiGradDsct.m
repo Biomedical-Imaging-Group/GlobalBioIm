@@ -17,8 +17,8 @@ classdef OptiGradDsct < Opti
     %
     % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
     
-    %
-    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+    %%    Copyright (C) 2017 
+    %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -52,8 +52,7 @@ classdef OptiGradDsct < Opti
     	end 
     	%% Run the algorithm
         function xopt = run(this,x0) 
-            % Reimplementation from :class:`Opti`.
-            
+            % Reimplementation from :class:`Opti`.           
         	if isempty(this.gam), error('Parameter gam is not setted'); end
 			if ~isempty(x0),this.xopt=x0;end;  % To restart from current state if wanted
 			assert(~isempty(this.xopt),'Missing starting point x0');
@@ -65,7 +64,7 @@ classdef OptiGradDsct < Opti
 				this.niter=this.niter+1;
 				xold=this.xopt;
 				% - Algorithm iteration
-				this.xopt=this.xopt-this.gam*this.cost.grad(this.xopt);
+				this.xopt=this.xopt-this.gam*this.cost.applyGrad(this.xopt);
 				% - Convergence test
 				if this.test_convergence(xold), break; end
 				% - Call OutputOpti object

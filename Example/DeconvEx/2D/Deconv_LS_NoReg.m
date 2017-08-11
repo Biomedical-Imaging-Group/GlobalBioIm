@@ -4,10 +4,10 @@
 %     0.5 ||Hx - y||^2
 % using Gradient Descent
 %
-% See LinOp, LinOpConv, Cost, CostL2, Opti, OptiGradDsct
-% OutpuOpti
+% See LinOp, LinOpConv, Cost, CostL2, CostL2Composition, Opti,
+% OptiGradDsct, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;
+clear; close all; clc;
 help Deconv_LS_NoReg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -39,19 +39,21 @@ impad=zeros(512); idx=129:384;
 impad(idx,idx)=im;
 
 % -- Convolution Operator definition
-H=LinOpConv(psf);
+H=LinOpConv(fft2(psf));
+H.memoizeOpts.apply=true;
 
 % -- Generate data
 load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
 
 % -- Function definition
-F_LS=CostL2(H,y);  % Least-Sqaures data term
+F_LS=CostL2([],y);  % Least-Sqaures data term
+F_LS.doPrecomputation=true;
 
 % -- Gradient Descent LS
 OutOp=OutputOpti(1,impad,40);
-GD=OptiGradDsct(F_LS,OutOp);
-GD.ItUpOut=10;     % call OutputOpti update every ItUpOut iterations
+GD=OptiGradDsct(F_LS*H,OutOp);
+GD.ItUpOut=1;     % call OutputOpti update every ItUpOut iterations
 GD.maxiter=200;    % max number of iterations
 GD.run(y);         % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
 

@@ -76,15 +76,15 @@ classdef (Abstract) Map < handle
             % Calls the method :meth:`apply_`
             
             if ~checkSize(x, this.sizein) % check input size
-                error('Input to apply was size [%s], didn''t match stated sizein: [%s].',...
-                    num2str(size(x)), num2str(this.sizein));
+                error('Input to apply was size [%s], didn''t match  %s sizein: [%s].',...
+                    num2str(size(x)),class(this), num2str(this.sizein));
             end            
             % memoize
             y = this.memoize('apply', @this.apply_, x);            
             % check output size
             if ~checkSize(y, this.sizeout)
-                warning('Output of apply was size [%s], didn''t match stated sizeout: [%s].',...
-                    num2str(size(y)), num2str(this.sizeout));
+                warning('Output of apply was size [%s], didn''t match %s sizeout: [%s].',...
+                    num2str(size(y)),class(this), num2str(this.sizeout));
             end
         end   
         function x = applyJacobianT(this, y, v)
@@ -98,19 +98,19 @@ classdef (Abstract) Map < handle
             % Calls the method :meth:`applyJacobianT_`
             
             if ~checkSize(y, this.sizeout) % check input size
-                error('Input of y applyJacobianT was size [%s], didn''t match stated sizeout: [%s].',...
-                    num2str(size(y)), num2str(this.sizeout));
+                error('Input of y applyJacobianT was size [%s], didn''t match %s sizeout: [%s].',...
+                    num2str(size(y)),class(this), num2str(this.sizeout));
             end
             if ~checkSize(v, this.sizein)
-                error('Input to v applyJacobianT was size [%s], didn''t match stated sizein: [%s].',...
-                    num2str(size(v)), num2str(this.sizein));
+                error('Input to v applyJacobianT was size [%s], didn''t match %s sizein: [%s].',...
+                    num2str(size(v)),class(this), num2str(this.sizein));
             end            
             % memoize
             x = this.memoize('applyJacobianT', @this.applyJacobianT_, {y, v});            
             % check output size
             if ~checkSize(x, this.sizein)
-                warning('Output of applyJacobianT was size [%s], didn''t match stated sizein: [%s].',...
-                    num2str(size(x)), num2str(this.sizein));
+                warning('Output of applyJacobianT was size [%s], didn''t match %s sizein: [%s].',...
+                    num2str(size(x)),class(this), num2str(this.sizein));
             end
         end    
         function x = applyInverse(this, y)
@@ -119,15 +119,15 @@ classdef (Abstract) Map < handle
             %
             % Calls the method :meth:`applyInverse_`
             if ~checkSize(y, this.sizeout) % check input size
-                error('Input to applyInverse was size [%s], didn''t match stated sizeout: [%s].',...
-                    num2str(size(y)), num2str(this.sizeout));
+                error('Input to applyInverse was size [%s], didn''t match %s sizeout: [%s].',...
+                    num2str(size(y)),class(this), num2str(this.sizeout));
             end           
             % memoize
             x = this.memoize('applyInverse', @this.applyInverse_,y);           
             % check output size
             if ~checkSize(x, this.sizein)
-                warning('Output of applyInverse was size [%s], didn''t match stated sizein: [%s].',...
-                    num2str(size(x)), num2str(this.sizein));
+                warning('Output of applyInverse was size [%s], didn''t match %s sizein: [%s].',...
+                    num2str(size(x)),class(this), num2str(this.sizein));
             end
         end      
         function M = makeComposition(this, G)
@@ -135,13 +135,25 @@ classdef (Abstract) Map < handle
             % \\(\\mathrm{G}\\). Returns a new map \\(\\mathrm{M=HG}\\)
             %
             % Calls the method :meth:`makeComposition_`
-            M = this.makeComposition_(G);          
+            if ~isequal(this.sizein, G.sizeout)
+                error('Input to makeComposition is a %s of sizeout size [%s], which didn''t match the %s sizein [%s].',...
+                    class(G),num2str(G.sizeout),class(this), num2str(this.sizein));
+            end
+            M = this.makeComposition_(G);
         end
         function M = plus(this,G)
             % Overload operator (+) for :class:`Map` objects
             % $$ \\mathrm{M}(\\mathrm{x}) := \\mathrm{H}(\\mathrm{x}) + \\mathrm{G}(\\mathrm{x})$$
             %
             % Calls the method :meth:`plus_`
+            if ~isequal(this.sizein, G.sizein) % check input size
+                error('Input to plus is a %s of sizein  [%s], which didn''t match the added %s sizein [%s].',...
+                    class(G),num2str(G.sizein),class(this), num2str(this.sizein));
+            end
+            if ~isequal(this.sizeout, G.sizeout) % check input size
+                error('Input to plus is a %s of sizeout  [%s], which didn''t match the added %s sizeout [%s].',...
+                    class(G),num2str(G.sizeout),class(this), num2str(this.sizeout));
+            end
             M = this.plus_(G);
         end       
         function M = minus(this,G)
@@ -149,6 +161,14 @@ classdef (Abstract) Map < handle
             % $$ \\mathrm{M}(\\mathrm{x}) := \\mathrm{H}(\\mathrm{x}) - \\mathrm{G}(\\mathrm{x})$$  
             %
             % Calls the method :meth:`minus_`
+            if ~isequal(this.sizein, G.sizein) % check input size
+                error('Input to plus is a %s of sizein  [%s], which didn''t match the substracted %s sizein [%s].',...
+                    class(G),num2str(G.sizein),class(this), num2str(this.sizein));
+            end
+            if ~isequal(this.sizeout, G.sizeout) % check input size
+                error('Input to plus is a %s of sizeout  [%s], which didn''t match the substracted %s sizeout [%s].',...
+                    class(G),num2str(G.sizeout),class(this), num2str(this.sizeout));
+            end
             M = this.minus_(G);
         end      
         function M = mpower(this,p)
@@ -163,8 +183,8 @@ classdef (Abstract) Map < handle
             %  - If \\(\\mathrm{G}\\) is a :class:`Map`, then a
             %    :class:`MapComposition`is intanciated
             if isa(G,'Map')
-                if (isnumeric(this) && isscalar(this)) % Left multiplication by scalar
-                    H=LinOpScaledIdentity(G.sizeout,this);
+                if (isnumeric(this) && isscalar(this)) % Left multiplication by scalar                
+                    H=LinOpDiag(G.sizein,this);
                     M=H.makeComposition(G);
                 else
                     M =this.makeComposition(G);

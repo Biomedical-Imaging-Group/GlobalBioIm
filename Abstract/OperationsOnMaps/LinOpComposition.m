@@ -32,25 +32,15 @@ classdef LinOpComposition < MapComposition & LinOp
     methods
         function this = LinOpComposition(H1,H2)
             this@MapComposition(H1,H2);               
-            assert((isa(H1,'LinOp') || isscalar(H1)),'H1 have to be a LinOp object or a scalar');
-            assert(isa(H2,'LinOp'),'H2 have to be a LinOp');
-            if (isnumeric(H1) && isscalar(H1)) && isa(H2,'LinOpComposition') && (isnumeric(H2.H1) && isscalar(H2.H1))
-                this=H2;
-                this.H1=this.H1*H1;
-            else            
-            	% strcmp is different than isa because it doesn't check all
-                % superclasses as well
-                if strcmp(class(H1), 'LinOpAdjoint') && isequal(H1.TLinOp,H2)
-                    this.isHTH = true;
-                elseif strcmp(class(H2), 'LinOpAdjoint') && isequal(H2.TLinOp,H1)
-                    this.isHHt = true;
-                end
+            assert(isa(H2,'LinOp') && isa(H1,'LinOp'),'H1 and H2 have to be a LinOps');
+            % strcmp is different than isa because it doesn't check all
+            % superclasses as well
+            if strcmp(class(H1), 'LinOpAdjoint') && isequal(H1.TLinOp,H2)
+                this.isHTH = true;
+            elseif strcmp(class(H2), 'LinOpAdjoint') && isequal(H2.TLinOp,H1)
+                this.isHHt = true;
             end
-            if (isnumeric(H1) && isscalar(H1))
-                this.name=sprintf('LinOpComposition: %s --- %s',num2str(H1),H2.name);      
-            else
-                this.name=sprintf('LinOpComposition: %s --- %s',H1.name,H2.name);      
-            end
+            this.name=sprintf('LinOpComposition: %s --- %s',H1.name,H2.name);      
         end
     end
         
@@ -61,58 +51,46 @@ classdef LinOpComposition < MapComposition & LinOp
     % - applyHHt_(this,x)
     % - applyAdjointInverse_(this,x)
     methods (Access = protected)
-		function y = apply_(this,x) 
-            % Reimplemented from :class:`LinOp`  
-			if this.isHTH
-				y = this.H2.applyHtH(x);
-			elseif this.isHHt
-				y = this.H1.applyHHt(x);
-			elseif this.isH1Scalar
-				y = this.H1*this.H2.apply(x);
-			else
-				y = this.H1.apply(this.H2.apply(x));
-			end
-		end
-		function y = applyAdjoint_(this,x) 
-            % Reimplemented from :class:`LinOp`  
-			if this.isHTH || this.isHHt
-				y = this.apply(x); % because self-adjoint
-			elseif this.isH1Scalar
-				y = this.H2.applyAdjoint(this.H1*x);
-			else
-				y = this.H2.applyAdjoint(this.H1.applyAdjoint(x));
-			end
-		end
-		function y = applyHtH_(this,x)
-            % Reimplemented from :class:`LinOp`  
-			if this.isHTH || this.isHTH 
-				y = this.apply(this.apply(x)); % because self-adjoint
-			elseif this.isH1Scalar
-				y = this.H2.applyAdjoint(this.H1.^2*( this.H2.apply(x)));
-			else
-				y = this.H2.applyAdjoint(this.H1.applyHtH( this.H2.apply(x)));
-			end
-        end
-		function y = applyHHt_(this,x)
-            % Reimplemented from :class:`LinOp`  
-			if this.isHTH || this.isHTH 
-				y = this.apply(this.apply(x)); % because self-adjoint
-			elseif this.isH1Scalar
-				y = this.H1*(this.H2.applyHHt( this.H1*x));
-			else
-				y = this.H1.apply(this.H2.applyHHt( this.H1.applyAdjoint(x)));
-			end
-        end
-        function y = applyAdjointInverse_(this,x) 
-            % Reimplemented from :class:`LinOp`  
-            if this.isinvertible
-                if this.isH1Scalar
-                    y = this.H2.applyAdjointInverse(x/this.H1);
-                else
-                    y = this.H2.applyAdjointInverse(this.H1.applyAdjointInverse(x));
-                end
+        function y = apply_(this,x)
+            % Reimplemented from :class:`LinOp`
+            if this.isHTH
+                y = this.H2.applyHtH(x);
+            elseif this.isHHt
+                y = this.H1.applyHHt(x);
             else
-                x = applyAdjointInverse_@LinOp(y);
+                y = this.H1.apply(this.H2.apply(x));
+            end
+        end
+        function y = applyAdjoint_(this,x)
+            % Reimplemented from :class:`LinOp`
+            if this.isHTH || this.isHHt
+                y = this.apply(x); % because self-adjoint
+            else
+                y = this.H2.applyAdjoint(this.H1.applyAdjoint(x));
+            end
+        end
+        function y = applyHtH_(this,x)
+            % Reimplemented from :class:`LinOp`
+            if this.isHTH || this.isHTH
+                y = this.apply(this.apply(x)); % because self-adjoint
+            else
+                y = this.H2.applyAdjoint(this.H1.applyHtH( this.H2.apply(x)));
+            end
+        end
+        function y = applyHHt_(this,x)
+            % Reimplemented from :class:`LinOp`
+            if this.isHTH || this.isHTH
+                y = this.apply(this.apply(x)); % because self-adjoint
+            else
+                y = this.H1.apply(this.H2.applyHHt( this.H1.applyAdjoint(x)));
+            end
+        end
+        function y = applyAdjointInverse_(this,x)
+            % Reimplemented from :class:`LinOp`
+            if this.isinvertible
+                y = this.H2.applyAdjointInverse(this.H1.applyAdjointInverse(x));
+            else
+                y = applyAdjointInverse_@LinOp(x);
             end
         end
     end

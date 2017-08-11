@@ -34,9 +34,9 @@ classdef LinOp < Map
             this.memoizeOpts.applyAdjoint=false; 
             this.memoizeOpts.applyHtH=false;
             this.memoizeOpts.applyHHt=false;
-            this.memoCache.applyAdjoint=false; 
-            this.memoCache.applyHtH=false;
-            this.memoCache.applyHHt=false;
+            this.memoCache.applyAdjoint=struct('in', [], 'out', []); 
+            this.memoCache.applyHtH=struct('in', [], 'out', []);
+            this.memoCache.applyHHt=struct('in', [], 'out', []);
         end
     end
    
@@ -233,20 +233,19 @@ classdef LinOp < Map
                     M=this.makeHHt();
                 % composition with a sum of LinOps
                 elseif isa(G,'LinOpSummation')
-                    disp('hello')
                     M=G.alpha(1)*this*G.mapsCell{1};
                     for i=2:G.numMaps
                         M=M+G.alpha(i)*this*G.mapsCell{i};
                     end
                 % to handle properly scalar multiplications 
-                elseif isa(G,'LinOpComposition') && isa(G.H1,'LinOpScaledIdentity')  
-                    if isa(this,'LinOpComposition') && isa(this.H1,'LinOpScaledIdentity')
-                        M = LinOpComposition(LinOpScaledIdentity(this.sizeout,this.H1.nu*G.H1.nu),this.H2.makeComposition(G.H2));
+                elseif isa(G,'LinOpComposition') && isa(G.H1,'LinOpDiag') && G.H1.isScaledIdentity 
+                    if isa(this,'LinOpComposition') && isa(G.H1,'LinOpDiag') && G.H1.isScaledIdentity
+                        M = LinOpComposition(LinOpDiag(this.sizeout,this.H1.diag*G.H1.diag),this.H2.makeComposition(G.H2));
                     else
                         M = LinOpComposition(G.H1,this.makeComposition(G.H2));
                     end
                 else
-                    if isa(this,'LinOpComposition') && isa(this.H1,'LinOpScaledIdentity')
+                    if isa(this,'LinOpComposition') && isa(this.H1,'LinOpDiag') && this.H1.isScaledIdentity
                         M = LinOpComposition(this.H1,this.H2.makeComposition(G));
                     else
                         M = LinOpComposition(this,G);

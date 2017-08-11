@@ -9,7 +9,6 @@ addpath([pathToDir,'/Opti/MatlabOptimPack']);
 addpath([pathToDir,'/LinOp/']);
 addpath([pathToDir,'/NonLinOp/']);
 addpath([pathToDir,'/LinOp/LinOp_Utils/']);
-addpath([pathToDir,'/LinOp/OperationsOnLinOp/']);
 addpath([pathToDir,'/LinOp/SelectorLinOps/']);
 addpath([pathToDir,'/Cost/']);
 addpath([pathToDir,'/Cost/CostUtils/']);

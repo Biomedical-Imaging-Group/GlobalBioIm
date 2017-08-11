@@ -35,29 +35,32 @@ classdef Cost < Map
     
     %% Public properties
     properties 
-        name = 'none'             % name of the functional
         isConvex=false;           % true if the Cost is convex
         lip=-1;                   % Lipschitz constant of the gradient
         y=0;				      % data y
-        memoizeOpts = struct('apply', false, ...
-                             'applyJacobianT', false, ...
-                             'applyInverse', false,...
-                             'applyGrad',false,...
-                             'applyProx',false,...
-                             'applyProxFench',false);
-    end
+    end    
     
-    %% Properties inherited from Map that are fixed in Cost 
-    properties (SetAccess = private,GetAccess = private)
-        isComplexOut = false;     % true if the space Y is complex valued
-        sizeout=1;                % dimension of the left hand side vector space   
-        norm=-1;                  % norm of the operator
-        memoCache = struct('apply', struct('in', [], 'out', []),...
-                           'applyJacobianT', struct('in', [], 'out', []), ...
-                           'applyInverse', struct('in', [], 'out', []), ...
-                           'applyGrad', struct('in', [], 'out', []),...
-                           'applyProx', struct('in', [], 'out', []),...
-                           'applyProxFench', struct('in', [], 'out', []));
+    %% Constructor
+    methods
+        function this=Cost(sz,y)
+            % set data y
+            if nargin <2, y=0; end
+            if nargin<1 || isempty(sz), sz=size(y); end;
+            assert(issize(sz),'First argument must be conformable to a size');
+            this.sizein=sz;
+            this.set_y(y);
+            % Add new fields to memoizeOpts and memoCache
+            this.memoizeOpts.applyGrad=false;
+            this.memoizeOpts.applyProx=false;
+            this.memoizeOpts.applyProxFench=false;
+            this.memoCache.applyGrad=struct('in', [], 'out', []);
+            this.memoCache.applyProx=struct('in', [], 'out', []);
+            this.memoCache.applyProxFench=struct('in', [], 'out', []);
+            % Properties fixed for costs
+            this.isComplexOut = false;     % true if the space Y is complex valued
+            this.sizeout=1;                % dimension of the left hand side vector space
+            this.norm=-1;                  % norm of the operator
+        end
     end
      
     %% Interface Methods (cannot be overloaded in derived classes: Sealed)
@@ -162,7 +165,8 @@ classdef Cost < Map
         function x = applyJacobianT_(this, y, v)
             % Uses the method applyGrad (hence do not need to be
             % reimplemented in derived classes)
-            x=y*this.applyGrad(v);
+            x=y.*this.applyGrad(v);
+            x=sum(x(:));
         end
     end
     

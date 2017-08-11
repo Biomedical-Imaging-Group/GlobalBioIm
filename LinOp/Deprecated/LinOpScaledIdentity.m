@@ -33,25 +33,25 @@ classdef LinOpScaledIdentity <  LinOp
 	%% Constructor
 	methods
 	  function this = LinOpScaledIdentity(sz,nu)
-		this.name='LinOp ScaledIdentity';
-        if nargin==2
-            this.nu=nu;
-        end
-		this.isComplexIn=true;
-		this.isComplexOut=true;
-        this.isDifferentiable=true;
-        if this.nu~=0
-            this.isInvertible=true;
-        end
-		this.norm=1;
-		if nargin>0
-		  this.sizeout=sz;
-		  this.sizein=sz;
-		else
-		  error('A size SZ should be given');
-		end
-	  end
-	end
+          this.name='LinOpScaledIdentity';
+          if nargin>0
+              this.sizeout=sz;
+              this.sizein=sz;
+          else
+              error('A size SZ should be given');
+          end
+          if nargin==2
+              this.nu=nu;
+          end
+          this.isComplexIn=true;
+          this.isComplexOut=true;
+          this.isDifferentiable=true;
+          if this.nu~=0
+              this.isInvertible=true;
+          end
+          this.norm=1;
+      end
+    end
 	
 	%% Core Methods containing implementations (Protected)
     methods (Access = protected)      
@@ -87,6 +87,8 @@ classdef LinOpScaledIdentity <  LinOp
             % Reimplemented from parent class :class:`LinOp`.
             if isa(G,'LinOpScaledIdentity')
                 M=LinOpScaledIdentity(this.sizein,G.nu+this.nu);
+            elseif isa(G,'LinOpDiag')
+                M=LinOpDiag(G.diag+this.nu);
             else
                 M=plus_@LinOp(this,G);
             end
@@ -95,6 +97,8 @@ classdef LinOpScaledIdentity <  LinOp
             % Reimplemented from parent class :class:`LinOp`.
             if isa(G,'LinOpScaledIdentity')
                 M=LinOpScaledIdentity(this.sizein,this.nu-G.nu);
+            elseif isa(G,'LinOpDiag')
+                M=LinOpDiag(this.nu-G.diag);
             else
                 M=minus_@LinOp(this,G);
             end
@@ -127,6 +131,8 @@ classdef LinOpScaledIdentity <  LinOp
                 M=G;
             elseif isa(G,'LinOpScaledIdentity')
                 M=LinOpScaledIdentity(this.sizein,G.nu*this.nu);
+            elseif isa(G,'LinOpDiag')
+                M=LinOpDiag(G.diag.*this.nu);
             else
                 M=makeComposition_@LinOp(this,G);
             end

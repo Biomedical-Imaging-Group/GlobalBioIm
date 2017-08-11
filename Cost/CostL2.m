@@ -133,6 +133,9 @@ classdef CostL2 < Cost
                     y=iSfft((Sfft(x,this.H.Notindex) + alpha*this.fftHstardata)./(1+alpha*(abs(this.H.mtf).^2)), this.H.Notindex);
                     if ~this.H.isComplex, y=real(y);end
                 end
+            elseif isa(this.H,'LinOpSelector')
+                t=this.H.apply(x);
+                y=x + this.H.adjoint((t+alpha*this.y)/(alpha+1) - t);
             end
             if isempty(y),error('Prox not implemented');end
         end

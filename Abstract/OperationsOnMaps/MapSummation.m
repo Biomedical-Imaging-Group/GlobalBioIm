@@ -1,17 +1,15 @@
 classdef MapSummation < Map
-    % MapSummation: Sum of two Maps
-    % $$ \\mathrm{H}(\\mathrm{x}) = \\mathrm{H}_1(\\mathrm{x}) + \\mathrm{H}_2(\\mathrm{x}) $$
+    % MapSummation: Sum of Maps
+    % $$ \\mathrm{H}(\\mathrm{x}) = \\sum_i \\alpha_i \\mathrm{H}_i(\\mathrm{x}) $$
     %
-    % :param H1:  first Map
-    % :param H2:  second Map
-    % :param sgn: sign (1 for sum \\(\\mathrm{H_1} + \\mathrm{H_2}\\) and -1 
-    % for subtraction \\(\\mathrm{H_1} - \\mathrm{H_2}\\))
+    % :param Maps:  cell of :class:`Map`
+    % :param alpha:  array of coefficients
     %
-    % See also :class:`Map`
+    % See also :class:`Map`, :class:`LinOpSummation`
     
     %%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch
-    %
+    %  
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
     %     the Free Software Foundation, either version 3 of the License, or
@@ -67,14 +65,16 @@ classdef MapSummation < Map
 			% Set some properties
  			this.isComplexIn= this.mapsCell{1}.isComplexIn;
             this.isComplexOut= this.mapsCell{1}.isComplexOut;
+            this.isDifferentiable= this.mapsCell{1}.isDifferentiable;
             this.isInvertible=false;
             this.sizein = this.mapsCell{1}.sizein;
             this.sizeout = this.mapsCell{1}.sizeout;
             for n =2:this.numMaps
                 assert(isequal(this.sizein,this.mapsCell{n}.sizein),'%d-th input does not have consistent  sizein', n) ;
                 assert(isequal(this.sizeout,this.mapsCell{n}.sizeout),'%d-th input does not have the consistent sizeout ', n);
-                this.isComplexIn= this.mapsCell{n}(1).isComplexIn && this.isComplexIn;
-                this.isComplexOut= this.mapsCell{n}(1).isComplexOut || this.isComplexOut;
+                this.isComplexIn= this.mapsCell{n}.isComplexIn && this.isComplexIn;
+                this.isDifferentiable= this.mapsCell{n}.isDifferentiable && this.isDifferentiable;
+                this.isComplexOut= this.mapsCell{n}.isComplexOut || this.isComplexOut;
             end      
         end
     end
@@ -82,6 +82,7 @@ classdef MapSummation < Map
     %% Core Methods containing implementations (Protected)
     % - apply_(this,x)
     % - applyJacobianT_(this, y, v)
+    % - makeComposition_(this,G)
     methods (Access = protected)
         function y = apply_(this,x) 
             % Reimplemented from :class:`Map`   
@@ -97,6 +98,13 @@ classdef MapSummation < Map
                 x = x + this.alpha(n) .* this.mapsCell{n}.applyJacobianT(y,v);
             end
         end     
+        function M = makeComposition_(this,G)
+            % Reimplemented from :class:`Map`  
+            M=this.alpha(1)*this.mapsCell{1}*G;
+            for i=2:this.numMaps
+                M=M+ this.alpha(i)*this.mapsCell{i}*G;
+            end
+        end
     end
 end
 

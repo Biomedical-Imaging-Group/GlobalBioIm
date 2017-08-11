@@ -1,21 +1,15 @@
-classdef LinOpSummation < LinOp
-    %% SumLinop : Sum of linear operators
-    %  Matlab Linear Operator Library
+classdef LinOpSummation < MapSummation &  LinOp
+    % LinOpSummation: Sum of linear operators
+    % $$ \\mathrm{H}(\\mathrm{x}) = \\sum_i \\alpha_i \\mathrm{H}_i(\\mathrm{x}) $$
     %
-    % Example
-    % Obj = SumLinop(ALinOp,alpha)
-    % Element wise sum  of LinOps:
-    % Sum the all linop contained in vector ALINOP weighted by ALPHA
-    % (default 1)
-    % Obj  sum_n alpha(n) * ALinOp(n)
+    % :param LinOps:  cell of :class:`LinOp`
+    % :param alpha:  array of coefficients
     %
-    %
-    %
-    % Please refer to the LINOP superclass for general documentation about
-    % linear operators class
-    % See also LinOp
+    % See also :class:`Map`, :class:`LinOpSummation`
     
-    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+    %%    Copyright (C) 2017
+    %     F. Soulez ferreol.soulez@epfl.ch
+    %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -30,92 +24,55 @@ classdef LinOpSummation < LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (SetAccess = protected,GetAccess = public)
-        ALinOp     % cell of linop
-        numLinOp   % number of linop
-        alpha      % scalar factor
+    %% Constructor
+    methods
+        function this = LinOpSummation(LinOps,alpha)
+            this@MapSummation(LinOps,alpha); 
+            this.name ='LinOpSummation';			
+			allLinOps = all( cellfun(@(x)(isa(x, 'LinOp')), LinOps) );
+			assert(iscell(LinOps) && allLinOps, 'First input should be a cell array LinOp'); 
+        end
     end
     
-    methods
-        function this = SumLinOp(ALinOp,alpha)
-            this.name ='SumLinOp';
-			
-			if nargin == 1
-				alpha = 1;
-			end
-			
-			this.numLinOp = numel(ALinOp);
-			assert(isnumeric(alpha)&& ( isscalar(alpha) || ( isvector(alpha) && (numel(alpha)== this.numLinOp))),'second input should be a scalar or an array of scalars of the same size as the first input');
-			if  isscalar(alpha)
-				this.alpha = repmat(alpha, 1, this.numLinOp) ;
-			else
-				this.alpha = alpha;
-			end
-			
-			allLinOps = all( cellfun(@(x)(isa(x, 'LinOp')), ALinOp) );
-			assert(iscell(ALinOp) && allLinOps, 'First input should be a cell array LinOp');
-			
-			% if any of the inputs is itself a sum, expand it
-			eLinOp = []; % expanded LinOp list
-			newAlphas = [];
-			for i = 1:length(ALinOp)
-				if isa(ALinOp{i}, 'SumLinOp')
-					eLinOp = [eLinOp ALinOp{i}.ALinOp];
-					newAlphas = [newAlphas  ALinOp{i}.alpha];
-				else
-					eLinOp = [eLinOp ALinOp(i)];
-					newAlphas = [newAlphas this.alpha(i)];
-				end
-			end
-			this.alpha = newAlphas;
-			ALinOp = eLinOp;
-			this.numLinOp = length(ALinOp);
-			
-			this.ALinOp = ALinOp;
-			this.isComplex= this.ALinOp{1}(1).isComplex;
-            this.isInvertible=false;
-            this.sizein = this.ALinOp{1}(1).sizein;
-            this.sizeout = this.ALinOp{1}(1).sizeout;
-            for n =2:this.numLinOp
-                assert(isempty(this.ALinOp{n}(1).sizein)  || isequal(this.sizein,this.ALinOp{n}(1).sizein),'%d-th input does not have the right hand side size ', n) ;
-                assert(isempty(this.ALinOp{n}(1).sizeout) ||isequal(this.sizeout,this.ALinOp{n}(1).sizeout),'%d-th input does not have the left hand side size ', n);
-                this.isComplex= this.ALinOp{n}(1).isComplex || this.isComplex ;
+    %% Core Methods containing implementations (Protected)
+    % - applyAdjoint_(this,x)
+    % - applyHtH_(this,x) 
+    % - applyHHt_(this,y) 
+    % - makeAdjoint_(this)
+    methods (Access = protected)      		
+        function x = applyAdjoint_(this,y) 
+            % Reimplemented from :class:`LinOp` 
+            x =  zeros(this.sizein);
+            for n = 1:this.numMaps
+                x = x + this.alpha(n) .* this.mapsCell{n}(1).applyAdjoint(y);
             end
-            
-                 
-        end
-        
-        function y = apply(this,x) % apply the operator
-			assert(checkSize(x, this.sizein));
-            y = zeros(this.sizeout);
-            for n = 1:this.numLinOp
-                y = y + this.alpha(n) .* this.ALinOp{n}(1).apply(x);
-            end
-		end
-		
-        function y = adjoint(this,x) % apply the adjoint
-			assert(checkSize(x, this.sizeout);
-            y =  zeros(this.sizein);
-            for n = 1:this.numLinOp
-                y = y + this.alpha(n) .* this.ALinOp{n}(1).applyAdjoint(x);
-            end
-		end
-		
-		function y = HtH(this,x) %  apply the HtH matrix
+        end	
+		function y = applyHtH_(this,x) 
+            % Reimplemented from :class:`LinOp` 
 			y =  zeros(this.sizein);
-			for n = 1:this.numLinOp
-				y = y + this.alpha(n) .* this.ALinOp{n}.HtH(x);
+			for n = 1:this.numMaps
+				y = y + this.alpha(n) .* this.mapsCell{n}.applyHtH(x);
 			end
-		end
-		
-		function y = HHt(this,x) %  apply the HHt matrix
-            y =  zeros(this.sizeout);
-            for n = 1:this.numLinOp
-                y = y + this.alpha(n) .* this.ALinOp{n}.HHt(x);
+        end		
+		function x = applyHHt_(this,y) 
+            % Reimplemented from :class:`LinOp` 
+            x =  zeros(this.sizeout);
+            for n = 1:this.numMaps
+                x = x + this.alpha(n) .* this.mapsCell{n}.applyHHt(y);
             end
 		end
-		
-		
+        function M = makeAdjoint_(this)
+            % Reimplemented from :class:`LinOp`
+            adjointCell = cellfun(@(x)x',this.mapsCell,'UniformOutput',false);
+            M=LinOpSummation(adjointCell,this.alpha);
+        end
+        % the function reimplementations below is needed because of
+        % the multiple inheritance to specifies which method to use from
+        % parent classes
+        function M = makeComposition_(this,G)
+            % Reimplemented from class :class:`MapSummation`
+            M=makeComposition_@MapSummation(this,G);
+        end
     end
 end
 

@@ -56,9 +56,6 @@ classdef MapInversion < Map
             % Reimplemented from :class:`Map`
             y =this.M.apply(x);
         end
-        % the two function reimplementations below are needed because of
-        % the multiple inheritance to specifies which methods to use from
-        % parent classes
         function M = mpower_(this,p)
            % Reimplemented from :class:`Map`
             if p==-1

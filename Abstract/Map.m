@@ -181,9 +181,7 @@ classdef (Abstract) Map < handle
 				sz = sz{varargin{:}};
 				
 			end
-		end
-			
-
+        end
 	end
 	
     
@@ -210,12 +208,12 @@ classdef (Abstract) Map < handle
         end      
         function M = plus_(this,G)
             % Constructs a :class:`MapSummation` object to sum the
-            % current Map \\(\\mathrm{H}\\) with the given \\(\\mathrm{G}\\). 
+            % current :class:`Map` \\(\\mathrm{H}\\) with the given \\(\\mathrm{G}\\). 
             M = MapSummation({this,G},[1,1]);
         end
         function M = minus_(this,G)
             % Constructs a :class:`MapSummation` object to subtract to the
-            % current Map \\(\\mathrm{H}\\), the given \\(\\mathrm{G}\\). 
+            % current :class:`Map` \\(\\mathrm{H}\\), the given \\(\\mathrm{G}\\). 
             M = MapSummation({this,G},[1,-1]);
         end
         function M = mpower_(this,p)
@@ -238,7 +236,6 @@ classdef (Abstract) Map < handle
             end
 		end
 	end
-
 		
     %% Utility methods  
     % - memoize(this, fieldName, fcn, xs)

@@ -83,6 +83,22 @@ classdef LinOpScaledIdentity <  LinOp
                 y =x/this.nu;
             end
         end
+        function M = plus_(this,G)
+            % Reimplemented from parent class :class:`LinOp`.
+            if isa(G,'LinOpScaledIdentity')
+                M=LinOpScaledIdentity(this.sizein,G.nu+this.nu);
+            else
+                M=plus_@LinOp(this,G);
+            end
+        end
+        function M = minus_(this,G)
+            % Reimplemented from parent class :class:`LinOp`.
+            if isa(G,'LinOpScaledIdentity')
+                M=LinOpScaledIdentity(this.sizein,this.nu-G.nu);
+            else
+                M=minus_@LinOp(this,G);
+            end
+        end
         function M = makeAdjoint_(this)
             % Reimplemented from parent class :class:`LinOp`.
             M=LinOpScaledIdentity(this.sizein,this.nu);

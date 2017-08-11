@@ -1,6 +1,8 @@
 classdef StackLinOp < LinOp
     %% StackLinOp : Stack of linear operators
     %  Matlab Linear Operator Library
+        %
+    % TODO: INTEGRATE THIS IN THE NEW VERSION
     %
     % Example
     % Obj = StackLinOp(ALinOp,alpha)

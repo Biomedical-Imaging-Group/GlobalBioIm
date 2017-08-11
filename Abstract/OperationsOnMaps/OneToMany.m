@@ -1,5 +1,8 @@
 classdef OneToMany < LinOp
     %% OneToMany :  linear operators
+    %
+    % TODO: INTEGRATE THIS IN THE NEW VERSION
+    %
     %  Matlab Linear Operator Library
     %
     % Example

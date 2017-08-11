@@ -43,6 +43,9 @@ classdef LinOpInversion < MapInversion & LinOp
             % Reimplemented from :class:`LinOp`
             y =this.M.applyAdjoint(x); 
         end
+        % the two function reimplementations below are needed because of
+        % the multiple inheritance to specifies which methods to use from
+        % parent classes
         function M = mpower_(this,p)
             % Reimplemented from :class:`MapInversion`
             M = mpower_@MapInversion(this,p);

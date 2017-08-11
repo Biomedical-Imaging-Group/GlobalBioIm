@@ -162,6 +162,8 @@ classdef LinOp < Map
     % - applyHtH_(this,x)
     % - applyHHt_(this,y)
     % - applyAdjointInverse_(this,x)
+    % - plus_(this,G)
+    % - minus_(this,G)
     % - makeAdjoint_(this)
     % - makeHtH_(this)
     % - makeHHt_(this)
@@ -188,6 +190,24 @@ classdef LinOp < Map
             % Not implemented in this Abstract class
             error('applyAdjointInverse_ method not implemented');
         end
+        function M = plus_(this,G)
+            % Constructs a :class:`LinOpSummation` object to sum the
+            % current :class:`LinOp` \\(\\mathrm{H}\\) with the given \\(\\mathrm{G}\\).
+            if isa(G,'LinOp')
+                M = LinOpSummation({this,G},[1,1]);
+            else
+                M = plus_@MapSummation({this,G},[1,1]);
+            end
+        end
+        function M = minus_(this,G)
+            % Constructs a :class:`LinOpSummation` object to subtract to the
+            % current :class:`LinOp` \\(\\mathrm{H}\\), the given \\(\\mathrm{G}\\).
+            if isa(G,'LinOp')
+                M = LinOpSummation({this,G},[1,-1]);
+            else
+                M = minus_@MapSummation({this,G},[1,-1]);
+            end
+        end
         function M = makeAdjoint_(this)
             % Constructs a :class:`LinOpAdjoint` from the current
             % current :class:`LinOp` \\(\\mathrm{H}\\) 
@@ -211,9 +231,13 @@ classdef LinOp < Map
                 % is HHt or HtH
                 if (isa(G,'LinOpAdjoint') && isequal(G.TLinOp,this)) || (isa(this,'LinOpAdjoint') && isequal(this.TLinOp,G))
                     M=this.makeHHt();
-                % handle inversions
-                elseif isa(G,'LinOpInversion') && isequal(G.M,this)
-                    M=LinOpScaledIdentity(this.sizein,1);
+                % composition with a sum of LinOps
+                elseif isa(G,'LinOpSummation')
+                    disp('hello')
+                    M=G.alpha(1)*this*G.mapsCell{1};
+                    for i=2:G.numMaps
+                        M=M+G.alpha(i)*this*G.mapsCell{i};
+                    end
                 % to handle properly scalar multiplications 
                 elseif isa(G,'LinOpComposition') && isa(G.H1,'LinOpScaledIdentity')  
                     if isa(this,'LinOpComposition') && isa(this.H1,'LinOpScaledIdentity')

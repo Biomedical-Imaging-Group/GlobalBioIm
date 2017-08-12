@@ -3,7 +3,7 @@ classdef LinOpConv <  LinOp
     %  
     % :param mtf: Fourier transform of Point Spread Function 
     % :param index: dimensions along which the convolution is performed
-    % (the PSF must have a comformable size)
+    % (the MTF must have a comformable size)
     % 
     % See also :class:`LinOp`, :class:`Map`
     
@@ -170,7 +170,7 @@ classdef LinOpConv <  LinOp
             % Reimplemented from :class:`LinOp`
 			if isa(H, 'LinOpConv')
 				G = LinOpConv(this.mtf.*H.mtf,this.index); 
-            elseif isa(G,'LinOpDiag') && G.isScaledIdentity
+            elseif isa(H,'LinOpDiag') && H.isScaledIdentity
                 G = LinOpConv(this.mtf.*H.diag,this.index); 
 			else
 				G = makeComposition_@LinOp(this, H);

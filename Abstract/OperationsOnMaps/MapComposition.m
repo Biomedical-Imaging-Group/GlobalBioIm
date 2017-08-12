@@ -31,7 +31,6 @@ classdef MapComposition < Map
     %% Constructor
     methods
         function this = MapComposition(H1,H2)
-            this.name='MapComposition';
             assert(isa(H1,'Map') && isa(H2,'Map'),'H1 and H2 have to be a Map');
             this.H1 = H1;
             this.H2 = H2;
@@ -51,6 +50,7 @@ classdef MapComposition < Map
             % sizein/out
             this.sizein=H2.sizein;
             this.sizeout=H1.sizeout;
+            this.name=sprintf('MapComposition( %s ; %s )',H1.name,H2.name);      
         end
     end
     
@@ -78,6 +78,10 @@ classdef MapComposition < Map
             else
                 x = applyInverse_@Map(this,y);
             end
+        end
+        function M = makeComposition_(this,G)
+             % Reimplemented from :class:`Map`
+             M=this.H1*(this.H2*G);  % Since H1*H2 is not simplified, first try to compose H2 with G
         end
     end	
 end

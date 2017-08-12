@@ -35,7 +35,7 @@ classdef CostL2Composition <  CostComposition
             if this.H2.norm>=0
                 this.lip=this.H1.lip*this.H2.norm^2;
             end
-            this.name=sprintf('CostL2 composed with %s',H2.name);   
+            this.name=sprintf('CostL2Composition ( %s )',H2.name);   
         end
     end
     

@@ -40,7 +40,7 @@ classdef LinOpComposition < MapComposition & LinOp
             elseif strcmp(class(H2), 'LinOpAdjoint') && isequal(H2.TLinOp,H1)
                 this.isHHt = true;
             end
-            this.name=sprintf('LinOpComposition: %s --- %s',H1.name,H2.name);      
+            this.name=sprintf('LinOpComposition( %s ; %s )',H1.name,H2.name);      
         end
     end
         
@@ -92,6 +92,18 @@ classdef LinOpComposition < MapComposition & LinOp
             else
                 y = applyAdjointInverse_@LinOp(x);
             end
+        end
+        function M = makeHtH_(this)
+            % Reimplemented from :class:`LinOp`
+            M=this.H2'*this.H1.makeHtH()*this.H2;
+        end
+        function M = makeHHt_(this)
+            % Reimplemented from :class:`LinOp`
+            M=this.H1*this.H2.makeHHt()*this.H1';
+        end
+        function M = makeComposition_(this,G)
+             % Reimplemented from :class:`MapComposition`
+             M=makeComposition_@MapComposition(this,G);
         end
     end
 end

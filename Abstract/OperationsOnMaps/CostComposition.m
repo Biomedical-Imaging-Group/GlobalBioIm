@@ -38,8 +38,7 @@ classdef CostComposition < MapComposition & Cost
             assert(isa(H1,'Cost'),'First argument should be a Cost');
             if isa(H2,'LinOp') && H1.isConvex
                 this.isConvex=true;
-            end
-            this.name='CostComposition';     
+            end 
             if isa(H2,'LinOp')
                 this.isH2LinOp=true;
                 T=this.H2*this.H2';
@@ -52,6 +51,7 @@ classdef CostComposition < MapComposition & Cost
             end
             this.doPrecomputation=H1.doPrecomputation;
             this.memoizeOpts=H1.memoizeOpts;
+            this.name=sprintf('CostComposition( %s ; %s )',H1.name,H2.name);  
         end
     end
     

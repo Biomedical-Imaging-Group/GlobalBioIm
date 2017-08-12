@@ -49,7 +49,7 @@ classdef LinOpDiag <  LinOp
             else
                 this.isInvertible=false;
             end
-            if isscalar(diag) || norm(diag(:)-diag(1))<eps
+            if isscalar(diag) || norm(diag(:)-diag(1))<1e-13
                 this.isScaledIdentity=true;
                 this.diag = diag(1);
             else
@@ -140,6 +140,8 @@ classdef LinOpDiag <  LinOp
             % Reimplemented from parent class :class:`LinOp`.
             if isa(G,'LinOpDiag')
                 M=LinOpDiag(this.sizein,G.diag.*this.diag);
+            elseif isa(G,'LinOpConv') && this.isScaledIdentity
+                M = LinOpConv(G.mtf.*this.diag,G.index); 
             else
                 M=makeComposition_@LinOp(this,G);
             end

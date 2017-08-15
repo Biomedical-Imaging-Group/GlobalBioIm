@@ -76,7 +76,7 @@ classdef LinOpDiag <  LinOp
         end		
         function y = applyHHt_(this,x)
             % Reimplemented from parent class :class:`LinOp`.  
-            y=this.HtH(x);
+            y=this.applyHtH(x);
         end       
         function y = applyInverse_(this,x)
             % Reimplemented from parent class :class:`LinOp`.

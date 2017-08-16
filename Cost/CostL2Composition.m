@@ -71,6 +71,9 @@ classdef CostL2Composition <  CostComposition
             %
             % **Note** If :attr:`doPrecomputation` is true, then \\(\\mathrm{H^TWy}\\) is stored.
 
+            % Emmanuel: Actually (for deconv) when the doPrecomputation is
+            % activated, the first if is not faster (if alpha do not
+            % change)
             if isa(this.H2,'LinOpConv') && (isnumeric(this.H1.W) || (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity))
                 if this.doPrecomputation
                     if ~isfield(this.precomputeCache,'fftHstardata')
@@ -83,10 +86,18 @@ classdef CostL2Composition <  CostComposition
                     y=iSfft((Sfft(x,this.H2.Notindex) + this.H1.W*alpha*fftHstardata)./(1+this.H1.W*alpha*(abs(this.H2.mtf).^2)), this.H2.Notindex);
                 end
             elseif this.isH2LinOp
-                if isnumeric(this.H1.W) || (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity)
-                    HtHplusId=alpha*this.H1.W*(this.H2'*this.H2) + LinOpDiag(this.H2.sizein,1);
+                if ~this.doPrecomputation || (this.doPrecomputation && (~isfield(this.precomputeCache,'HtHplusId')  || (alpha~=this.precomputeCache.alpha)))
+                    if isnumeric(this.H1.W) || (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity)
+                        HtHplusId=alpha*this.H1.W*(this.H2'*this.H2) + LinOpDiag(this.H2.sizein,1);
+                    else
+                        HtHplusId=alpha*this.H2'*this.H1.W*this.H2 + LinOpDiag(this.H2.sizein,1);
+                    end
+                    if this.doPrecomputation
+                        this.precomputeCache.HtHplusId=HtHplusId;
+                        this.precomputeCache.alpha=alpha;
+                    end
                 else
-                    HtHplusId=alpha*this.H2'*this.H1.W*this.H2 + LinOpDiag(this.H2.sizein,1);
+                    HtHplusId=this.precomputeCache.HtHplusId;
                 end
                 if HtHplusId.isInvertible
                     if this.doPrecomputation

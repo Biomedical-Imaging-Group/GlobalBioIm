@@ -37,7 +37,7 @@ classdef CostL2Composition <  CostComposition
             if this.H2.norm>=0
                 this.lip=this.H1.lip*this.H2.norm^2;
             end
-            this.name=sprintf('CostL2Composition ( %s )',H2.name);   
+            this.name=sprintf('CostL2Composition ( %s )',H2.name);
         end
     end
     
@@ -47,9 +47,9 @@ classdef CostL2Composition <  CostComposition
     % - makeComposition_(this,G)
     methods (Access = protected)
         function g=applyGrad_(this,x)
-        	% Reimplemented from parent class :class:`CostComposition`.
-        	% $$ \\nabla C(\\mathrm{x}) = \\mathrm{J_{H}^* W (Hx - y)} $$
-        	% It is L-Lipschitz continuous with \\( L \\leq \\|\\mathrm{H}\\|^2 \\|\\mathrm{W}\\|\\).
+            % Reimplemented from parent class :class:`CostComposition`.
+            % $$ \\nabla C(\\mathrm{x}) = \\mathrm{J_{H}^* W (Hx - y)} $$
+            % It is L-Lipschitz continuous with \\( L \\leq \\|\\mathrm{H}\\|^2 \\|\\mathrm{W}\\|\\).
             %
             % If :attr:`doPrecomputation` is true, \\(\\mathrm{W}\\) is a scaled identity and \\(\\mathrm{H}\\)
             % is a :class:`LinOp`, then  \\(\\mathrm{H^* Wy} \\) is preconmputed and the gradient
@@ -64,14 +64,26 @@ classdef CostL2Composition <  CostComposition
             end
         end
         function y=applyProx_(this,x,alpha)
-        	% Reimplemented from parent class :class:`CostComposition`.
-        	%
+            % Reimplemented from parent class :class:`CostComposition`.
+            %
             % Implemented if the operator \\(\\alpha\\mathrm{H^{\\star}WH + I}  \\) is invertible:
             % $$ \\mathrm{y} = (\\alpha\\mathrm{H^{\\star}WH + I} )^{-1} (\\alpha \\mathrm{H^TWy +x})$$
             %
             % If :attr:`doPrecomputation` is true, then
             % \\(\\mathrm{H^TWy}\\) is stored.
-            if this.isH2LinOp
+            
+            if isa(this.H2,'LinOpConv') && (isnumeric(this.H1.W) || (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity))
+                if this.doPrecomputation
+                    if ~isfield(this.precomputeCache,'fftHstardata')
+                        this.precomputeCache.fftHstardata=conj(this.H2.mtf).*Sfft(this.H1.y*this.H1.W,this.H2.Notindex);
+                    end
+                    y=iSfft((Sfft(x,this.H2.Notindex) + this.H1.W*alpha*this.precomputeCache.fftHstardata)./(1+this.H1.W*alpha*(abs(this.H2.mtf).^2)), this.H2.Notindex);
+                    if ~this.H2.isReal, y=real(y);end
+                else
+                    fftHstardata=conj(this.H2.mtf).*Sfft(this.H1.W*this.H1.y,this.H2.Notindex);
+                    y=iSfft((Sfft(x,this.H2.Notindex) + this.H1.W*alpha*fftHstardata)./(1+this.H1.W*alpha*(abs(this.H2.mtf).^2)), this.H2.Notindex);
+                end
+            elseif this.isH2LinOp
                 if isnumeric(this.H1.W) || (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity)
                     HtHplusId=alpha*this.H1.W*(this.H2'*this.H2) + LinOpDiag(this.H2.sizein,1);
                 else
@@ -97,22 +109,7 @@ classdef CostL2Composition <  CostComposition
         	% - the operator :attr:`H`  is a :class:`LinOpConv` and :attr:`W`  is a :class:`LinOpIdentity`;
         	% $$\\mathrm{prox}_{\\alpha C}(\\mathrm{x}) = \\mathcal{F}^{-1}\\left(\\frac{\\mathcal{F}(\\mathrm{x}) + \\alpha  \\mathcal{F}(\\mathrm{H}^*)\\mathcal{F}(\\mathrm{y})  }{1+\\alpha \\vert\\mathcal{F}(\\mathrm{H})\\vert^2} \\right)$$
         	% where \\(\\mathcal{F} \\) stands for the Fourier transform.
-%             if isa(this.H2,'LinOpConv') && (isnumeric(this.H1.W) || isa(this.H1.W,'LinOpScaledIdentity')) 
-% CODE
-%                 if isnumeric(this.W), w=this.w; else, w=this.W.nu; end
-%                 if this.doPrecomputation
-%                     if ~isfield(this.precomputeCache,'fftHstardata')
-%                         this.precomputeCache.fftHstardata=conj(this.H2.mtf).*Sfft(this.H1.y*w,this.H2.Notindex);
-%                     end
-%                     y=iSfft((Sfft(x,this.H2.Notindex) + w*alpha*this.precomputeCache.fftHstardata)./(1+w*alpha*(abs(this.H2.mtf).^2)), this.H2.Notindex);
-%                     if ~this.H2.isComplexOut, y=real(y);end
-%                 else
-%                     fftHstardata=conj(this.H2.mtf).*Sfft(w*this.H1.C1y,this.H2.Notindex);
-%                     y=iSfft((Sfft(x,this.H2.Notindex) + w*alpha*fftHstardata)./(1+w*alpha*(abs(this.H2.mtf).^2)), this.H2.Notindex);
-%                 end
-%             else
-%                 y=applyProx_@CostComposition(this,x,alpha);
-%             end
+
         end
         function M = makeComposition_(this,G)
             % Reimplemented from :class:`Cost`

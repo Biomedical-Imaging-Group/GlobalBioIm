@@ -82,10 +82,10 @@ classdef OptiPrimalDualCondat < Opti
     		end
     		if ~isempty(Fn)
     			if isempty(this.cost), this.cost=Fn{1}.o(Hn{1});
-    			else, this.cost=this.cost + Fn{1}.o(Hn{1}); end
+    			else, this.cost=this.cost + Fn{1}*Hn{1}; end
     		end
     		for n=2:length(Fn)
-    			this.cost=this.cost+Fn{n}.o(Hn{n});
+    			this.cost=this.cost+Fn{n}*Hn{n};
 			end
     	end 
     	%% Run the algorithm
@@ -114,15 +114,15 @@ classdef OptiPrimalDualCondat < Opti
 				% - Algorithm iteration
 				% Update xtilde
 				if ~isempty(this.F0)
-					temp=this.xopt-this.tau*this.F0.grad(this.xopt);
+					temp=this.xopt-this.tau*this.F0.applyGrad(this.xopt);
 				else
 					temp=this.xopt;
 				end
 				for n=1:length(this.Hn) 
-					temp=temp-this.tau*this.Hn{n}.adjoint(this.y{n});
+					temp=temp-this.tau*this.Hn{n}.applyAdjoint(this.y{n});
 				end
 				if ~isempty(this.G)
-					xtilde=this.G.prox(temp,this.tau);
+					xtilde=this.G.applyProx(temp,this.tau);
 				else
 					xtilde=temp;
 				end
@@ -130,7 +130,7 @@ classdef OptiPrimalDualCondat < Opti
 				this.xopt=this.rho*xtilde+(1-this.rho)*this.xopt;
 				% Update ytilde and y
 				for n=1:length(this.Fn) 
-					ytilde{n}=this.Fn{n}.prox_fench(this.y{n}+this.sig*this.Hn{n}.apply(2*xtilde-xold),this.sig);
+					ytilde{n}=this.Fn{n}.applyProxFench(this.y{n}+this.sig*this.Hn{n}.apply(2*xtilde-xold),this.sig);
 					this.y{n}=this.rho*ytilde{n}+(1-this.rho)*this.y{n};
 				end
 				% - Convergence test

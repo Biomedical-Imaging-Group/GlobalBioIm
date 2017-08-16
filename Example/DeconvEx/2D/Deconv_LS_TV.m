@@ -46,7 +46,6 @@ H=LinOpConv(fft2(psf));
 % -- Generate data
 load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
-fftHty=conj(H.mtf).*fft2(y);
 sz=size(y);
 
 % -- Functions definition
@@ -70,9 +69,6 @@ CP.run(y);                            % run the algorithm
 Fn={lamb*R_N12};
 Hn={G};rho_n=[1e-1];
 % Here no solver needed in ADMM since the operator H'*H + alpha*G'*G is invertible
-T=G'*G;
-fGtG=T.mtf;     % Fourier of the filter G'G (Laplacian)
-solver = @(z,rho,x) real(ifft2((fftHty + rho(1)*fft2(G'*z{1}))./(abs(H.mtf).^2 + rho(1)*fGtG)));  
 OutADMM=OutputOpti(1,impad,40);
 ADMM=OptiADMM(F,Fn,Hn,rho_n,[],OutADMM);
 ADMM.ItUpOut=10;       % call OutputOpti update every ItUpOut iterations

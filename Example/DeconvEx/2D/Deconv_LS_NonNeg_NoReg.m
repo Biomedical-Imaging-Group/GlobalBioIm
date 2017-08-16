@@ -51,7 +51,7 @@ sz=size(y);
 LS=CostL2([],y);         % Least-Sqaures data term
 R_POS=CostNonNeg(sz);    % Non-Negativity
 F=LS*H;
-F.doPrecomputation=0;
+F.doPrecomputation=1;
 
 % -- FISTA LS + NonNeg
 OutOp=OutputOpti(1,impad,40);

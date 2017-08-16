@@ -69,9 +69,8 @@ classdef CostL2Composition <  CostComposition
             % Implemented if the operator \\(\\alpha\\mathrm{H^{\\star}WH + I}  \\) is invertible:
             % $$ \\mathrm{y} = (\\alpha\\mathrm{H^{\\star}WH + I} )^{-1} (\\alpha \\mathrm{H^TWy +x})$$
             %
-            % If :attr:`doPrecomputation` is true, then
-            % \\(\\mathrm{H^TWy}\\) is stored.
-            
+            % **Note** If :attr:`doPrecomputation` is true, then \\(\\mathrm{H^TWy}\\) is stored.
+
             if isa(this.H2,'LinOpConv') && (isnumeric(this.H1.W) || (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity))
                 if this.doPrecomputation
                     if ~isfield(this.precomputeCache,'fftHstardata')
@@ -102,14 +101,6 @@ classdef CostL2Composition <  CostComposition
             else
                 y=applyProx_@CostComposition(this,x,alpha);
             end
-% --- Old version: (in case that computing HthplusId too heavy)  
-% We can maybe put the code above as default and then keep the old way 
-% with the if
-            % DOC
-        	% - the operator :attr:`H`  is a :class:`LinOpConv` and :attr:`W`  is a :class:`LinOpIdentity`;
-        	% $$\\mathrm{prox}_{\\alpha C}(\\mathrm{x}) = \\mathcal{F}^{-1}\\left(\\frac{\\mathcal{F}(\\mathrm{x}) + \\alpha  \\mathcal{F}(\\mathrm{H}^*)\\mathcal{F}(\\mathrm{y})  }{1+\\alpha \\vert\\mathcal{F}(\\mathrm{H})\\vert^2} \\right)$$
-        	% where \\(\\mathcal{F} \\) stands for the Fourier transform.
-
         end
         function M = makeComposition_(this,G)
             % Reimplemented from :class:`Cost`

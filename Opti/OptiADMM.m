@@ -122,7 +122,16 @@ classdef OptiADMM < Opti
                     this.Hnx{n}=this.yn{n};
                     this.wn{n}=zeros(size(this.yn{n}));
                 end
-            end;
+            end
+            % This is done here in case one change the y in F0 between two
+            % runs
+            if isempty(this.solver)
+                if ~isempty(this.F0) && isa(this.F0,'CostL2Composition')
+                    this.b0=this.F0.H2'*this.F0.H1.y;
+                elseif ~isempty(this.F0) && isa(this.F0,'CostL2')
+                    this.b0=this.F0.y;
+                end
+            end
             assert(~isempty(this.xopt),'Missing starting point x0');
             tstart=tic;
             this.OutOp.init();
@@ -142,7 +151,7 @@ classdef OptiADMM < Opti
                         b=b+this.rho_n(n)*this.Hn{n}.applyAdjoint(this.zn{n});
                     end
                     if ~isempty(this.b0)
-                        b=b+this.F0.H2'*this.F0.H1.y;
+                        b=b+this.b0;
                     end
                     if this.A.isInvertible
                         this.xopt=this.A.applyInverse(b);

@@ -57,7 +57,7 @@ classdef CostL2 < Cost
             this.name='Cost L2';
             % -- Compute Lipschitz constant of the gradient (if the norm of H is known)
             if this.H.norm>=0;
-                if isscalar(this.W)
+                if isnumeric(this.W)
                     this.lip=this.W.*this.H.norm^2;
                 else
                     if this.W.norm>=0
@@ -134,8 +134,11 @@ classdef CostL2 < Cost
                     if ~this.H.iscomplex, y=real(y);end
                 end
             elseif isa(this.H,'LinOpSelector')
-                t=this.H.apply(x);
-                y=x + this.H.adjoint((t+alpha*this.y)/(alpha+1) - t);
+                if ~this.isW
+                    t=this.H.apply(x);
+                    y=x + this.H.adjoint((t+alpha*this.y)/(alpha+1) - t);
+                else
+                end
             end
             if isempty(y),error('Prox not implemented');end
         end

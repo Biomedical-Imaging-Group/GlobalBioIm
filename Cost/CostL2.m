@@ -47,7 +47,6 @@ classdef CostL2 < Cost
             end
             this.isConvex=true;
             this.isDifferentiable=true;
-            this.isComplexIn=true;
         end        
     end
     

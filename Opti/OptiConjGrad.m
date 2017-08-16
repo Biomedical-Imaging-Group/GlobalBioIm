@@ -51,14 +51,13 @@ classdef OptiConjGrad < Opti
     			assert(isa(W,'LinOpDiag'),'W must be a LinOpDiag object');
     			this.A=A'*W*A; 			
     		end
-    		this.cost=CostL2(this.A,b);
+    		this.cost=CostL2Composition(CostL2([],b),this.A);
     		assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
     		this.b=b;
         end 
         %% Set data b
         function set_b(this,b)
-            % Set the right-hand side \\(\\mathrm{b}\\)
-        	
+            % Set the right-hand side \\(\\mathrm{b}\\)       	
             assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
             this.b=b;
         end

@@ -57,7 +57,6 @@ classdef Cost < Map
             this.memoCache.applyProx=struct('in', [], 'out', []);
             this.memoCache.applyProxFench=struct('in', [], 'out', []);
             % Properties fixed for costs
-            this.isComplexOut = false;     % true if the space Y is complex valued
             this.sizeout=1;                % dimension of the left hand side vector space
             this.norm=-1;                  % norm of the operator
         end
@@ -124,6 +123,8 @@ classdef Cost < Map
     % - applyGrad_(this,x)
     % - applyProx_(this,z,alpha)
     % - applyProxFench_(this,z,alpha)
+    % - plus_(this,G)
+    % - minus_(this,G)
     % - makeComposition_(this,G)
     methods (Access = protected)
         function g=applyGrad_(this,x)
@@ -150,6 +151,24 @@ classdef Cost < Map
                 y= z - alpha*(this.applyProx(z/alpha,1/alpha));
             else
                 error('applyProxFench_ method not implemented');
+            end
+        end
+        function M = plus_(this,G)
+            % Constructs a :class:`CostSummation` object to sum the
+            % current :class:`Cost` \\(C\\) with the given \\(G\\).
+            if isa(G,'Cost')
+                M = CostSummation({this,G},[1,1]);
+            else
+                M = plus_@MapSummation({this,G},[1,1]);
+            end
+        end
+        function M = minus_(this,G)
+            % Constructs a :class:`CostSummation` object to subtract to the
+            % current :class:`Cost` \\(C\\), the given \\(G\\).
+            if isa(G,'LinOp')
+                M = CostSummation({this,G},[1,-1]);
+            else
+                M = minus_@MapSummation({this,G},[1,-1]);
             end
         end
         function M=makeComposition_(this,G)

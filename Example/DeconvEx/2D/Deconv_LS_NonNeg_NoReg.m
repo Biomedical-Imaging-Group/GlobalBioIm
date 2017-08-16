@@ -40,20 +40,23 @@ impad=zeros(512); idx=129:384;
 impad(idx,idx)=im;
 
 % -- Convolution Operator definition
-H=LinOpConv(psf);
+H=LinOpConv(fft2(psf));
 
 % -- Generate data
 load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
+sz=size(y);
 
 % -- Functions definition
-F_LS=CostL2(H,y);      % Least-Sqaures data term
-R_POS=CostNonNeg();    % Non-Negativity
+LS=CostL2([],y);         % Least-Sqaures data term
+R_POS=CostNonNeg(sz);    % Non-Negativity
+F=LS*H;
+F.doPrecomputation=0;
 
 % -- FISTA LS + NonNeg
 OutOp=OutputOpti(1,impad,40);
-FBS=OptiFBS(F_LS,R_POS,OutOp);
-FBS.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
+FBS=OptiFBS(F,R_POS,OutOp);
+FBS.ItUpOut=1;    % call OutputOpti update every ItUpOut iterations
 FBS.fista=true;   % activate fista
 FBS.maxiter=200;  % max number of iterations
 FBS.run(y);       % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 

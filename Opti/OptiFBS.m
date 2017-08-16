@@ -96,7 +96,7 @@ classdef OptiFBS < Opti
 				xold=this.xopt;
 				% - Algorithm iteration
 				if this.fista  % if fista
-					this.xopt=this.G.prox(this.y - this.gam*this.F.grad(this.y),this.gam);
+					this.xopt=this.G.applyProx(this.y - this.gam*this.F.applyGrad(this.y),this.gam);
 					told=this.tk;
 					this.tk=0.5*(1+sqrt(1+4*this.tk^2));
 					this.y=this.xopt + (told-1)/this.tk*(this.xopt-xold);

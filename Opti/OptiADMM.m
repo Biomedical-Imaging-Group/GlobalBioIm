@@ -84,33 +84,37 @@ classdef OptiADMM < Opti
             this.Hn=Hn;
             this.rho_n=rho_n;
             if ~isempty(F0)
-                assert(~isempty(solver) || isa(F0,'CostL2'),'when F0 is nonempty and is not CostL2 a solver must be given (see help)');
-                this.cost=F0 +Fn{1}.o(Hn{1});
+                assert(~isempty(solver) || isa(F0,'CostL2') || isa(F0,'CostL2Composition'),'when F0 is nonempty and is not CostL2 a solver must be given (see help)');
+                this.cost=F0 +Fn{1}*Hn{1};
             else
-                this.cost=Fn{1}.o(Hn{1});
+                this.cost=Fn{1}*Hn{1};
             end
             this.solver=solver;
             for n=2:length(Fn)
-                this.cost=this.cost+Fn{n}.o(Hn{n});
+                this.cost=this.cost+Fn{n}*Hn{n};
             end
             if isempty(this.solver)
-                this.A=SumLinOp({ (this.Hn{1})' *this.Hn{1}},[this.rho_n(1)]);
+                this.A=this.rho_n(1)* (this.Hn{1})' *this.Hn{1};
                 for n=2:length(this.Hn)
-                    this.A=SumLinOp({ this.A, (this.Hn{n})' * this.Hn{n}},[1,this.rho_n(n)]);
+                    this.A=this.A + this.rho_n(n)*(this.Hn{n})' * this.Hn{n};
                 end
-                if ~isempty(this.F0) && isa(this.F0,'CostL2')
-                    this.A=SumLinOp({this.A,this.F0.H'*this.F0.H},[1,1]);
-                    this.b0=this.F0.H'*this.F0.y;
+                if ~isempty(this.F0) && isa(this.F0,'CostL2Composition')
+                    this.A=this.A + this.F0.H2'*this.F0.H2;
+                    this.b0=this.F0.H2'*this.F0.H1.y;
+                elseif ~isempty(this.F0) && isa(this.F0,'CostL2')
+                    this.A=this.A + LinOpDiag(this.A.sizein);
+                    this.b0=this.F0.y;
                 end
-                this.CG=OptiConjGrad(this.A,zeros(this.A.sizeout),[],OutputOpti());
-                this.CG.maxiter=20;
-                this.CG.ItUpOut=0;
+                if ~this.A.isInvertible  % If A is non invertible -> intanciate a CG
+                    this.CG=OptiConjGrad(this.A,zeros(this.A.sizeout),[],OutputOpti());
+                    this.CG.maxiter=20;
+                    this.CG.ItUpOut=0;
+                end
             end
         end
     	%% Run the algorithm
         function run(this,x0)
-            % Reimplementation from :class:`Opti`.
-            
+            % Reimplementation from :class:`Opti`.           
             if ~isempty(x0) % To restart from current state if wanted
                 this.xopt=x0;
                 for n=1:length(this.Hn)
@@ -129,20 +133,24 @@ classdef OptiADMM < Opti
                 xold=this.xopt;
                 % - Algorithm iteration
                 for n=1:length(this.Fn)
-                    this.yn{n}=this.Fn{n}.prox(this.Hnx{n} + this.wn{n}/this.rho_n(n),1/this.rho_n(n));
+                    this.yn{n}=this.Fn{n}.applyProx(this.Hnx{n} + this.wn{n}/this.rho_n(n),1/this.rho_n(n));
                     this.zn{n}=this.yn{n}-this.wn{n}/this.rho_n(n);
                 end
-                if isempty(this.solver)
-                    b=this.rho_n(1)*this.Hn{1}.adjoint(this.zn{1});
+                if isempty(this.solver)                  
+                    b=this.rho_n(1)*this.Hn{1}.applyAdjoint(this.zn{1});
                     for n=2:length(this.Hn)
-                        b=b+this.rho_n(n)*this.Hn{n}.adjoint(this.zn{n});
+                        b=b+this.rho_n(n)*this.Hn{n}.applyAdjoint(this.zn{n});
                     end
                     if ~isempty(this.b0)
-                        b=b+this.F0.H'*this.F0.y;
+                        b=b+this.F0.H2'*this.F0.H1.y;
                     end
-                    this.CG.set_b(b);
-                    this.CG.run(this.xopt);
-                    this.xopt=this.CG.xopt;
+                    if this.A.isInvertible
+                        this.xopt=this.A.applyInverse(b);
+                    else
+                        this.CG.set_b(b);
+                        this.CG.run(this.xopt);
+                        this.xopt=this.CG.xopt;
+                    end
                 else
                     this.xopt=this.solver(this.zn,this.rho_n, this.xopt);
                 end

@@ -31,8 +31,6 @@ classdef LinOpAdjoint < LinOp
             this.name =sprintf('%s Adjoint', TLinOp.name);           
             assert(isa(TLinOp,'LinOp'),'Input should be a  LinOp');
             this.TLinOp = TLinOp;
-            this.isComplexIn= this.TLinOp.isComplexOut;
-            this.isComplexOut= this.TLinOp.isComplexIn;
             this.isDifferentiable= this.TLinOp.isDifferentiable;
             this.isInvertible=this.TLinOp.isInvertible;
             this.sizein =  this.TLinOp.sizeout;

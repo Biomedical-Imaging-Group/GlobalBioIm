@@ -7,9 +7,6 @@ classdef LinOpConv <  LinOp
     % 
     % See also :class:`LinOp`, :class:`Map`
     
-    % TODO: Fix the problems with the isComplex stuff
-    
-    
     %%    Copyright (C) 2015 
     %     F. Soulez ferreol.soulez@epfl.ch
     %
@@ -31,12 +28,17 @@ classdef LinOpConv <  LinOp
         index;     % Dimensions along which the convolution is performed
         Notindex;  % Remaining dimensions
         ndms;      % number of dimensions 
+        isReal;    % true (default) if the result of the convolution should be real
     end
 	
     %% Constructor
     methods
-        function this = LinOpConv(mtf,index)
+        function this = LinOpConv(mtf,isReal,index)
             if nargin == 1
+                index = [];
+                isReal=1;                
+            end
+            if nargin<3
                 index = [];
             end
             this.name ='LinOpConv';
@@ -44,9 +46,7 @@ classdef LinOpConv <  LinOp
             this.isDifferentiable=true;
             assert(isnumeric(mtf),'The mtf should be numeric');
             
-            %if ~isreal(psf), this.isComplex= true; end
-            this.isComplexIn=true;
-            this.isComplexOut=true;
+            this.isReal= isReal;
             
             this.sizeout =size(mtf);
             this.sizein = this.sizeout;           
@@ -86,23 +86,23 @@ classdef LinOpConv <  LinOp
         function y = apply_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             y = iSfft( this.mtf .* Sfft(x, this.Notindex), this.Notindex );
-           % if (~this.isComplex) && isreal(x) . TO CORRECT COMPLEX
+            if (this.isReal) && isreal(x) 
                 y = real(y);
-           % end
+            end
         end	
         function y = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             y = iSfft( conj(this.mtf) .* Sfft(x, this.Notindex), this.Notindex );
-        %    if (~this.isComplex)&&isreal(x) . TO CORRECT COMPLEX
+            if (this.isReal)&&isreal(x)
                 y = real(y);
-         %   end
+            end
         end	
         function y = applyHtH_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             y = iSfft( (real(this.mtf).^2 + imag(this.mtf).^2) .* Sfft(x, this.Notindex), this.Notindex );
-          %  if (~this.isComplex)&&isreal(x) . TO CORRECT COMPLEX
+            if (this.isReal)&&isreal(x) 
                 y = real(y);
-         %   end
+            end
         end	
         function y = applyHHt_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
@@ -111,8 +111,11 @@ classdef LinOpConv <  LinOp
         function y = applyInverse_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
 			if this.isInvertible				
-				y = iSfft( 1./this.mtf .* Sfft(x, this.Notindex), this.Notindex );
-			else
+                y = iSfft( 1./this.mtf .* Sfft(x, this.Notindex), this.Notindex );
+                if (this.isReal)&&isreal(x)
+                    y = real(y);
+                end
+            else
                 y = applyInverse_@LinOp(this,x);
 			end
         end		
@@ -120,6 +123,9 @@ classdef LinOpConv <  LinOp
             % Reimplemented from parent class :class:`LinOp`.
             if this.isInvertible
                 y = iSfft( 1./conj(this.mtf) .* Sfft(x, this.Notindex), this.Notindex );
+                if (this.isReal)&&isreal(x)
+                    y = real(y);
+                end
             else
                 y = applyAdjointInverse_@LinOp(this,x);
             end
@@ -127,9 +133,9 @@ classdef LinOpConv <  LinOp
         function M = plus_(this,G)
             % Reimplemented from parent class :class:`LinOp`.
             if isa(G,'LinOpDiag') && G.isScaledIdentity
-                M=LinOpConv(G.diag+this.mtf,this.index);
+                M=LinOpConv(G.diag+this.mtf,this.isReal,this.index);
             elseif isa(G,'LinOpConv') 
-                M=LinOpConv(this.mtf+G.mtf,this.index);
+                M=LinOpConv(this.mtf+G.mtf,this.isReal,this.index);
             else
                 M=plus_@LinOp(this,G);
             end
@@ -137,20 +143,20 @@ classdef LinOpConv <  LinOp
         function M = minus_(this,G)
             % Reimplemented from parent class :class:`LinOp`.
             if isa(G,'LinOpDiag')  && G.isScaledIdentity
-                M=LinOpDiag(this.mtf-G.diag);
+                M=LinOpDiag(this.mtf-G.diag,this.isReal,this.index);
             elseif isa(G,'LinOpConv')
-                M=LinOpConv(this.mtf-G.mtf,this.index);
+                M=LinOpConv(this.mtf-G.mtf,this.isReal,this.index);
             else
                 M=minus_@LinOp(this,G);
             end
         end
         function M = makeAdjoint_(this)
             % Reimplemented from parent class :class:`LinOp`.
-            M=LinOpConv(conj(this.mtf),this.index);
+            M=LinOpConv(conj(this.mtf),this.isReal,this.index);
         end
         function M = makeHHt_(this)
             % Reimplemented from parent class :class:`LinOp`.
-            M=LinOpConv(abs(this.mtf).^2,this.index);
+            M=LinOpConv(abs(this.mtf).^2,this.isReal,this.index);
         end
         function M = makeHtH_(this)
             % Reimplemented from parent class :class:`LinOp`.
@@ -160,7 +166,7 @@ classdef LinOpConv <  LinOp
             % Reimplemented from :class:`LinOp`
             if p==-1
                 if this.isInvertible
-                    M=LinOpDiag(1./this.mtf,this.index);
+                    M=LinOpConv(1./this.mtf,this.isReal,this.index);
                 end
             else
                 M=mpower_@LinOp(this,p);
@@ -169,9 +175,9 @@ classdef LinOpConv <  LinOp
 		function G = makeComposition_(this, H)
             % Reimplemented from :class:`LinOp`
 			if isa(H, 'LinOpConv')
-				G = LinOpConv(this.mtf.*H.mtf,this.index); 
+				G = LinOpConv(this.mtf.*H.mtf,this.isReal,this.index); 
             elseif isa(H,'LinOpDiag') && H.isScaledIdentity
-                G = LinOpConv(this.mtf.*H.diag,this.index); 
+                G = LinOpConv(this.mtf.*H.diag,this.isReal,this.index); 
 			else
 				G = makeComposition_@LinOp(this, H);
 			end

@@ -80,10 +80,11 @@ classdef OptiChambPock < Opti
     	%% Constructor
     	function this=OptiChambPock(F,H,G,OutOp)
     		this.name='Opti Chambolle-Pock';
-    		this.cost=F.o(H)+G;
+    		this.cost=F*H+G;
     		this.F=F;
     		this.G=G;
     		this.H=H;
+            
     		if nargin==4 && ~isempty(OutOp)
     			this.OutOp=OutOp;
     		end
@@ -110,7 +111,7 @@ classdef OptiChambPock < Opti
 				Kxbar=y;
 			else
 				ybar=y;
-				KTybar=this.H.adjoint(ybar);
+				KTybar=this.H.applyAdjoint(ybar);
 				KTy=KTybar;
 			end
 			Kxopt=y;
@@ -121,8 +122,8 @@ classdef OptiChambPock < Opti
 				if this.var==1 % === using xbar
 					Kxold=Kxopt;
 					% - Algorithm iteration
-					y=this.F.prox_fench(y+sig*Kxbar,sig);
-					this.xopt=this.G.prox(this.xopt-tau*this.H.adjoint(y),tau);
+					y=this.F.applyProxFench(y+sig*Kxbar,sig);
+					this.xopt=this.G.applyProx(this.xopt-tau*this.H.applyAdjoint(y),tau);
 					Kxopt=this.H.apply(this.xopt);
 					if ~isempty(gam) % acceleration => uodate theta, tau and sig according to [1]
 						theta=1/sqrt(1+2*gam*tau);

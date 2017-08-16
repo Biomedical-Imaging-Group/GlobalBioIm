@@ -1,28 +1,24 @@
 classdef LinOpGrad <  LinOp
-    %% LinOpGrad :  Finite difference operator
+    % LinOpGrad:  Gradient linear operator (Finite differences) 
     %  Matlab Linear Operator Library
     %
-    % -- Example
-    % G = LinOpGrad(sz,index,bc,res)
-    % Build the gradient operator (finite differences) to apply on a variable
-    % of size SZ along the dimension indexed in INDEX (all by default)
-    % The output is of size SZ x lenght(index)
-    % bc corresponds to the boundary condition:
-    %     - 'circular' (default)
-    %     - 'zeros'
-    %     - 'mirror'
-    % res is a vector containing the resolution in each dimension (default: all 1)
-    %      
-    % NOTE: when circular boundary conditions are selected, the filter
-    % corresponding to HtH (i.e. Laplacian) is available within the
-    % attribute fHtH
+    % :param sz: sizein of the gradient operator
+    % :param index: dimension along which the gradient is computed (all by default)
+    % :param bc: boundary condition: 'circular' (default), 'zeros', 'mirror'
+    % :param res: vector containing the resolution along each dimension (default all 1)
+    % 
+    % **Note** When circular boundary conditions are selected, the method
+    % makeHtH (or equivalently the composition H'*H) returns a convolution
+    % linear operator :class:`LinOp`
     %
-    % Please refer to the LINOP superclass for general documentation about
-    % linear operators class
-    % See also LinOp
+    % **Example** G = LinOpGrad(sz,index,bc,res)
+    %
+    % See also :class:`Map`, :class:`LinOp`
     
-    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch, E. Soubies
-    %     emmanuel.soubies@epfl.ch, M. McCann michael.mccann@epfl.ch
+    %%    Copyright (C) 2017
+    %     F. Soulez ferreol.soulez@epfl.ch, 
+    %     E. Soubies emmanuel.soubies@epfl.ch, 
+    %     M. McCann michael.mccann@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -43,25 +39,19 @@ classdef LinOpGrad <  LinOp
         ndms;      % number of dimension of the input
         bc;        % boundary condition (default mirror);
         res;       % resolution, vector of lenght ndms
-        fHtH;      % Filter corresponding to HtH when using circular bc
     end
+    
+    %% Constructor
     methods
         function this = LinOpGrad(sz,index,bc,res)
-            if nargin == 1
-                index = [];
-            end
-            if nargin<=2 || isempty(bc)
-                bc='circular';
-            end
-            if nargin<=3 || isempty(res)
-            	res=ones(size(sz));
-            end
-            this.name ='LinOp Gradient';
-            this.isComplex= false;
+            if nargin == 1, index = [];end
+            if nargin<=2 || isempty(bc), bc='circular';end
+            if nargin<=3 || isempty(res), res=ones(size(sz));end
+            this.name ='LinOpGrad';
             this.isInvertible=false;
+            this.isDifferentiable=true;
             this.res=res;
-            this.bc=bc;
-            
+            this.bc=bc;            
             assert(issize(sz),'The input size sz should be a conformable  to a size ');
             this.sizein = sz;
             this.ndms = length(this.sizein);
@@ -69,7 +59,6 @@ classdef LinOpGrad <  LinOp
             if this.sizein(2) ==1
                 this.ndms = 1;
             end
-            
             if (~isempty(index))
                 assert(isvector(index) && length(index)<= this.ndms && max(index)<= this.ndms,'The index should be a conformable  to sz');
                 this.index = index;
@@ -83,180 +72,152 @@ classdef LinOpGrad <  LinOp
                 this.sizeout= [this.sizein(1),this.lgthidx];
             else
                 this.sizeout= this.sizein;
-			end
-			
-			if this.lgthidx > 1
-				this.sizeout(end+1) = this.lgthidx;
-			end
+            end
             
-			this.norm = 2 * sqrt( sum(1./res.^2) );
+            if this.lgthidx > 1
+                this.sizeout(end+1) = this.lgthidx;
+            end
             
-			validatestring(this.bc, {'mirror', 'circular', 'zeros'});
-			
-            if strcmp(this.bc,'circular')
-                % Set the filter for HtH
-                this.fHtH=zeros(this.sizein);
-                switch(this.ndms)
-                    case(1), this.fHtH(1)=2;this.fHtH(2)=-1;this.fHtH(end)=-1;this.fHtH=this.fHtH/res(1)^2;
-                    case(2), this.fHtH(1,1)=2/res(1)^2+2/res(2)^2;this.fHtH(1,2)=-1/res(2)^2;this.fHtH(2,1)=-1/res(1)^2;this.fHtH(1,end)=-1/res(2)^2;this.fHtH(end,1)=-1/res(1)^2;
-                    case(3), this.fHtH(1,1,1)=2/res(1)^2+2/res(2)^2+2/res(3)^2;this.fHtH(1,2,1)=-1/res(2)^2;this.fHtH(2,1,1)=-1/res(1)^2;this.fHtH(1,end,1)=-1/res(2)^2;this.fHtH(end,1,1)=-1/res(1)^2;
-                             this.fHtH(1,1,2)=-1/res(3)^2;this.fHtH(1,1,end)=-1/res(3)^2;
-                    case(4), this.fHtH(1,1,1,1)=2/res(1)^2+2/res(2)^2+2/res(3)^2+2/res(4)^2;this.fHtH(1,2,1,1)=-1/res(2)^2;this.fHtH(2,1,1,1)=-1/res(1)^2;this.fHtH(1,end,1,1)=-1/res(2)^2;this.fHtH(end,1,1,1)=-1/res(1)^2;
-                             this.fHtH(1,1,2,1)=-1/res(3)^2;this.fHtH(1,1,end,1)=-1/res(3)^2;this.fHtH(1,1,1,2)=-1/res(4)^2;this.fHtH(1,1,1,end)=-1/res(4)^2;
-					otherwise
-						warning('this.fHtH not set because input is more than 4D');
+            this.norm = 2 * sqrt( sum(1./res.^2) );
+            
+            validatestring(this.bc, {'mirror', 'circular', 'zeros'});
+        end
+    end
+    
+    %% Core Methods containing implementations (Protected)
+    % - apply_(this,x)
+    % - applyAdjoint_(this,x)
+    % - HtH_(this,x)
+    % - makeHtH_(this)
+    methods (Access = protected)
+        function y = apply_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
+            y = zeros(this.sizeout);
+            allElements = repmat({':'}, 1, this.ndms);
+            for diffDimInd = 1:length(this.index)
+                diffDim = this.index(diffDimInd);
+                
+                midElements = allElements;
+                midElements{diffDim} = 1:this.sizeout(diffDim)-1;
+                y(midElements{:}, diffDimInd)  = diff(x, 1, diffDim)  / this.res(diffDimInd);
+                
+                lastElement = allElements;
+                lastElement{diffDim} = this.sizeout(diffDim);
+                switch(this.bc)
+                    case('mirror')
+                        % y(:,1) = (x([2:end,end])-x)/this.res(1);
+                        y(lastElement{:}, diffDimInd)  = 0;
+                    case('circular')
+                        % y(:,1) = (x([2:end,1])-x)/this.res(1);
+                        firstElement = allElements;
+                        firstElement{diffDim} = 1;
+                        y(lastElement{:}, diffDimInd)  =  (x(firstElement{:}) - x(lastElement{:})) / this.res(diffDimInd);
+                    case('zeros')
+                        y(lastElement{:}, diffDimInd)  = -x(lastElement{:})  / this.res(diffDimInd);
+                end
+                
+            end
+            
+        end
+        function y = applyAdjoint_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
+            y = zeros(this.sizein);
+            allElements = repmat({':'}, 1, this.ndms);
+            for diffDimInd = 1:length(this.index)
+                diffDim = this.index(diffDimInd);
+                midElements = allElements;
+                midElements{diffDim} = 2:this.sizein(diffDim)-1;
+                leftElements = allElements;
+                leftElements{diffDim} = 1:this.sizein(diffDim)-1;
+                y(midElements{:})  = y(midElements{:}) + diff(-x(leftElements{:}, diffDimInd), 1, diffDim) / this.res(diffDimInd);
+                % handle boundary conditions
+                lastElement = allElements;
+                lastElement{diffDim} = this.sizeout(diffDim);
+                firstElement = allElements;
+                firstElement{diffDim} = 1;
+                secondToLastElement = allElements;
+                secondToLastElement{diffDim} = this.sizeout(diffDim) - 1;
+                switch(this.bc)
+                    case('mirror')
+                        %y= [[-x(1) ; (-x(2:end-1)+x(1:end-2))] ; x(end-1)]/this.res(1);
+                        y(firstElement{:})  =  y(firstElement{:}) + -x(firstElement{:}, diffDimInd)/this.res(diffDimInd);
+                        y(lastElement{:})   = y(lastElement{:}) + x(secondToLastElement{:}, diffDimInd)/this.res(diffDimInd);
+                    case('circular')
+                        %y= [[x(end)-x(1) ; (-x(2:end-1)+x(1:end-2))] ; (x(end-1)-x(end))]/this.res(1);
+                        y(firstElement{:})  =  y(firstElement{:}) ...
+                            + (x(lastElement{:}, diffDimInd)-x(firstElement{:}, diffDimInd))/this.res(diffDimInd);
+                        y(lastElement{:}) = y(lastElement{:}) ...
+                            + (x(secondToLastElement{:}, diffDimInd) -  x(lastElement{:}, diffDimInd))/this.res(diffDimInd);
+                    case('zeros')
+                        %y= [[-x(1) ; (-x(2:end-1)+x(1:end-2))] ; x(end-1)-x(end)]/this.res(1);
+                        y(firstElement{:})  =  y(firstElement{:}) ...
+                            + (-x(firstElement{:}, diffDimInd))/this.res(diffDimInd);
+                        y(lastElement{:}) = y(lastElement{:}) ...
+                            + (x(secondToLastElement{:}, diffDimInd) -  x(lastElement{:}, diffDimInd))/this.res(diffDimInd);
                 end
             end
-		end
-		
-	end
-	methods (Access = protected)
-		function y = apply_(this,x)
-		
-			y = zeros(this.sizeout);
-			
-			
-			allElements = repmat({':'}, 1, this.ndms);
-			for diffDimInd = 1:length(this.index)
-				diffDim = this.index(diffDimInd);
-				
-				midElements = allElements;
-				midElements{diffDim} = 1:this.sizeout(diffDim)-1; 
-				y(midElements{:}, diffDimInd)  = diff(x, 1, diffDim)  / this.res(diffDimInd);
-				
-				lastElement = allElements;
-				lastElement{diffDim} = this.sizeout(diffDim); 
-				switch(this.bc)
-					case('mirror')
-						% y(:,1) = (x([2:end,end])-x)/this.res(1);
-						y(lastElement{:}, diffDimInd)  = 0;
-					case('circular')
-						% y(:,1) = (x([2:end,1])-x)/this.res(1);
-						firstElement = allElements;
-						firstElement{diffDim} = 1;
-						y(lastElement{:}, diffDimInd)  =  (x(firstElement{:}) - x(lastElement{:})) / this.res(diffDimInd);
-					case('zeros')
-						y(lastElement{:}, diffDimInd)  = -x(lastElement{:})  / this.res(diffDimInd);
-				end
-				
-			end
-		
-		end
-        
-        
-        function y = adjoint_(this,x)
+        end
+        function y = HtH_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
             y = zeros(this.sizein);
-			
-			
-			allElements = repmat({':'}, 1, this.ndms);
-			
-			for diffDimInd = 1:length(this.index)
-				diffDim = this.index(diffDimInd);
+            allElements = repmat({':'}, 1, this.ndms);
+            for diffDimInd = 1:length(this.index)
+                diffDim = this.index(diffDimInd);
+                midElements = allElements;
+                midElements{diffDim} = 2:this.sizein(diffDim)-1;
+                y(midElements{:}) = y(midElements{:}) + -diff(x, 2, diffDim)/this.res(diffDimInd)^2;
+                
+                lastElement = allElements;
+                lastElement{diffDim} = this.sizeout(diffDim);
+                
+                firstElement = allElements;
+                firstElement{diffDim} = 1;
+                
+                secondElement = allElements;
+                secondElement{diffDim} = 2;
+                
+                secondToLastElement = allElements;
+                secondToLastElement{diffDim} = this.sizeout(diffDim) - 1;
+                switch(this.bc)
+                    case('mirror')
+                        % y = (2*x - x([1,1:end-1]) - x([2:end,end]))/this.res(1)^2;
+                        y(firstElement{:}) = y(firstElement{:}) ...
+                            + ( x(firstElement{:}) - x(secondElement{:}) ) / this.res(diffDimInd)^2;
+                        y(lastElement{:}) = y(lastElement{:}) ...
+                            + (x(lastElement{:}) - x(secondToLastElement{:})) / this.res(diffDimInd)^2;
+                    case('circular')
+                        % y = (2*x - x([end,1:end-1]) - x([2:end,1]))/this.res(1)^2;
+                        y(firstElement{:}) = y(firstElement{:}) ...
+                            + ( 2*x(firstElement{:}) - x(lastElement{:}) - x(secondElement{:}) ) / this.res(diffDimInd)^2;
+                        y(lastElement{:}) = y(lastElement{:}) ...
+                            + (2*x(lastElement{:}) - x(secondToLastElement{:}) - x(firstElement{:}) ) / this.res(diffDimInd)^2;
+                    case('zeros')
+                        % y(1:end-1) = (2*x(1:end-1) - x([1,1:end-2]) - x(2:end))/this.res(1)^2;
+                        % y(end)=(2*x(end)-x(end-1))/this.res(1)^2;
+                        y(firstElement{:}) = y(firstElement{:}) ...
+                            + ( x(firstElement{:}) - x(secondElement{:}) ) / this.res(diffDimInd)^2;
+                        y(lastElement{:}) = y(lastElement{:}) ...
+                            + (2*x(lastElement{:}) - x(secondToLastElement{:}) ) / this.res(diffDimInd)^2;
+                end
+            end
+        end
+        function M = makeHtH_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            if strcmp(this.bc,'circular')&&(this.ndms<=4)
+                fHtH=zeros(this.sizein);
+                switch(this.ndms)
+                    case(1), fHtH(1)=2;fHtH(2)=-1;fHtH(end)=-1;fHtH=fHtH/this.res(1)^2;
+                    case(2), fHtH(1,1)=2/this.res(1)^2+2/this.res(2)^2;fHtH(1,2)=-1/this.res(2)^2;fHtH(2,1)=-1/this.res(1)^2;fHtH(1,end)=-1/this.res(2)^2;fHtH(end,1)=-1/this.res(1)^2;
+                    case(3), fHtH(1,1,1)=2/this.res(1)^2+2/this.res(2)^2+2/this.res(3)^2;fHtH(1,2,1)=-1/this.res(2)^2;fHtH(2,1,1)=-1/this.res(1)^2;fHtH(1,end,1)=-1/this.res(2)^2;fHtH(end,1,1)=-1/this.res(1)^2;
+                        fHtH(1,1,2)=-1/this.res(3)^2;fHtH(1,1,end)=-1/this.res(3)^2;
+                    case(4), fHtH(1,1,1,1)=2/this.res(1)^2+2/this.res(2)^2+2/this.res(3)^2+2/this.res(4)^2;fHtH(1,2,1,1)=-1/this.res(2)^2;fHtH(2,1,1,1)=-1/this.res(1)^2;fHtH(1,end,1,1)=-1/this.res(2)^2;fHtH(end,1,1,1)=-1/this.res(1)^2;
+                        fHtH(1,1,2,1)=-1/this.res(3)^2;fHtH(1,1,end,1)=-1/this.res(3)^2;fHtH(1,1,1,2)=-1/this.res(4)^2;fHtH(1,1,1,end)=-1/this.res(4)^2;
+                end
+                M=LinOpConv(fftn(fHtH));
+            else
+                M=makeHtH_@LinOp(this);
+            end
+        end
+    end
 				
-				midElements = allElements;
-				midElements{diffDim} = 2:this.sizein(diffDim)-1; 
-				
-				
-				leftElements = allElements;
-				leftElements{diffDim} = 1:this.sizein(diffDim)-1; 
-				
-				y(midElements{:})  = y(midElements{:}) + diff(-x(leftElements{:}, diffDimInd), 1, diffDim) / this.res(diffDimInd);
-				
-				% handle boundary conditions
-				lastElement = allElements;
-				lastElement{diffDim} = this.sizeout(diffDim);
-				
-				firstElement = allElements;
-				firstElement{diffDim} = 1;
-				
-				secondToLastElement = allElements;
-				secondToLastElement{diffDim} = this.sizeout(diffDim) - 1;
-				switch(this.bc)
-					case('mirror')
-						%y= [[-x(1) ; (-x(2:end-1)+x(1:end-2))] ; x(end-1)]/this.res(1);
-						
-						y(firstElement{:})  =  y(firstElement{:}) + -x(firstElement{:}, diffDimInd)/this.res(diffDimInd);
-						y(lastElement{:})   = y(lastElement{:}) + x(secondToLastElement{:}, diffDimInd)/this.res(diffDimInd);
-					case('circular')
-						%y= [[x(end)-x(1) ; (-x(2:end-1)+x(1:end-2))] ; (x(end-1)-x(end))]/this.res(1);
-						y(firstElement{:})  =  y(firstElement{:}) ...
-							+ (x(lastElement{:}, diffDimInd)-x(firstElement{:}, diffDimInd))/this.res(diffDimInd);
-						
-						y(lastElement{:}) = y(lastElement{:}) ...
-							+ (x(secondToLastElement{:}, diffDimInd) -  x(lastElement{:}, diffDimInd))/this.res(diffDimInd);
-					
-					case('zeros')
-						%y= [[-x(1) ; (-x(2:end-1)+x(1:end-2))] ; x(end-1)-x(end)]/this.res(1);
-						y(firstElement{:})  =  y(firstElement{:}) ...
-							+ (-x(firstElement{:}, diffDimInd))/this.res(diffDimInd);
-						
-						y(lastElement{:}) = y(lastElement{:}) ...
-							+ (x(secondToLastElement{:}, diffDimInd) -  x(lastElement{:}, diffDimInd))/this.res(diffDimInd);
-						
-				end
-				
-			end
-			
-			
-			
-		end
-		
-        function y = HtH_(this,x) %  apply the HtH matrix
-            y = zeros(this.sizein);
-			
-			allElements = repmat({':'}, 1, this.ndms);
-			
-			for diffDimInd = 1:length(this.index)
-				diffDim = this.index(diffDimInd);
-				midElements = allElements;
-				midElements{diffDim} = 2:this.sizein(diffDim)-1;
-				y(midElements{:}) = y(midElements{:}) + -diff(x, 2, diffDim)/this.res(diffDimInd)^2;
-				
-				lastElement = allElements;
-				lastElement{diffDim} = this.sizeout(diffDim);
-				
-				firstElement = allElements;
-				firstElement{diffDim} = 1;
-				
-				secondElement = allElements;
-				secondElement{diffDim} = 2;
-				
-				secondToLastElement = allElements;
-				secondToLastElement{diffDim} = this.sizeout(diffDim) - 1;
-				switch(this.bc)
-					case('mirror')
-						% y = (2*x - x([1,1:end-1]) - x([2:end,end]))/this.res(1)^2;
-						
-
-						
-						y(firstElement{:}) = y(firstElement{:}) ...
-							+ ( x(firstElement{:}) - x(secondElement{:}) ) / this.res(diffDimInd)^2;
-						y(lastElement{:}) = y(lastElement{:}) ...
-							+ (x(lastElement{:}) - x(secondToLastElement{:})) / this.res(diffDimInd)^2;
-						
-					case('circular')
-						% y = (2*x - x([end,1:end-1]) - x([2:end,1]))/this.res(1)^2;
-						y(firstElement{:}) = y(firstElement{:}) ...
-							+ ( 2*x(firstElement{:}) - x(lastElement{:}) - x(secondElement{:}) ) / this.res(diffDimInd)^2;
-						y(lastElement{:}) = y(lastElement{:}) ...
-							+ (2*x(lastElement{:}) - x(secondToLastElement{:}) - x(firstElement{:}) ) / this.res(diffDimInd)^2;
-						
-						
-					case('zeros')
-						% y(1:end-1) = (2*x(1:end-1) - x([1,1:end-2]) - x(2:end))/this.res(1)^2;
-						% y(end)=(2*x(end)-x(end-1))/this.res(1)^2;
-						
-						y(firstElement{:}) = y(firstElement{:}) ...
-							+ ( x(firstElement{:}) - x(secondElement{:}) ) / this.res(diffDimInd)^2;
-						y(lastElement{:}) = y(lastElement{:}) ...
-							+ (2*x(lastElement{:}) - x(secondToLastElement{:}) ) / this.res(diffDimInd)^2;
-						
-				end
-			end
-		end
-		
-	end
-		
-		
-		
 end

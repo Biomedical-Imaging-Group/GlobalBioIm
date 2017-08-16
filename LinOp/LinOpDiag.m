@@ -41,8 +41,6 @@ classdef LinOpDiag <  LinOp
             if ~isnumeric(diag), error('diag must be numeric'); end
             this.sizeout=sz;
             this.sizein=sz;
-            this.isComplexIn= true;
-            this.isComplexOut= true;
             this.isDifferentiable=true;
             if all(diag)
                 this.isInvertible=true;
@@ -99,7 +97,7 @@ classdef LinOpDiag <  LinOp
             if isa(G,'LinOpDiag')
                 M=LinOpDiag(this.sizein,G.diag+this.diag);
             elseif isa(G,'LinOpConv') && this.isScaledIdentity
-                M=LinOpConv(this.diag+G.mtf,G.index);
+                M=LinOpConv(this.diag+G.mtf,G.isReal,G.index);
             else
                 M=plus_@LinOp(this,G);
             end
@@ -109,7 +107,7 @@ classdef LinOpDiag <  LinOp
             if isa(G,'LinOpDiag')
                 M=LinOpDiag(this.sizein,this.diag-G.diag);
             elseif isa(G,'LinOpConv') && this.isScaledIdentity
-                M=LinOpConv(this.diag-G.mtf,G.index);
+                M=LinOpConv(this.diag-G.mtf,G.isReal,G.index);
             else
                 M=minus_@LinOp(this,G);
             end
@@ -141,7 +139,7 @@ classdef LinOpDiag <  LinOp
             if isa(G,'LinOpDiag')
                 M=LinOpDiag(this.sizein,G.diag.*this.diag);
             elseif isa(G,'LinOpConv') && this.isScaledIdentity
-                M = LinOpConv(G.mtf.*this.diag,G.index); 
+                M = LinOpConv(G.mtf.*this.diag,G.isReal,G.index); 
             else
                 M=makeComposition_@LinOp(this,G);
             end

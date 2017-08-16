@@ -1,22 +1,19 @@
 classdef CostRectangle < CostIndicator
-    %% CostRectangle :  Rectangle Indicator function
-    %  Matlab Inverse Problems Library
+    % CostRectangle:  Rectangle Indicator function
+    % $$ C(x) = \\left\\lbrace \\begin{array}[l]
+    %                 0 \\text{ if } \\mathrm{real(xmin)} \\leq \\mathrm{imag(x-y)} \\leq \\mathrm{real(xmax)}
+    %                   \\text{ and }  \\mathrm{imag(xmin)} \\leq \\mathrm{imag(x-y)} \\leq \\mathrm{imag(xmax)},  \\newline
+    %  + \\infty \\text{ otherwise.} \\end{array} \\right. $$
     %
-    % Obj = CostRectangle(xmin, xmax,H,y):
-    % Implement the indicator function of the retangle set defined by xmin and xmax for the
-    % $$ \phi(x) = 0 \textrm{ if } xmin <= (H x-y) <= xmax textrm{ and }  +\inf \textrm{ otherwise } $$
-    % if x is complex
-    % $$ \phi(x) = 0 \textrm{ if } (real(xmin) <= real(H x-y) <= real(xmax)
-    %               && imag(xmin) <= imag(H x-y) <= imag(xmax))
-    % textrm{ and }  +\inf \textrm{ otherwise } $$
+    % :param xmin: minimum value (default -inf + 0i)
+    % :param xmax: maximum value (default +inf + 0i)
     %
-    %% Properties
-    % * |xmin|         - minimum value (default -inf + 0i)
-    % * |xmax|         - minimum value (default +inf + 0i)
-    % * |isComplex|    - true if acts on complex numbers 
+    % All attributes of parent class :class:`CostIndicator` are inherited 
     %
-    %%
-    %     Copyright (C) 2017 F. Soulez ferreol.soulez@epfl.ch
+    % See also :class:`Map`, :class:`Cost`, :class:`CostIndicator`
+
+    %%    Copyright (C) 2017 
+    %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -32,84 +29,43 @@ classdef CostRectangle < CostIndicator
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     properties (SetAccess = protected,GetAccess = public)
-        xmin=-inf;  % lower bound (default -inf + 0i)
-        xmax=+inf;  % higher bound  (default +inf + 0i)
-        isComplex = false;  % complex number flag
+        xmin=-inf;          % lower bound (default -inf + 0i)
+        xmax=+inf;          % higher bound  (default +inf + 0i)         
+    end
+    properties (Access = protected)
+        isComplex = false;  % complex number flag      
     end
     
+    %% Constructor
     methods
-        function this = CostRectangle(xmin, xmax,H,y)
-            
-            this.name='Cost  Rectangle';
-            
-            % -- Set entries
-            if nargin<4
-                y=0;
-            end
-            if nargin<3
-                H=[];
-            end
-            set_y(this,y);
-            set_H(this,H);
-            
-            if nargin<2
-                xmax=[];
-            end
-            if nargin==0
-                xmin =-inf;
-            end
-            
-            if isempty(xmax)
-                xmax = +inf;
-            end
-            
+        function this = CostRectangle(sz,xmin,xmax,y)   
+            if nargin<4, y=0; end
+            this@CostIndicator(sz,y);
+            this.name='CostRectangle';                      
+            if nargin<3, xmax=[]; end
+            if nargin<2, xmin =-inf; end            
+            if isempty(xmax), xmax = +inf; end           
             if((~isreal(xmin))||(~isreal(xmax)))
                 this.isComplex = true;
             end
             this.xmin = xmin;
             this.xmax = xmax;
-            
+            this.isConvex=true;          
         end
-        
-        
-        function z = prox(this,x,~) % apply the operator
-            
-            if this.H.isInvertible
-                
-                if(isscalar(this.y)&&(this.y==0))
-                    if this.isComplex
-                        res = this.H.apply(x);
-                        tmp = min(max(real(res), real(this.xmin)),real(this.xmax)) + 1i.* min(max(imag(res), imag(this.xmin)),imag(this.xmax));
-                        z = this.H.inverse(tmp);
-                    else
-                        z = this.H.inverse(min(max(real(this.H.apply(x)), this.xmin),this.xmax));
-                    end
-                else
-                    if this.isComplex
-                        res = this.H.apply(x)-this.y;
-                        tmp = min(max(real(res), real(this.xmin)),real(this.xmax)) + 1i.* min(max(imag(res), imag(this.xmin)),imag(this.xmax));
-                        z = this.H.inverse(tmp+this.y);
-                    else
-                        z = this.H.inverse(min(max(real(this.H.apply(x)-this.y), this.xmin),this.xmax)+this.y);
-                    end
-                end
-            else
-                error('Prox not implemented');
-            end
-            
-            
-            
-        end
-        function cost = eval(this,x) % get the function cost
-            cost = 0;
-            
+    end
+    
+    %% Core Methods containing implementations (Protected)
+    % - apply_(this,x)
+    % - applyProx_(this,z,alpha)
+    methods (Access = protected)
+        function cost = apply_(this,x) 
+            % Reimplemented from parent class :class:`Cost`.  
+            cost = 0;          
             if(isscalar(this.y)&&(this.y==0))
-                res=this.H.apply(x);
+                res=x;
             else
-                res=this.H.apply(x)-this.y;
-            end
-            
-            
+                res=x-this.y;
+            end                  
             if this.isComplex
                 if(any(real(res(:))< real(this.xmin(:))))
                     cost= +inf;
@@ -118,18 +74,15 @@ classdef CostRectangle < CostIndicator
                 if(any(real(res(:))> real(this.xmax(:))))
                     cost= +inf;
                     return;
-                end
-                
+                end               
                 if(any(imag(res(:))> imag(this.xmax(:))))
                     cost= +inf;
                     return;
-                end
-                
+                end               
                 if(any(imag(res(:))< imag(this.xmin(:))))
                     cost= +inf;
                     return;
-                end
-                
+                end               
             else
                 if(~isreal(res))
                     if  any(imag(res(:)))
@@ -137,19 +90,33 @@ classdef CostRectangle < CostIndicator
                     else
                         res = real(res);
                     end
-                end
-                               
+                end                              
                 if(any(res(:)< this.xmin(:)))
                     cost= +inf;
                     return;
-                end
-                
+                end               
                 if(any(res(:)> this.xmax(:)))
                     cost= +inf;
                     return;
-                end
-                
+                end            
             end
         end
+        function z = applyProx_(this,x,~) 
+            % Reimplemented from parent class :class:`Cost`.  
+            if(isscalar(this.y)&&(this.y==0))
+                if this.isComplex
+                    z = min(max(real(x), real(this.xmin)),real(this.xmax)) + 1i.* min(max(imag(x), imag(this.xmin)),imag(this.xmax));
+                else
+                    z = min(max(real(x),this.xmin),this.xmax);
+                end
+            else
+                if this.isComplex
+                    res = x-this.y;
+                    z = min(max(real(x-y), real(this.xmin)),real(this.xmax)) + 1i.* min(max(imag(res), imag(this.xmin)),imag(this.xmax));
+                else
+                    z = min(max(real(x-this.y), this.xmin),this.xmax);
+                end
+            end
+        end       
     end
 end

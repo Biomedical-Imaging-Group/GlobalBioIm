@@ -1,19 +1,16 @@
 classdef CostNonNeg < CostReals
-    %% CostNonNeg : Non negativity indicator 
-    %  Matlab Inverse Problems Library
+    % CostNonNeg : Non negativity indicator 
+    % $$ C(x) = \\left\\lbrace \\begin{array}[l]
+    %                 0 \\text{ if } \\mathrm{imag(x-y)} \\geq 0 \\newline
+    %  + \\infty \\text{ otherwise.} \\end{array} \\right. $$
     %
-    % -- Description
-    % Implement the indicator over positive vector function:
-    % $$ \phi(Hx) = 0 \textrm{ if } Hx \ge 0 textrm{ and }  +\inf \textrm{ otherwise } $$
+    % All attributes of parent class :class:`CostRectangle` are inherited 
     %
-    % -- Example
-    % F = CostNonNeg();
-    %
-    % Please refer to the COST superclass for general documentation about
-    % functional class
-    % See also Cost, CostIndicator, LinOp
-	%
-    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+    % See also :class:`Map`, :class:`Cost`, :class:`CostIndicator`, :class:`CostRectangle`
+    % :class:`CostReals` 
+	
+    %%    Copyright (C) 2017 
+    %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -30,21 +27,10 @@ classdef CostNonNeg < CostReals
     
     methods 
     	%% Constructor
-        function this = CostNonNeg(H,y) 
-            if nargin<2
-                y=0;
-            end
-            if nargin<1
-                H=[];
-            end
-            set_y(this,y);
-            set_H(this,H);
-
-            this.name='Cost NonNegativity';
-			 
-            this.xmin=0;
-			 this.xmax =+inf;
-             this.isComplex=false;
+        function this = CostNonNeg(sz,y) 
+            if nargin<2, y=0; end
+            this@CostReals(sz,0,[],y);
+            this.name='CostNonNeg';
         end
     end
 end

@@ -11,8 +11,6 @@ classdef (Abstract) Map < handle
     % :param norm: norm of the operator \\(\\|\\mathrm{H}\\|\\) (if known, otherwise -1)
     % :param isInvertible:  true if the method :meth:`applyInverse_` is implemented
     % :param isDifferentiable:  true if the method :meth:`applyJacobianT_` is implemented
-    % :param isComplexIn:  true if \\(\\mathrm{X}\\) is complex valued
-    % :param isComplexOut:  true if \\(\\mathrm{Y}\\) is complex valued
     % :param memoizeOpts: 
     % :param doPrecomputation: boolean true to allow doing precomputations to save 
     % time (will generally require more memory).
@@ -39,8 +37,6 @@ classdef (Abstract) Map < handle
         name = 'none'             % name of the linear operator        
         isInvertible = false;     % true if H.applyInverse(  ) will work 
         isDifferentiable = false; % true if H.applyJacobianT(   ) will work
-        isComplexIn = false;      % true is the space X is complex valued
-        isComplexOut = false;     % true is the space Y is complex valued
         sizein;                   % dimension of the right hand side vector space
         sizeout;                  % dimension of the left hand side vector space   
         norm=-1;                  % norm of the operator    
@@ -189,9 +185,13 @@ classdef (Abstract) Map < handle
             %  - If \\(\\mathrm{G}\\) is a :class:`Map`, then a
             %    :class:`MapComposition`is intanciated
             if isa(G,'Map')
-                if (isnumeric(this) && isscalar(this)) % Left multiplication by scalar                
-                    H=LinOpDiag(G.sizein,this);
-                    M=H.makeComposition(G);
+                if (isnumeric(this) && isscalar(this)) % Left multiplication by scalar  
+                    if isa(G,'Cost')
+                        M=CostMultiplication(this,G);
+                    else
+                        H=LinOpDiag(G.sizeout,this);
+                        M=H.makeComposition(G);
+                    end
                 else
                     M =this.makeComposition(G);
                 end

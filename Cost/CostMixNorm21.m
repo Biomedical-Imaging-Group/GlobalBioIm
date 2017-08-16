@@ -1,14 +1,17 @@
-classdef CostMixNorm12 < Cost
-    % Mixed norm 1-2 cost function
+classdef CostMixNorm21 < Cost
+    % Mixed norm 2-1 cost function
     % $$C(\\mathrm{x}) := \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{Hx}-y)_{k,l}^2}= \\sum_{k=1}^K \\Vert (\\mathrm{Hx-y})_{k\\cdot} \\Vert_2$$
     %
     % :param index: dimensions along which the l2-norm will be applied (inner sum over l)
     %
     % All attributes of parent class :class:`Cost` are inherited.
     %
-    % See also :class:`Cost` :class:`LinOp`
+    % Example: C=CostMixNorm21(sz,index,y)
+    %
+    % See also :class:`Map` :class:`Cost`
     
-    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+    %%    Copyright (C) 2017 
+    %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -28,35 +31,30 @@ classdef CostMixNorm12 < Cost
         index;    % dimensions along which the l2-norm will be applied
     end
     
+    %% Constructor
     methods
-        %% Constructor
-        function this = CostMixNorm12(index,H,y)
-            this.name='Cost MixNorm1-2';
-            this.isconvex=true;
-            % -- Set entries
-            if nargin<3
-                y=0;
-            end
-            if nargin<2
-                H=[];
-            end
-            set_y(this,y);
-            set_H(this,H);
-            
+        function this = CostMixNorm21(sz,index,y)
+            if nargin<3, y=0; end
+            this@Cost(sz,y);
+            this.name='CostMixNorm21';
             assert(isnumeric(index)&&isvector(index),'The index should be a vector of integers');
             this.index=index;
+            this.isConvex=true;
+            this.isDifferentiable=false;
         end
-        %% Evaluation of the Functional
-        function y=eval(this,x)
+    end
+    
+    %% Core Methods containing implementations (Protected)
+    % - apply_(this,x)
+    % - applyProx_(this,x,alpha)
+    methods (Access = protected)
+        function y=apply_(this,x)
             % Reimplemented from parent class :class:`Cost`.
-            
             if(isscalar(this.y)&&(this.y==0))
-                u=abs(this.H.apply(x)).^2;
+                u=abs(x).^2;
             else
-                u=abs(this.H.apply(x)-this.y).^2;
+                u=abs(x-this.y).^2;
             end
-            
-            
             % Computes the l2-norm along the dimensions given by index
             for n=1:length(this.index)
                 u = sum(u,this.index(n));
@@ -64,56 +62,45 @@ classdef CostMixNorm12 < Cost
             u = sqrt(u);
             y=sum(u(:));
         end
-        %% Proximity operator of the functional
-        function z=prox(this,x,alpha)
-            % Reimplemented from parent class :class:`Cost` if
-        	% the operator :attr:`H`  is a :class:`LinOpIdentity`,
-        	% $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{x}) = \\left\\lbrace
+        function z=applyProx_(this,x,alpha)
+            % Reimplemented from parent class :class:`Cost`
+            % $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{x}) = \\left\\lbrace
             % \\begin{array}{ll}
             % \\mathrm{x}_{k\\cdot}
-            % \\left(1-\\frac{\\alpha}{\\Vert(\\mathrm{Hx}-y)_{k\\cdot}\\Vert_2}
+            % \\left(1-\\frac{\\alpha}{\\Vert(\\mathrm{x}-y)_{k\\cdot}\\Vert_2}
             % \\right) & \\; \\mathrm{if } \\;
-            % \\Vert(\\mathrm{Hx})_{k\\cdot}\\Vert_2 > \\alpha,
+            % \\Vert(\\mathrm{x})_{k\\cdot}\\Vert_2 > \\alpha,
             % \\newline
             % 0 & \\; \\mathrm{otherwise},
             % \\end{array}\\right. \\; \\forall \\, k $$
-        	% where the division is component-wise.
-            
-            assert(isscalar(alpha),'alpha must be a scalar');
-            z=[];
-            if isa(this.H,'LinOpIdentity')
-                sz = size(x);
-                ndms = length(sz);
-                T = true(ndms,1);
-                T(this.index)=false;
-                kerdims = sz; kerdims(T)=1;
-                imdims = sz; imdims(~T)=1;
-                
-                % Computes the l2-norm along the dimensions given by index
-                if(isscalar(this.y)&&(this.y==0))
-                    sx = abs(x).^2;
-                else
-                    sx = abs(x-this.y).^2;
-                end
-                
-                
-                for n=1:length(this.index)
-                    sx = sum(sx,this.index(n));
-                end
-                sx = sqrt(sx);
-                
-                % Computes the prox
-                t = sx > alpha;
-                b = zeros(size(sx));
-                
-                b(t) = 1-alpha./sx(t);
-                if(isscalar(this.y)&&(this.y==0))
-                z = reshape(repmat(reshape(b ,imdims),kerdims),sz).*x;
-                else
-                z = reshape(repmat(reshape(b ,imdims),kerdims),sz).*x+this.y;
-                end
+            % where the division is component-wise.
+            sz = size(x);
+            ndms = length(sz);
+            T = true(ndms,1);
+            T(this.index)=false;
+            kerdims = sz; kerdims(T)=1;
+            imdims = sz; imdims(~T)=1;           
+            % Computes the l2-norm along the dimensions given by index
+            if(isscalar(this.y)&&(this.y==0))
+                sx = abs(x).^2;
+            else
+                sx = abs(x-this.y).^2;
+            end                    
+            for n=1:length(this.index)
+                sx = sum(sx,this.index(n));
             end
-            if isempty(z),error('Prox not implemented');end
+            sx = sqrt(sx);
+            
+            % Computes the prox
+            t = sx > alpha;
+            b = zeros(size(sx));
+            
+            b(t) = 1-alpha./sx(t);
+            if(isscalar(this.y)&&(this.y==0))
+                z = reshape(repmat(reshape(b ,imdims),kerdims),sz).*x;
+            else
+                z = reshape(repmat(reshape(b ,imdims),kerdims),sz).*x+this.y;
+            end
             % result:
             % x(||x|| <= alpha) = 0
             % x(||x|| > alpha) = x(||x|| > alpha) - ...

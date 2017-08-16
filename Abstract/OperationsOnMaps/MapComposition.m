@@ -45,8 +45,6 @@ classdef MapComposition < Map
             if this.H1.isInvertible && this.H2.isInvertible, this.isInvertible=true;end
             % isDifferentiable
             if this.H1.isDifferentiable && this.H2.isDifferentiable, this.isDifferentiable=true; end
-            this.isComplexIn=H2.isComplexIn;
-            this.isComplexOut=H1.isComplexOut;
             % sizein/out
             this.sizein=H2.sizein;
             this.sizeout=H1.sizeout;

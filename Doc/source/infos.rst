@@ -6,6 +6,9 @@ This section contains useful informations for developers/users who want to
    - implement new tools in the methods of existing classes (e.g. a fast computation of a gradient of a cost),
    - use the library for practical problems (see also the provided `examples <http://bigwww.epfl.ch/algorithms/globalbioim/examples.html>`_)
 
+General Philosophy
+------------------
+
 Classes Hierarchy
 -----------------
 

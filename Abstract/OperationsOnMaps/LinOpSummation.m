@@ -5,7 +5,9 @@ classdef LinOpSummation < MapSummation &  LinOp
     % :param LinOps:  cell of :class:`LinOp`
     % :param alpha:  array of coefficients
     %
-    % See also :class:`Map`, :class:`LinOpSummation`
+    % **Example** L=LinOpSummation(LinOps,alpha)
+    %
+    % See also :class:`Map`, :class:`LinOp`, :class:`MapOpSummation`
     
     %%    Copyright (C) 2017
     %     F. Soulez ferreol.soulez@epfl.ch

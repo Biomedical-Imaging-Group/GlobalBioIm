@@ -63,8 +63,6 @@ classdef MapSummation < Map
 			this.mapsCell = eMaps;
 			this.numMaps = length(this.mapsCell);
 			% Set some properties
- 			this.isComplexIn= this.mapsCell{1}.isComplexIn;
-            this.isComplexOut= this.mapsCell{1}.isComplexOut;
             this.isDifferentiable= this.mapsCell{1}.isDifferentiable;
             this.isInvertible=false;
             this.sizein = this.mapsCell{1}.sizein;
@@ -72,9 +70,7 @@ classdef MapSummation < Map
             for n =2:this.numMaps
                 assert(isequal(this.sizein,this.mapsCell{n}.sizein),'%d-th input does not have consistent  sizein', n) ;
                 assert(isequal(this.sizeout,this.mapsCell{n}.sizeout),'%d-th input does not have the consistent sizeout ', n);
-                this.isComplexIn= this.mapsCell{n}.isComplexIn && this.isComplexIn;
                 this.isDifferentiable= this.mapsCell{n}.isDifferentiable && this.isDifferentiable;
-                this.isComplexOut= this.mapsCell{n}.isComplexOut || this.isComplexOut;
             end      
         end
     end

@@ -40,22 +40,38 @@ impad(idx,idx)=im;
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
-H.memoizeOpts.apply=true;
+% If true, apply method we save its result. Hence for two consecutive H*x with the
+% same x, no computation is done for the second call
+H.memoizeOpts.apply=0;  
 
 % -- Generate data
 load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
 
 % -- Function definition
-F_LS=CostL2([],y);  % Least-Sqaures data term
-F_LS.doPrecomputation=true;
+LS=CostL2([],y);  % Least-Sqaures data term
+F=LS*H;
+% For the CostL2, the precomputation save Hty=H'*y and then the gradient is
+% computed using H.HtH(x) - Hty 
+F.doPrecomputation=1;
+
+% Note: For this example, one can observe that 
+%   - the activation of the memoize for the apply method in H save
+%   computation time since H*x is done in the gradient and in OutputOpti
+%   with the same x at each iteration.
+%   - the activation of the doPrecomputation flag save the same time as the
+%   above point since one convolution is avoided in the computation of the
+%   gradient of L2.
+%   - activate both memoize and doPrecomputation here is not usefull since
+%   once doPrecomputation is activated there is no two successive calls to
+%   H*x with the same x during the iterates.
 
 % -- Gradient Descent LS
 OutOp=OutputOpti(1,impad,40);
-GD=OptiGradDsct(F_LS*H,OutOp);
+GD=OptiGradDsct(F,OutOp);
 GD.ItUpOut=1;     % call OutputOpti update every ItUpOut iterations
-GD.maxiter=200;    % max number of iterations
-GD.run(y);         % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
+GD.maxiter=200;   % max number of iterations
+GD.run(y);        % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
 
 % -- Display
 [v,n]=max(OutOp.evolsnr(:));

@@ -8,6 +8,8 @@ classdef CostL2Composition <  CostComposition
     %
     % All attributes of parent class :class:`CostL2` and :class:`CostComposition` are inherited. 
     %
+    % **Example** C=CostL2Composition(H1,H2)
+    %
     % See also :class:`Map`, :class:`Cost`, :class:`CostL2`, :class:`CostComposition` :class:`LinOp`
 
     %%    Copyright (C) 2017 
@@ -64,8 +66,11 @@ classdef CostL2Composition <  CostComposition
         function y=applyProx_(this,x,alpha)
         	% Reimplemented from parent class :class:`CostComposition`.
         	%
-            % Implemented if the operator \\(\\alpha\\mathrm{H^{\\star}WH +
-            % I}  \\) is invertible.
+            % Implemented if the operator \\(\\alpha\\mathrm{H^{\\star}WH + I}  \\) is invertible:
+            % $$ \\mathrm{y} = (\\alpha\\mathrm{H^{\\star}WH + I} )^{-1} (\\alpha \\mathrm{H^TWy +x})$$
+            %
+            % If :attr:`doPrecomputation` is true, then
+            % \\(\\mathrm{H^TWy}\\) is stored.
             if this.isH2LinOp
                 if isnumeric(this.H1.W) || (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity)
                     HtHplusId=alpha*this.H1.W*(this.H2'*this.H2) + LinOpDiag(this.H2.sizein,1);
@@ -74,22 +79,26 @@ classdef CostL2Composition <  CostComposition
                 end
                 if HtHplusId.isInvertible
                     if this.doPrecomputation
-                        if ~isfield(this.precomputeCache,'WHty')
-                            this.precomputeCache.WHty=this.H1.W*this.H2.applyAdjoint(this.H1.y);
+                        if ~isfield(this.precomputeCache,'HtWy')
+                            this.precomputeCache.HtWy=this.H2.applyAdjoint(this.H1.W*this.H1.y);
                         end
-                        y=HtHplusId.applyInverse(alpha*this.precomputeCache.WHty+x);
+                        y=HtHplusId.applyInverse(alpha*this.precomputeCache.HtWy+x);
                     else
-                        y=HtHplusId.applyInverse(alpha*this.H1.W*this.H2.applyAdjoint(this.H1.y)+x);
+                        y=HtHplusId.applyInverse(alpha*this.H2.applyAdjoint(this.H1.W*this.H1.y)+x);
                     end
                 end
             else
                 y=applyProx_@CostComposition(this,x,alpha);
             end
-% --- Old version: (in case that storing HthplusId too heavy)  
+% --- Old version: (in case that computing HthplusId too heavy)  
+% We can maybe put the code above as default and then keep the old way 
+% with the if
+            % DOC
         	% - the operator :attr:`H`  is a :class:`LinOpConv` and :attr:`W`  is a :class:`LinOpIdentity`;
         	% $$\\mathrm{prox}_{\\alpha C}(\\mathrm{x}) = \\mathcal{F}^{-1}\\left(\\frac{\\mathcal{F}(\\mathrm{x}) + \\alpha  \\mathcal{F}(\\mathrm{H}^*)\\mathcal{F}(\\mathrm{y})  }{1+\\alpha \\vert\\mathcal{F}(\\mathrm{H})\\vert^2} \\right)$$
         	% where \\(\\mathcal{F} \\) stands for the Fourier transform.
 %             if isa(this.H2,'LinOpConv') && (isnumeric(this.H1.W) || isa(this.H1.W,'LinOpScaledIdentity')) 
+% CODE
 %                 if isnumeric(this.W), w=this.w; else, w=this.W.nu; end
 %                 if this.doPrecomputation
 %                     if ~isfield(this.precomputeCache,'fftHstardata')

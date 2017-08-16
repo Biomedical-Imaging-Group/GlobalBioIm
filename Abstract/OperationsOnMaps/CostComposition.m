@@ -49,8 +49,6 @@ classdef CostComposition < MapComposition & Cost
                     end
                 end
             end
-            this.doPrecomputation=H1.doPrecomputation;
-            this.memoizeOpts=H1.memoizeOpts;
             this.name=sprintf('CostComposition( %s ; %s )',H1.name,H2.name);  
         end
     end

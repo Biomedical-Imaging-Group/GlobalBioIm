@@ -79,7 +79,12 @@ classdef MapComposition < Map
         end
         function M = makeComposition_(this,G)
              % Reimplemented from :class:`Map`
-             M=this.H1*(this.H2*G);  % Since H1*H2 is not simplified, first try to compose H2 with G
+			 H2G = this.H2*G; % Since H1*H2 is not simplified, first try to compose H2 with G
+			 if ~isa(H2G, 'MapComposition');
+				 M=this.H1*H2G;
+			 else
+				 M = MapComposition(this, G);
+			 end
         end
     end	
 end

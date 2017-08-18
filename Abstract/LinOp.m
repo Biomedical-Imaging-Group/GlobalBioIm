@@ -79,7 +79,7 @@ classdef LinOp < Map
             % memoize
             y = this.memoize('applyHtH', @this.applyHtH_, x);            
             % check output size
-            if ~checkSize(y, this.sizeout)
+            if ~checkSize(y, this.sizein)
                 warning('Output of applyHtH was size [%s], didn''t match stated sizein: [%s].',...
                     num2str(size(y)), num2str(this.sizein));
             end

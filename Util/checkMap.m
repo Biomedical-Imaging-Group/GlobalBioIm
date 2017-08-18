@@ -1,26 +1,31 @@
-function s = checkMap(H)
+function s = checkMap(H, checkComplex)
 % function to check the consistency of the Map H, including specialized
 % checks for LinOps
 % returns a stats object with information about which tests passed
 
+% default values
+if ~exist('checkComplex', 'var') || isempty(checkComplex)
+	checkComplex = false;
+end
+
 fprintf('-- Checking Map with name %s--\n', H.name);
 
-% check in
+% create inputs to use for checking methods
 if ~isnumeric(H.sizein) || ~isnumeric(H.sizeout)
 	fprintf('H dimensions are not set, cannot do automatic testing\n');
 	return;
 end
 
-% create random input/output-sized vectors
-x = randn(H.sizein);
-if H.isComplexIn
-	x = x + 1i * randn(H.sizein);
+x = randn([H.sizein 1]);
+y = randn([H.sizeout 1]);
+
+if checkComplex
+	x = x + 1i * randn([H.sizein 1]);
+	y = y + 1i * randn([H.sizeout 1]);
 end
 
-y = randn(H.sizeout);
-if H.isComplexOut
-	y = y + 1i * randn(H.sizein);
-end
+% get the metaclass obj used to check for HtH and HHt
+meta = metaclass(H);
 
 
 % apply
@@ -55,19 +60,21 @@ if H.isInvertible
 		s.inverseOK = false;
 		fprintf('H.isInvertible, but applyInverse FAILs:\n\t%s\n', ME.message);
 	end
+	
+	if s.applyOK && s.inverseOK
+		curSNR = snr(x, x-xhat);
+		if curSNR > 70
+			okString = 'OK';
+		else
+			okString = 'FAIL';
+		end
+		fprintf('\taccurate to %d dB, %s\n', curSNR, okString);
+	else
+		fprintf('\tcannot assess accuracy\n');
+	end
 end
 
-if s.applyOK && s.inverseOK
-	curSNR = snr(x, x-xhat);
-	if curSNR > 70
-		okString = 'OK';
-	else
-		okString = 'FAIL';
-	end
-	fprintf('\taccurate to %d dB, %s\n', curSNR, okString);
-else
-	fprintf('\tcannot assess accuracy\n');
-end
+
 
 
 if isa(H, 'LinOp')
@@ -84,8 +91,8 @@ if isa(H, 'LinOp')
 	end
 	
 	if s.applyOK && s.adjointOK
-		lhs = x(:).' * HTy(:);
-		rhs = y(:).' * Hx(:);
+		lhs = x(:)' * HTy(:);
+		rhs = Hx(:)' * y(:);
 		curSNR = snr(lhs, lhs-rhs);
 		if curSNR > 70
 			okString = 'OK';
@@ -98,51 +105,66 @@ if isa(H, 'LinOp')
 	end
 	
 	% HtH
-	try
-		HTHx = H.applyHtH(x);
-		s.applyHtHOK = true;
-		fprintf('applyHtH OK\n');
-	catch ME
-		fprintf('applyHtH fails:\n\t%s\n', ME.message');
-		s.applyHtHOK = false;
-	end
-	
-	if s.applyOK && s.adjointOK && s.applyHtHOK
-		lhs = HTHx;
-		rhs = H.applyAdjoint( Hx );
-		curSNR = snr(lhs, lhs-rhs);
-		if curSNR > 70
-			okString = 'OK';
-		else
-			okString = 'FAIL';
+	if ~strcmp(getDefiningClass('applyHtH', meta), 'LinOp') % if applyHtH is implemented
+		try
+			HTHx = H.applyHtH(x);
+			s.applyHtHOK = true;
+			fprintf('applyHtH OK\n');
+		catch ME
+			fprintf('applyHtH fails:\n\t%s\n', ME.message');
+			s.applyHtHOK = false;
 		end
-		fprintf('\taccurate to %d dB, %s\n', curSNR, okString);
+		
+		if s.applyOK && s.adjointOK && s.applyHtHOK
+			lhs = HTHx;
+			rhs = H.applyAdjoint( Hx );
+			curSNR = snr(lhs, lhs-rhs);
+			if curSNR > 70
+				okString = 'OK';
+			else
+				okString = 'FAIL';
+			end
+			fprintf('\taccurate to %d dB, %s\n', curSNR, okString);
+		else
+			fprintf('\tcannot assess accuracy\n');
+		end
 	else
-		fprintf('\tcannot assess accuracy\n');
+		fprintf('applyHtH not implemented\n');
 	end
 	
 	% HHt
-	try
-		HHty = H.applyHHt(y);
-		s.applyHHtOK = true;
-		fprintf('applyHHt OK\n');
-	catch ME
-		fprintf('applyHHt fails:\n\t%s\n', ME.message');
-		s.applyHHtOK = false;
-	end
-	
-	if s.applyOK && s.adjointOK && s.applyHHtOK
-		lhs = HHty;
-		rhs = H.apply( HTy );
-		curSNR = snr(lhs, lhs-rhs);
-		if curSNR > 70
-			okString = 'OK';
-		else
-			okString = 'FAIL';
+	if ~strcmp(getDefiningClass('applyHHt', meta), 'LinOp') % if applyHHt is implemented
+		try
+			HHty = H.applyHHt(y);
+			s.applyHHtOK = true;
+			fprintf('applyHHt OK\n');
+		catch ME
+			fprintf('applyHHt fails:\n\t%s\n', ME.message');
+			s.applyHHtOK = false;
 		end
-		fprintf('\taccurate to %d dB, %s\n', curSNR, okString);
+		
+		if s.applyOK && s.adjointOK && s.applyHHtOK
+			lhs = HHty;
+			rhs = H.apply( HTy );
+			curSNR = snr(lhs, lhs-rhs);
+			if curSNR > 70
+				okString = 'OK';
+			else
+				okString = 'FAIL';
+			end
+			fprintf('\taccurate to %d dB, %s\n', curSNR, okString);
+		else
+			fprintf('\tcannot assess accuracy\n');
+		end
 	else
-		fprintf('\tcannot assess accuracy\n');
+		fprintf('applyHHt not implemented\n');
 	end
 
 end
+
+end
+
+	function className = getDefiningClass(methodName, meta)
+		ind = strcmp( {meta.MethodList.Name}, methodName);
+		className = meta.MethodList(ind).DefiningClass.Name;
+	end

@@ -41,11 +41,6 @@ end
             this.ndms = ndims(M);
             this.norm = norm(M);
             
-                if isreal(M)
-                    this.isComplex= false;
-                else
-                    this.isComplex= true;
-                end
             
             if nargin == 1
                 index = [];
@@ -89,7 +84,7 @@ end
             y = reshape(this.M * reshape(x,[this.rightsz,1]),this.sizeout);
 		end
 		
-        function y = adjoint_(this,x)
+        function y = applyAdjoint_(this,x)
            
             y = reshape(this.M' * reshape(x,[this.leftsz,1]),this.sizein);
         end

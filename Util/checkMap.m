@@ -105,7 +105,7 @@ if isa(H, 'LinOp')
 	end
 	
 	% HtH
-	if ~strcmp(getDefiningClass('applyHtH', meta), 'LinOp') % if applyHtH is implemented
+	if ~strcmp(getDefiningClass('applyHtH_', meta), 'LinOp') % if applyHtH is implemented
 		try
 			HTHx = H.applyHtH(x);
 			s.applyHtHOK = true;
@@ -133,7 +133,7 @@ if isa(H, 'LinOp')
 	end
 	
 	% HHt
-	if ~strcmp(getDefiningClass('applyHHt', meta), 'LinOp') % if applyHHt is implemented
+	if ~strcmp(getDefiningClass('applyHHt_', meta), 'LinOp') % if applyHHt is implemented
 		try
 			HHty = H.applyHHt(y);
 			s.applyHHtOK = true;

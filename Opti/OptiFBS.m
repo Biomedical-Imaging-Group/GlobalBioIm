@@ -101,7 +101,7 @@ classdef OptiFBS < Opti
 					this.tk=0.5*(1+sqrt(1+4*this.tk^2));
 					this.y=this.xopt + (told-1)/this.tk*(this.xopt-xold);
 				else 
-					this.xopt=this.G.prox(this.xopt - this.gam*this.F.grad(this.xopt),this.gam);
+					this.xopt=this.G.applyProx(this.xopt - this.gam*this.F.applyGrad(this.xopt),this.gam);
 				end
 				% - Convergence test
 				if this.test_convergence(xold), break; end

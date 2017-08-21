@@ -1,7 +1,7 @@
 classdef CostL2Composition <  CostComposition
     % CostL2Composition: Composition of a :class:`CostL2` with a
     % :class:`Map`
-    % $$C(\\mathrm{x}) := \\frac12\\|\\mathrm{Hx} - \\mathrm{y}\\|^2_W $$
+    % $$C(\\mathrm{x}) := \\frac12\\|\\mathrm{Hx} - \\mathrm{y}\\|^2_W := \\frac12 (\\mathrm{Hx} - \\mathrm{y})^T W (\\mathrm{Hx} - \\mathrm{y}) $$
     %
     % :param H1: :class:`CostL2` object
     % :param H2:  :class:`Map` object
@@ -14,7 +14,8 @@ classdef CostL2Composition <  CostComposition
 
     %%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch & 
-    %     F. Soulez ferreol.soulez@epfl.ch
+    %     F. Soulez ferreol.soulez@epfl.ch &
+	%     M. T. McCann michael.mccann@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -46,9 +47,30 @@ classdef CostL2Composition <  CostComposition
     % - applyProx_(this,z,alpha)
     % - makeComposition_(this,G)
     methods (Access = protected)
-        function g=applyGrad_(this,x)
-            % Reimplemented from parent class :class:`CostComposition`.
-            % $$ \\nabla C(\\mathrm{x}) = \\mathrm{J_{H}^* W (Hx - y)} $$
+		function y = apply_(this, x)
+			% Reimplemented from parent class :class:`CostComposition`.
+			% value of C(\\mathrm{x}) = \\frac12\\|\\mathrm{Hx} - \\mathrm{y}\\|^2_W  $$
+			%
+			% If :attr:`doPrecomputation` is true, \\(\\mathrm{W}\\) is a scaled identity and \\(\\mathrm{H}\\)
+			% is a :class:`LinOp`, then  \\(\\mathrm{H^* Wy} \\) is
+			% preconmputed and the value is computed using the :meth:`applyHtH` method.
+			if this.isH2LinOp && (isnumeric(this.H1.W) || isa(this.H1.W,'LinOpScaledIdentity')) && this.doPrecomputation
+				if ~isfield(this.precomputeCache,'WHty')
+					this.precomputeCache.WHty=this.H1.W*this.H2.applyAdjoint(this.H1.y);
+				end
+				if ~isfield(this.precomputeCache,'ytWy')
+					this.precomputeCache.ytWy= this.H1.y(:)' * reshape(this.H1.W * this.H1.y, [], 1);
+				end
+				y=0.5 * x(:)' * reshape(this.H1.W*this.H2.applyHtH(x), [],1) - x(:)' * this.precomputeCache.WHty(:) + 0.5 * this.precomputeCache.ytWy;
+				y = real(y); % due to numerical error
+			else
+				y=apply_@CostComposition(this,x);
+			end
+		end
+		
+		function g=applyGrad_(this,x)
+			% Reimplemented from parent class :class:`CostComposition`.
+			% $$ \\nabla C(\\mathrm{x}) = \\mathrm{J_{H}^* W (Hx - y)} $$
             % It is L-Lipschitz continuous with \\( L \\leq \\|\\mathrm{H}\\|^2 \\|\\mathrm{W}\\|\\).
             %
             % If :attr:`doPrecomputation` is true, \\(\\mathrm{W}\\) is a scaled identity and \\(\\mathrm{H}\\)

@@ -47,7 +47,7 @@ classdef CostL2 < Cost
             set_y(this,y);
             set_H(this,H);
             
-            if nargin==3
+            if nargin==3 && ~isempty(wght)
                 assert(isscalar(wght)||isa(wght,'LinOpDiag'),'weight WGHT must be scalar or Diagonal LinOp');
                 this.W=wght;
                 this.isW=true;

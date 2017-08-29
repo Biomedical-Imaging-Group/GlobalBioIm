@@ -3,6 +3,8 @@ classdef LinOpInversion < MapInversion & LinOp
     %
     % :param M: :class:`LinOp` object
     %
+    % **Example** Minv=LinOpInversion(M)
+    %
     % See also :class:`Map`, :class:`LinOp`, :class:`MapInversion`
     
     %%    Copyright (C) 2017

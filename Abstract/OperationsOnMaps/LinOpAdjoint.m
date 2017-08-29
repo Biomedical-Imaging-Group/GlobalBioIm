@@ -3,6 +3,8 @@ classdef LinOpAdjoint < LinOp
     %
     % :param TLinOp: :class:`LinOp` object
     %
+    % **Example** Tadj=LinOpAdjoint(TLinOp)
+    %
     % See also :class:`Map`, :class:`LinOp`
     
     %%    Copyright (C) 2015 

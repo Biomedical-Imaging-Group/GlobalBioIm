@@ -7,6 +7,8 @@ classdef CostComposition < MapComposition & Cost
     % :param H1:  :class:`Cost` 
     % :param H2:  :class:`LinOp`
     %
+    % **Example** C = CostComposition(H1,H2)
+    %
     % See also :class:`Map`, :class:`MapComposition`, :class:`Cost`
 
     %%    Copyright (C) 2017 

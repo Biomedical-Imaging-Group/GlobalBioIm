@@ -5,6 +5,8 @@ classdef MapSummation < Map
     % :param Maps:  cell of :class:`Map`
     % :param alpha:  array of coefficients
     %
+    % **Example** H=MapSummation(Maps,alpha)
+    %
     % See also :class:`Map`, :class:`LinOpSummation`
     
     %%    Copyright (C) 2017 

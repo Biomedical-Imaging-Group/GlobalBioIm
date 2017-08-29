@@ -3,6 +3,8 @@ classdef MapInversion < Map
     %
     % :param M: :class:`Map` object
     %
+    % **Example** Minv=MapInversion(M)
+    %
     % See also :class:`Map`
     
     %%    Copyright (C) 2017 

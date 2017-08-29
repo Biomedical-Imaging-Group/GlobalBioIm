@@ -7,20 +7,26 @@ This section contains linear operator classes which all derive from the abstract
 
 .. automodule:: LinOp
 
-LinOp (abstract class)
-----------------------
-
-.. autoclass:: LinOp
-    :show-inheritance:
-    :members: apply, adjoint, HtH, HHt, inverse, adjointinverse, transpose, ctranspose, plus, mtimes, 
-    
 LinOpIdentity
 -------------
 
 .. autoclass:: LinOpIdentity
     :show-inheritance:
-    :members: apply, adjoint, HtH, HHt, inverse, adjointinverse, transpose, ctranspose, plus, mtimes, 
+    :members: apply, applyAdjoint, HtH, HHt, inverse, adjointinverse, transpose, ctranspose, plus, mtimes, 
     
+LinOpGrad
+---------
+
+.. autoclass:: LinOpGrad
+    :show-inheritance:
+    :members: apply, adjoint, HtH, HHt, inverse, adjointinverse, transpose, ctranspose, plus, mtimes, makeHHt
+
+LinOpHess
+---------
+
+.. autoclass:: LinOpHess
+    :show-inheritance:
+    :members: apply, adjoint, HtH, HHt, inverse, adjointinverse, transpose, ctranspose, plus, mtimes, 
 
 LinOpSum
 --------

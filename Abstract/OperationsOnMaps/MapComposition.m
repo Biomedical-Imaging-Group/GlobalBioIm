@@ -5,6 +5,8 @@ classdef MapComposition < Map
     % :param H1:  left hand side :class:`Map` 
     % :param H2:  right hand side :class:`Map`
     %
+    % **Example** H=MapComposition(H1,H2)
+    %
     % See also :class:`Map`
     
     %%    Copyright (C) 2017

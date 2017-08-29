@@ -11,8 +11,7 @@ classdef Cost < Map
     % :param isConvex: true if the cost is convex 
     %
     % All attributes of parent class :class:`Map` are inherited and
-    % :attr:`norm` is fixed to -1, :attr:`sizeout`is fixed to 1, and
-    % isComplexOut is fixed to false for all :class:`Cost`
+    % :attr:`norm` is fixed to -1, :attr:`sizeout` is fixed to   for all :class:`Cost`
     %
     % See also :class:`Map`, :class:`LinOp`.
     
@@ -154,8 +153,9 @@ classdef Cost < Map
             end
         end
         function M = plus_(this,G)
-            % Constructs a :class:`CostSummation` object to sum the
+            % If \\(\\mathrm{G}\\) is a :class:`Cost`, constructs a :class:`CostSummation` object to sum the
             % current :class:`Cost` \\(C\\) with the given \\(G\\).
+            % Otherwise the summation will be a :class:`MapSummation`.
             if isa(G,'Cost')
                 M = CostSummation({this,G},[1,1]);
             else
@@ -163,8 +163,9 @@ classdef Cost < Map
             end
         end
         function M = minus_(this,G)
-            % Constructs a :class:`CostSummation` object to subtract to the
+            % If \\(\\mathrm{G}\\) is a :class:`Cost`, constructs a :class:`CostSummation` object to subtract to the
             % current :class:`Cost` \\(C\\), the given \\(G\\).
+            % Otherwise the summation will be a :class:`MapSummation`.
             if isa(G,'LinOp')
                 M = CostSummation({this,G},[1,-1]);
             else
@@ -172,6 +173,7 @@ classdef Cost < Map
             end
         end
         function M=makeComposition_(this,G)
+            % Reimplemented from parent class :class:`Map`.
             % Constructs a :class:`CostComposition` object to compose the
             % current Cost (this) with the given :class:`Map`\\(\\mathrm{G}\\). 
             M = CostComposition(this,G);
@@ -194,10 +196,11 @@ classdef Cost < Map
     methods
         function set_y(this,y)
             % Set the attribute \\(\\mathrm{y}\\)
-            %   - has to be conformable with the :attr:`sizeout` of the
-            %     :class:`Map`\\(\\mathrm{H}\\),
-            %   - can be anything if \\(\\mathrm{H}\\) is not yet set (empty),
-            %   - can be a scalar.
+            %
+            %  - has to be conformable with the :attr:`sizeout` of the
+            %    :class:`Map`\\(\\mathrm{H}\\),
+            %  - can be anything if \\(\\mathrm{H}\\) is not yet set (empty),
+            %  - can be a scalar.
             assert(isnumeric(y),'y must be a numeric');
             assert(isscalar(y) || checkSize(y,this.sizein),'size y must be a scalar or equal to this.sizein');
             this.y=y;

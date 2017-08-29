@@ -13,7 +13,8 @@ classdef Opti < matlab.mixin.SetGet
     %
     % See also :class:`OutputOpti` :class:`Cost`
 
-    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+    %%    Copyright (C) 2017 
+    %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -45,9 +46,8 @@ classdef Opti < matlab.mixin.SetGet
     end
     
     methods
-
         function run(this,x0) 
-        	% **(Abstract method)** Run the algorithm. 
+        	% Run the algorithm. 
         	%
         	% :param x0: initial point in \\(\\in X\\), if x0=[] restarts from the current value :attr:`xopt`.
         	%
@@ -55,7 +55,6 @@ classdef Opti < matlab.mixin.SetGet
 
             error(['In ',this.name,': run method is not implemented']);
         end
-
         function starting_verb(this)  
         	% Generic method to display a starting message in verbose mode.
         	   	
@@ -64,7 +63,6 @@ classdef Opti < matlab.mixin.SetGet
 				this.OutOp.update(this);
 			end
         end
-
         function ending_verb(this)
         	% Generic method to display a ending message in verbose mode.
         	
@@ -72,7 +70,6 @@ classdef Opti < matlab.mixin.SetGet
 				fprintf('... Optimization finished \nElapsed time (s): %4.2d (%i iterations). \n',this.time, this.niter);
         	end
         end
-
         function stop=test_convergence(this,xold)
         	% Tests algorithm convergence from the relative difference between two successive iterates 
         	%

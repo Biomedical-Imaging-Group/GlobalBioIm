@@ -72,7 +72,6 @@ classdef LinOpSummation < MapSummation &  LinOp
         % the multiple inheritance to specifies which method to use from
         % parent classes
         function M = makeComposition_(this,G)
-            % Reimplemented from class :class:`MapSummation`
             M=makeComposition_@MapSummation(this,G);
         end
     end

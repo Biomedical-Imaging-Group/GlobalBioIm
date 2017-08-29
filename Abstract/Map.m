@@ -11,9 +11,13 @@ classdef (Abstract) Map < handle
     % :param norm: norm of the operator \\(\\|\\mathrm{H}\\|\\) (if known, otherwise -1)
     % :param isInvertible:  true if the method :meth:`applyInverse_` is implemented
     % :param isDifferentiable:  true if the method :meth:`applyJacobianT_` is implemented
-    % :param memoizeOpts: 
-    % :param doPrecomputation: boolean true to allow doing precomputations to save 
-    % time (will generally require more memory).
+    % :param memoizeOpts: structure of boolean (one field per method, see details below).
+    % :param doPrecomputation: boolean true to allow doing precomputations to save time (will generally require more memory).
+    %
+    % **Note on the memoize option** This option allows to store the result
+    % of a method such that if an identical call to this method is done,
+    % calculations are avoided. Example: memoizeOpts.apply=true will store
+    % the result of H*x.
     
     %%    Copyright (C) 2017 
     %     M. McCann michael.mccann@epfl.ch & 
@@ -181,7 +185,7 @@ classdef (Abstract) Map < handle
         function M = mtimes(this,G)
             % Overload operator (*) for :class:`Map` objects
             % $$ \\mathrm{M}(\\mathrm{x}) := \\mathrm{H}(\\mathrm{G}(\\mathrm{x}))$$
-            %  - If \\(\\mathrm{G}\\) is numeric of size sizein, then :meth:`apply`is called
+            %  - If \\(\\mathrm{G}\\) is numeric of size sizein, then :meth:`apply` is called
             %  - If \\(\\mathrm{G}\\) is a :class:`Map`, then a
             %    :class:`MapComposition`is intanciated
             if isa(G,'Map')

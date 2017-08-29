@@ -5,6 +5,8 @@ classdef LinOpComposition < MapComposition & LinOp
     % :param H1:  left hand side :class:`LinOp` (or a scalar)
     % :param H2:  right hand side :class:`LinOp`
     %
+    % **Example** H=LinOpComposition(H1,H2)
+    %
     % See also :class:`Map`, :class:`LinOp`, :class:`MapComposition`
     
     %%    Copyright (C) 2015

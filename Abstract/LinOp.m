@@ -191,8 +191,9 @@ classdef LinOp < Map
             error('applyAdjointInverse_ method not implemented');
         end
         function M = plus_(this,G)
-            % Constructs a :class:`LinOpSummation` object to sum the
+            % If \\(\\mathrm{G}\\) is a :class:`LinOp`, constructs a :class:`LinOpSummation` object to sum the
             % current :class:`LinOp` \\(\\mathrm{H}\\) with the given \\(\\mathrm{G}\\).
+            % Otherwise the summation will be a :class:`MapSummation`.
             if isa(G,'LinOp')
                 M = LinOpSummation({this,G},[1,1]);
             else
@@ -200,8 +201,9 @@ classdef LinOp < Map
             end
         end
         function M = minus_(this,G)
-            % Constructs a :class:`LinOpSummation` object to subtract to the
+            % If \\(\\mathrm{G}\\) is a :class:`LinOp`, constructs a :class:`LinOpSummation` object to subtract to the
             % current :class:`LinOp` \\(\\mathrm{H}\\), the given \\(\\mathrm{G}\\).
+            % Otherwise the summation will be a :class:`MapSummation`.
             if isa(G,'LinOp')
                 M = LinOpSummation({this,G},[1,-1]);
             else
@@ -224,6 +226,7 @@ classdef LinOp < Map
             M=LinOpComposition(this,this');
         end
         function M = makeComposition_(this, G)
+            % Reimplemented from parent class :class:`Map`.
             % If \\(\\mathrm{G}\\) is a :class:`LinOp`, constructs a :class:`LinOpComposition`
             % object to compose the current LinOp (this) with the given :class:`LinOp`\\(\\mathrm{G}\\). 
             % Otherwise the composition will be a :class:`MapComposition`.

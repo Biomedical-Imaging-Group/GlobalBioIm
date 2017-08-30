@@ -1,28 +1,25 @@
 classdef LinOpHess <  LinOp
-    %% LinOpHess : Hessian operator 
-    %  Matlab Linear Operator Library 
+    % LinOpHess: Hessian linear operator (finite differences) 
     %
-    % -- Example
-    % Hess = LinOpHess(sz,bc)
-    % Build the Hessian operator to apply on a variable of size SZ
-    % bc corresponds to the boundary condition:
-    %     - 'circular' (default)
-    %     - 'zeros'
-    %     - 'mirror'
+    % :param sz: sizein of the gradient operator
+    % :param bc: boundary condition: 'circular' (default), 'zeros', 'mirror'
     %
-    % Notes: Only 2D and 3D cases are implemented.
-    %        The output of the apply() method is:
-    %          - for 2D case: a [sz,3] matrix containing [d^2F/dxx;d^2F/dxy;d^2F/dyy] 
-    %		   - for 3D case: a [sz,6] matrix containing [d^2F/dxx;d^2F/dxy;d^2F/dxz;d^2F/dyy;d^2F/dyz;d^2F/dzz]
-    %        These size are the input sizes for the adjoint() method
+    % **Note-1** When circular boundary conditions are selected, the method
+    % makeHtH (or equivalently the composition H'*H) returns a convolution
+    % linear operator :class:`LinOp`
     %
-    % When circular boundary conditions are selected, the filter
-    % corresponding to HtH is available within the attribute fHtH
+    % **Note-2** Only 2D and 3D cases are implemented. The output of the
+    % apply() method is: 
+    %  - for 2D case: a [sz,3] matrix containing [d^2F/dxx;d^2F/dxy;d^2F/dyy] 
+    %  - for 3D case: a [sz,6] matrix containing [d^2F/dxx;d^2F/dxy;d^2F/dxz;d^2F/dyy;d^2F/dyz;d^2F/dzz]
+    % These size are the input sizes for the applyAdjoint() method
     %
-    % Please refer to the LinOp superclass for documentation
-    % See also LinOp
-    % 
-	%     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+    % **Example** H = LinOpHess(sz,bc)
+    %
+    % See also :class:`Map`, :class:`LinOp`
+    
+	%%    Copyright (C) 2017 
+    %     E. Soubies emmanuel.soubies@epfl.ch
 	%	 
 	%     This program is free software: you can redistribute it and/or modify
 	%     it under the terms of the GNU General Public License as published by
@@ -40,44 +37,35 @@ classdef LinOpHess <  LinOp
     properties (SetAccess = protected,GetAccess = public)
 	  ndms;      % number of dimension of the input
       bc;        % boundary condition (default mirror);
-      fHtH;      % Filter corresponding to HtH when using circular bc
     end
-
+    
+    %% Constructor
     methods
         function this = LinOpHess(sz,bc)
-            if nargin == 1
-                bc='circular';
-            end
-            this.name='LinOp Hessian';
-            this.isComplex=false;
+            if nargin <2, bc='circular'; end
+            this.name='LinOpHess';
+            this.isInvertible=false;
+            this.isDifferentiable=true;
             this.sizein=sz;
             this.ndms = length(this.sizein);
             this.bc=bc;
             switch(this.ndms)
-                case(2),
+                case(2)
                     this.sizeout=[sz 3];
-                case(3),
+                case(3)
                     this.sizeout=[sz 6];
             end
-            if strcmp(this.bc,'circular')
-                % Set the filter for HtH
-                this.fHtH=zeros(this.sizein);
-                switch(this.ndms)
-                    case(2), this.fHtH(1,1)=16;this.fHtH(1,2)=-6;this.fHtH(2,1)=-6;this.fHtH(end,1)=-6;this.fHtH(1,end)=-6;this.fHtH(1,3)=1;
-                             this.fHtH(2,2)=1;this.fHtH(3,1)=1;this.fHtH(end-1,1)=1;this.fHtH(end,2)=1;this.fHtH(2,end)=1;this.fHtH(1,end-1)=1;
-                             this.fHtH(end,end)=1;
-                    case(3), this.fHtH(1,1,1)=30;this.fHtH(1,2,1)=-8;this.fHtH(2,1,1)=-8;this.fHtH(end,1,1)=-8;this.fHtH(1,end,1)=-8;this.fHtH(1,1,2)=-8;this.fHtH(1,1,end)=-8;
-                             this.fHtH(1,3,1)=1;this.fHtH(3,1,1)=1;this.fHtH(2,2,1)=1;this.fHtH(end-1,1,1)=1;this.fHtH(end,2,1)=1;this.fHtH(2,end,1)=1;this.fHtH(1,end-1,1)=1;
-                             this.fHtH(end,end,1)=1;this.fHtH(2,1,2)=1;this.fHtH(1,2,2)=1;this.fHtH(end,1,2)=1; this.fHtH(1,end,2)=1;this.fHtH(2,1,end)=1;this.fHtH(1,2,end)=1;
-                             this.fHtH(1,1,end-1)=1;this.fHtH(end,1,end)=1;this.fHtH(3,1)=1;this.fHtH(1,1,3)=1;this.fHtH(1,end,end)=1;
-                end
-            end
-		end
-	end
-	
-	methods (Access = protected)
+        end
+    end
+    
+    %% Core Methods containing implementations (Protected)
+    % - apply_(this,x)
+    % - applyAdjoint_(this,x)
+    % - applyHtH_(this,x)
+    % - makeHtH_(this)
+    methods (Access = protected)
         function y = apply_(this,x)
-			
+            % Reimplemented from parent class :class:`LinOp`.
             y = zeros(this.sizeout);
             nidx = 0;
             % switch according to the boundary condition
@@ -93,7 +81,7 @@ classdef LinOpHess <  LinOp
                             y(:,:,2)=x([2:end,1],[2:end,1]) -x([2:end,1],:) - x(:,[2:end,1]) +x;
                             % yy
                             y(:,:,3)=x(:,[3:end,1,2]) -2*x(:,[2:end,1]) + x;
-                        % 3 dimensions
+                            % 3 dimensions
                         case(3)
                             % xx
                             y(:,:,:,1)=x([3:end,1,2],:,:) -2*x([2:end,1],:,:) + x;
@@ -119,7 +107,7 @@ classdef LinOpHess <  LinOp
                             y(:,:,2)=x([2:end,end],[2:end,end]) -x([2:end,end],:) - x(:,[2:end,end]) +x;
                             % yy
                             y(:,:,3)=x(:,[3:end,end,end-1]) -2*x(:,[2:end,end]) + x;
-                        % 3 dimensions
+                            % 3 dimensions
                         case(3)
                             % xx
                             y(:,:,:,1)=x([3:end,end,end-1],:,:) -2*x([2:end,end],:,:) + x;
@@ -183,10 +171,9 @@ classdef LinOpHess <  LinOp
                             y(:,:,end,6)=x(:,:,end);
                     end
             end
-		end
-		
-        function y = adjoint_(this,x)
-          
+        end
+        function y = applyAdjoint_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
             nidx = 0;
             y = zeros(this.sizein);
             % switch according to the boundary condition
@@ -198,13 +185,13 @@ classdef LinOpHess <  LinOp
                         case(2)
                             y=x([end-1,end,1:end-2],:,1)-2*x([end,1:end-1],:,1) +x(:,:,1) +x(:,[end-1,end,1:end-2],3)-2*x(:,[end,1:end-1],3) +x(:,:,3) + ...
                                 x([end,1:end-1],[end,1:end-1],2) -  x(:,[end,1:end-1],2)  -  x([end,1:end-1],:,2) + x(:,:,2);
-                        % 3 dimension
+                            % 3 dimension
                         case(3)
                             y=x([end-1,end,1:end-2],:,:,1)-2*x([end,1:end-1],:,:,1) +x(:,:,:,1) +x(:,[end-1,end,1:end-2],:,4)-2*x(:,[end,1:end-1],:,4) +x(:,:,:,4) + ...
                                 +x(:,:,[end-1,end,1:end-2],6)-2*x(:,:,[end,1:end-1],6) +x(:,:,:,6) +x([end,1:end-1],[end,1:end-1],:,2) -  x(:,[end,1:end-1],:,2)  -  x([end,1:end-1],:,:,2) + x(:,:,:,2) +...
                                 +x([end,1:end-1],:,[end,1:end-1],3) -  x(:,:,[end,1:end-1],3)  -  x([end,1:end-1],:,:,3) + x(:,:,:,3) + ...
                                 x(:,[end,1:end-1],[end,1:end-1],5) -  x(:,[end,1:end-1],:,5)  -  x(:,:,[end,1:end-1],5) + x(:,:,:,5);
-                    end                   
+                    end
                 case('mirror')
                     % switch according to the number of dimension of the input
                     switch(this.ndms)
@@ -232,7 +219,7 @@ classdef LinOpHess <  LinOp
                             y(:,3:end-2)=y(:,3:end-2) + x(:,1:end-4,3) - 2*x(:,2:end-3,3) + x(:,3:end-2,3);
                             y(:,end-1)=y(:,end-1) + x(:,end-3,3)-2*x(:,end-2,3)+x(:,end-1,3)+x(:,end,3);
                             y(:,end)=y(:,end) + x(:,end-2,3) - x(:,end-1,3) - x(:,end,3);
-                        % 3 dimension
+                            % 3 dimension
                         case(3)
                             % xx
                             y(1,:,:)=y(1,:,:) + x(1,:,:,1);
@@ -301,7 +288,7 @@ classdef LinOpHess <  LinOp
                             y(:,1)=y(:,1) + x(:,1,3);
                             y(:,2)=y(:,2) + x(:,2,3) - 2*x(:,1,3);
                             y(:,3:end)=y(:,3:end) + x(:,1:end-2,3) - 2*x(:,2:end-1,3) + x(:,3:end,3);
-                        % 3 dimensions
+                            % 3 dimensions
                         case(3)
                             % xx
                             y(1,:,:)=y(1,:,:) + x(1,:,:,1);
@@ -333,10 +320,9 @@ classdef LinOpHess <  LinOp
                             
                     end
             end
-		end
-		
-		 function y = HtH_(this,x) %  apply the HtH matrix
-            
+        end		
+		function y = applyHtH_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
             nidx = 0;
             y = zeros(this.sizein);
             % switch according to the number of dimension of the input
@@ -439,7 +425,25 @@ classdef LinOpHess <  LinOp
                             y(:,:,end)=y(:,:,end)+6*x(:,:,end)-4*x(:,:,end-1) + x(:,:,end-2);
                     end
             end
-    	end
+        end
+        function M = makeHtH_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            if strcmp(this.bc,'circular')&&(this.ndms<=3)
+                fHtH=zeros(this.sizein);
+                switch(this.ndms)
+                    case(2), fHtH(1,1)=16;fHtH(1,2)=-6;fHtH(2,1)=-6;fHtH(end,1)=-6;fHtH(1,end)=-6;fHtH(1,3)=1;
+                        fHtH(2,2)=1;fHtH(3,1)=1;fHtH(end-1,1)=1;fHtH(end,2)=1;fHtH(2,end)=1;fHtH(1,end-1)=1;
+                        fHtH(end,end)=1;
+                    case(3), fHtH(1,1,1)=30;fHtH(1,2,1)=-8;fHtH(2,1,1)=-8;fHtH(end,1,1)=-8;fHtH(1,end,1)=-8;fHtH(1,1,2)=-8;fHtH(1,1,end)=-8;
+                        fHtH(1,3,1)=1;fHtH(3,1,1)=1;fHtH(2,2,1)=1;fHtH(end-1,1,1)=1;fHtH(end,2,1)=1;fHtH(2,end,1)=1;fHtH(1,end-1,1)=1;
+                        fHtH(end,end,1)=1;fHtH(2,1,2)=1;fHtH(1,2,2)=1;fHtH(end,1,2)=1; fHtH(1,end,2)=1;fHtH(2,1,end)=1;fHtH(1,2,end)=1;
+                        fHtH(1,1,end-1)=1;fHtH(end,1,end)=1;fHtH(3,1)=1;fHtH(1,1,3)=1;fHtH(1,end,end)=1;
+                end
+                M=LinOpConv(fftn(fHtH));
+            else
+                M=makeHtH_@LinOp(this);
+            end
+        end
     end
 end
 

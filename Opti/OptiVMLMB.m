@@ -17,11 +17,15 @@ classdef OptiVMLMB<Opti
     % **Reference**
     %
     % [1] Eric Thiebaut, "Optimization issues in blind deconvolution algorithms",
-    % SPIE Conf. Astronomical Data Analysis II, 4847, 174-183 (2002). See https://github.com/emmt/OptimPackLegacy
+    % SPIE Conf. Astronomical Data Analysis II, 4847, 174-183 (2002). See
+    % `here <https://github.com/emmt/OptimPackLegacy>`_.
+    %
+    % **Example** VMLMB=OptiVMLMB(C,xmin,xmax,OutOp)
     %
     % See also :class:`Opti`, :class:`OptiConjGrad` :class:`OutputOpti`, :class:`Cost`
 
-    %     Copyright (C) 2017 Ferreol Soulez ferreol.soulez@univ-lyon1.fr
+    %%    Copyright (C) 2017
+    %     Ferreol Soulez ferreol.soulez@univ-lyon1.fr
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -89,7 +93,7 @@ classdef OptiVMLMB<Opti
             this.task =  this.isave(3);
         end
         function  run(this,x0)
-            % Reimplementation from :class:`Opti`.
+            % Reimplementation from :class:`Opti`. For details see [1].
 
             this.nparam =numel(x0);
             if isscalar(this.xmin)

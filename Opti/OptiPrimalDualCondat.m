@@ -30,9 +30,12 @@ classdef OptiPrimalDualCondat < Opti
 	% [1] Laurent Condat, "A Primal-Dual Splitting Method for Convex Optimization Involving Lipchitzian, Proximable and Linear 
 	% Composite Terms", Journal of Optimization Theory and Applications, vol 158, no 2, pp 460-479 (2013).
     %
+    % **Example** A=OptiPrimalDualCondat(F0,G,Fn,Hn,OutOp)
+    %
     % See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`
     
-    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+    %%    Copyright (C) 2017 
+    %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -90,7 +93,7 @@ classdef OptiPrimalDualCondat < Opti
     	end 
     	%% Run the algorithm
         function run(this,x0) 
-            % Reimplementation from :class:`Opti`.
+            % Reimplementation from :class:`Opti`. For details see [1].
             
 			if ~isempty(x0)   % To restart from current state if wanted
 				this.xopt=x0;

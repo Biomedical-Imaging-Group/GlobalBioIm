@@ -12,9 +12,12 @@ classdef OptiConjGrad < Opti
     % **Note**: In this algorithm the parameter cost is not fixed to the above functional
     % but to the squared resildual \\( 0.5\\Vert \\mathrm{Ax - b}\\Vert^2 \\)
     %
+    % **Example** CG=OptiConjGrad(A,b,W,OutOp)
+    %
     % See also :class:`Opti`, :class:`OutputOpti` :class:`Cost`
 
-	%     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+	%%    Copyright (C) 2015 
+    %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -63,7 +66,9 @@ classdef OptiConjGrad < Opti
         end
     	%% Run the algorithm
         function run(this,x0) 
-            % Reimplementation from :class:`Opti`.
+            % Reimplementation from :class:`Opti`. For a detailled
+            % algorithm scheme see `here
+            % <https://en.wikipedia.org/wiki/Conjugate_gradient_method#The_resulting_algorithm>`_
             
 			if ~isempty(x0) % To restart from current state if wanted
 				this.xopt=x0;

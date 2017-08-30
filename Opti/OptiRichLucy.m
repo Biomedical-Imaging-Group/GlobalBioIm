@@ -4,7 +4,7 @@ classdef OptiRichLucy < Opti
     % $$ C(\\mathrm{x})= F(\\mathrm{x}) + \\lambda \\Vert \\mathrm{x} \\Vert_{\\mathrm{TV}} $$
     %
     % :param F: :class:`CostKullLeib` object or a :class:`CostComposition`
-    % with a :class:`CostKullLeib` and a :class:`LinOp`
+    %  with a :class:`CostKullLeib` and a :class:`LinOp`
     % :param TV: boolean true if TV regularization used  (default false)
     % :param lambda: regularization parameter (when TV used)
     % :param epsl: smoothing parameter to make TV differentiable at 0 (default \\(10^{-6}\\))
@@ -90,7 +90,7 @@ classdef OptiRichLucy < Opti
     	end 
     	%% Run the algorithm
         function run(this,x0) 
-            % Reimplementation from :class:`Opti`.
+            % Reimplementation from :class:`Opti`. For details see [1-3].
             
 			if ~isempty(x0),this.xopt=x0;end;  % To restart from current state if wanted
             assert(~isempty(this.xopt),'Missing starting point x0');

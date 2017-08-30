@@ -20,10 +20,11 @@ classdef OptiADMM < Opti
     %
     % **Note** The minimization of \\(\\mathcal{L}\\) over \\(\\mathrm{x}\\), 
     % $$ F_0(\\mathrm{x}) + \\sum_{n=1}^N \\frac12\\rho_n\\Vert \\mathrm{H_nx -z_n}\\Vert^2, \\quad \\mathrm{z_n= y_n - w_n/\\rho_n} $$
-    % is performed  either using the conjugate-gradient :class:`OptiConjGrad` algoriothm or the given solver
+    % is performed  either using the conjugate-gradient :class:`OptiConjGrad` algoriothm, a direct inversion or the given solver
     %
-    %  - If \\(F_0\\) is empty or is a :class:`CostL2`, then :class:`OptiConjGrad` is used by
-    %    default if no more efficient solver is provided. 
+    %  - If \\(F_0\\) is empty or is a :class:`CostL2`, then if the :class:`LinOp` \\(\\sum_{n=0}^N \\mathrm{H_n}^*\\mathrm{H_n}\\)
+    %    is not invertible the :class:`OptiConjGrad` is used by default if no more efficient solver is provided. 
+    %    Here \\(\\mathrm{H_0}\\) is the :class:`LinOp` associated to \\(F_0\\).
     %
     %  - Otherwithe the solver is required.
     %
@@ -32,9 +33,12 @@ classdef OptiADMM < Opti
     % [1] Boyd, Stephen, et al. "Distributed optimization and statistical learning via the alternating direction
     % method of multipliers." Foundations and Trends in Machine Learning, 2011.
     %
+    % **Example** ADMM=OptiADMM(F0,Fn,Hn,rho_n,solver,OutOp)
+    %
     % See also :class:`Opti`, :class:`OptiConjGrad` :class:`OutputOpti`, :class:`Cost`
     
-    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+    %%    Copyright (C) 2017 
+    %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -114,7 +118,7 @@ classdef OptiADMM < Opti
         end
     	%% Run the algorithm
         function run(this,x0)
-            % Reimplementation from :class:`Opti`.           
+            % Reimplementation from :class:`Opti`. For details see [1].          
             if ~isempty(x0) % To restart from current state if wanted
                 this.xopt=x0;
                 for n=1:length(this.Hn)

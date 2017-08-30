@@ -1,7 +1,7 @@
 classdef OptiGradDsct < Opti
     % Gradient Descent optimization algorithm to minimize a differentiable :class:`Cost` \\(C(\\mathrm{x})\\)
     %
-    % :param C: a differentiable :class:`Cost` (i.e. with an implementation of :meth:`grad`).
+    % :param C: a differentiable :class:`Cost` (i.e. with an implementation of :meth:`applyGrad`).
     % :param gam: descent step
     %
     % All attributes of parent class :class:`Opti` are inherited. 
@@ -14,6 +14,8 @@ classdef OptiGradDsct < Opti
     % **Reference**
     %
     % [1] Nesterov, Yurii. "Introductory lectures on convex programming." Lecture Notes (1998): 119-120.
+    %
+    % **Example** GD=OptiGradDsct(F,OutOp)
     %
     % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
     
@@ -52,7 +54,8 @@ classdef OptiGradDsct < Opti
     	end 
     	%% Run the algorithm
         function xopt = run(this,x0) 
-            % Reimplementation from :class:`Opti`.           
+            % Reimplementation from :class:`Opti`.  Performs:
+            % $$ \\mathrm{x}^{k+1} = \\mathrm{x}^k - \\gamma \\nabla C(\\mathrm{x}^k) $$
         	if isempty(this.gam), error('Parameter gam is not setted'); end
 			if ~isempty(x0),this.xopt=x0;end;  % To restart from current state if wanted
 			assert(~isempty(this.xopt),'Missing starting point x0');

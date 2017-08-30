@@ -2,8 +2,8 @@ classdef OptiFBS < Opti
     % Forward-Backward Splitting optimization algorithm [1] which minimizes :class:`Cost` of the form
     % $$ C(\\mathrm{x}) = F(\\mathrm{x}) + G(\\mathrm{x}) $$
     %
-    % :param F: a differentiable :class:`Cost` (i.e. with an implementation of :meth:`grad`).
-    % :param G: a :class:`Cost` with an implementation of the :meth:`prox`.
+    % :param F: a differentiable :class:`Cost` (i.e. with an implementation of :meth:`applyGrad`).
+    % :param G: a :class:`Cost` with an implementation of the :meth:`applyProx`.
     % :param gam: descent step
     % :param fista: boolean true if the accelerated version FISTA [3] is used (default false) 
     %
@@ -25,6 +25,8 @@ classdef OptiFBS < Opti
 	%
 	% [3] Amir Beck and Marc Teboulle, "A Fast Iterative Shrinkage-Thresholding Algorithm for Linear inverse Problems",
 	% SIAM Journal on Imaging Science, vol 2, no. 1, pp 182-202 (2009)
+    %
+    % **Example** FBS=OptiFBS(F,G,OutOp)
     %
     % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
 
@@ -77,7 +79,7 @@ classdef OptiFBS < Opti
     	end 
 
         function run(this,x0) 
-        	% Reimplementation from :class:`Opti`.
+        	% Reimplementation from :class:`Opti`. For details see [1-3].
         	
         	assert(~isempty(this.gam),'parameter gam is not setted');
 			if ~isempty(x0) % To restart from current state if wanted

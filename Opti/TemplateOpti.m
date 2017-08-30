@@ -12,9 +12,12 @@ classdef TemplateOpti < Opti
     %
     % [1] Ref1 ...
     %
+    % **Example** opti=...
+    %
     % See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`
     
-    %     Copyright (C) TODO YEAR NAME EMAIL
+    %%    Copyright (C) TODO YEAR
+    %     TODO NAME EMAIL
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -49,7 +52,7 @@ classdef TemplateOpti < Opti
     	%% Constructor
     	function this=TemplateOpti(~)
     		% TODO SET THE INHERITED PROPERTIES
-    		this.name='Opti NAME';
+    		this.name='TemplateOpti';
     		this.cost=????;
     		this.OutOp=?????;
     		% TODO SET NEW DEFINED PROPERTIES

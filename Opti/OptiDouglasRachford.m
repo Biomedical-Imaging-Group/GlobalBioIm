@@ -11,9 +11,11 @@ classdef OptiDouglasRachford < Opti
     %
     % All attributes of parent class :class:`Opti` are inherited. 
 	%
+    % **Example** DR=OptiDouglasRachford(F1, F2, L, gamma, lambda, OutOp)
+    %
 	% See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`
     
-    %     Copyright (C) 
+    %%    Copyright (C) (2017)
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by

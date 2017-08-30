@@ -35,6 +35,14 @@ CostMixNorm12
 .. autoclass:: CostMixNorm12
     :show-inheritance:
     :members: eval, grad, eval_grad, prox, prox_fench, o, plus, minus, mtimes
+
+CostMixNormSchatt1
+------------------
+    
+.. autoclass:: CostMixNormSchatt1
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+      applyGrad_, applyProx_, applyProxFench_, set_y
     
 CostComplexHyperBolic
 ---------------------

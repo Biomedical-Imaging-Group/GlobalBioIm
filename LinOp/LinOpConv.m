@@ -2,9 +2,11 @@ classdef LinOpConv <  LinOp
     % LinOpConv: Convolution operator
     %  
     % :param mtf: Fourier transform of Point Spread Function 
-    % :param index: dimensions along which the convolution is performed
-    % (the MTF must have a comformable size)
+    % :param isReal: if true (default) the result of the convolution should be real
+    % :param index: dimensions along which the convolution is performed (the MTF must have a comformable size)
     % 
+    % **Example** H=LinOpConv(mtf,isReal,index)
+    %
     % See also :class:`LinOp`, :class:`Map`
     
     %%    Copyright (C) 2015 
@@ -163,7 +165,7 @@ classdef LinOpConv <  LinOp
             M=LinOpConv(abs(this.mtf).^2,this.index);
         end
         function M = mpower_(this,p)
-            % Reimplemented from :class:`LinOp`
+            % Reimplemented from parent class :class:`LinOp`
             if p==-1
                 if this.isInvertible
                     M=LinOpConv(1./this.mtf,this.isReal,this.index);
@@ -173,7 +175,7 @@ classdef LinOpConv <  LinOp
             end
         end
 		function G = makeComposition_(this, H)
-            % Reimplemented from :class:`LinOp`
+            % Reimplemented from parent class :class:`LinOp`
 			if isa(H, 'LinOpConv')
 				G = LinOpConv(this.mtf.*H.mtf,this.isReal,this.index); 
             elseif isa(H,'LinOpDiag') && H.isScaledIdentity

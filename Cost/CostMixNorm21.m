@@ -1,12 +1,12 @@
 classdef CostMixNorm21 < Cost
-    % Mixed norm 2-1 cost function
+    % CostMixNorm21: Mixed norm 2-1 cost function
     % $$C(\\mathrm{x}) := \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{Hx}-y)_{k,l}^2}= \\sum_{k=1}^K \\Vert (\\mathrm{Hx-y})_{k\\cdot} \\Vert_2$$
     %
     % :param index: dimensions along which the l2-norm will be applied (inner sum over l)
     %
     % All attributes of parent class :class:`Cost` are inherited.
     %
-    % Example: C=CostMixNorm21(sz,index,y)
+    % **Example** C=CostMixNorm21(sz,index,y)
     %
     % See also :class:`Map` :class:`Cost`
     

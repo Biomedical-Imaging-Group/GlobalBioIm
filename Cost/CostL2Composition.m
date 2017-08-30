@@ -66,8 +66,7 @@ classdef CostL2Composition <  CostComposition
 			else
 				y=apply_@CostComposition(this,x);
 			end
-		end
-		
+        end		
 		function g=applyGrad_(this,x)
 			% Reimplemented from parent class :class:`CostComposition`.
 			% $$ \\nabla C(\\mathrm{x}) = \\mathrm{J_{H}^* W (Hx - y)} $$

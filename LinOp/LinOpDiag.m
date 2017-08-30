@@ -8,6 +8,8 @@ classdef LinOpDiag <  LinOp
     % :param sz: size (if the given diag is scalar) to build a scaled
     % identity operator.
     %
+    % **Example** D=LinOpDiag(sz,diag)
+    %
     % See also :class:`LinOp`, :class:`Map`
         
     %%    Copyright (C) 2015 
@@ -125,7 +127,7 @@ classdef LinOpDiag <  LinOp
             M=LinOpDiag(this.sizein,abs(this.diag).^2);
         end
         function M = mpower_(this,p)
-            % Reimplemented from :class:`LinOp`
+            % Reimplemented from parent class :class:`LinOp`
             if p==-1
                 if this.isInvertible
                     M=LinOpDiag(this.sizein,1./this.diag);

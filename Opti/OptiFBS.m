@@ -29,7 +29,8 @@ classdef OptiFBS < Opti
     % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
 
 
-    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+    %%     Copyright (C) 2017 
+    %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by

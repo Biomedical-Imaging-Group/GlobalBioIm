@@ -6,6 +6,8 @@ classdef CostL2 < Cost
     %
     % :param W: weighting :class:`LinOpDiag` object or scalar (default :class:`LinOpIdentity`)
     %
+    % **Example** C=CostL2(sz,y,wght)
+    %
     % See also :class:`Map`, :class:`Cost`,
 
     %%    Copyright (C) 2017 

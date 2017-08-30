@@ -1,6 +1,5 @@
 classdef LinOpGrad <  LinOp
     % LinOpGrad:  Gradient linear operator (Finite differences) 
-    %  Matlab Linear Operator Library
     %
     % :param sz: sizein of the gradient operator
     % :param index: dimension along which the gradient is computed (all by default)
@@ -87,7 +86,7 @@ classdef LinOpGrad <  LinOp
     %% Core Methods containing implementations (Protected)
     % - apply_(this,x)
     % - applyAdjoint_(this,x)
-    % - HtH_(this,x)
+    % - applyHtH_(this,x)
     % - makeHtH_(this)
     methods (Access = protected)
         function y = apply_(this,x)
@@ -157,7 +156,7 @@ classdef LinOpGrad <  LinOp
                 end
             end
         end
-        function y = HtH_(this,x)
+        function y = applyHtH_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             y = zeros(this.sizein);
             allElements = repmat({':'}, 1, this.ndms);

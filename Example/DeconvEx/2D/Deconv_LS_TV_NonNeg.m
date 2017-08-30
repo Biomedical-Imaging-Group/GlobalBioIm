@@ -48,7 +48,7 @@ H=LinOpConv(fft2(psf));
 load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
 sz=size(y);
-fftHty=conj(H.mtf).*fft2(y);
+
 % -- Functions definition
 LS=CostL2([],y);                 % Least-Sqaures data term
 F=LS*H;

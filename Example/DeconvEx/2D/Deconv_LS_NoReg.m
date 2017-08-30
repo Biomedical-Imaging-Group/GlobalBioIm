@@ -40,9 +40,9 @@ impad(idx,idx)=im;
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
-% If true, apply method we save its result. Hence for two consecutive H*x with the
+% If true, applyHtH method will save its result. Hence for two consecutive HtH*x with the
 % same x, no computation is done for the second call
-H.memoizeOpts.apply=0;  
+H.memoizeOpts.applyHtH=1;  
 
 % -- Generate data
 load('data');    % load data (variable y)
@@ -52,19 +52,14 @@ imdisp(y(idx,idx),'Convolved and noisy data',1);
 LS=CostL2([],y);  % Least-Sqaures data term
 F=LS*H;
 % For the CostL2, the precomputation save Hty=H'*y and then the gradient is
-% computed using H.HtH(x) - Hty 
+% computed using H.HtH(x) - Hty and the apply is computed using the HtH
+% method
 F.doPrecomputation=1;
 
-% Note: For this example, one can observe that 
-%   - the activation of the memoize for the apply method in H save
-%   computation time since H*x is done in the gradient and in OutputOpti
-%   with the same x at each iteration.
-%   - the activation of the doPrecomputation flag save the same time as the
-%   above point since one convolution is avoided in the computation of the
-%   gradient of L2.
-%   - activate both memoize and doPrecomputation here is not usefull since
-%   once doPrecomputation is activated there is no two successive calls to
-%   H*x with the same x during the iterates.
+% Note: For this example, the activation of the memoize for the applyHtH
+% method together with the activation of the doPrecomputation flag leads to
+% the faster execution time. This is because, both the gradient and the
+% apply make use of a fast HtH.
 
 % -- Gradient Descent LS
 OutOp=OutputOpti(1,impad,40);

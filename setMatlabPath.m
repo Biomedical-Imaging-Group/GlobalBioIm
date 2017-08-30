@@ -13,6 +13,5 @@ addpath([pathToDir,'/LinOp/SelectorLinOps/']);
 addpath([pathToDir,'/Cost/']);
 addpath([pathToDir,'/Cost/CostUtils/']);
 addpath([pathToDir,'/Cost/IndicatorFunctions/']);
-addpath([pathToDir,'/Cost/OperationsOnCost/']);
 addpath([pathToDir,'/Example/']);
 

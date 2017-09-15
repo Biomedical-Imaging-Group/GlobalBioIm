@@ -1,6 +1,6 @@
 classdef CostMixNorm21 < Cost
     % CostMixNorm21: Mixed norm 2-1 cost function
-    % $$C(\\mathrm{x}) := \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{Hx}-y)_{k,l}^2}= \\sum_{k=1}^K \\Vert (\\mathrm{Hx-y})_{k\\cdot} \\Vert_2$$
+    % $$C(\\mathrm{x}) := \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{x}-y)_{k,l}^2}= \\sum_{k=1}^K \\Vert (\\mathrm{x-y})_{k\\cdot} \\Vert_2$$
     %
     % :param index: dimensions along which the l2-norm will be applied (inner sum over l)
     %
@@ -8,7 +8,7 @@ classdef CostMixNorm21 < Cost
     %
     % **Example** C=CostMixNorm21(sz,index,y)
     %
-    % See also :class:`Map` :class:`Cost`
+    % See also :class:`Map` :class:`Cost`, :class:`LinOp`
     
     %%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch
@@ -69,7 +69,7 @@ classdef CostMixNorm21 < Cost
             % \\mathrm{x}_{k\\cdot}
             % \\left(1-\\frac{\\alpha}{\\Vert(\\mathrm{x}-y)_{k\\cdot}\\Vert_2}
             % \\right) & \\; \\mathrm{if } \\;
-            % \\Vert(\\mathrm{x})_{k\\cdot}\\Vert_2 > \\alpha,
+            % \\Vert (\\mathrm{x-y})_{k\\cdot}\\Vert_2 > \\alpha,
             % \\newline
             % 0 & \\; \\mathrm{otherwise},
             % \\end{array}\\right. \\; \\forall \\, k $$

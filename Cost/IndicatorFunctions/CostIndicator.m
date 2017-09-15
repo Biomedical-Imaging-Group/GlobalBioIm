@@ -1,6 +1,6 @@
 classdef  CostIndicator < Cost
     % CostIndicator: Indicator cost function
-    % $$ C(\\mathrm{x}) = \\left\\lbrace \\begin{array}[l] 0 \\text{ if } \\mathrm{x -y} \\in \\mathrm{C},  
+    % $$ C(\\mathrm{x}) = \\left\\lbrace \\begin{array}[l] \\text{0~if } \\mathrm{x -y} \\in \\mathrm{C},  
     % \\newline + \\infty \\text{ otherwise.} \\end{array} \\right. $$
     % where \\(\\mathrm{C} \\subset \\mathrm{X} \\) is a constraint set.
     %
@@ -9,7 +9,7 @@ classdef  CostIndicator < Cost
     % **Note** :class:`CostIndicator` is an generic class for all
     % indicator cost functions
     %
-    % See also :class:`Map`, :class:`Cost`,
+    % See also :class:`Map`, :class:`Cost`
 
     %%    Copyright (C) 2017 
     %     F. Soulez ferreol.soulez@epfl.ch

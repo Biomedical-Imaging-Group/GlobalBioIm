@@ -13,7 +13,7 @@ classdef CostKullLeib < Cost
     %
     % **Example** C=CostKullLeib(sz,y,bet)
     %
-    % See also :class:`Cost` :class:`LinOp`
+    % See also :class:`Map` :class:`Cost`, :class:`LinOp`
 
     %%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch
@@ -39,7 +39,7 @@ classdef CostKullLeib < Cost
     %% Constructor
     methods       
         function this = CostKullLeib(sz,y,bet)
-            if nargin<2, y=0; end
+            if nargin<2 || isempty(y), y=0; end
             this@Cost(sz,y);
             this.name='CostKullLeib';        
             if nargin==3, this.bet=bet;end

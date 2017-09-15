@@ -1,14 +1,16 @@
 classdef CostRectangle < CostIndicator
     % CostRectangle:  Rectangle Indicator function
     % $$ C(x) = \\left\\lbrace \\begin{array}[l]
-    %                 0 \\text{ if } \\mathrm{real(xmin)} \\leq \\mathrm{imag(x-y)} \\leq \\mathrm{real(xmax)}
-    %                   \\text{ and }  \\mathrm{imag(xmin)} \\leq \\mathrm{imag(x-y)} \\leq \\mathrm{imag(xmax)},  \\newline
-    %  + \\infty \\text{ otherwise.} \\end{array} \\right. $$
+    % \\text{0~if } \\mathrm{real(xmin)} \\leq \\mathrm{imag(x-y)} \\leq \\mathrm{real(xmax)}
+    % \\text{ and }  \\mathrm{imag(xmin)} \\leq \\mathrm{imag(x-y)} \\leq \\mathrm{imag(xmax)},  \\newline
+    % + \\infty \\text{ otherwise.} \\end{array} \\right. $$
     %
     % :param xmin: minimum value (default -inf + 0i)
     % :param xmax: maximum value (default +inf + 0i)
     %
     % All attributes of parent class :class:`CostIndicator` are inherited 
+    %
+    % **Example** C=CostRectangle(sz,xmin,xmax,y)   
     %
     % See also :class:`Map`, :class:`Cost`, :class:`CostIndicator`
 
@@ -58,9 +60,9 @@ classdef CostRectangle < CostIndicator
     % - apply_(this,x)
     % - applyProx_(this,z,alpha)
     methods (Access = protected)
-        function cost = apply_(this,x) 
+        function y = apply_(this,x) 
             % Reimplemented from parent class :class:`Cost`.  
-            cost = 0;          
+            y = 0;          
             if(isscalar(this.y)&&(this.y==0))
                 res=x;
             else
@@ -68,53 +70,53 @@ classdef CostRectangle < CostIndicator
             end                  
             if this.isComplex
                 if(any(real(res(:))< real(this.xmin(:))))
-                    cost= +inf;
+                    y= +inf;
                     return;
                 end
                 if(any(real(res(:))> real(this.xmax(:))))
-                    cost= +inf;
+                    y= +inf;
                     return;
                 end               
                 if(any(imag(res(:))> imag(this.xmax(:))))
-                    cost= +inf;
+                    y= +inf;
                     return;
                 end               
                 if(any(imag(res(:))< imag(this.xmin(:))))
-                    cost= +inf;
+                    y= +inf;
                     return;
                 end               
             else
                 if(~isreal(res))
                     if  any(imag(res(:)))
-                        cost= +inf;
+                        y= +inf;
                     else
                         res = real(res);
                     end
                 end                              
                 if(any(res(:)< this.xmin(:)))
-                    cost= +inf;
+                    y= +inf;
                     return;
                 end               
                 if(any(res(:)> this.xmax(:)))
-                    cost= +inf;
+                    y= +inf;
                     return;
                 end            
             end
         end
-        function z = applyProx_(this,x,~) 
+        function y = applyProx_(this,x,~) 
             % Reimplemented from parent class :class:`Cost`.  
             if(isscalar(this.y)&&(this.y==0))
                 if this.isComplex
-                    z = min(max(real(x), real(this.xmin)),real(this.xmax)) + 1i.* min(max(imag(x), imag(this.xmin)),imag(this.xmax));
+                    y = min(max(real(x), real(this.xmin)),real(this.xmax)) + 1i.* min(max(imag(x), imag(this.xmin)),imag(this.xmax));
                 else
-                    z = min(max(real(x),this.xmin),this.xmax);
+                    y = min(max(real(x),this.xmin),this.xmax);
                 end
             else
                 if this.isComplex
                     res = x-this.y;
-                    z = min(max(real(x-y), real(this.xmin)),real(this.xmax)) + 1i.* min(max(imag(res), imag(this.xmin)),imag(this.xmax));
+                    y = min(max(real(x-y), real(this.xmin)),real(this.xmax)) + 1i.* min(max(imag(res), imag(this.xmin)),imag(this.xmax));
                 else
-                    z = min(max(real(x-this.y), this.xmin),this.xmax);
+                    y = min(max(real(x-this.y), this.xmin),this.xmax);
                 end
             end
         end       

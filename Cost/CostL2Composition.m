@@ -1,7 +1,7 @@
 classdef CostL2Composition <  CostComposition
     % CostL2Composition: Composition of a :class:`CostL2` with a
     % :class:`Map`
-    % $$C(\\mathrm{x}) := \\frac12\\|\\mathrm{Hx} - \\mathrm{y}\\|^2_W := \\frac12 (\\mathrm{Hx} - \\mathrm{y})^T W (\\mathrm{Hx} - \\mathrm{y}) $$
+    % $$C(\\mathrm{x}) := \\frac12\\|\\mathrm{Hx} - \\mathrm{y}\\|^2_W = \\frac12 (\\mathrm{Hx} - \\mathrm{y})^T W (\\mathrm{Hx} - \\mathrm{y}) $$
     %
     % :param H1: :class:`CostL2` object
     % :param H2:  :class:`Map` object
@@ -10,7 +10,7 @@ classdef CostL2Composition <  CostComposition
     %
     % **Example** C=CostL2Composition(H1,H2)
     %
-    % See also :class:`Map`, :class:`Cost`, :class:`CostL2`, :class:`CostComposition` :class:`LinOp`
+    % See also :class:`Map`, :class:`Cost`, :class:`CostL2`, :class:`CostComposition`, :class:`LinOp`
 
     %%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch & 
@@ -43,17 +43,21 @@ classdef CostL2Composition <  CostComposition
     end
     
     %% Core Methods containing implementations (Protected)
+    % - apply_(this, x)
     % - applyGrad_(this,x)
     % - applyProx_(this,z,alpha)
     % - makeComposition_(this,G)
     methods (Access = protected)
 		function y = apply_(this, x)
 			% Reimplemented from parent class :class:`CostComposition`.
-			% value of C(\\mathrm{x}) = \\frac12\\|\\mathrm{Hx} - \\mathrm{y}\\|^2_W  $$
+            % $$ C(\\mathrm{x}) = \\frac12\\|\\mathrm{Hx} - \\mathrm{y}\\|^2_W  $$
 			%
 			% If :attr:`doPrecomputation` is true, \\(\\mathrm{W}\\) is a scaled identity and \\(\\mathrm{H}\\)
-			% is a :class:`LinOp`, then  \\(\\mathrm{H^* Wy} \\) is
-			% preconmputed and the value is computed using the :meth:`applyHtH` method.
+			% is a :class:`LinOp`, then  \\(\\mathrm{H^* Wy} \\) and \\(\\|
+			% \\mathrm{y} \\|^2_{\\mathrm{W}}\\) are
+			% precomputed and  \\(C(\\mathrm{x}) \\) is evaluated using the
+			% :meth:`applyHtH` method, i.e.
+            % $$ C(\\mathrm{x}) = \\frac12 \\langle \\mathrm{W H^{\\star}Hx,x} \\rangle - \\langle \\mathrm{x}, \\mathrm{H^* Wy}  \\rangle  + \\frac12\\| \\mathrm{y} \\|^2_{\\mathrm{W}}$$
 			if this.isH2LinOp && (isnumeric(this.H1.W) || isa(this.H1.W,'LinOpScaledIdentity')) && this.doPrecomputation
 				if ~isfield(this.precomputeCache,'WHty')
 					this.precomputeCache.WHty=this.H1.W*this.H2.applyAdjoint(this.H1.y);
@@ -70,11 +74,12 @@ classdef CostL2Composition <  CostComposition
 		function g=applyGrad_(this,x)
 			% Reimplemented from parent class :class:`CostComposition`.
 			% $$ \\nabla C(\\mathrm{x}) = \\mathrm{J_{H}^* W (Hx - y)} $$
-            % It is L-Lipschitz continuous with \\( L \\leq \\|\\mathrm{H}\\|^2 \\|\\mathrm{W}\\|\\).
             %
             % If :attr:`doPrecomputation` is true, \\(\\mathrm{W}\\) is a scaled identity and \\(\\mathrm{H}\\)
-            % is a :class:`LinOp`, then  \\(\\mathrm{H^* Wy} \\) is preconmputed and the gradient
-            % computed using the :meth:`applyHtH` method.
+            % is a :class:`LinOp`, then  \\(\\mathrm{H^* Wy} \\) is precomputed and the gradient
+            % is evaluated using the :meth:`applyHtH` method, i.e.
+            % $$ \\nabla C(\\mathrm{x}) = \\mathrm{W H^{\\star}Hx} -  \\mathrm{H^* Wy}  $$
+			
             if this.isH2LinOp && (isnumeric(this.H1.W) || isa(this.H1.W,'LinOpScaledIdentity')) && this.doPrecomputation
                 if ~isfield(this.precomputeCache,'WHty')
                     this.precomputeCache.WHty=this.H1.W*this.H2.applyAdjoint(this.H1.y);
@@ -92,9 +97,6 @@ classdef CostL2Composition <  CostComposition
             %
             % **Note** If :attr:`doPrecomputation` is true, then \\(\\mathrm{H^TWy}\\) is stored.
 
-            % Emmanuel: Actually (for deconv) when the doPrecomputation is
-            % activated, the first if is not faster (if alpha do not
-            % change)
             if isa(this.H2,'LinOpConv') && (isnumeric(this.H1.W) || (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity))
                 if this.doPrecomputation
                     if ~isfield(this.precomputeCache,'fftHstardata')
@@ -133,9 +135,13 @@ classdef CostL2Composition <  CostComposition
             else
                 y=applyProx_@CostComposition(this,x,alpha);
             end
+            % Emmanuel: Actually (for deconv) when the doPrecomputation is
+            % activated, the first if is not faster (if alpha do not change)
         end
         function M = makeComposition_(this,G)
-            % Reimplemented from :class:`Cost`
+            % Reimplemented from :class:`Cost`. Instantiates a new
+            % :class:`CostL2Compoisition` with the updated composed
+            % :class:`Map`.
             M=CostL2Composition(this.H1,this.H2*G);
         end
     end

@@ -1,6 +1,6 @@
 classdef CostComplexHyperBolic < Cost
-    % Hyperbolic cost function
-    % $$C(\\mathrm{x}) := \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{Hx}-y)_{k,l}^2 + \\varepsilon^2}$$
+    % CostComplexHyperBolic: Hyperbolic cost function
+    % $$C(\\mathrm{x}) := \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{x}-y)_{k,l}^2 + \\varepsilon^2}$$
     %
     % :param index: dimensions along which the l2-norm will be applied (inner sum over l)
     % :param epsilon: \\(\\in \\mathbb{R}_+\\) smoothing parameter (default
@@ -8,9 +8,12 @@ classdef CostComplexHyperBolic < Cost
     %
     % All attributes of parent class :class:`Cost` are inherited. 
     %
-    % See also :class:`Cost` :class:`LinOp`
+    % **Example** C=CostComplexHyperBolic(sz,epsilon,index,y)
+    %
+    % See also :class:`Map`, :class:`Cost`, :class:`LinOp`
     
-    %     Copyright (C) 2017 F. Soulez ferreol.soulez@epfl.ch
+    %%    Copyright (C) 2017 
+    %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -25,32 +28,26 @@ classdef CostComplexHyperBolic < Cost
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    
+    %% Properties
     properties
         epsilon;
         index;
         sumOp;
     end
     
+    %% Constructor
     methods
-        function this = CostComplexHyperBolic(epsilon,index,H,y)
+        function this = CostComplexHyperBolic(sz,epsilon,index,y)
+            if nargin<4, y=0; end
+            this@Cost(sz,y);
             this.name='CostComplexHyperBolic';
-            
-            this.isconvex=true;
-            % -- Set entries
-            if nargin<4
-                y=0;
-            end
-            if nargin<3
-                H=[];
-            end           
-            set_y(this,y);
-            set_H(this,H);
-            
-            if nargin<2|| isempty(epsilon) %no sum
+            this.isConvex=true;
+            this.isDifferentiable=false;
+           
+            if nargin<3|| isempty(index) %no sum
                 index=0;
             end
-            if nargin<1|| isempty(epsilon)
+            if nargin<2|| isempty(epsilon)
                 epsilon=1e-3;
             end
             this.epsilon = epsilon;
@@ -59,52 +56,38 @@ classdef CostComplexHyperBolic < Cost
             if index~=0
                 this.sumOp = LinOpSum(this.H.sizeout,index);
             else
-                this.sumOp = LinOpIdentity(this.H.sizeout);
+                this.sumOp = LinOpDiag(this.H.sizeout);
             end
         end
-        
-        function cost  = eval(this,x) 
-            % Reimplemented from parent class :class:`Cost`.
-            
+    end
+    
+    %% Core Methods containing implementations (Protected)
+    % - apply_(this,x)
+    % - applyGrad_(this,x)
+    methods (Access = protected)
+        function y=apply_(this,x)
+            % Reimplemented from parent class :class:`Cost`.            
             if(isscalar(this.y)&&(this.y==0))
-                z = this.H.apply(x);
+                u=abs(x).^2;
             else
-                z = this.H.apply(x) -this.y;
+                u=abs(x-this.y).^2;
             end
-            R = this.sumOp.apply(abs(z).^2);
+            R = this.sumOp.apply(u);
             
             F = sqrt(R + this.epsilon.^2);
-            cost = sum(F(:)) - numel(F).*this.epsilon;
-        end
-        
-        function gradient = grad(this,x)
-            % Reimplemented from parent class :class:`Cost`. 
-            
+            y = sum(F(:)) - numel(F).*this.epsilon;
+        end    
+        function g=applyGrad_(this,x)
+            % Reimplemented from parent class :class:`Cost`.             
             if(isscalar(this.y)&&(this.y==0))
-                z = this.H.apply(x);
+                u=abs(x).^2;
             else
-                z = this.H.apply(x) -this.y;
+                u=abs(x-this.y).^2;
             end
-            R = this.sumOp.apply(abs(z).^2);
+            R = this.sumOp.apply(u);
             
             F = sqrt(R + this.epsilon.^2);
-            gradient = this.H.applyAdjoint(z.*this.sumOp.adjoint(1./F));           
-        end
-        
-        function [cost , gradient] = eval_grad(this,x) 
-            % Reimplemented from parent class :class:`Cost`.
-            
-            if(isscalar(this.y)&&(this.y==0))
-                z = this.H.apply(x);
-            else
-                z = this.H.apply(x) -this.y;
-            end
-            R = this.sumOp.apply(abs(z).^2);
-            
-            F = sqrt(R + this.epsilon.^2);
-            cost = sum(F(:)) - numel(F).*this.epsilon;
-            
-            gradient = this.H.applyAdjoint(z.*this.sumOp.adjoint(1./F));          
+            g = u.*this.sumOp.adjoint(1./F);           
         end
     end
 end

@@ -1,6 +1,6 @@
 classdef CostMixNormSchatt1 < Cost
     % CostMixNormSchatt1 Mixed Schatten-l1 Norm [1]
-    % $$C(\\mathrm{x}) :=   \\sum_n  \\| (\\mathrm{Hx})_{n\\cdot} \\|_{Sp}, $$
+    % $$C(\\mathrm{x}) :=   \\sum_n  \\| \\mathrm{x}_{n\\cdot} \\|_{Sp}, $$
     % for \\(p \\in [1,+\\infty]\\). Here, \\(\\|\\cdot\\|_{Sp}\\)  denotes the p-order Shatten norm 
     % defined by
     % $$ \\|\\mathrm{X}\\|_{Sp} = \\left[\\sum_k (\\sigma_k(\\mathrm{X}))^p\\right]^{1/p},$$
@@ -30,7 +30,7 @@ classdef CostMixNormSchatt1 < Cost
     %
     % **Example** C=CostMixNormSchatt1(sz,p,y)
     %
-    % See also :class:`Map` :class:`Cost`
+    % See also :class:`Map`, :class:`Cost`, :class:`LinOp`
     
     %%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch

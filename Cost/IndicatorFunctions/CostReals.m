@@ -1,13 +1,15 @@
 classdef CostReals < CostRectangle
     % CostReals: Reals Indicator function
     % $$ C(x) = \\left\\lbrace \\begin{array}[l]
-    %                 0 \\text{ if } \\mathrm{real(xmin)} \\leq \\mathrm{imag(x-y)} \\leq \\mathrm{real(xmax)} \\newline
-    %  + \\infty \\text{ otherwise.} \\end{array} \\right. $$
+    % \\text{0~if } \\mathrm{xmin} \\leq \\mathrm{x-y} \\leq \\mathrm{xmax} \\newline
+    % + \\infty \\text{ otherwise.} \\end{array} \\right. $$
     %
     % :param xmin: minimum value (default -inf)
     % :param xmax: maximum value (default +inf)
     %
     % All attributes of parent class :class:`CostRectangle` are inherited 
+    %
+    % **Example** C=CostReals(sz,xmin,xmax,y)
     %
     % See also :class:`Map`, :class:`Cost`, :class:`CostIndicator`, :class:`CostRectangle`
     

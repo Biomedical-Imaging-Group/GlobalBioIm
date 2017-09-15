@@ -1,10 +1,12 @@
 classdef CostNonNeg < CostReals
     % CostNonNeg : Non negativity indicator 
     % $$ C(x) = \\left\\lbrace \\begin{array}[l]
-    %                 0 \\text{ if } \\mathrm{imag(x-y)} \\geq 0 \\newline
-    %  + \\infty \\text{ otherwise.} \\end{array} \\right. $$
+    % \\text{0~if } \\mathrm{x-y} \\geq 0 \\newline
+    % + \\infty \\text{ otherwise.} \\end{array} \\right. $$
     %
     % All attributes of parent class :class:`CostRectangle` are inherited 
+    %
+    % **Example** C=CostNonNeg(sz,y) 
     %
     % See also :class:`Map`, :class:`Cost`, :class:`CostIndicator`, :class:`CostRectangle`
     % :class:`CostReals` 

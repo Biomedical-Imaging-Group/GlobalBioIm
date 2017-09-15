@@ -1,17 +1,17 @@
 classdef CostComplexDisk < CostComplexRing
-    %% Circle indicator function
-    %  Matlab Inverse Problems Library
+    % CostComplexDisk: Implements the indocator function on the complex disk of radius c
+    % $$ C(x) = \\left\\lbrace \\begin{array}[l]
+    % \\text{0~if } \\vert \\mathrm{x-y}\\vert \\leq c  \\newline
+    % + \\infty \\text{ otherwise.} \\end{array} \\right. $$
     %
-    % Obj = CostComplexDisk(c):
-    % Implement the proximity operator on the complex disk of radius c
-    % $$ \phi(x) = 0 \textrm{ if } ||x||_2<=c  textrm{ and }  +\inf \textrm{ otherwise } $$
-    % Following Matlab angle function if x=0 then CostDisk(x) = 1
+    % All attributes of parent class :class:`CostComplexRing` are inherited 
     %
-    %% Properties
+    % **Example** C=CostComplexDisk(radius,sz,y)
     %
-    %%
+    % See also :class:`Map`, :class:`Cost`, :class:`CostIndicator`, :class:`CostComplexRing`
     
-    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+    %%    Copyright (C) 2015 
+    %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -26,31 +26,18 @@ classdef CostComplexDisk < CostComplexRing
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (SetAccess = protected,GetAccess = public)
-    end
-    
+    %% Constructor
     methods
-        function this = CostComplexDisk(radius)
-            this.name='Cost Complex Disk';
-            
+        function this = CostComplexDisk(radius,sz,y)
+            if nargin<3, y=0; end
             if nargin >0
                 assert(isnumeric(radius),'C should be numeric');
             else
                 radius = 1;
-            end
-            
-            if nargin==1
-                sz = [];
-            end 
-            
-            if isempty(sz)
-                sz = size(radius);
-            end
-            set_H(this,sz);
-          
-            
-             this.outer = radius;
-             this.inner = 0.;
+            end           
+            this@CostComplexRing(0,radius,sz,y);
+            this.name='CostComplexDisk';
+            this.isConvex= true;    
         end
     end
 end

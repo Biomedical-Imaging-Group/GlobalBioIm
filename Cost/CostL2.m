@@ -1,14 +1,14 @@
 classdef CostL2 < Cost
     % CostL2: Weighted L2 norm cost function
-    % $$C(\\mathrm{x}) := \\frac12\\|\\mathrm{x} - \\mathrm{y}\\|^2_W $$
+    % $$C(\\mathrm{x}) := \\frac12\\|\\mathrm{x} - \\mathrm{y}\\|^2_W = \\frac12 (\\mathrm{x} - \\mathrm{y})^T W (\\mathrm{x} - \\mathrm{y}) $$
     %
     % All attributes of parent class :class:`Cost` are inherited. 
     %
-    % :param W: weighting :class:`LinOpDiag` object or scalar (default :class:`LinOpIdentity`)
+    % :param W: weighting :class:`LinOpDiag` object or scalar (default 1)
     %
     % **Example** C=CostL2(sz,y,wght)
     %
-    % See also :class:`Map`, :class:`Cost`,
+    % See also :class:`Map`, :class:`Cost`, :class:`LinOp`
 
     %%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch 
@@ -56,6 +56,7 @@ classdef CostL2 < Cost
     % - apply_(this,x)
     % - applyGrad_(this,x)
     % - applyProx_(this,x,alpha)
+    % - makeComposition_(this,G
 	methods (Access = protected)
         function y=apply_(this,x)
         	% Reimplemented from parent class :class:`Cost`.       
@@ -78,7 +79,9 @@ classdef CostL2 < Cost
             end
         end
         function y=applyProx_(this,x,alpha)
-        	% Reimplemented from parent class :class:`Cost`        	
+        	% Reimplemented from parent class :class:`Cost`   
+            % $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{x}) = \\frac{\\mathrm{x} + \\alpha \\mathrm{Wy}}{1 + \\alpha \\mathrm{W}} $$
+            % where the division is component-wise.
             if  isscalar(this.W)
                 y=(x+alpha*this.W*this.y)./(1+alpha.*this.W);
             else
@@ -86,7 +89,8 @@ classdef CostL2 < Cost
             end
         end
         function M=makeComposition_(this,G)
-            % Reimplemented from parent class :class:`Cost`  
+            % Reimplemented from parent class :class:`Cost`. Instantiates a
+            % :class:`CostL2Composition`.
             M = CostL2Composition(this,G);
         end
     end

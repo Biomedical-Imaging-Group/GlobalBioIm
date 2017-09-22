@@ -5,6 +5,8 @@ classdef LinOpConv <  LinOp
     % :param isReal: if true (default) the result of the convolution should be real
     % :param index: dimensions along which the convolution is performed (the MTF must have a comformable size)
     % 
+    % All attributes of parent class :class:`LinOp` are inherited. 
+    %
     % **Example** H=LinOpConv(mtf,isReal,index)
     %
     % See also :class:`LinOp`, :class:`Map`
@@ -108,7 +110,7 @@ classdef LinOpConv <  LinOp
         end	
         function y = applyHHt_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            y=this.HtH(x);
+            y=this.applyHtH_(x);
         end	
         function y = applyInverse_(this,x)
             % Reimplemented from parent class :class:`LinOp`.

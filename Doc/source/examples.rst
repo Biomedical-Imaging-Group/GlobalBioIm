@@ -1,4 +1,5 @@
-.. include global.rst
+
+.. _ref-examples:
 
 Examples
-========
+********

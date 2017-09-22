@@ -1,5 +1,5 @@
 classdef LinOpSum <  LinOp
-    % Summation linear operator which sums the elements of a variable along
+    % LinOpSum: Summation linear operator which sums the elements of a variable along
     % given directions.
     % $$\\mathrm{H} : \\mathrm{x} \\mapsto \\mathrm{y_k} = \\sum_l \\mathrm{x}_{k,l} $$
     %
@@ -8,9 +8,10 @@ classdef LinOpSum <  LinOp
     % 
     % All attributes of parent class :class:`LinOp` are inherited. 
     %
-    % See also :class:`LinOp`
+    % See also :class:`LinOp`, :class:`Map`
     
-    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+    %%    Copyright (C) 2015 
+    %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -31,16 +32,17 @@ classdef LinOpSum <  LinOp
         kerdims % ker dimensions
         imdims % im dimensions
     end
+    
+    %% Constructor
     methods
         function this = LinOpSum(sz,index)
+            assert(issize(sz),'The input size sz should be a conformable  to a size ');
             if nargin == 1
                 index = [];
             end
-            this.name ='LinOp Sum ';
-            this.isComplex= true;
-            this.isinvertible=false;
-            
-            assert(issize(sz),'The input size sz should be a conformable  to a size ');
+            this.name ='LinOpSum ';
+            this.isInvertible=false;
+            this.isDifferentiable=true;  
             this.sizein = sz;
             
             this.ndms = length(this.sizein);
@@ -75,28 +77,24 @@ classdef LinOpSum <  LinOp
             this.imdims(~T)=1;
             
 		end
-	end
+    end
 	
+    %% Core Methods containing implementations (Protected)
 	methods (Access = protected)
         function y = apply_(this,x)
-            % Reimplemented from parent class :class:`LinOp`.
-            
+            % Reimplemented from parent class :class:`LinOp`.           
             for n=this.index
                 x = sum(x,n);
             end
             y = squeeze(x);
-		end
-		
-        function y = adjoint_(this,x)
+        end		
+        function y = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            % $$\\mathrm{H}^* : \\mathrm{x} \\mapsto \\mathrm{y_{k,l}} =  \\mathrm{x}_{k} \\; \\forall l$$
-            
+            % $$\\mathrm{H}^* : \\mathrm{x} \\mapsto \\mathrm{y_{k,l}} =  \\mathrm{x}_{k} \\; \\forall l$$            
             y = reshape(repmat(reshape(x,this.imdims),this.kerdims),this.sizein);
-		end
-		
-        function y = HHt_(this,x)
-            % Reimplemented from parent class :class:`LinOp`.
-            
+        end		
+        function y = applyHHt_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.            
             a = prod(this.kerdims);
             y = x.*a;
         end

@@ -42,6 +42,8 @@ Opti
 
 .. automodule:: Abstract.Compositions
 
+.. _ref-op-on-Maps:
+
 OperationsOnMaps
 ----------------
 

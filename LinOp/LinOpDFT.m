@@ -1,18 +1,24 @@
 classdef LinOpDFT <  LinOp
-    %% LinOpDFT : Discrete Fourier operator
-    %  Matlab Linear Operator Library
+    % LinOpDFT : Discrete Fourier operator
     %
-    % Example
-    % Obj = LinOpDFT(sz,pad)
     % Compute the dicrete fourier transfom padded by PAD (optionnal) such
-    % y = Obj.apply(x)  <=> y = fftn(x,pad)
+    % that (equivalent to y = fftn(x,pad))
     %
+    % :param sz: sizein of the operator.
+    % :param pad: padding size (see the doc of fftn function).
+    % :param unitary: boolean true when normalized DFT (default false)
     %
-    % Please refer to the LINOP superclass for general documentation about
-    % linear operators class
-    % See also LinOp fftn LinOpSDFT ifftn
+    % All attributes of parent class :class:`LinOp` are inherited. 
+    %
+    % **Example** DFT=LinOpDFT(sz, pad)
+    %
+    % See also :class:`LinOp`, :class:`Map`, :class:`LinOpSDFT`, fftn,
+    % ifftn
     
-    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+    % FIXME : Should better be merged with DFT
+    
+    %%    Copyright (C) 2015 
+    %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -33,59 +39,68 @@ classdef LinOpDFT <  LinOp
         real % 1 if real complex Fourier transform (default 0).  FIXME: NOT IMPLEMENTED
         unitary = false
     end
+    
+    %% Constructor
     methods
-        function this = LinOpDFT(sz, pad)
-            
-            this.name ='Complex DFT';
-            this.isComplex= true;
-            this.isInvertible=true;            
+        function this = LinOpDFT(sz, pad)        
             assert(issize(sz),'The input size sz should be a conformable  to a size ');
-            this.sizein = sz;`
+            this.name ='LinOpDFT';
+            this.isInvertible=true;
+            this.isDifferentiable=true;           
+            this.sizein = sz;
+            this.sizeout=sz;
+            this.N=prod(sz);
             if nargin>1
                 if issize(pad)
                     this.pad= pad  ;
                 else
                     error('PAD should be conformable to size() output');
                 end
-            end
-            
+            end           
 		end
-	end
+    end
+    
+    %% Core Methods containing implementations (Protected)
 	methods (Access = protected)
         function y = apply_(this,x)
-            this.sizein = size(x);
-            this.sizeout = size(x);
-            this.N=numel(x);
+            % Reimplemented from parent class :class:`LinOp`.
             if this.unitary
                 y = 1./sqrt(this.N) * fftn(x,this.pad);
             else
-                y =  fftn(x,this.pad);
-                
+                y =  fftn(x,this.pad);              
             end
         end
-        function y = adjoint_(this,x)
-            this.N=numel(x);
+        function y = applyAdjoint_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
             if this.unitary
                 y = sqrt(this.N) * ifftn(x,this.pad);
             else
                 y = this.N * ifftn(x,this.pad);
             end
         end
-        function y = inverse_(this,x)
-            y = ifftn(x,this.pad);
+        function y = applyInverse_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
+            if this.unitary
+                y = ifftn(x*sqrt(this.N),this.pad);
+            else
+                y = ifftn(x,this.pad);
+            end
         end
-        function y = HtH_(this,x) %Beware of unitary fft of Matlab
-            this.N=numel(x);
-            
+        function y = applyHtH_(this,x) 
+            % Reimplemented from parent class :class:`LinOp`.       
             if this.unitary
                 y = x;
             else
                 y =this.N *x;
             end
         end
-        function y = adjointInverse_(this,x) %Beware of unitary fft of Matlab
-            this.N=numel(x);
-            y = 1/this.N *fftn(x,this.pad);
+        function y = applyAdjointInverse_(this,x) 
+            % Reimplemented from parent class :class:`LinOp`.
+            if this.unitary
+                y = 1/sqrt(this.N) * fftn(x,this.pad);
+            else
+                y = 1/this.N * fftn(x,this.pad);
+            end
         end
     end
 end

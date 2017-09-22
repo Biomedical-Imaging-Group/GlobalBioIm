@@ -6,25 +6,11 @@ Optimization Algorithms (Opti)
 	This section contains optimization algorithms classes which all derive from the abstract class :class:`Opti`.
 	
 .. automodule:: Opti
-    
-OptiGradDsct
-------------
 
-.. autoclass:: OptiGradDsct
-    :show-inheritance:
-    :members: run, starting_verb, ending_verb, test_convergence, set_b(
+OptiADMM
+--------
 
-OptiConjGrad
-------------
-
-.. autoclass:: OptiConjGrad
-    :show-inheritance:
-    :members: run, starting_verb, ending_verb, test_convergence
-
-OptiFBS
--------
-
-.. autoclass:: OptiFBS
+.. autoclass:: OptiADMM
     :show-inheritance:
     :members: run, starting_verb, ending_verb, test_convergence
 
@@ -35,19 +21,13 @@ OptiChambPock
     :show-inheritance:
     :members: run, starting_verb, ending_verb, test_convergence
 
-OptiPrimalDualCondat
---------------------
+OptiConjGrad
+------------
 
-.. autoclass:: OptiPrimalDualCondat
+.. autoclass:: OptiConjGrad
     :show-inheritance:
     :members: run, starting_verb, ending_verb, test_convergence
 
-OptiADMM
---------
-
-.. autoclass:: OptiADMM
-    :show-inheritance:
-    :members: run, starting_verb, ending_verb, test_convergence
 
 OptiDouglasRachford
 -------------------
@@ -56,6 +36,26 @@ OptiDouglasRachford
     :show-inheritance:
     :members: run, starting_verb, ending_verb, test_convergence
 
+OptiFBS
+-------
+
+.. autoclass:: OptiFBS
+    :show-inheritance:
+    :members: run, starting_verb, ending_verb, test_convergence
+    
+OptiGradDsct
+------------
+
+.. autoclass:: OptiGradDsct
+    :show-inheritance:
+    :members: run, starting_verb, ending_verb, test_convergence, set_b(
+
+OptiPrimalDualCondat
+--------------------
+
+.. autoclass:: OptiPrimalDualCondat
+    :show-inheritance:
+    :members: run, starting_verb, ending_verb, test_convergence
 
 OptiRichLucy
 ------------

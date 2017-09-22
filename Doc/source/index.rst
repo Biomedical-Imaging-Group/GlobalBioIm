@@ -41,22 +41,36 @@ Reference
     Proceedings of the OSA Imaging and Applied Optics Congress on Computational Optical Sensing and Imaging (COSI'17), San Francisco CA, USA, June 26-29, 2017, paper no. CTu1B.
 
 Contents
---------
- 
+********
+
 .. toctree::
    :maxdepth: 1
- 
+   :caption: General
+
+   Download/Clone (v.01) <https://c4science.ch/diffusion/2843/>
+   infos
+   examples   
+   conditionsuse
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Technical Documentation
+
    abstract
    linop
    nonlinop
    cost
    opti
-   infos
    methodssummary
-   examples
-   Download/Clone (v.01) <https://c4science.ch/diffusion/2843/>
+   propertiessummary
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Links
 
+   Biomedical Imaging Group <http://bigwww.epfl.ch>
+   contact
+   
  
 .. default-domain:: mat
 

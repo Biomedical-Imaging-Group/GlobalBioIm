@@ -1,12 +1,13 @@
 classdef LinOpDiag <  LinOp
     % LinOpDiag: Diagonal operator
     % $$ \\mathrm{Hx}= \\mathrm{\\mathbf{diag}(w)x}$$
-    % where \\(mathrm{w} \\in \\mathbb{R}^N\\) or \\(\\mathbb{C}^N\\) is a
+    % where \\(\\mathrm{w} \\in \\mathbb{R}^N\\) or \\(\\mathbb{C}^N\\) is a
     % vector containing the diagonal elements of \\(\\mathrm{H}\\).
     % 
     % :param diag: elements of the diagonal (vector)
-    % :param sz: size (if the given diag is scalar) to build a scaled
-    % identity operator.
+    % :param sz: size (if the given diag is scalar) to build a scaled identity operator.
+    %
+    % All attributes of parent class :class:`LinOp` are inherited. 
     %
     % **Example** D=LinOpDiag(sz,diag)
     %

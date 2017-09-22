@@ -11,6 +11,7 @@ some commands that worked on macOSX
 sudo -H pip install --ignore-installed Sphinx
 sudo -H pip install --ignore-installed -U sphinxcontrib-matlabdomain
 sudo -H pip install --ignore-installed sphinx_rtd_theme
+sudo -H pip install --ignore-installed sphinxcontrib-email 
 
 ###### COMPILATION
 

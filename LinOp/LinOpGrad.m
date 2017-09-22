@@ -5,6 +5,8 @@ classdef LinOpGrad <  LinOp
     % :param index: dimension along which the gradient is computed (all by default)
     % :param bc: boundary condition: 'circular' (default), 'zeros', 'mirror'
     % :param res: vector containing the resolution along each dimension (default all 1)
+    %
+    % All attributes of parent class :class:`LinOp` are inherited. 
     % 
     % **Note** When circular boundary conditions are selected, the method
     % makeHtH (or equivalently the composition H'*H) returns a convolution

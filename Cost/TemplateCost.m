@@ -1,10 +1,10 @@
 classdef TemplateCost < Cost
 	% TODO: Put here the description of your Cost
     % $$ C(\\mathrm{x}) = TODO $$
-    %
-    % All attributes of parent class :class:`Cost` are inherited. 
 	%
 	% :param parName: DESCRIPTION
+    %
+    % All attributes of parent class :class:`Cost` are inherited. 
     %
     % **Note**: YOU CAN PUT A NOTE HERE
     %
@@ -60,7 +60,6 @@ classdef TemplateCost < Cost
     % - apply_(this,x)
     % - applyGrad_(this,x)
     % - applyProx_(this,x,alpha)
-    % - makeComposition_(this,G
     methods (Access = protected)
         function y=apply_(this,x)
             % Reimplemented from parent class :class:`Cost`.

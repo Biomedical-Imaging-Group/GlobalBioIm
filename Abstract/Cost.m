@@ -5,7 +5,7 @@ classdef Cost < Map
     % $$ C(\\mathrm{x}) := F( \\mathrm{x} , \\mathrm{y} ) $$
     % where \\(F\\) is a function takin two variables, both in \\(\\mathrm{X}\\).
     %
-    % :param y: data vector of size H.sizeout (default 0)
+    % :param y: data vector  (default 0)
     % :param name: name of the cost function
     % :param lip: Lipschitz constant of the gradient (when applicable and known, otherwise -1)
     % :param isConvex: true if the cost is convex 

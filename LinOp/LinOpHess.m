@@ -4,6 +4,8 @@ classdef LinOpHess <  LinOp
     % :param sz: sizein of the gradient operator
     % :param bc: boundary condition: 'circular' (default), 'zeros', 'mirror'
     %
+    % All attributes of parent class :class:`LinOp` are inherited. 
+    %
     % **Note-1** When circular boundary conditions are selected, the method
     % makeHtH (or equivalently the composition H'*H) returns a convolution
     % linear operator :class:`LinOp`

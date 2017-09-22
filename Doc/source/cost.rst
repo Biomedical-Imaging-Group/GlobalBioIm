@@ -7,6 +7,28 @@ Cost Functions (Cost)
 	
 .. automodule:: Cost
 
+CostComplexHyperBolic
+---------------------
+    
+.. autoclass:: CostComplexHyperBolic
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+      applyGrad_, applyProx_, applyProxFench_, set_y 
+
+CostKullLeib
+------------
+    
+.. autoclass:: CostKullLeib
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+      applyGrad_, applyProx_, applyProxFench_, set_y
+
+CostL1
+------
+.. autoclass:: CostL1
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+      applyGrad_, applyProx_, applyProxFench_, set_y
 
 CostL2
 ------
@@ -18,22 +40,6 @@ CostL2
 CostL2Composition
 -----------------
 .. autoclass:: CostL2Composition
-    :show-inheritance:
-    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
-      applyGrad_, applyProx_, applyProxFench_, set_y
-
-       
-CostL1
-------
-.. autoclass:: CostL1
-    :show-inheritance:
-    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
-      applyGrad_, applyProx_, applyProxFench_, set_y
-
-CostKullLeib
-------------
-    
-.. autoclass:: CostKullLeib
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
       applyGrad_, applyProx_, applyProxFench_, set_y
@@ -54,13 +60,6 @@ CostMixNormSchatt1
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
       applyGrad_, applyProx_, applyProxFench_, set_y
     
-CostComplexHyperBolic
----------------------
-    
-.. autoclass:: CostComplexHyperBolic
-    :show-inheritance:
-    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
-      applyGrad_, applyProx_, applyProxFench_, set_y
 
 IndicatorFunctions
 ------------------

@@ -1,17 +1,19 @@
 classdef LinOpScaling <  LinOp
-    %% LinOpScaling : LinOp scaling operator
-    %  Matlab Linear Operator Library
+    % LinOpScaling : LinOp scaling operator
     %
-    % Example
-    % Obj = LinOpScaling(scale)
+    % Scale the input by a scalar factor
     %
-    % Build the scaling operator that scale the input by the scalar factor
-    % scale
+    % :param sz: input size of the operator
+    % :param scale: scaling parameter
     %
-    % Please refer to the LinOp superclass for documentation
-    % See also LinOp
+    % All attributes of parent class :class:`LinOp` are inherited. 
+    %
+    % **Example** S= LinOpScaling(scale)
+    %
+    % See also :class:`LinOp`, :class:`Map`
     
-    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+    %%    Copyright (C) 2015 
+    %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -29,56 +31,51 @@ classdef LinOpScaling <  LinOp
     properties (SetAccess = protected,GetAccess = public)
         scale % scale factor
     end
+    
+    %% Constructor
     methods
         function this = LinOpScaling(scale,sz)
-            this.name ='LinOp Scaling';
+            assert(issize(sz),'The input size sz should be a conformable  to a size ');   
+            this.name ='LinOpScaling';
             if isscalar(scale)
                 this.scale = scale;
-                if isreal(scale)
-                    this.isComplex=false;
-                else
-                    this.isComplex=true;
-                end
                 if scale == 0
                     this.isInvertible= false;
                 end
             else
                 error('LinOpScale value must be a scalar');
             end
-            assert(issize(sz),'The input size sz should be a conformable  to a size ');
-            
+            this.isDifferentiable=true;                   
             this.sizeout=sz;
-            this.sizein=sz;
-            
+            this.sizein=sz;          
 		end
-	end
+    end
 	
+    %% Core Methods containing implementations (Protected)
 	methods (Access = protected)
         function y = apply_(this,x)
-            this.sizeout=size(x); % todo: remove this delayed size setting
-            this.sizein=size(x);
+            % Reimplemented from parent class :class:`LinOp`.
             y =this.scale .* x;
         end
-        function y = adjoint_(this,x)
-            this.sizeout=size(x);
-            this.sizein=size(x);
-            if this.isComplex
-                y =this.scale .*x;
+        function y = applyAdjoint_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
+            y =conj(this.scale) .*x;
+        end
+        function y = applyInverse_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
+            if this.isInvertible
+                y =(1./this.scale) .*x;
             else
-                y =conj(this.scale) .*x;
+                y = applyInverse_@LinOp(this,x);
             end
         end
-        function y = inverse_(this,x)
-
-            y =(1./this.scale) .*x;
-        end
-        function y = adjointInverse_(this,x)
-           
-            if this.isComplex
-                y = (1./this.scale) .*x;
-            else
+        function y = applyAdjointInverse_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
+            if this.isInvertible
                 y =conj(1./this.scale) .*x;
-            end
+            else
+                y = applyAdjointInverse_@LinOp(this,x);
+            end           
         end
     end
 end

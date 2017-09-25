@@ -11,3 +11,5 @@ TODO GlobalBioIm
     - May have some problems in LinOpDico to fix
 
     - Some LinOp need to be updated (add some missing methods)
+
+    - Put IneToMany and StackLinOp properly in the new framework

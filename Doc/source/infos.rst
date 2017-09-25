@@ -136,10 +136,167 @@ with the same x after having activated the *memoize* option produces,
 Compositions
 ------------
 
-The library enjoys a nice operator algebra mechanism that allows sone generic implementations. This is made possible
-thank to the methods prefixed by *make* (i.e. :meth:`makeComposition_`, :meth:`makeAdjoint_`, :meth:`makeHtH_`, :meth:`makeHHt_`...).
+The library enjoys a nice operator algebra mechanism that allows some generic implementations. This is made possible
+thank to the methods prefixed by *make* (i.e. :meth:`makeComposition_`, :meth:`makeAdjoint_`, :meth:`makeHtH_`, :meth:`makeHHt_`...)
 as well as the :meth:`plus_`, :meth:`minus_` and :meth:`mpower_` methods. By default these methods will instanciate 
-some :ref:`Operations on Maps <ref-op-on-Maps>` objects which may lose some properties such as
+some :ref:`Operations on Maps <ref-op-on-Maps>` objects which may lose some properties such as the invertibility or 
+some fast implementations (due to the generic of these classes.). However, developers can reimplement these *make* methods 
+in derived classes. For instance in :class:`LinOpConv`, one can find
+
+.. code:: matlab
+
+    function M = plus_(this,G)
+       % Reimplemented from parent class :class:`LinOp`.
+       if isa(G,'LinOpDiag') && G.isScaledIdentity
+          M=LinOpConv(G.diag+this.mtf,this.isReal,this.index);
+       elseif isa(G,'LinOpConv') 
+          M=LinOpConv(this.mtf+G.mtf,this.isReal,this.index);
+       else
+          M=plus_@LinOp(this,G);
+       end
+    end
+    function M = minus_(this,G)
+       % Reimplemented from parent class :class:`LinOp`.
+       if isa(G,'LinOpDiag')  && G.isScaledIdentity
+          M=LinOpDiag(this.mtf-G.diag,this.isReal,this.index);
+       elseif isa(G,'LinOpConv')
+          M=LinOpConv(this.mtf-G.mtf,this.isReal,this.index);
+       else
+          M=minus_@LinOp(this,G);
+       end
+    end
+    function M = makeHHt_(this)
+       % Reimplemented from parent class :class:`LinOp`.
+       M=LinOpConv(abs(this.mtf).^2,this.isReal,this.index);
+    end
+    function M = makeHtH_(this)
+       % Reimplemented from parent class :class:`LinOp`.
+       M=LinOpConv(abs(this.mtf).^2,this.index);
+    end
+    function G = makeComposition_(this, H)
+       % Reimplemented from parent class :class:`LinOp`
+       if isa(H, 'LinOpConv')
+           G = LinOpConv(this.mtf.*H.mtf,this.isReal,this.index); 
+       elseif isa(H,'LinOpDiag') && H.isScaledIdentity
+           G = LinOpConv(this.mtf.*H.diag,this.isReal,this.index);  
+       else
+           G = makeComposition_@LinOp(this, H);
+       end
+    end
+
+which all instanciate a new :class:`LinOpConv` with the proper kernel. Hence considering a :class:`LinOpConv`,
+
+.. code:: matlab
+    
+    >> H=LinOpConv(psf)
+
+    H = 
+
+      LinOpConv with properties:
+
+                 mtf: [256?256 double]
+               index: [1 2]
+            Notindex: []
+                ndms: 2
+              isReal: 1
+                name: 'LinOpConv'
+        isInvertible: 0
+    isDifferentiable: 1
+              sizein: [256 256]
+             sizeout: [256 256]
+                norm: 1.0000
+         memoizeOpts: [1x1 struct]
+    doPrecomputation: 0
+
+
+the \\(\\mathrm{H^*H} \\) is also a :class:`LinOpConv`
+
+.. code:: matlab 
+
+    >> H'*H
+
+    ans = 
+
+        LinOpConv with properties:
+
+                 mtf: [256?256 double]
+               index: [1 2]
+            Notindex: [1?0 double]
+                ndms: 2
+              isReal: 1
+                name: 'LinOpConv'
+        isInvertible: 0
+    isDifferentiable: 1
+              sizein: [256 256]
+             sizeout: [256 256]
+                norm: 0.9999
+         memoizeOpts: [1x1 struct]
+    doPrecomputation: 0
+
+and the same holds for the \\(\\mathrm{H^*H + I} \\) operator
+
+.. code:: matlab 
+
+    >> I=LinOpIdentity(size(psf));
+    >> H'*H+I
+
+        ans = 
+
+            LinOpConv with properties:
+
+                 mtf: [256?256 double]
+               index: [1 2]
+            Notindex: [1?0 double]
+                ndms: 2
+              isReal: 1
+                name: 'LinOpConv'
+        isInvertible: 1
+    isDifferentiable: 1
+              sizein: [256 256]
+             sizeout: [256 256]
+                norm: 1.9999
+         memoizeOpts: [1x1 struct]
+    doPrecomputation: 0
+
+which is invertible in comparison to \\(\\mathrm{H}\\) and \\(\\mathrm{H^*H}\\). This nice combination mechanism allows
+for some generic implementations. For instance, there is a nice property that if one has a closed form of the proximity 
+operator of a convex function \\(f\\), then the proximity operator of \\(f(\\mathrm{H}\\cdot)\\), for \\(\\mathrm{H}\\) a
+semi-orthogonal linear operators (i.e. \\(\\mathrm{HH^*}= \\mu \\mathrm{I}\\) for \\(\\nu >0\\)), is given by
+
+$$ \\mathrm{prox}_{f(\\mathrm{H}\\cdot)}(\\mathrm{x}) = \\mathrm{x} + \\nu^{-1}\\mathrm{H^*} \\left( \\mathrm{prox}_{\\nu f}(\\mathrm{Hx}) -\\mathrm{Hx} \\right) $$
+
+Hence, at the level of :class:`CostComposition` one can check if \\(\\mathrm{H}\\)  is a semi-orthogonal linear operator
+and implements in a generic way the above property by testing (in the constructor)
+
+.. code:: matlab 
+
+    T=this.H2*this.H2';
+    if isa(T,'LinOpDiag') && T.isScaledIdentity
+         if T.diag>0
+              this.isH2SemiOrtho=true;
+              this.nu=T.diag;
+         end
+    end
+
+and then in the :meth:`applyProx` implementation
+
+.. code:: matlab 
+
+        function x=applyProx_(this,z,alpha)
+            if this.isConvex && this.isH2LinOp && this.isH2SemiOrtho             
+                x = z + 1/this.nu*this.H2.applyAdjoint(this.H1.applyProx(this.H2*z,alpha*this.nu)-this.H2*z);
+            else
+                x = applyProx_@Cost(this,z,alpha);
+            end
+        end
+
+As a result, in the library, combining any :class:`Cost` having an implementation of :meth:`applyProx` with a :class:`LinOp`
+which is semi-orthogonal (its :meth:`makeHHt` returns a :class:`LinOpDiag` with a constant diagonal) results in a new 
+:class:`Cost` which has an implementation of :meth:`applyProx`.
+
+**Important** The use of this operator algebra is not recommended for implementing methods  since it creates at each call
+a new object which may slow the computation of iterative algorithms which make several calls to these methods. However, it can be
+used in the constructor method or in other methods as a default implementation.
 
 
 Auxiliary Utilities

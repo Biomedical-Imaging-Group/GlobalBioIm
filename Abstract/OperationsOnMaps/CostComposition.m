@@ -70,7 +70,7 @@ classdef CostComposition < MapComposition & Cost
             % If this.H2 is a :class:`LinOp` and \\(\\mathrm{H}
             % \\mathrm{H}^{\\star}\\) is a :class:`LinOpScaledIdentity`
             % 
-            if this.isConvex && this.isH2LinOp && this.isH2SemiOrtho             
+            if this.isConvex && this.isH2LinOp && this.isH2SemiOrtho   
                 x = z + 1/this.nu*this.H2.applyAdjoint(this.H1.applyProx(this.H2*z,alpha*this.nu)-this.H2*z);
             else
                 x = applyProx_@Cost(this,z,alpha);
@@ -79,6 +79,22 @@ classdef CostComposition < MapComposition & Cost
         function M = makeComposition_(this,G)
             % Reimplemented from :class:`Cost`
             M=CostComposition(this.H1,this.H2*G);
+        end
+    end
+    
+    %% Utility methods
+    % - set_y(this,y)
+    methods
+        function set_y(this,y)
+            % Set the attribute \\(\\mathrm{y}\\)
+            %
+            %  - has to be conformable with the :attr:`sizeout` of the
+            %    :class:`Map`\\(\\mathrm{H}\\),
+            %  - can be anything if \\(\\mathrm{H}\\) is not yet set (empty),
+            %  - can be a scalar.
+            assert(isnumeric(y),'y must be a numeric');
+            assert(isscalar(y) || checkSize(y,this.H2.sizeout),'size y must be a scalar or equal to this.H2.sizeout');
+            this.y=y;
         end
     end
 end

@@ -39,6 +39,7 @@ classdef CostL2 < Cost
             this@Cost(sz,y);
             this.name='CostL2';
             if nargin==3
+                if isempty(wght), wght=1; end;
                 assert((isnumeric(wght) && isscalar(wght))||isa(wght,'LinOpDiag'),'weight WGHT must be scalar or Diagonal LinOp');
                 this.W=wght;
             end

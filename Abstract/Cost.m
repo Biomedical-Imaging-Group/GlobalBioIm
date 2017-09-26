@@ -197,9 +197,7 @@ classdef Cost < Map
         function set_y(this,y)
             % Set the attribute \\(\\mathrm{y}\\)
             %
-            %  - has to be conformable with the :attr:`sizeout` of the
-            %    :class:`Map`\\(\\mathrm{H}\\),
-            %  - can be anything if \\(\\mathrm{H}\\) is not yet set (empty),
+            %  - has to be conformable with the :attr:`sizein` of the cost
             %  - can be a scalar.
             assert(isnumeric(y),'y must be a numeric');
             assert(isscalar(y) || checkSize(y,this.sizein),'size y must be a scalar or equal to this.sizein');

@@ -108,7 +108,7 @@ classdef CostL2Composition <  CostComposition
                     fftHstardata=conj(this.H2.mtf).*Sfft(this.H1.W*this.H1.y,this.H2.Notindex);
                     y=iSfft((Sfft(x,this.H2.Notindex) + this.H1.W*alpha*fftHstardata)./(1+this.H1.W*alpha*(abs(this.H2.mtf).^2)), this.H2.Notindex);
                 end
-            elseif this.isH2LinOp
+            elseif this.isH2LinOp && ~this.isH2SemiOrtho
                 if ~this.doPrecomputation || (this.doPrecomputation && (~isfield(this.precomputeCache,'HtHplusId')  || (alpha~=this.precomputeCache.alpha)))
                     if isnumeric(this.H1.W) || (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity)
                         HtHplusId=alpha*this.H1.W*(this.H2'*this.H2) + LinOpDiag(this.H2.sizein,1);
@@ -131,6 +131,8 @@ classdef CostL2Composition <  CostComposition
                     else
                         y=HtHplusId.applyInverse(alpha*this.H2.applyAdjoint(this.H1.W*this.H1.y)+x);
                     end
+                else
+                    y=applyProx_@CostComposition(this,x,alpha);
                 end
             else
                 y=applyProx_@CostComposition(this,x,alpha);

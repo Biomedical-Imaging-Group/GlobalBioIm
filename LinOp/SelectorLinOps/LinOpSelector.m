@@ -12,11 +12,14 @@ classdef LinOpSelector <  LinOp
     % (i.e., downsampling or patch see :class:`LinOpDownsample` and
     % :class:`LinOpSelectorPatch`)
     %
+    % **Example** S=LinOpSelector(sel)
+    %
     % See also :class:`LinOp`, :class:`LinOpSelectorPatch`,
     % :class:`LinOpDownsample`.
     
-    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch E. Soubies
-    %     emmanuel.soubies@epfl.ch
+    %%    Copyright (C) 2015 
+    %     F. Soulez ferreol.soulez@epfl.ch 
+    %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -34,41 +37,55 @@ classdef LinOpSelector <  LinOp
     properties (SetAccess = protected,GetAccess = public)
         sel;         % boolean
     end
+    
+    %% Constructor
     methods
         function this = LinOpSelector(sel)
             this.name ='LinOp Selector';
             if nargin==0
                 sel=false;
             end
-            this.isComplex= false;
             assert(islogical(sel),'The input selector should be boolean');            
 			this.norm = 1;			
             this.sizeout=[sum(sel(:)), 1];
             this.sel = sel;
             this.sizein=size(sel);
             this.isInvertible=false;
-        end        
-        function y = apply(this,x)
+        end    
+    end
+    
+    %% Core Methods containing implementations (Protected)
+    methods (Access = protected)	
+        function y = apply_(this,x)
             % Reimplemented from parent class :class:`LinOp`.           
             assert(isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
             y =x(this.sel);
         end        
-        function y = adjoint(this,x)
+        function y = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.  
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
             y = zeros(this.sizein);
             y(this.sel) = x;
         end
-        function y = HtH(this,x)
+        function y = applyHtH_(this,x)
             % Reimplemented from parent class :class:`LinOp`.  
             assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
             y = zeros(this.sizein);
             y(this.sel) = x(this.sel);            
         end
-        function y = HHt(this,x)
+        function y = applyHHt_(this,x)
             % Reimplemented from parent class :class:`LinOp`.  
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
             y = x;
+        end
+        function M = makeHHt_(this)
+            % Reimplemented from parent class :class:`LinOp`.  
+            M=LinOpIdentity(this.sizein);
+        end
+        function M = makeHtH_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            w=zeros(size(this.sel));w(this.sel)=1;
+            M=LinOpDiag([],w);
         end
     end
 end

@@ -37,6 +37,7 @@ classdef LinOp < Map
             this.memoCache.applyAdjoint=struct('in', [], 'out', []); 
             this.memoCache.applyHtH=struct('in', [], 'out', []);
             this.memoCache.applyHHt=struct('in', [], 'out', []);
+            this.isDifferentiable=true;
         end
     end
    

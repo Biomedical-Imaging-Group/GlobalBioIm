@@ -198,7 +198,7 @@ classdef LinOp < Map
             if isa(G,'LinOp')
                 M = LinOpSummation({this,G},[1,1]);
             else
-                M = plus_@MapSummation({this,G},[1,1]);
+                M = MapSummation({this,G},[1,1]);
             end
         end
         function M = minus_(this,G)
@@ -208,7 +208,7 @@ classdef LinOp < Map
             if isa(G,'LinOp')
                 M = LinOpSummation({this,G},[1,-1]);
             else
-                M = minus_@MapSummation({this,G},[1,-1]);
+                M = MapSummation({this,G},[1,-1]);
             end
         end
         function M = makeAdjoint_(this)

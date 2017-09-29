@@ -1,4 +1,5 @@
 *~
 *.mex*
 *html/
+*doctrees/
 .DS_Store

@@ -76,7 +76,7 @@ classdef CostMultiplication < Cost
             % Reimplemented from :class:`Cost`
             if this.isDifferentiable
                 if this.isnum
-                    g=this.cost1*this.cost2.grad(x);
+                    g=this.cost1*this.cost2.applyGrad(x);
                 else
                     g=this.cost1.apply(x)*this.cost2.applyGrad(x) + this.cost1.applyGrad(x)*this.cost2.apply(x);
                 end

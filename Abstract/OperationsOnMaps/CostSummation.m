@@ -40,16 +40,12 @@ classdef CostSummation <  MapSummation & Cost
     end
     
     %% Core Methods containing implementations (Protected)
-    % - applyAdjoint_(this,x)
-    % - applyHtH_(this,x) 
-    % - applyHHt_(this,y) 
-    % - makeAdjoint_(this)
     methods (Access = protected)    
         function g=applyGrad_(this,x)
             % Reimplemented from :class:`Cost`
-			g=this.alpha(1)*this.costs{1}.applyGrad(x);
+			g=this.alpha(1)*this.mapsCell{1}.applyGrad(x);
 			for n=2:this.numMaps
-				g=g+this.alpha(n)*this.costs{n}.applyGrad(x);
+				g=g+this.alpha(n)*this.mapsCell{n}.applyGrad(x);
 			end
         end
         % the function reimplementations below is needed because of

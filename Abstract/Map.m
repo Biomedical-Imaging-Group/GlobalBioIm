@@ -138,14 +138,8 @@ classdef (Abstract) Map < handle
             if ~isequal(this.sizein, G.sizeout)
                 error('Input to makeComposition is a %s of sizeout size [%s], which didn''t match the %s sizein [%s].',...
                     class(G),num2str(G.sizeout),class(this), num2str(this.sizein));
-            end           
-            if isa(G,'MapInversion') && isequal(G.M,this)
-                M=LinOpScaledIdentity(this.sizein,1);
-            elseif isa(G,'MapComposition')
-                M=this*G.H1*G.H2;
-            else
-                M = this.makeComposition_(G);
             end
+            M = this.makeComposition_(G);
         end
         function M = plus(this,G)
             % Overload operator (+) for :class:`Map` objects
@@ -259,9 +253,16 @@ classdef (Abstract) Map < handle
         function M = makeComposition_(this, G)
             % Constructs a :class:`MapComposition` object to compose the
             % current Map \\(\\mathrm{H}\\)  with the given \\(\\mathrm{G}\\).
-            M = MapComposition(this,G);
-		end
-	end
+            
+            if isa(G,'MapInversion') && isequal(G.M,this)
+                M=LinOpScaledIdentity(this.sizein,1);
+            elseif isa(G,'MapComposition')
+                M=this*G.H1*G.H2;
+            else
+                M = MapComposition(this,G);
+            end
+        end
+    end
 		
     %% Utility methods  
     % - memoize(this, fieldName, fcn, xs)

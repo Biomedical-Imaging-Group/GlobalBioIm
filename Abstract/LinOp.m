@@ -232,8 +232,14 @@ classdef LinOp < Map
             % object to compose the current LinOp (this) with the given :class:`LinOp`\\(\\mathrm{G}\\). 
             % Otherwise the composition will be a :class:`MapComposition`.
             if isa(G,'LinOp')
+                if isa(G,'LinOpDiag') && G.isScaledIdentity
+                    if G.diag==1
+                        M=this;
+                    else
+                        M=LinOpDiag(this.sizeout,G.diag)*this;  % To always have the diag Op in H1 for LinOpComposition
+                    end
                 % is HHt or HtH
-                if (isa(G,'LinOpAdjoint') && isequal(G.TLinOp,this)) || (isa(this,'LinOpAdjoint') && isequal(this.TLinOp,G))
+                elseif (isa(G,'LinOpAdjoint') && isequal(G.TLinOp,this)) || (isa(this,'LinOpAdjoint') && isequal(this.TLinOp,G))
                     M=this.makeHHt();
                 % composition with a sum of LinOps
                 elseif isa(G,'LinOpSummation')
@@ -241,19 +247,21 @@ classdef LinOp < Map
                     for i=2:G.numMaps
                         M=M+G.alpha(i)*this*G.mapsCell{i};
                     end
-                % to handle properly scalar multiplications 
-                elseif isa(G,'LinOpComposition') && isa(G.H1,'LinOpDiag') && G.H1.isScaledIdentity 
-                    if isa(this,'LinOpComposition') && isa(G.H1,'LinOpDiag') && G.H1.isScaledIdentity
-                        M = LinOpComposition(LinOpDiag(this.sizeout,this.H1.diag*G.H1.diag),this.H2.makeComposition(G.H2));
+                % composition with a LinOpComposition
+                elseif isa(G,'LinOpComposition') 
+                    % to handle properly scalar multiplications
+                    if isa(G.H1,'LinOpDiag') && G.H1.isScaledIdentity
+                        if isa(this,'LinOpDiag') && this.isScaledIdentity
+                            M=LinOpDiag(this.sizeout,G.H1.diag*this.diag)*G.H2;
+                        else
+                            M=LinOpDiag(this.sizeout,G.H1.diag)*(this*G.H2);
+                        end
                     else
-                        M = LinOpComposition(G.H1,this.makeComposition(G.H2));
+                        M=this*G.H1*G.H2;
                     end
+                % composition with other LinOps
                 else
-                    if isa(this,'LinOpComposition') && isa(this.H1,'LinOpDiag') && this.H1.isScaledIdentity
-                        M = LinOpComposition(this.H1,this.H2.makeComposition(G));
-                    else
-                        M = LinOpComposition(this,G);
-                    end
+                    M = LinOpComposition(this,G);
                 end
             else
                 M = makeComposition_@Map(this,G);

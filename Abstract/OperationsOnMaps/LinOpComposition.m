@@ -104,8 +104,17 @@ classdef LinOpComposition < MapComposition & LinOp
             M=this.H1*this.H2.makeHHt()*this.H1';
         end
         function M = makeComposition_(this,G)
-             % Reimplemented from :class:`MapComposition`
-             M=makeComposition_@MapComposition(this,G);
+            % Reimplemented from :class:`MapComposition`
+            if isa(G,'LinOp')
+                H2G = this.H2*G; % Since H1*H2 is not simplified, first try to compose H2 with G
+                if ~isa(H2G, 'LinOpComposition');
+                    M=this.H1*H2G;
+                else
+                    M = LinOpComposition(this, G);
+                end
+            else
+                M=makeComposition_@MapComposition(this,G);
+            end
         end
     end
 end

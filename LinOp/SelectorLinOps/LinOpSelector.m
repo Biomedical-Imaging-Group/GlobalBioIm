@@ -80,7 +80,7 @@ classdef LinOpSelector <  LinOp
         end
         function M = makeHHt_(this)
             % Reimplemented from parent class :class:`LinOp`.  
-            M=LinOpIdentity(this.sizein);
+            M=LinOpIdentity(this.sizeout);
         end
         function M = makeHtH_(this)
             % Reimplemented from parent class :class:`LinOp`.

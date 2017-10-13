@@ -78,19 +78,19 @@ classdef OptiPrimalDualCondat < Opti
     		this.Hn=Hn;
     		this.F0=F0;
     		this.G=G;
-    		if ~isempty(F0), this.cost=F0;end
-    		if ~isempty(G)
-    			if isempty(this.cost), this.cost=G;
-    			else, this.cost=this.cost + G; end
-    		end
-    		if ~isempty(Fn)
-    			if isempty(this.cost), this.cost=Fn{1}.o(Hn{1});
-    			else, this.cost=this.cost + Fn{1}*Hn{1}; end
-    		end
-    		for n=2:length(Fn)
-    			this.cost=this.cost+Fn{n}*Hn{n};
-			end
-    	end 
+            if ~isempty(F0), this.cost=F0;end
+            if ~isempty(G)
+                if isempty(this.cost), this.cost=G;
+                else, this.cost=this.cost + G; end
+            end
+            if ~isempty(Fn)
+                if isempty(this.cost), this.cost=Fn{1}*Hn{1};
+                else, this.cost=this.cost + Fn{1}*Hn{1}; end
+            end
+            for n=2:length(Fn)
+                this.cost=this.cost+Fn{n}*Hn{n};
+            end
+        end
     	%% Run the algorithm
         function run(this,x0) 
             % Reimplementation from :class:`Opti`. For details see [1].

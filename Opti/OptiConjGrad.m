@@ -63,6 +63,7 @@ classdef OptiConjGrad < Opti
             % Set the right-hand side \\(\\mathrm{b}\\)       	
             assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
             this.b=b;
+            this.cost.H1.y=b;
         end
     	%% Run the algorithm
         function run(this,x0) 

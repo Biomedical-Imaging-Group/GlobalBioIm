@@ -54,21 +54,16 @@ end
 if H.isInvertible
 	try
 		xhat = H.applyInverse(Hx);
-		s.inverseOK = true;
+		s.applyInverseOK = true;
 		fprintf('applyInverse OK\n');
 	catch ME
-		s.inverseOK = false;
+		s.applyInverseOK = false;
 		fprintf('H.isInvertible, but applyInverse FAILs:\n\t%s\n', ME.message);
 	end
 	
 	if s.applyOK && s.inverseOK
 		curSNR = snr(x, x-xhat);
-		if curSNR > 70
-			okString = 'OK';
-		else
-			okString = 'FAIL';
-		end
-		fprintf('\taccurate to %d dB, %s\n', curSNR, okString);
+		s.applyInverseOK = checkSNR(curSNR);
 	else
 		fprintf('\tcannot assess accuracy\n');
 	end
@@ -83,23 +78,18 @@ if isa(H, 'LinOp')
 	% adjoint
 	try
 		HTy = H.applyAdjoint(y);
-		s.adjointOK = true;
+		s.applyAdjointOK = true;
 		fprintf('applyAdjoint OK\n');
 	catch ME
 		fprintf('applyAdjoint fails:\n\t%s\n', ME.message');
-		s.adjointOK = false;
+		s.applyAdjointOK = false;
 	end
 	
-	if s.applyOK && s.adjointOK
+	if s.applyOK && s.applyAdjointOK
 		lhs = x(:)' * HTy(:);
 		rhs = Hx(:)' * y(:);
 		curSNR = snr(lhs, lhs-rhs);
-		if curSNR > 70
-			okString = 'OK';
-		else
-			okString = 'FAIL';
-		end
-		fprintf('\taccurate to %d dB, %s\n', curSNR, okString);
+		checkSNR(curSNR);
 	else
 		fprintf('\tcannot assess accuracy\n');
 	end
@@ -115,16 +105,11 @@ if isa(H, 'LinOp')
 			s.applyHtHOK = false;
 		end
 		
-		if s.applyOK && s.adjointOK && s.applyHtHOK
+		if s.applyOK && s.applyAdjointOK && s.applyHtHOK
 			lhs = HTHx;
 			rhs = H.applyAdjoint( Hx );
 			curSNR = snr(lhs, lhs-rhs);
-			if curSNR > 70
-				okString = 'OK';
-			else
-				okString = 'FAIL';
-			end
-			fprintf('\taccurate to %d dB, %s\n', curSNR, okString);
+			checkSNR(curSNR);
 		else
 			fprintf('\tcannot assess accuracy\n');
 		end
@@ -143,16 +128,12 @@ if isa(H, 'LinOp')
 			s.applyHHtOK = false;
 		end
 		
-		if s.applyOK && s.adjointOK && s.applyHHtOK
+		if s.applyOK && s.applyAdjointOK && s.applyHHtOK
 			lhs = HHty;
 			rhs = H.apply( HTy );
 			curSNR = snr(lhs, lhs-rhs);
-			if curSNR > 70
-				okString = 'OK';
-			else
-				okString = 'FAIL';
-			end
-			fprintf('\taccurate to %d dB, %s\n', curSNR, okString);
+
+			checkSNR(curSNR);
 		else
 			fprintf('\tcannot assess accuracy\n');
 		end
@@ -164,7 +145,17 @@ end
 
 end
 
-	function className = getDefiningClass(methodName, meta)
-		ind = strcmp( {meta.MethodList.Name}, methodName);
-		className = meta.MethodList(ind).DefiningClass.Name;
-	end
+function isOK = checkSNR(snr)
+isOK = snr > 70;
+if isOK
+	okString = 'OK';
+else
+	okString = 'FAIL';
+end
+fprintf('\tSNR: %.3g dB, %s\n', snr, okString)
+end
+
+function className = getDefiningClass(methodName, meta)
+ind = strcmp( {meta.MethodList.Name}, methodName);
+className = meta.MethodList(ind).DefiningClass.Name;
+end

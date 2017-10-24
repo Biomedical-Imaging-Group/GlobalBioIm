@@ -38,11 +38,12 @@ classdef LinOpDownsample < LinOpSelector
     %% Constructor
     methods
         function this = LinOpDownsample(sz,df)
-            this.name ='LinOp Downsample';
+            this.name ='LinOpDownsample';
             assert(isequal(size(sz),size(df)),'Parameters sz and d must have the same size');
             assert(~any(mod(sz,df)),'Sizes in sz must be multiples of downsampling factors in df');  
             this.sizein=sz;
             this.df=df;
+            this.sizeout=this.sizein./this.df;
             this.sel=cell(length(sz),1);
             for ii=1:length(sz)
                 this.sel{ii}=1:this.df(ii):this.sizein(ii);
@@ -73,6 +74,11 @@ classdef LinOpDownsample < LinOpSelector
             % Reimplemented from parent class :class:`LinOpSelector`.  
             assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
             y = x;
+        end
+        function M = makeHtH_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            w=zeros(this.sizein);w(this.sel{:})=1;
+            M=LinOpDiag([],w);
         end
     end
 end

@@ -8,6 +8,8 @@ classdef LinOpSum <  LinOp
     % 
     % All attributes of parent class :class:`LinOp` are inherited. 
     %
+    % **Example** S=LinOpSum(sz,index)
+    %
     % See also :class:`LinOp`, :class:`Map`
     
     %%    Copyright (C) 2015 

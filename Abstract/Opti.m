@@ -58,15 +58,17 @@ classdef Opti < matlab.mixin.SetGet
         function starting_verb(this)  
         	% Generic method to display a starting message in verbose mode.
         	   	
-        	if this.ItUpOut~=0
-        		fprintf('---> Start %s ... \n',this.name);
-				this.OutOp.update(this);
-			end
+            if this.ItUpOut~=0
+                if this.OutOp.iterVerb~=0
+                    fprintf('---> Start %s ... \n',this.name);
+                end
+                this.OutOp.update(this);
+            end
         end
         function ending_verb(this)
         	% Generic method to display a ending message in verbose mode.
         	
-        	if this.ItUpOut~=0
+        	if this.ItUpOut~=0 && this.OutOp.iterVerb~=0 
 				fprintf('... Optimization finished \nElapsed time (s): %4.2d (%i iterations). \n',this.time, this.niter);
         	end
         end

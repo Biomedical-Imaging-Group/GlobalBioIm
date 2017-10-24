@@ -30,6 +30,11 @@ classdef CostL2Composition <  CostComposition
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
+    properties (Access=private)
+        OpSumP;  % Operator used to compute the prox when H2 is the combination of a LinOpDownsample with a LinOpConv
+        LLt;     % averaged convolution kernel used to compute the prox when H2 is the combination of a LinOpDownsample with a LinOpConv
+    end
+    
     %% Constructor
     methods
         function this = CostL2Composition(H1,H2)
@@ -39,6 +44,10 @@ classdef CostL2Composition <  CostComposition
                 this.lip=this.H1.lip*this.H2.norm^2;
             end
             this.name=sprintf('CostL2Composition ( %s )',H2.name);
+            if isa(this.H2,'LinOpComposition') && isa(this.H2.H1,'LinOpDownsample') &&  isa(this.H2.H2,'LinOpConv') && isnumeric(this.H1.W) && this.H1.W==1
+                this.OpSumP=LinOpSumPatches(this.H2.H1.sizein,this.H2.H1.sizein./this.H2.H1.df);
+                this.LLt=this.OpSumP*(abs(this.H2.H2.mtf).^2);            
+            end
         end
     end
     
@@ -91,13 +100,22 @@ classdef CostL2Composition <  CostComposition
         end
         function y=applyProx_(this,x,alpha)
             % Reimplemented from parent class :class:`CostComposition`.
-            %
-            % Implemented if the operator \\(\\alpha\\mathrm{H^{\\star}WH + I}  \\) is invertible:
-            % $$ \\mathrm{y} = (\\alpha\\mathrm{H^{\\star}WH + I} )^{-1} (\\alpha \\mathrm{H^TWy +x})$$
+            % Implemented 
+            %  - if the operator \\(\\alpha\\mathrm{H^{\\star}WH + I}  \\) is invertible:
+            %    $$ \\mathrm{y} = (\\alpha\\mathrm{H^{\\star}WH + I} )^{-1} (\\alpha \\mathrm{H^TWy +x})$$
+            %  - if \\(\\mathrm{H}\\) is a :class:`LinOpComposition`
+            %    composing a :class:`LinOpDownsample` with a
+            %    :class:`LinOpConv`. The implementation follows [1].
             %
             % **Note** If :attr:`doPrecomputation` is true, then \\(\\mathrm{H^TWy}\\) is stored.
-
+            %
+            % **References**
+            %
+            % [1] Zhao Ningning et al. "Fast Single Image Super-Resolution Using a New Analytical Solution for l2-l2 Problems".
+            % IEEE Transactions on Image Processing, 25(8), 3683-3697 (2016).
+            
             if isa(this.H2,'LinOpConv') && (isnumeric(this.H1.W) || (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity))
+            % If the composed operator is a LinOpConv
                 if this.doPrecomputation
                     if ~isfield(this.precomputeCache,'fftHstardata')
                         this.precomputeCache.fftHstardata=conj(this.H2.mtf).*Sfft(this.H1.y*this.H1.W,this.H2.Notindex);
@@ -108,6 +126,21 @@ classdef CostL2Composition <  CostComposition
                     fftHstardata=conj(this.H2.mtf).*Sfft(this.H1.W*this.H1.y,this.H2.Notindex);
                     y=iSfft((Sfft(x,this.H2.Notindex) + this.H1.W*alpha*fftHstardata)./(1+this.H1.W*alpha*(abs(this.H2.mtf).^2)), this.H2.Notindex);
                 end
+            % If the composed operator is a composition between a LinOpDownsample and a LinOpConv    
+            elseif isa(this.H2,'LinOpComposition') && isa(this.H2.H1,'LinOpDownsample') &&  isa(this.H2.H2,'LinOpConv') && isnumeric(this.H1.W) && this.H1.W==1
+                 % this.H1 -> CostL2
+                 % this.H2.H1 -> LinOpDownsample
+                 % this.H2.H2 -> LinOpConv
+                 if this.doPrecomputation
+                    if ~isfield(this.precomputeCache,'fftHstarSdata')
+                        this.precomputeCache.fftHstarSdata=conj(this.H2.H2.mtf).*Sfft(this.H2.H1.applyAdjoint(this.H1.y),this.H2.H2.Notindex);
+                    end
+                    fftr=this.precomputeCache.fftHstarSdata+Sfft(x/alpha,this.H2.H2.Notindex);
+                    y=real(iSfft(alpha*fftr - alpha*conj(this.H2.H2.mtf).*this.OpSumP.applyAdjoint(this.OpSumP.apply(this.H2.H2.mtf.*fftr)./(prod(this.H2.H1.df)/alpha+this.LLt)),this.H2.H2.Notindex));
+                 else
+                     
+                 end                                           
+            % Default implementation
             elseif this.isH2LinOp && ~this.isH2SemiOrtho
                 if ~this.doPrecomputation || (this.doPrecomputation && (~isfield(this.precomputeCache,'HtHplusId')  || (alpha~=this.precomputeCache.alpha)))
                     if isnumeric(this.H1.W) || (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity)

@@ -60,7 +60,7 @@ classdef CostKullLeib < Cost
         function f=apply_(this,x)
         	% Reimplemented from parent class :class:`Cost`.
         	
-            if ~any(x(:)<0)
+            if any(x(:)<0)
                 f=Inf;
             else
                 if (this.bet~=0)

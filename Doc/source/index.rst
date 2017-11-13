@@ -31,7 +31,9 @@ automatically from comments within M-files. It thus constitues the most up-to da
 News
 ----
 
-  - June 2017: First public release of the library (v0.1) `get it <https://c4science.ch/diffusion/2843/>`_!
+  - **November 2017**: New release of the library (v 0.2) ! 
+    *New tools, more flexibility, and improved composition rules*. `Try it <https://c4science.ch/diffusion/2843/>`_!
+  - **June 2017**: First public release of the library (v 0.1) `get it <https://c4science.ch/diffusion/2843/>`_!
 
 Reference
 ---------
@@ -47,7 +49,7 @@ Contents
    :maxdepth: 1
    :caption: General
 
-   Download/Clone (v.01) <https://c4science.ch/diffusion/2843/>
+   Download/Clone (v 0.2) <https://c4science.ch/diffusion/2843/>
    infos
    examples   
    conditionsuse

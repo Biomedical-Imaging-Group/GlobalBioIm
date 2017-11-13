@@ -4,10 +4,10 @@
 %     0.5 ||Hx - y||^2
 % using Gradient Descent
 %
-% See LinOp, LinOpConv, Cost, CostL2, Opti, OptiGradDsct
-% OutpuOpti
+% See LinOp, LinOpConv, Cost, CostL2, CostL2Composition, Opti,
+% OptiGradDsct, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;
+clear; close all; clc;
 help Deconv_LS_NoReg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -39,21 +39,34 @@ impad=zeros(512); idx=129:384;
 impad(idx,idx)=im;
 
 % -- Convolution Operator definition
-H=LinOpConv(psf);
+H=LinOpConv(fft2(psf));
+% If true, applyHtH method will save its result. Hence for two consecutive HtH*x with the
+% same x, no computation is done for the second call
+H.memoizeOpts.applyHtH=1;  
 
 % -- Generate data
 load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
 
 % -- Function definition
-F_LS=CostL2(H,y);  % Least-Sqaures data term
+LS=CostL2([],y);  % Least-Sqaures data term
+F=LS*H;
+% For the CostL2, the precomputation save Hty=H'*y and then the gradient is
+% computed using H.HtH(x) - Hty and the apply is computed using the HtH
+% method
+F.doPrecomputation=1;
+
+% Note: For this example, the activation of the memoize for the applyHtH
+% method together with the activation of the doPrecomputation flag leads to
+% the faster execution time. This is because, both the gradient and the
+% apply make use of a fast HtH.
 
 % -- Gradient Descent LS
 OutOp=OutputOpti(1,impad,40);
-GD=OptiGradDsct(F_LS,OutOp);
-GD.ItUpOut=10;     % call OutputOpti update every ItUpOut iterations
-GD.maxiter=200;    % max number of iterations
-GD.run(y);         % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
+GD=OptiGradDsct(F,OutOp);
+GD.ItUpOut=1;     % call OutputOpti update every ItUpOut iterations
+GD.maxiter=200;   % max number of iterations
+GD.run(y);        % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
 
 % -- Display
 [v,n]=max(OutOp.evolsnr(:));

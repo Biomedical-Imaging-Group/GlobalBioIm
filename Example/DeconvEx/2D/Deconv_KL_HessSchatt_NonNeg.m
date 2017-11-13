@@ -42,28 +42,27 @@ impad=zeros(512); idx=129:384;
 impad(idx,idx)=im;
 
 % -- Convolution Operator definition
-H=LinOpConv(psf);
+H=LinOpConv(fft2(psf));
 
 % -- Generate data
 load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
+sz=size(y);
 fftHty=conj(H.mtf).*fft2(y);
 
 % -- Functions definition
-F_KL=CostKullLeib(H,y,1e-6);     % Kullback-Leibler divergence data term
-Hess=LinOpHess(size(impad));     % Hessian Operator
-R_1sch=CostMixNorm1Schatt([],1); % Mixed Norm 1-Schatten (p=1)
-R_POS=CostNonNeg();              % Non-Negativity
-lamb=5e-3;                       % Hyperparameter
+F=CostKullLeib([],y,1e-6);           % Kullback-Leibler divergence data term
+Hess=LinOpHess(sz);                  % Hessian Operator
+R_1sch=CostMixNormSchatt1([sz,3],1); % Mixed Norm 1-Schatten (p=1)
+R_POS=CostNonNeg(sz);                % Non-Negativity
+lamb=5e-3;                           % Hyperparameter
 
 % -- ADMM KL + ShattenHess + NonNeg
 Fn={CostKullLeib([],y,1e-6),lamb*R_1sch,R_POS};
-Hn={H,Hess,LinOpIdentity(size(impad))};
+Hn={H,Hess,LinOpDiag(sz)};
 rho_n=[1e-2,1e-2,1e-2];
-fHesstHess=fftn(Hess.fHtH);     % Fourier of the filter Hess'Hess 
-solver = @(z,rho,x) real(ifft2((rho(1)*conj(H.mtf).*fft2(z{1}) + fft2(rho(2)*Hess'*z{2} + rho(3)*z{3}) )./(rho(1)*abs(H.mtf).^2 + rho(2)*fHesstHess + rho(3))));  % solver to solve the x update
-OutADMM=OutputOpti(1,impad,40);
-ADMM=OptiADMM([],Fn,Hn,rho_n,solver,OutADMM);
+OutADMM=MyOutputOpti(1,impad,40);
+ADMM=OptiADMM([],Fn,Hn,rho_n,[],OutADMM);
 ADMM.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 
@@ -72,8 +71,8 @@ ADMM.run(y);            % run the algorithm
 % -- PrimalDual Condat KL + ShattenHess + NonNeg
 Fn={lamb*R_1sch};
 Hn={Hess};
-OutPDC=OutputOpti(1,impad,40);
-PDC=OptiPrimalDualCondat(F_KL,R_POS,Fn,Hn,OutPDC);
+OutPDC=MyOutputOpti(1,impad,40);
+PDC=OptiPrimalDualCondat(F*H,R_POS,Fn,Hn,OutPDC);
 PDC.tau=1e-2;          % set algorithm parameters
 PDC.sig=10;            %
 PDC.rho=1.95;          %

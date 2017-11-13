@@ -42,19 +42,20 @@ impad=zeros(512); idx=129:384;
 impad(idx,idx)=im;
 
 % -- Convolution Operator definition
-H=LinOpConv(psf);
+H=LinOpConv(fft2(psf));
 
 % -- Generate data
 load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
+sz=size(y);
 
 % -- Functions definition
-F_KL=CostKullLeib(H,y,1e-6);     % Kullback-Leibler divergence data term
-R_POS=CostNonNeg();              % Non-Negativity
+KL=CostKullLeib([],y,1e-6);     % Kullback-Leibler divergence data term
+R_POS=CostNonNeg(sz);              % Non-Negativity
 
 % -- FISTA KL + NonNeg
 OutFista=OutputOpti(1,impad,40);
-FBS=OptiFBS(F_KL,R_POS,OutFista);
+FBS=OptiFBS(KL*H,R_POS,OutFista);
 FBS.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 FBS.fista=true;   % activate fista
 FBS.maxiter=200;  % max number of iterations
@@ -63,7 +64,7 @@ FBS.run(y);       % run the algorithm
 
 % -- Richardson-Lucy KL + NonNeg (implicit)
 OutRL=OutputOpti(1,impad,40);
-RL=OptiRichLucy(F_KL,[],[],OutRL);
+RL=OptiRichLucy(KL*H,[],[],OutRL);
 RL.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 RL.maxiter=200;  % max number of iterations
 RL.run(y);       % run the algorithm 

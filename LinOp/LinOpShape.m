@@ -1,18 +1,17 @@
 classdef LinOpShape <  LinOp
-    %% LinOpShape : reshaping operator
-    %  Matlab Linear Operator Library
+    % LinOpShape: reshaping operator
     %
-    % Example
-    % Obj = LinOpShape(sizein,sizeout)
-    % Shape operator
     % Reshape an array of size sizein in a array of size sizeout
-    % 
     %
-    % Please refer to the LINOP superclass for general documentation about
-    % linear operators class
-    % See also LinOp
+    % :param sizein: input size
+    % :param sizeout: output size
+    %
+    % **Example** R=LinOpShape(sizein,sizeout)
+    %
+    % See also :class:`LinOp`, :class:`Map`
     
-    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+    %%    Copyright (C) 2015 
+    %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -27,14 +26,11 @@ classdef LinOpShape <  LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (SetAccess = protected,GetAccess = public)
-    
-    end
+    %% Constructor
     methods
         function this = LinOpShape(sizein, sizeout)
-            this.name ='LinOp Shape';
-            this.iscomplex= false;
-            this.isinvertible=true;
+            this.name ='LinOpShape';
+            this.isInvertible=true;
 			
 			this.norm = 1;
             
@@ -45,29 +41,33 @@ classdef LinOpShape <  LinOp
             
             assert(prod(sizeout)==prod(sizein),'The inputs sizein and sizeout should be a conformable');
             
-        end
-        function y = apply(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
+		end
+    end
+    
+    %% Core Methods containing implementations (Protected)
+	methods (Access = protected)
+        function y = apply_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.     
             y = reshape(x, this.sizeout);
-        end
-        function y = adjoint(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
+        end	
+        function y = applyAdjoint_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.     
             y = reshape(x, this.sizein);
-        end
-        function y = HHt(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
+        end		
+        function y = applyHHt_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.     
             y=x;
-        end
-        function y = HtH(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
+        end		
+        function y = applyHtH_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.     
             y=x;
-        end        
-        function y = inverse(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
+		end   		
+        function y = applyInverse_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.     
              y = reshape(x, this.sizein);
-        end
-        function y = adjointInverse(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
+        end		
+        function y = applyAdjointInverse_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.     
             y = reshape(x, this.sizeout);
         end
     end

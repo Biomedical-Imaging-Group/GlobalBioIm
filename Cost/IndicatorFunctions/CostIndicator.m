@@ -1,11 +1,18 @@
-classdef CostIndicator < Cost
-    %% CostIndicator : Indicator function
-    %  Matlab Inverse Problems Library
-    % The CostIndicator meta class implements generic methods for all
+classdef  CostIndicator < Cost
+    % CostIndicator: Indicator cost function
+    % $$ C(\\mathrm{x}) = \\left\\lbrace \\begin{array}[l] \\text{0~if } \\mathrm{x -y} \\in \\mathrm{C},  
+    % \\newline + \\infty \\text{ otherwise.} \\end{array} \\right. $$
+    % where \\(\\mathrm{C} \\subset \\mathrm{X} \\) is a constraint set.
+    %
+    % All attributes of parent class :class:`Cost` are inherited 
+    %
+    % **Note** :class:`CostIndicator` is an generic class for all
     % indicator cost functions
     %
-    %
-    %     Copyright (C) 2017 F. Soulez ferreol.soulez@epfl.ch
+    % See also :class:`Map`, :class:`Cost`
+
+    %%    Copyright (C) 2017 
+    %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -20,17 +27,19 @@ classdef CostIndicator < Cost
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (SetAccess = protected,GetAccess = public)
-    end
-    
-    
+    %% Constructor
     methods
-        %% Gradient of the Functional
-        function grad(~,~)
-            error('Cannot evaluate gradient of an indicator function');
+        function this = CostIndicator(sz,y)   
+            if nargin<2, y=0; end
+            this@Cost(sz,y);
+            this.isDifferentiable=true;
         end
-        %% Compute the functional and its gradient
-        function  eval_grad(~,~)       
+    end
+            
+    %% Core Methods containing implementations (Protected)
+    % - applyGrad_(this,x)
+    methods (Access = protected)
+        function g = applyGrad_(this,x)
             error('Cannot evaluate gradient of an indicator function');
         end
     end

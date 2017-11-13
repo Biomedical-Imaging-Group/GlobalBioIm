@@ -1,16 +1,15 @@
 classdef CostL1 < Cost
-    %% CostL1 : CostL1 norm Proximity Operator
-    %  Matlab Inverse Problems Library
+    % CostL1: L1 norm cost function
+    % $$C(x) := \\|\\mathrm{x} - \\mathrm{y}\\|_1 $$
     %
-    % Obj = CostL1(H,y):
-    % Implement the proximity operator for the L1 norm
-    % $$ \phi(x) = |H.x-y| $$
+    % All attributes of parent class :class:`Cost` are inherited. 
     %
-    % The option 'NonNegativity' add the non negativity constraint (default
-    % false)
-    
+    % **Example** C=CostL1(sz,y)
     %
-    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+    % See also :class:`Map` :class:`Cost`, :class:`LinOp`
+
+    %%    Copyright (C) 2015 
+    %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -24,56 +23,39 @@ classdef CostL1 < Cost
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    %%
-    
-    properties (SetAccess = protected,GetAccess = public)
-        nonneg = false
-    end
-    
+
+    %% Constructor
     methods
-        function this = CostL1(H,y, varargin)
-            this.name='Cost L1';
-            this.isconvex=true;
-            % -- Set entries
-            if nargin<2
-                y=0;
-            end
-            if nargin<1
-                H=[];
-            end
-            set_y(this,y);
-            set_H(this,H);            
-            
-            for c=1:length(varargin)
-                switch varargin{c}
-                    case('NonNegativity')
-                        this.nonneg = true;
-                end
-            end
-            
+        function this = CostL1(sz,y)
+            if nargin<2, y=0; end
+            this@Cost(sz,y);
+            this.name='CostL1';
+            this.isConvex=true;
+            this.isDifferentiable=false;      
         end
-        function z = prox(this,x,alpha) % apply the operator
-            assert(isscalar(alpha),'alpha must be a scalar');
-            
-            if this.H.isinvertible
-                 tmp = this.H.apply(x)-this.y ;
-                if this.nonneg
-                    z =   this.H.inverse(max(tmp- alpha,0)+this.y);
-                else
-                    z =  this.H.inverse(sign(tmp) .* max( abs( tmp) - alpha,0)+this.y);
-                end
+    end
+
+    %% Core Methods containing implementations (Protected)
+    % - apply_(this,x)
+    % - applyProx_(this,x,alpha)
+	methods (Access = protected)
+        function y=applyProx_(this,x,alpha) 
+            % Reimplemented from parent class :class:`Cost`.
+            % $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{x}) = \\mathrm{sign(x-y)} \\mathrm{max}(\\vert x-y \\vert- \\alpha,0)+  \\mathrm{y} $$
+            if(isscalar(this.y)&&(this.y==0))
+                y =  sign(x) .* max( abs( x) - alpha,0);
             else
-                error('Prox not implemented');
+                tmp = x-this.y ;
+                y =  sign(tmp) .* max( abs( tmp) - alpha,0)+this.y;
             end
         end
-        function f=eval(this,x)
-            if ~this.nonneg
-                 tmp = this.H.apply(x)-this.y;
-                 f=sum(abs(tmp(:)));
+        function y=apply_(this,x)
+            % Reimplemented from parent class :class:`Cost`.
+            if(isscalar(this.y)&&(this.y==0))
+                y=sum(abs(x(:)));
             else
-                error('eval L1 not implemented');
+                y=sum(abs(x(:)-this.y(:)));
             end
-                 
-        end       
+        end
     end
 end

@@ -42,28 +42,28 @@ impad=zeros(512); idx=129:384;
 impad(idx,idx)=im;
 
 % -- Convolution Operator definition
-H=LinOpConv(psf);
+H=LinOpConv(fft2(psf));
 
 % -- Generate data
 load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
-fftHty=conj(H.mtf).*fft2(y);
+sz=size(y);
 
 % -- Functions definition
-F_LS=CostL2(H,y);           % Least-Sqaures data term
-R_N12=CostMixNorm12([3]);   % Mixed Norm 2-1
-G=LinOpGrad(size(y));       % Operator Gradient
-R_POS=CostNonNeg();         % Non-Negativity
-lamb=7e-4;                  % Hyperparameter
+LS=CostL2([],y);                 % Least-Sqaures data term
+F=LS*H;
+F.doPrecomputation=1;
+R_N12=CostMixNorm21([sz,2],3);   % Mixed Norm 2-1
+G=LinOpGrad(sz);                 % Operator Gradient
+R_POS=CostNonNeg(sz);            % Non-Negativity
+lamb=7e-4;                       % Hyperparameter
 
 % -- ADMM LS + TV + NonNeg
 Fn={lamb*R_N12,R_POS};
-Hn={G,LinOpIdentity(size(impad))};
+Hn={G,LinOpIdentity(sz)};
 rho_n=[1e-1,1e-1];
-fGtG=fftn(G.fHtH);      % Fourier of the filter G'G (Laplacian)
-solver = @(z,rho,x) real(ifft2((fftHty + fft2(rho(1)*G'*z{1} + rho(2)*z{2}) )./(abs(H.mtf).^2 + rho(1)*fGtG + rho(2))));  % solver to solve the x update
-OutADMM=OutputOpti(1,impad,40);
-ADMM=OptiADMM(F_LS,Fn,Hn,rho_n,solver,OutADMM);
+OutADMM=MyOutputOpti(1,impad,40);
+ADMM=OptiADMM(F,Fn,Hn,rho_n,[],OutADMM);
 ADMM.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 
@@ -71,10 +71,10 @@ ADMM.run(y);            % run the algorithm
 % -- PrimalDual Condat LS + TV + NonNeg
 Fn={lamb*R_N12};
 Hn={G};
-OutPDC=OutputOpti(1,impad,40);
-PDC=OptiPrimalDualCondat(F_LS,R_POS,Fn,Hn,OutPDC);
+OutPDC=MyOutputOpti(1,impad,40);
+PDC=OptiPrimalDualCondat(F,R_POS,Fn,Hn,OutPDC);
 PDC.tau=1;                                   % set algorithm parameters
-PDC.sig=(1/PDC.tau-F_LS.lip/2)/G.norm^2*0.9; %
+PDC.sig=(1/PDC.tau-F.lip/2)/G.norm^2*0.9; %
 PDC.rho=1.95;                                %
 PDC.ItUpOut=10;                              % call OutputOpti update every ItUpOut iterations
 PDC.maxiter=200;                             % max number of iterations

@@ -1,19 +1,19 @@
 classdef LinOpSum <  LinOp
-    %% Sum : Summation operator
-    %  Matlab Linear Operator Library
+    % LinOpSum: Summation linear operator which sums the elements of a variable along
+    % given directions.
+    % $$\\mathrm{H} : \\mathrm{x} \\mapsto \\mathrm{y_k} = \\sum_l \\mathrm{x}_{k,l} $$
     %
-    % Example
-    % Obj = LinOpSum(sz,index)
-    % Sum operator
-    % Sum the any vector of size SZ along the dimension
-    % indexed in INDEX (all by default)
+    % :param sz: size of \\(\\mathrm{x}\\) on which the :class:`LinOpSum` applies.
+    % :param index: dimensions along which the sum will be performed (inner sum over l)
     % 
+    % All attributes of parent class :class:`LinOp` are inherited. 
     %
-    % Please refer to the LINOP superclass for general documentation about
-    % linear operators class
-    % See also LinOp
+    % **Example** S=LinOpSum(sz,index)
+    %
+    % See also :class:`LinOp`, :class:`Map`
     
-    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+    %%    Copyright (C) 2015 
+    %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -34,16 +34,17 @@ classdef LinOpSum <  LinOp
         kerdims % ker dimensions
         imdims % im dimensions
     end
+    
+    %% Constructor
     methods
         function this = LinOpSum(sz,index)
+            assert(issize(sz),'The input size sz should be a conformable  to a size ');
             if nargin == 1
                 index = [];
             end
-            this.name ='LinOp Sum ';
-            this.iscomplex= true;
-            this.isinvertible=false;
-            
-            assert(issize(sz),'The input size sz should be a conformable  to a size ');
+            this.name ='LinOpSum ';
+            this.isInvertible=false;
+            this.isDifferentiable=true;  
             this.sizein = sz;
             
             this.ndms = length(this.sizein);
@@ -77,20 +78,25 @@ classdef LinOpSum <  LinOp
             this.imdims = this.sizein;
             this.imdims(~T)=1;
             
-        end
-        function y = apply(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
+		end
+    end
+	
+    %% Core Methods containing implementations (Protected)
+	methods (Access = protected)
+        function y = apply_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.           
             for n=this.index
                 x = sum(x,n);
             end
             y = squeeze(x);
-        end
-        function y = adjoint(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
+        end		
+        function y = applyAdjoint_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
+            % $$\\mathrm{H}^* : \\mathrm{x} \\mapsto \\mathrm{y_{k,l}} =  \\mathrm{x}_{k} \\; \\forall l$$            
             y = reshape(repmat(reshape(x,this.imdims),this.kerdims),this.sizein);
-        end
-        function y = HHt(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d]',this.sizeout);
+        end		
+        function y = applyHHt_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.            
             a = prod(this.kerdims);
             y = x.*a;
         end

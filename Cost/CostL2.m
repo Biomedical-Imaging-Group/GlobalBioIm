@@ -1,20 +1,18 @@
 classdef CostL2 < Cost
-    %% CostL2 : Least Squares functional
-    %  Matlab Inverse Problems Library
+    % CostL2: Weighted L2 norm cost function
+    % $$C(\\mathrm{x}) := \\frac12\\|\\mathrm{x} - \\mathrm{y}\\|^2_W = \\frac12 (\\mathrm{x} - \\mathrm{y})^T W (\\mathrm{x} - \\mathrm{y}) $$
     %
-    % -- Description
-    % Implement the cost function for the weighted L2 norm
-    % $$ 1/2||Hx - y||^2_W $$
-    % where H is a LinOp object (default LinOpIdentity), y are the data and W
-    % is a weight matrix (LinOp, default LinOpIdentity).
+    % All attributes of parent class :class:`Cost` are inherited. 
     %
-    % -- Example
-    % F = CostL2(H,y,W);
+    % :param W: weighting :class:`LinOpDiag` object or scalar (default 1)
     %
-    % See also Cost, LinOp
+    % **Example** C=CostL2(sz,y,wght)
     %
-    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch & Ferreol
-    %     Soulez ferreol.soulez@epfl.ch
+    % See also :class:`Map`, :class:`Cost`, :class:`LinOp`
+
+    %%    Copyright (C) 2017 
+    %     E. Soubies emmanuel.soubies@epfl.ch 
+    %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -31,85 +29,70 @@ classdef CostL2 < Cost
     
     % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
-        W=1;          % weight matrix
+        W=1;    % weight matrix      
     end
-    % Full protected properties
-    properties (SetAccess = protected,GetAccess = protected)
-        fftHstardata=[]; % if LinOp is convolution, store the product conj(fftn(psf)).*fftn(data)
-        wr;              % weighted residual
-        isW=false;       % boolean true if a LinOp wght is given
+
+    %% Constructor
+    methods
+        function this = CostL2(sz,y,wght)
+            if nargin<2, y=0; end
+            this@Cost(sz,y);
+            this.name='CostL2';
+            if nargin==3
+                if isempty(wght), wght=1; end;
+                assert((isnumeric(wght) && isscalar(wght))||isa(wght,'LinOpDiag'),'weight WGHT must be scalar or Diagonal LinOp');
+                this.W=wght;
+            end
+            if isnumeric(this.W)
+                this.lip=this.W;
+            else
+                this.lip=this.W.norm;
+            end
+            this.isConvex=true;
+            this.isDifferentiable=true;
+        end        
     end
     
-    methods
-        %% Constructor
-        function this = CostL2(H,y,wght)
-            this.isconvex=true;
-            % -- Set entries
-            if nargin<2
-                y=0;
-            end
-            if nargin<1
-                H=[];
-            end
-            set_y(this,y);
-            set_H(this,H);
-            
-            if nargin==3
-                assert(isscalar(wght)||isa(wght,'LinOp'),'weight WGHT must be scalar or linop');
-                this.W=wght;
-                this.isW=true;
-            end
-            
-            this.y=y;
-            this.name='Cost L2';
-            % -- Compute Lipschitz constant of the gradient (if the norm of H is known)
-            if this.H.norm>=0;
-                if isscalar(this.W)
-                    this.lip=this.W.^2.*this.H.norm^2;
-                else
-                    if this.W.norm>=0
-                        this.lip=this.H.norm^2*this.W.norm^2;
-                    end
-                end
-            end
-        end
-        %% Evaluation of the Functional
-        function f=eval(this,x)
-            if(isscalar(this.y)&&(this.y==0))
-                r=this.H.apply(x);
+    %% Core Methods containing implementations (Protected)
+    % - apply_(this,x)
+    % - applyGrad_(this,x)
+    % - applyProx_(this,x,alpha)
+    % - makeComposition_(this,G
+	methods (Access = protected)
+        function y=apply_(this,x)
+        	% Reimplemented from parent class :class:`Cost`.       
+            if (isscalar(this.y)&&(this.y==0))
+                wr=this.W*(x);
+                y=0.5*dot(x(:),wr(:));
             else
-                r=this.H.apply(x)-this.y;
+                wr=this.W*(x-this.y);
+                y=0.5*dot(x(:)-this.y(:),wr(:));
             end
-            this.wr=this.W*r;
-            f=0.5*dot(r(:),this.wr(:));
         end
-        %% Gradient of the Functional
-        function g=grad(this,x)
-            if nargin ==2
-                this.wr = this.W*(this.H.apply(x)-this.y);
+        function g=applyGrad_(this,x)
+        	% Reimplemented from parent class :class:`Cost`.
+        	% $$ \\nabla C(\\mathrm{x}) = \\mathrm{W (x - y)} $$
+        	% It is L-Lipschitz continuous with \\( L \\leq \\|\\mathrm{W}\\|\\).      	
+            if(isscalar(this.y)&&(this.y==0))
+                g=this.W*x;
+            else
+                g=this.W*(x-this.y);
             end
-            g = this.H.adjoint(this.wr) ;
         end
-        %% Proximity operator of the functional
-        function y=prox(this,x,alpha)
-            assert(isscalar(alpha),'alpha must be a scalar');
-            y=[];
-            if isa(this.H,'LinOpIdentity')
-                if this.isW && isa(this.W,'LinOpDiag')  % if weight is diagonal linop
-                    y=(x+alpha*this.W.diag.*this.y)./(1+alpha.*this.W.diag);
-                elseif ~this.isW % if no weight
-                    y=(x+alpha*this.y)/(alpha+1);
-                end
-            elseif isa(this.H,'LinOpConv')  % if linop is convolution
-                if isempty(this.fftHstardata)
-                    this.fftHstardata=conj(this.H.mtf).*Sfft(this.y,this.H.Notindex);
-                end
-                if ~this.isW     % if no weight
-                    y=iSfft((Sfft(x,this.H.Notindex) + alpha*this.fftHstardata)./(1+alpha*(abs(this.H.mtf).^2)), this.H.Notindex);
-                    if ~this.H.iscomplex, y=real(y);end
-                end
+        function y=applyProx_(this,x,alpha)
+        	% Reimplemented from parent class :class:`Cost`   
+            % $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{x}) = \\frac{\\mathrm{x} + \\alpha \\mathrm{Wy}}{1 + \\alpha \\mathrm{W}} $$
+            % where the division is component-wise.
+            if  isscalar(this.W)
+                y=(x+alpha*this.W*this.y)./(1+alpha.*this.W);
+            else
+                y=(x+alpha*this.W*this.y)./(1+alpha.*this.W.diag);
             end
-            if isempty(y),error('Prox not implemented');end
+        end
+        function M=makeComposition_(this,G)
+            % Reimplemented from parent class :class:`Cost`. Instantiates a
+            % :class:`CostL2Composition`.
+            M = CostL2Composition(this,G);
         end
     end
 end

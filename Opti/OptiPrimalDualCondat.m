@@ -1,40 +1,41 @@
 classdef OptiPrimalDualCondat < Opti
-    %% OptiPrimalDualCondat : Primal-Dual algorithm proposed by Condat [1]
-    %  Matlab inverse Problems Library
+    % Primal-Dual algorithm proposed by L. Condat in [1] which minimizes :class:`Cost` of the form
+	% $$ C(\\mathrm{x})= F_0(\\mathrm{x}) + G(\\mathrm{x}) + \\sum_n F_n(\\mathrm{H_nx}) $$
     %
-    % -- Description
-    % Implements the primal-dual algorithm proposed by Condat [1] to minimizes a function
-    % of the form
-	%	     F0(x) + G(x) sum_n F_n(H_n(x))
-	% where F0 has an implementation of the gradient, G and F_n have an implementation of the
-	% proximity operator and H_n are linear operators (LinOp).
-	%
-    % -- Example
-    % Op=OptiPrimalDualCondat(F0,G,Fn,Hn,OutOp)
-    % where F0 and G are COST objects, Fn a cell of COST and Hn a cell of LINOP (same length as Fn)
-    % Finally OutOp a OutputOpti object.
+    % :param F_0: a differentiable :class:`Cost` (i.e. with an implementation of :meth:`grad`).
+    % :param G: a :class:`Cost` with an implementation of the :meth:`prox`.
+    % :param F_n: cell of N :class:`Cost` with an implementation of the :meth:`prox` for each one
+    % :param H_n: cell of N :class:`LinOp`
+    % :param tau: parameter of the algorithm (see the note below) 
+    % :param sig: parameter of the algorithm (see the note below) 
+    % :param rho: parameter of the algorithm (see the note below) 
     %
-    % -- Properties
-    % * |tau|    parameter of the algorithm (see the note below) 
-    % * |sig|    parameter of the algorithm (see the note below) 
-    % * |rho|    parameter of the algorithm (see the note below) 
+    % All attributes of parent class :class:`Opti` are inherited. 
     %
-	% Note: 1- when F=0, parameters sig and tau have to verify
-	%             sig*tau*||sum_n Hn*Hn|| <= 1
-	%          and rho must be in ]0,2[, to ensure convergence (see [1, Theorem 5.3]).
-	%       2- otherwise, when F~=0, parameters sig and tau have to verify
-	%             1/tau - sig*||sum_n Hn*Hn|| >= bet/2
-	%          where bet is the Lipschitz constant of the gradient of F and rho must be in ]0,delta[ with
-	%             delta = 2 - bet/2*(1/tau - sig*||sum_n Hn*Hn||)^{-1} \in [1,2[
-	%          to ensure convergence (see [1, Theorem 5.1]).
+	% **Note**: 
     %
-    % -- References
-	%    [1] Laurent Condat, "A Primal-Dual Splitting Method for Convex Optimization Involving Lipchitzian, Proximable and Linear 
-	%        Composite Terms", Journal of Optimization Theory and Applications, vol 158, no 2, pp 460-479 (2013).
+    %   - When \\(F_0=0\\), parameters sig and tau have to verify
+	%     $$ \\sigma \\times \\tau \\Vert \\sum_n \\mathrm{H_n^*H_n} \\Vert \\leq 1 $$
+	%     and \\(\\rho \\in ]0,2[\\), to ensure convergence (see [1, Theorem 5.3]).
     %
-    % See also Opti, OutputOpti, LinOp
+	%   - Otherwise, when \\(F_0\\neq 0\\), parameters sig and tau have to verify
+	%     $$ \\frac{1}{\\tau} - \\sigma \\times \\Vert \\sum_n \\mathrm{H_n^*H_n} \\Vert \\geq \\frac{\\beta}{2} $$
+	%     where \\(\\beta\\) is the Lipschitz constant of \\(\\nabla F\\) and we need \\(\\rho \\in ]0,\\delta[ \\) with
+	%     $$ \\delta = 2 - \\frac{\\beta}{2}\\times\\left(\\frac{1}{\\tau}
+	%     - \\sigma \\times \\Vert \\sum_n \\mathrm{H_n^*H_n}  \\Vert\\right)^{-1} \\in [1,2[ $$
+	%     to ensure convergence (see [1, Theorem 5.1]).
     %
-    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+    % **Reference**
+    %
+	% [1] Laurent Condat, "A Primal-Dual Splitting Method for Convex Optimization Involving Lipchitzian, Proximable and Linear 
+	% Composite Terms", Journal of Optimization Theory and Applications, vol 158, no 2, pp 460-479 (2013).
+    %
+    % **Example** A=OptiPrimalDualCondat(F0,G,Fn,Hn,OutOp)
+    %
+    % See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`
+    
+    %%    Copyright (C) 2017 
+    %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -77,21 +78,23 @@ classdef OptiPrimalDualCondat < Opti
     		this.Hn=Hn;
     		this.F0=F0;
     		this.G=G;
-    		if ~isempty(F0), this.cost=F0;end
-    		if ~isempty(G)
-    			if isempty(this.cost), this.cost=G;
-    			else, this.cost=this.cost + G; end
-    		end
-    		if ~isempty(Fn)
-    			if isempty(this.cost), this.cost=Fn{1}.o(Hn{1});
-    			else, this.cost=this.cost + Fn{1}.o(Hn{1}); end
-    		end
-    		for n=2:length(Fn)
-    			this.cost=this.cost+Fn{n}.o(Hn{n});
-			end
-    	end 
+            if ~isempty(F0), this.cost=F0;end
+            if ~isempty(G)
+                if isempty(this.cost), this.cost=G;
+                else, this.cost=this.cost + G; end
+            end
+            if ~isempty(Fn)
+                if isempty(this.cost), this.cost=Fn{1}*Hn{1};
+                else, this.cost=this.cost + Fn{1}*Hn{1}; end
+            end
+            for n=2:length(Fn)
+                this.cost=this.cost+Fn{n}*Hn{n};
+            end
+        end
     	%% Run the algorithm
         function run(this,x0) 
+            % Reimplementation from :class:`Opti`. For details see [1].
+            
 			if ~isempty(x0)   % To restart from current state if wanted
 				this.xopt=x0;
 				% initialization of the dual variables y
@@ -114,15 +117,15 @@ classdef OptiPrimalDualCondat < Opti
 				% - Algorithm iteration
 				% Update xtilde
 				if ~isempty(this.F0)
-					temp=this.xopt-this.tau*this.F0.grad(this.xopt);
+					temp=this.xopt-this.tau*this.F0.applyGrad(this.xopt);
 				else
 					temp=this.xopt;
 				end
 				for n=1:length(this.Hn) 
-					temp=temp-this.tau*this.Hn{n}.adjoint(this.y{n});
+					temp=temp-this.tau*this.Hn{n}.applyAdjoint(this.y{n});
 				end
 				if ~isempty(this.G)
-					xtilde=this.G.prox(temp,this.tau);
+					xtilde=this.G.applyProx(temp,this.tau);
 				else
 					xtilde=temp;
 				end
@@ -130,7 +133,7 @@ classdef OptiPrimalDualCondat < Opti
 				this.xopt=this.rho*xtilde+(1-this.rho)*this.xopt;
 				% Update ytilde and y
 				for n=1:length(this.Fn) 
-					ytilde{n}=this.Fn{n}.prox_fench(this.y{n}+this.sig*this.Hn{n}.apply(2*xtilde-xold),this.sig);
+					ytilde{n}=this.Fn{n}.applyProxFench(this.y{n}+this.sig*this.Hn{n}.apply(2*xtilde-xold),this.sig);
 					this.y{n}=this.rho*ytilde{n}+(1-this.rho)*this.y{n};
 				end
 				% - Convergence test

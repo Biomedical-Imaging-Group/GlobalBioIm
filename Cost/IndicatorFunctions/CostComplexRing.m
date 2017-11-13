@@ -1,17 +1,21 @@
 classdef CostComplexRing < CostIndicator
-    %% Complex Ring indicator
-    %  Matlab Inverse Problems Library
+    % CostComplexRing: Implements
+    % the indicator function operator on the complex ring
+    % $$ C(x) = \\left\\lbrace \\begin{array}[l]
+    % \\text{0~if } \\mathrm{inner}  \\leq \\vert x-y\\vert \\leq \\mathrm{outer}  \\newline
+    % + \\infty \\text{ otherwise.} \\end{array} \\right. $$
+    % 
+    % :param inner: inner radius of the ring (default 0)
+    % :param outer: outer radius of the ring (default 1)
     %
-    % Obj = CostComplexRing(inner, outer,H,y):
-    % Implement the proximity operator on the complex ring of inner radius INNER and outer radius OUTER
-    % $$ \phi(x) = 0 \textrm{ if } inner<=||x||_2<=outer  textrm{ and }  +\inf \textrm{ otherwise } $$
-    % Following Matlab angle function if x=0 then Circle(x) = 1
+    % All attributes of parent class :class:`CostIndicator` are inherited 
     %
-    %% Properties
+    % **Example** CostComplexRing(inner, outer, sz,y)
     %
-    %%
+    % See also :class:`Map`, :class:`Cost`, :class:`CostIndicator`
     
-    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+    %%    Copyright (C) 2015
+    %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -31,39 +35,27 @@ classdef CostComplexRing < CostIndicator
         outer = 1;
     end
     
+    %% Constructor
     methods
-        function this = CostComplexRing(inner, outer, H,y)
-            this.name='Cost Complex Ring';
-            % -- Set entries
-            if nargin<4
-                y=0;
-            end
-            if nargin<3
-                H=[];
-            end
-            set_y(this,y);
-            set_H(this,H);
-            
+        function this = CostComplexRing(inner, outer, sz,y)
+            if nargin<4, y=0; end
+            this@CostIndicator(sz,y);
+            this.name='CostComplexRing';
             if nargin<2
                 inner=0;
             end
             if nargin==0
                 outer =1;
             end
-            
-            
+            this.isConvex= false;    
             if isscalar(inner)
                 this.inner = inner;
             else
                 if isnumeric(inner)
-                    this.inner = inner;
-                    if ~isempty(this.H.sizeout)
-                        assert(isequal(this.H.sizeout,size(inner)), 'inner must be equal to H.sizeout');
-                    else
-                        this.sizein = size(inner);
-                    end
+                    this.inner = inner;                    
+                    assert(isequal(this.sizein,size(inner)), 'inner must be equal to this.sz');
                 else
-                    error('C should be numeric');
+                    error('inner parameter should be numeric');
                 end
             end
             
@@ -72,50 +64,43 @@ classdef CostComplexRing < CostIndicator
             else
                 if isnumeric(outer)
                     this.outer = outer;
-                    if ~isempty(this.H.sizeout)
-                        assert(isequal(this.H.sizeout,size(outer)), 'outer must be equal to H.sizeout');
-                    else
-                        this.sizein = size(outer);
-                    end
+                    assert(isequal(this.sizein,size(outer)), 'outer must be equal to H.sizeout');
                 else
-                    error('C should be numeric');
+                    error('outer parameter should be numeric');
                 end
             end
         end
-        function z = prox(this,x,~) % apply the operator
-            assert(isnumeric(x),'x must be numeric');
-            
-            if this.H.isinvertible
-                
+    end
+    
+    %% Core Methods containing implementations (Protected)
+    % - apply_(this,x)
+    % - applyProx_(this,z,alpha)
+    methods (Access = protected)
+        function y = applyProx_(this,x,alpha) % apply the operator
+            % Reimplemented from parent class :class:`Cost`. 
                 if(isscalar(this.y)&&(this.y==0))
-                    res=this.H.apply(x);
-                    z = this.H.inverse(max(min(this.outer,abs(res)),this.inner) .* exp(1i .* angle(res)));
+                    y = max(min(this.outer,abs(x)),this.inner) .* exp(1i .* angle(x));
                 else
-                    res=this.H.apply(x)-this.y;
-                    z = this.H.inverse(max(min(this.outer,abs(res)),this.inner) .* exp(1i .* angle(res))+this.y);
+                    res=x-this.y;
+                    y = max(min(this.outer,abs(res)),this.inner) .* exp(1i .* angle(res))+this.y;
                 end
-            else
-                error('Prox not implemented');
-            end
         end
-        function cost = eval(this,x) % get the function cost
-            cost = 0;
-            
+        function y = apply_(this,x) 
+            % Reimplemented from parent class :class:`Cost`.  
+            y = 0;           
             if(isscalar(this.y)&&(this.y==0))
-                res=this.H.apply(x);
+                res=abs(x);
             else
-                res=this.H.apply(x)-this.y;
+                res=abs(x-this.y);
             end
             if(any(res(:)> this.outer(:)))
-                cost= +inf;
+                y= +inf;
                 return;
-            end
-            
+            end            
             if(any(res(:)< this.inner(:)))
-                cost= +inf;
+                y= +inf;
                 return;
             end
-        end
-        
+        end      
     end
 end

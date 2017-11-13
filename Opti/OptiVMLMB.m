@@ -1,20 +1,31 @@
 classdef OptiVMLMB<Opti
-    %% OptiVMLMB : VMLMB Optimizer
-    %  Matlab inverse Problems Library
-    %
-    % Variable Metric Limited Memory Bounded (VMLMB) algorithm by Éric Thiébaut.
-    % It is a limited memory BFGS (variable metric) method possibly with bound
+    % Variable Metric Limited Memory Bounded (VMLMB) [1] algorithm that
+    % minimizes a cost \\(C(\\mathrm{x})\\) which is differentiable with bound
     % constraints and/or preconditioning.
-    % See https://github.com/emmt/OptimPackLegacy
     %
+    % :param C: minimized cost
+    % :param xmin: min bound (optional)
+    % :param xmax: max bound (optional)
     %
-    % -- References
-    % Éric Thiébaut, "Optimization issues in blind deconvolution algorithms", SPIE Conf. Astronomical Data Analysis II, 4847, 174-183 (2002).
+    % All attributes of parent class :class:`Opti` are inherited. 
     %
-    % Please refer to the OPTI superclass for general documentation about optimization class
-    % See also Opti, OutputOpti
+    % **Note** 
+    % This Optimizer has many other variables that are set by
+    % default to reasonable values. See the function m_vmlmb_first.m in the
+    % MatlabOptimPack folder for more details.
     %
-    %     Copyright (C) 2017 Ferreol Soulez ferreol.soulez@univ-lyon1.fr
+    % **Reference**
+    %
+    % [1] Eric Thiebaut, "Optimization issues in blind deconvolution algorithms",
+    % SPIE Conf. Astronomical Data Analysis II, 4847, 174-183 (2002). See
+    % `here <https://github.com/emmt/OptimPackLegacy>`_.
+    %
+    % **Example** VMLMB=OptiVMLMB(C,xmin,xmax,OutOp)
+    %
+    % See also :class:`Opti`, :class:`OptiConjGrad` :class:`OutputOpti`, :class:`Cost`
+
+    %%    Copyright (C) 2017
+    %     Ferreol Soulez ferreol.soulez@univ-lyon1.fr
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -48,9 +59,6 @@ classdef OptiVMLMB<Opti
         sxtol=0.1;
         epsilon=0.01;
         costheta=0.4;
-        nbitermax=10;
-        nbevalmax;
-        verb=0;
     end
     properties (SetAccess = protected,GetAccess = public)
         nparam;
@@ -58,17 +66,14 @@ classdef OptiVMLMB<Opti
         xmin=[];
         xmax=[];
         neval;
-        niter;
         bounds =0;
         csave;
         isave;
         dsave;
     end
     methods
-        function this = OptiVMLMB(nparam,xmin,xmax,OutOp)
-            
-            this.name='OptiVMLMB';
-            this.nparam =nparam;
+        function this = OptiVMLMB(C,xmin,xmax,OutOp)         
+            this.name='OptiVMLMB';          
             if(nargin>1)
                 if(~isempty(xmin))
                     this.bounds=1;
@@ -80,16 +85,24 @@ classdef OptiVMLMB<Opti
                 end
                 if nargin==4 && ~isempty(OutOp),this.OutOp=OutOp;end
             end
+            this.cost=C;
+        end
+        function Init(this)    
             [this.csave, this.isave, this.dsave] = m_vmlmb_first(this.nparam, this.m, this.fatol, this.frtol,...
                 this.sftol, this.sgtol, this.sxtol, this.epsilon, this.costheta);
             this.task =  this.isave(3);
         end
-        function ReInit(this)
-            [this.csave, this.isave, this.dsave] = m_vmlmb_first(this.nparam, this.m, this.fatol, this.frtol,...
-                this.sftol, this.sgtol, this.sxtol, this.epsilon, this.costheta);
-            this.task =  this.isave(3);
-        end
-        function  run(this,F,x0)
+        function  run(this,x0)
+            % Reimplementation from :class:`Opti`. For details see [1].
+
+            this.nparam =numel(x0);
+            if isscalar(this.xmin)
+                this.xmin=ones(size(x0))*this.xmin;
+            end
+            if isscalar(this.xmax)
+                this.xmax=ones(size(x0))*this.xmax;
+            end
+            this.Init();
             this.xopt = x0;
             x = x0;
             x(1)= x0(1); % Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
@@ -97,11 +110,9 @@ classdef OptiVMLMB<Opti
             tstart=tic;
             this.OutOp.init();
             nbeval=0;
-            iter =1;
-            if(this.verb)
-                starting_verb(this);
-            end
-            while(iter< this.nbitermax)
+            this.niter =1;
+            starting_verb(this);
+            while(this.niter< this.maxiter)
                 if (this.task == this.OP_TASK_FG)
                     % apply bound constraints
                     % op_bounds_apply(n, x, xmin, xmax);
@@ -113,19 +124,18 @@ classdef OptiVMLMB<Opti
                         test = (x>this.xmax);
                         if any(test(:)), x(test) = this.xmax(test); end
                     end
-                    this.cost = F.eval(x);     % evaluate the function at X;
-                    grad = F.grad(x);   % evaluate the gradient of F at X;
+                    [cost,grad] = this.cost.eval_grad(x);     % evaluate the function and its gradient at X;
                     normg= sum(grad(:).^2);
                     
                     nbeval=nbeval+1;
                     if (normg< this.gtol)
-                        fprintf('Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d\t%d \n',iter,nbeval,this.cost,normg,this.task,this.isave(4));
+                        fprintf('Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d\t%d \n',this.niter,nbeval,cost,normg,this.task,this.isave(4));
                         this.time=toc(tstart);
                         this.ending_verb();
                         break;
                     end
                 elseif (this.task == this.OP_TASK_NEWX)
-                    iter = iter +1;
+                    this.niter = this.niter +1;
                     this.xopt = x;
                     if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end% New successful step: the approximation X, function F, and
                     % gradient G, are available for inspection.
@@ -151,8 +161,11 @@ classdef OptiVMLMB<Opti
                     end
                 end
                 % Computes next step:
-                [this.task, this.csave]= m_vmlmb_next(x,this.cost,grad,active,this.isave,this.dsave);
+                [this.task, this.csave]= m_vmlmb_next(x,cost,grad,active,this.isave,this.dsave);
                 
+                if (this.niter==this.maxiter)
+                    this.ending_verb();
+                end
             end
             
         end

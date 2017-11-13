@@ -1,48 +1,51 @@
 classdef OptiChambPock < Opti
-    %% OptiChambPock : Chambolle-Pock optimization algorithm
-    %  Matlab inverse Problems Library
+    % Chambolle-Pock optimization algorithm [1] which minimizes :class:`Cost` of the form
+	% $$ C(\\mathrm{x}) = F(\\mathrm{Hx}) + G(\\mathrm{x}) $$
     %
-    % -- Description
-    % Implements the Chambolle-Pock algorithm [1] to minimize a function of the form:
-	%      F(Hx) + G(x)
-	% where F and G are two functionals (Cost) where F and G have an implementation for
-	% the proximity operator (.prox). H is a linear operator (LinOp).
-	%
-	% Note: In fact, F needs only the prox of its fenchel transform (which is implemented 
-	%       as soon as F as an implementation of the prox, see Cost superclass).
-	%
-    % -- Example
-    % OptiCP = OptiChambPock(F,H,G,OutOp)
-    % where F and G are COST objects, H LINOP object and OutOp a OutputOpti object 
+    % :param F: a :class:`Cost` with an implementation of the :meth:`prox`.
+    % :param G: a :class:`Cost` with an implementation of the :meth:`prox`.
+    % :param H: a :class:`LinOp`.
+    % :param tau: parameter of the algorithm (default 1)
+    % :param sig: parameter of the algorithm which is computed automatically if H.norm is different from -1.
+    % :param var: select the "bar" variable of the algorithm (see [1]):
     %
-    % -- Properties
-    % * |tau|    parameter of the algorithm (see the note below) default 1
-    % * |sig|    parameter of the algorithm (see the note below) default computed according to
-    %            the inequality below (if H.norm is implemented)
-    % * |gam|    if non-empty, then the accelerated version of the algorithm is used (see [1])
-    %            Hence G of F^* is uniformly with Grad(G^*) or Grad(F) is 1/gam-Lipschitz. 
-	%            If G is uniformly convex then set the parameter var to 1LS
-	%            If F^* is uniformly convex then set the parameter var to 2
-    % * |var|    select the "bar" variable of the algorithm (see [1]):
-	%              - if 1 (default) then the primal variable xbar = x_n + theta(x_n - x_{n-1}) is used 
-	%              - if 2 then the dual variable ybar = y_n + theta(y_n - y_{n-1}) is used
-    %   
-    % Notes: 1- to ensure convergence (see [1]), parameters sig and tau have to verify 
-	%             sig*tau*||H||^2 < 1
-	%           where ||H|| denotes the norm of the linear operator H.
-	%        2- when the accelerated version is used (i.e. parameter gam is non-empty), 
-	%           sig and tau will be updated at each iteration and the initial ones (given by user) 
-	%           have to verify
-	%             sig*tau*||K||^2 <= 1
+    %   - if 1 (default) then the primal variable \\(\\bar{\\mathrm{x}} = 2\\mathrm{x}_n  - \\mathrm{x}_{n-1}\\) is used 
     %
-    % -- References
+	%   - if 2 then the dual variable \\(\\bar{\\mathrm{y}} = 2\\mathrm{y}_n  - \\mathrm{y}_{n-1} \\) is used
+    %
+    % :param gam: if non-empty, accelerated version (see [1]). Here, \\(G\\) or \\(F^*\\) is uniformly convex with \\(\\nabla G^*\\) or \\(\\nabla F\\) 1/gam-Lipschitz:
+    %
+    %   - If \\(G\\) is uniformly convex then set the parameter var to 1. 
+    %
+    %   - If \\(F^*\\) is uniformly convex then set the parameter var to 2
+    %
+    % All attributes of parent class :class:`Opti` are inherited. 
+    %
+	% **Note-1**: In fact, \\(F\\) needs only the prox of its fenchel transform :meth:`prox_fench` (which is implemented 
+	% as soon as $F$ has an implementation of the prox, see :class:`Cost`).
+    %
+    % **Note-2**:
+    %
+    %   - To ensure convergence (see [1]), parameters sig and tau have to verify 
+    %     $$ \\sigma \\times \\tau \\times \\Vert \\mathrm{H} \\Vert^2 < 1 $$ 
+    %     where \\(\\Vert \\mathrm{H}\\Vert\\) denotes the norm of the linear operator H.
+    %
+	%   - When the accelerated version is used (i.e. parameter gam is non-empty), 
+    %     sig and tau will be updated at each iteration and the initial 
+    %     ones (given by user)  have to verify
+    %     $$ \\sigma \\times \\tau \\times \\Vert \\mathrm{H} \\Vert^2 \\leq 1 $$
+    %
+    % **Reference**: 
+    %
     % [1] Chambolle, Antonin, and Thomas Pock. "A first-order primal-dual algorithm for convex problems with 
-	%     applications to imaging." Journal of Mathematical Imaging and Vision 40.1, pp 120-145 (2011).	
+	% applications to imaging." Journal of Mathematical Imaging and Vision 40.1, pp 120-145 (2011).	
     %
-    % Please refer to the OPTI superclass for general documentation about optimization class
-    % See also Opti, OutputOpti
+    % **Example** CP=OptiChambPock(F,H,G,OutOp)
     %
-    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+    % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
+ 
+    %%    Copyright (C) 2017 
+    %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -80,10 +83,11 @@ classdef OptiChambPock < Opti
     	%% Constructor
     	function this=OptiChambPock(F,H,G,OutOp)
     		this.name='Opti Chambolle-Pock';
-    		this.cost=F.o(H)+G;
+    		this.cost=F*H+G;
     		this.F=F;
     		this.G=G;
     		this.H=H;
+            
     		if nargin==4 && ~isempty(OutOp)
     			this.OutOp=OutOp;
     		end
@@ -93,7 +97,8 @@ classdef OptiChambPock < Opti
     	end 
     	%% Run the algorithm
         function run(this,x0) 
-        	% Check parameters
+        	% Reimplementation from :class:`Opti`. For details see [1].
+            
         	assert(~isempty(this.sig),'parameter sig is not setted');
         	assert(~isempty(this.tau),'parameter tau is not setted');
         	if ~isempty(x0) % To restart from current state if wanted
@@ -109,7 +114,7 @@ classdef OptiChambPock < Opti
 				Kxbar=y;
 			else
 				ybar=y;
-				KTybar=this.H.adjoint(ybar);
+				KTybar=this.H.applyAdjoint(ybar);
 				KTy=KTybar;
 			end
 			Kxopt=y;
@@ -120,8 +125,8 @@ classdef OptiChambPock < Opti
 				if this.var==1 % === using xbar
 					Kxold=Kxopt;
 					% - Algorithm iteration
-					y=this.F.prox_fench(y+sig*Kxbar,sig);
-					this.xopt=this.G.prox(this.xopt-tau*this.H.adjoint(y),tau);
+					y=this.F.applyProxFench(y+sig*Kxbar,sig);
+					this.xopt=this.G.applyProx(this.xopt-tau*this.H.applyAdjoint(y),tau);
 					Kxopt=this.H.apply(this.xopt);
 					if ~isempty(gam) % acceleration => uodate theta, tau and sig according to [1]
 						theta=1/sqrt(1+2*gam*tau);

@@ -2,7 +2,7 @@
 % Deconv_LS_HessSchatt_NonNeg script: Deconvolution by minimizing the 
 % Least-Squares function plus the NonNegativity constraint 
 % with Hessian-Schatten regularizer:
-%     0.5 ||Hx - y||^2  + i_{>0}(x) + lamb*||Hess*x||_{1,S_p}
+%     0.5 ||Hx - y||^2  + i_{>0}(x) + lamb*||Hess*x||_{S_p,1}
 % using 
 %      - Primal-Dual Condat
 %      - ADMM 
@@ -42,28 +42,28 @@ impad=zeros(512); idx=129:384;
 impad(idx,idx)=im;
 
 % -- Convolution Operator definition
-H=LinOpConv(psf);
+H=LinOpConv(fft2(psf));
 
 % -- Generate data
 load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
-fftHty=conj(H.mtf).*fft2(y);
+sz=size(y);
 
 % -- Functions definition
-F_LS=CostL2(H,y);                % Least-Sqaures data term
-Hess=LinOpHess(size(impad));     % Hessian Operator
-R_1sch=CostMixNorm1Schatt([],1); % Mixed Norm 1-Schatten (p=1)
-R_POS=CostNonNeg();              % Non-Negativity
-lamb=1e-3;                       % Hyperparameter
+LS=CostL2([],y);                 % Least-Sqaures data term
+F=LS*H;
+F.doPrecomputation=1;
+Hess=LinOpHess(sz);                  % Hessian Operator
+R_1sch=CostMixNormSchatt1([sz,3],1); % Mixed Norm 1-Schatten (p=1)
+R_POS=CostNonNeg(sz);                % Non-Negativity
+lamb=1e-3;                           % Hyperparameter
 
 % -- ADMM LS + ShattenHess + NonNeg
 Fn={lamb*R_1sch,R_POS};
 Hn={Hess,LinOpIdentity(size(impad))};
 rho_n=[1e-1,1e-1];
-fHesstHess=fftn(Hess.fHtH);     % Fourier of the filter Hess'Hess 
-solver = @(z,rho,x) real(ifft2((fftHty + fft2(rho(1)*Hess'*z{1} + rho(2)*z{2}) )./(abs(H.mtf).^2 + rho(1)*fHesstHess + rho(2))));  % solver to solve the x update
-OutADMM=OutputOpti(1,impad,40);
-ADMM=OptiADMM(F_LS,Fn,Hn,rho_n,solver,OutADMM);
+OutADMM=MyOutputOpti(1,impad,40);
+ADMM=OptiADMM(F,Fn,Hn,rho_n,[],OutADMM);
 ADMM.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 
@@ -71,8 +71,8 @@ ADMM.run(y);            % run the algorithm
 % -- PrimalDual Condat LS + ShattenHess + NonNeg
 Fn={lamb*R_1sch};
 Hn={Hess};
-OutPDC=OutputOpti(1,impad,40);
-PDC=OptiPrimalDualCondat(F_LS,R_POS,Fn,Hn,OutPDC);
+OutPDC=MyOutputOpti(1,impad,40);
+PDC=OptiPrimalDualCondat(F,R_POS,Fn,Hn,OutPDC);
 PDC.tau=1;             % set algorithm parameters
 PDC.sig=1e-2;          %
 PDC.rho=1.95;          %

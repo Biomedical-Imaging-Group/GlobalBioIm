@@ -41,22 +41,24 @@ impad=zeros(512); idx=129:384;
 impad(idx,idx)=im;
 
 % -- Convolution Operator definition
-H=LinOpConv(psf);
+H=LinOpConv(fft2(psf));
 
 % -- Generate data
 load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
-fftHty=conj(H.mtf).*fft2(y);
+sz=size(y);
 
 % -- Functions definition
-F_LS=CostL2(H,y);           % Least-Squares data term
-R_N12=CostMixNorm12([3]);   % Mixed Norm 2-1
+LS=CostL2([],y);            % Least-Squares data term
+F=LS*H;
+F.doPrecomputation=1;
+R_N12=CostMixNorm21([sz,2],3);  % Mixed Norm 2-1
 G=LinOpGrad(size(y));       % Operator Gradient
 lamb=1e-3;                  % Hyperparameter
 
 % -- Chambolle-Pock  LS + TV
 OutCP=OutputOpti(1,impad,40);
-CP=OptiChambPock(lamb*R_N12,G,F_LS,OutCP);
+CP=OptiChambPock(lamb*R_N12,G,F,OutCP);
 CP.tau=15;                            % algorithm parameters
 CP.sig=1/(CP.tau*G.norm^2)*0.99;      %
 CP.ItUpOut=10;                        % call OutputOpti update every ItUpOut iterations
@@ -66,14 +68,12 @@ CP.run(y);                            % run the algorithm
 % -- ADMM LS + TV
 Fn={lamb*R_N12};
 Hn={G};rho_n=[1e-1];
-fGtG=fftn(G.fHtH);     % Fourier of the filter G'G (Laplacian)
-solver = @(z,rho,x) real(ifft2((fftHty + rho(1)*fft2(G'*z{1}))./(abs(H.mtf).^2 + rho(1)*fGtG)));            % solver to solve the x update
+% Here no solver needed in ADMM since the operator H'*H + alpha*G'*G is invertible
 OutADMM=OutputOpti(1,impad,40);
-ADMM=OptiADMM(F_LS,Fn,Hn,rho_n,solver,OutADMM);
+ADMM=OptiADMM(F,Fn,Hn,rho_n,[],OutADMM);
 ADMM.ItUpOut=10;       % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;      % max number of iterations
 ADMM.run(y);           % run the algorithm 
-
 
 % -- Display
 imdisp(OutCP.evolxopt{end}(idx,idx),'LS + TV (CP)',1);

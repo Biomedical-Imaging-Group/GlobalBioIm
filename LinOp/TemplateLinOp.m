@@ -1,25 +1,22 @@
-classdef LinOpNAME <  LinOp
-    %% LinOpNAME : Template for Linear  Operator
-    %  Matlab Linear Operator Library 
+classdef TemplateLinOp <  LinOp
+    % TODO: Put here the description of your LinOp
+    % 
+    % :param parName: DESCRIPTION
     %
-    % -- Description
-    % TODO ADD A DESCRIPTION
+    % All attributes of parent class :class:`Cost` are inherited. 
     %
-    % -- Example
-    % TODO ADD INSTANTIATION EXAMPLE
+    % **Note**: YOU CAN PUT A NOTE HERE
     %
-    % -- Properties
-    % TODO ADD NEW PROPERTIES
+    % **References**
     %
-    % -- Methods
-    % TODO ADD NEW METHODS
+    % [1] Ref1 ...
     %
-    % -- References
-    % TODO ADD REFERENCES IF NEEDED
+    % **Example** C=...
     %
-    % Please refer to the LinOp superclass for documentation
-    % See also LinOp   
-    %     Copyright (C) TODO YEAR NAME EMAIL
+    % See also :class:`Map` :class:`Cost`
+  
+    %%    Copyright (C) 
+    %     TODO YEAR NAME EMAIL
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -34,35 +31,43 @@ classdef LinOpNAME <  LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+    % Protected Set and public Read properties     
     properties (SetAccess = protected,GetAccess = public)
-       % Add your extra properties
+		% TODO SET HERE NEW PROTECTED SET AND PUBLIC READ PROPERTIES IF NEEDED.
     end
+    % Full protected properties 
+    properties (SetAccess = protected,GetAccess = protected)
+		% TODO SET HERE NEW FULLY PROTECTED PROPERTIES 
+		% (E.G. INTERNAL VARIABLE USED TO AVOID MULTIPLE COMPUTATION)
+    end
+    
+    %% Constructor
     methods
-        function this = LinOpNAME() %change the name of the constructor
+        function this = TemplateLinOp() %change the name of the constructor
             this.name ='';             
-            this.issquare = false;     % is your operator square?
-            this.iscomplex= true;      % is your operator complex?
-            this.isinvertible = false; % true if the operator is invertible
-            this.sizein = [];          % what is the size of the right hand side
-            this.sizeout = [];         % what is the size of the left hand side
-        end
-        % MANDATORY METHODS
-        function y = apply(this,x)   
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
-        end
-        function y = adjoint(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
-        end
-%         FACULTATIVE METHODS
-%         function y = inverse(this,x)
-%         end
-%         function y = adjointInverse(this,x)
-%         end
-%         function y = HtH(this,x) %  apply the HtH matrix
-%         end
-%         function y = HHt(this,x) %  apply the HHt matrix
-%         end
-%         function y = HtWH(this,x,W) %  apply the HtWH matrix
-%         end
+            this.isInvertible = ??;
+            this.isDifferentiable=??;
+            this.sizein = ??;         
+            this.sizeout = ??;         
+		end
+    end
+	
+    %% Core Methods containing implementations (Protected)
+    % - apply_(this,x)
+    % - applyAdjoint_(this,x)
+	methods (Access = protected)
+        function y = apply_(this,x)   
+            % Reimplemented from parent class :class:`Cost`.
+            
+            % TODO : IMPLEMENT IF APPLICABLE
+        end		
+        function y = applyAdjoint_(this,x)            
+            % Reimplemented from parent class :class:`Cost`.
+            
+            % TODO : IMPLEMENT IF APPLICABLE
+		end
+		
+        % TODO : IMPLEMENT ANY USEFUL METHOD FROM INHERITED FROM MAP OR
+        % LINOP CLASSES
     end
 end

@@ -1,20 +1,20 @@
 classdef LinOpSDFT <  LinOp
-    %% LinOpSDFT : Sliced Discrete Fourier operator
-    %  Matlab Linear Operator Library
+    % LinOpSDFT : Sliced Discrete Fourier operator
     %
-    % Example
-    % Obj = LinOpSDFT(index)
-    % Discrete Fourier transform operator
+    % :param sz: sizein of the operator.
+    % :param index: index along wich dimension are computed the FFT
     %
-    % FIXME : Should better be merged with DFT
+    % All attributes of parent class :class:`LinOp` are inherited. 
     %
-    % Please refer to the LINOP superclass for general documentation about
-    % linear operators class
+    % **Example** SDFT=LinOpSDFT(sz,index)
     %
-    %
-    % See also LinOp fftn Sfft iSfft ifftn
+    % See also :class:`LinOp`, :class:`Map`, :class:`LinOpDFT`, fftn,
+    % ifftn, Sfft, iSfft
     
-    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+    % FIXME : Should better be merged with DFT
+
+    %%    Copyright (C) 2015 
+    %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -33,61 +33,67 @@ classdef LinOpSDFT <  LinOp
         index % index along wich dimension are computed the FFT
         Notindex% ~index
         N % Number of element
+        ndms % number of dimensions
     end
+    
+    %% Constructor
     methods
-        function this = LinOpSDFT(index,sz)
+        function this = LinOpSDFT(sz,index)
             if (~isempty(index))
                 assert(issize(index),'The index should be a conformable  to sz');
                 this.index = index;
             else
                 this.index = 1:this.ndms;
-            end
-            
+            end           
             assert(issize(sz),'The input size sz should be a conformable  to a size ');
             this.sizeout=sz;
             this.sizein=sz;
 
-            this.name ='LinOp SDFT';
-            this.iscomplex= true;
-            this.isinvertible=true;
-        end
-        function y = apply(this,x)
-             if (~isempty(this.index))
-                dim = 1:ndims(x);
-                Iidx = true(ndims(x),1);
+            this.name ='LinOpSDFT';
+            this.isInvertible=true;
+            this.isDifferentiable=true; 
+            
+            this.ndms = length(this.sizein);
+            % Special case for vectors as matlab thought it is matrix ;-(
+            if this.ndms==2 && (this.sizein(2) ==1 || this.sizein(1) ==1)
+                this.ndms = 1;
+            end
+            
+            if (~isempty(this.index))
+                dim = 1:this.ndms;
+                Iidx = true(this.ndms,1);
                 Iidx(this.index) = 0;
                 this.Notindex = dim(Iidx);
             else
-                this.index = 1:ndims(x);
+                this.index = 1:this.ndms;
                 this.Notindex = [];
-             end
-            this.sizein = size(x);
-            this.sizeout = size(x);
+            end
             this.N= prod(this.sizein(this.index));
+        end
+    end
+    
+    %% Core Methods containing implementations (Protected)
+	methods (Access = protected)
+        function y = apply_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
             y =  Sfft(x, this.Notindex);
         end
-        function y = adjoint(this,x)
+        function y = applyAdjoint_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
             y =   this.N * iSfft(x,this.Notindex);
         end
-        function y = inverse(this,x)
+        function y = applyInverse_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
             y =  iSfft(x, this.Notindex);
         end
-        function y = HtH(this,x)
+        function y = applyHtH_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
             y = this.N * x;
         end
-        function y = adjointInverse(this,x)
+        function y = applyAdjointInverse_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
             y =   1/this.N * Sfft(x, this.Notindex);
         end
     end
 end
-% 
-% function Notindex = buildNotindex(Ndims, Index)
-% % Build notindex such index+ notindex span the whole dimension Ndims
-% Notindex= 1:Ndims;
-% if ~isempty(Index)
-%     for n = Index
-%         Notindex(n==Index)= 0;
-%     end
-%     Notindex = Notindex(Notindex~=0);
-% end
-% end
+

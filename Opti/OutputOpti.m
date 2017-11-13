@@ -1,50 +1,37 @@
 classdef OutputOpti < handle
-    %% OutputOpti : Generic class for object OutputOpti objects
-    %  Matlab inverse Problems Library
+    % OutputOpti class for algorithms displayings and savings
     %
-    % At each ItUpOut iterations of an optimization algorithm (see Opti generic class),
-    % the update method of an OutputOpti object will be called in order to acheive user 
-    % defined computations:
-    %   - compute cost / SNR
-    %   - store current iterate / cost value 
-    %   - plot/display stuffs
+    % At each :attr:`ItUpOut` iterations of an optimization algorithm (see :class:`Opti` generic class),
+    % the update method of an :class:`OutputOpti` object will be executed in order to acheive user 
+    % defined computations, e.g.,
+    %
+    %  - compute cost / SNR
+    %  - store current iterate / cost value 
+    %  - plot/display stuffs
     %
     % The present generic class implements a basic update method that:
-    %   - display the iteration number
-    %   - computes & display the cost (if activated)
-    %   - computes & display the SNR if ground truth is provided
     %
-    % --Example
-    %  VU=OutputOpti(computecost,xtrue,iterVerb)
-    % where computecost is a boolean stating if the cost function has to be computed, xtrue is
-    % the ground truth and iterVerb corresponds to the interval (in number of iterations) for 
-    % which the update will only perform the computation (every ItUpOut iterations) but not
-    % print/display anithing. Hence iterVerb must be a multiple of ItUpOut Opti parameter.
-    % 
-    % Child classes can derive from this one to define different actions to execute during 
-    % optimization updates.
+    %  - display the iteration number
+    %  - computes & display the cost (if activated)
+    %  - computes & display the SNR if ground truth is provided
     %
-    % IMPORTANT: The update method should have an unique imput that is the OPTI object in order to 
-    % be generic for all Optimization routines. Hence the update method has acces (in reading mode) 
-    % to all the properties of OPTI objects.
+    % :param name:  name of the :class:`OutputOpti`
+    % :param computecost:  boolean, if true the cost function will be computed
+    % :param xtrue: ground truth to compute the error with the solution (if provided)
+    % :param evolcost: array to save the evolution of the cost function
+    % :param evolsnr: array to save the evolution of the SNR
+    % :param iterVerb:  message will be displayed every iterVerb iterations (must be a multiple of the :attr:`ItUpOut` parameter of classes :class:`Opti`)
     %
-    % -- Properties
-    % * |name|        - name of the VerbUpdate class
-    % * |computecost| - Boolean, if true the cost function will be computed
-    % * |xtrue|       - Ground Truth to compute the error with the solution (if provided)
-    % * |evolcost|    - array to save the evolution of the cost function
-    % * |evolsnr|     - array to save the evolution of the SNR
-    % * |iterVerb|    - message will be displayed every iterVerb iterations (must be a multiple
-    %                   of the ItUpOut Opti parameter)
+    % **Example** OutOpti=OutputOpti(computecost,xtrue,iterVerb) 
     %
-    % -- Methods
-    % * |update|  - execute the defined actions
-    % * |init|    - initialization (called at the starting of the opti algorithm to initialize
-    %               internal variables (counter, array for saving...)
+    % **Important** The update method should have an unique imput that is the :class:`Opti` object in order to 
+    % be generic for all Optimization routines. Hence the update method has access (in reading mode) 
+    % to all the properties of :class:`Opti` objects.
     %
-    % See also Opti
-    %
-    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+    % See also :class:`Opti`
+
+    %%    Copyright (C) 2017 
+    %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -96,6 +83,7 @@ classdef OutputOpti < handle
         end
         %% Initialization
         function init(this)
+            % Initialize the arrays and counters.
         	this.count=1;
         	this.evolcost=[];
         	this.evolsnr=[];
@@ -104,9 +92,10 @@ classdef OutputOpti < handle
         end
         %% Update method
         function update(this,opti)
+            % Computes SNR, cost and display evolution.
         	str=sprintf('Iter: %5i',opti.niter);
         	if this.computecost
-        		cc=opti.cost.eval(opti.xopt);
+        		cc=opti.cost.apply(opti.xopt);
         		str=sprintf('%s | Cost: %4.4e',str,cc);
         		this.evolcost(this.count)=cc;
         	end
@@ -118,7 +107,7 @@ classdef OutputOpti < handle
         	this.evolxopt{this.count}=opti.xopt;
         	this.iternum(this.count)=opti.niter;
         	this.count=this.count+1;
-        	if (mod(opti.niter,this.iterVerb)==0) || opti.niter==1,
+        	if (mod(opti.niter,this.iterVerb)==0) || (opti.niter==1 && this.iterVerb~=0),
         		disp(str);
         	end
         end

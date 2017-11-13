@@ -1,16 +1,35 @@
 classdef OptiDouglasRachford < Opti
-	%% OptiDouglasRachford : Douglas Rachford splitting optimization algorithm
+	% Douglas Rachford splitting optimization algorithm which minimizes
+	% :class:`Cost` of the form
+    % $$ C(\\mathrm{x}) = F_1(\\mathrm{x}) + F_2(\\mathrm{L x}) $$
+    %
+    % :param F_1: a :class:`Cost` with an implementation of the :meth:`prox`.
+    % :param F_2: a :class:`Cost` with an implementation of the :meth:`prox`.
+    % :param L: a :class:`LinOp` such that \\(\\mathrm{LL^T} = \\nu \\mathrm{I} \\)
+	% :param gamma: \\(\\in [0,+\\inf[\\)
+	% :param lambda: \\(\\in ]0,2[\\) the relaxation parmeter
+    %
+    % All attributes of parent class :class:`Opti` are inherited. 
 	%
-	% Implements the Douglas Rachford splitting algorithm that solves:
-	% x^+ = argmin_x( F1(x) + F2(L x))
-	% with the proxes of F1 and F2 known
-	% L a linear operator  such  L.L^T = nu I
-	% y0 the initialization
-	% maxiter the number of iteration
-	% gamma \in [0,+\inf[
-	% lambda\in ]0,2[ the relaxation parmeter.
-	%
-	
+    % **Example** DR=OptiDouglasRachford(F1, F2, L, gamma, lambda, OutOp)
+    %
+	% See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`
+    
+    %%    Copyright (C) (2017)
+    %
+    %     This program is free software: you can redistribute it and/or modify
+    %     it under the terms of the GNU General Public License as published by
+    %     the Free Software Foundation, either version 3 of the License, or
+    %     (at your option) any later version.
+    %
+    %     This program is distributed in the hope that it will be useful,
+    %     but WITHOUT ANY WARRANTY; without even the implied warranty of
+    %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    %     GNU General Public License for more details.
+    %
+    %     You should have received a copy of the GNU General Public License
+    %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
 	properties
 		nu = 1;
 		useL = 0;
@@ -52,6 +71,8 @@ classdef OptiDouglasRachford < Opti
 		end
 		
 		function xopt = run(this, x0)
+            % Reimplementation from :class:`Opti`.
+            
 			y = x0;
 			this.xopt = x0;
 			

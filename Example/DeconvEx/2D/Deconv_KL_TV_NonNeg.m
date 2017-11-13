@@ -44,27 +44,26 @@ impad=zeros(512); idx=129:384;
 impad(idx,idx)=im;
 
 % -- Convolution Operator definition
-H=LinOpConv(psf);
+H=LinOpConv(fft2(psf));
 
 % -- Generate data
 load('data');    % load data (variable y)
 imdisp(y(idx,idx),'Convolved and noisy data',1);
+sz=size(y);
 
 % -- Functions definition
-F_KL=CostKullLeib(H,y,1e-6); % Kullback-Leibler divergence data term
-R_POS=CostNonNeg();          % Non-Negativity
-R_N12=CostMixNorm12([3]);    % Mixed Norm 2-1
-G=LinOpGrad(size(y));        % Operator Gradient
-lamb=1e-2;                   % Hyperparameter  
+F=CostKullLeib([],y,1e-6);     % Kullback-Leibler divergence data term
+R_POS=CostNonNeg(sz);          % Non-Negativity
+R_N12=CostMixNorm21([sz,2],3); % Mixed Norm 2-1
+G=LinOpGrad(sz);               % Operator Gradient
+lamb=1e-2;                     % Hyperparameter  
 
 % -- ADMM KL + TV + NonNeg
 Fn={CostKullLeib([],y,1e-6),lamb*R_N12,R_POS};
-Hn={H,G,LinOpIdentity(size(impad))};
+Hn={H,G,LinOpDiag(sz)};
 rho_n=[1e-2,1e-2,1e-2];
-fGtG=fftn(G.fHtH);     % Fourier of the filter G'G (Laplacian)
-solver = @(z,rho,x) real(ifft2((rho(1)*conj(H.mtf).*fft2(z{1}) + fft2(rho(2)*G'*z{2} + rho(3)*z{3}) )./(rho(1)*abs(H.mtf).^2 + rho(2)*fGtG + rho(3))));  % solver to solve the x update
-OutADMM=OutputOpti(1,impad,40);
-ADMM=OptiADMM([],Fn,Hn,rho_n,solver,OutADMM);
+OutADMM=MyOutputOpti(1,impad,40);
+ADMM=OptiADMM([],Fn,Hn,rho_n,[],OutADMM);
 ADMM.ItUpOut=10;                                  % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;                                 % max number of iterations
 ADMM.run(y);                                      % run the algorithm
@@ -72,8 +71,8 @@ ADMM.run(y);                                      % run the algorithm
 % -- PrimalDual Condat KL + TV + NonNeg
 Fn={lamb*R_N12};
 Hn={G};
-OutPDC=OutputOpti(1,impad,40);
-PDC=OptiPrimalDualCondat(F_KL,R_POS,Fn,Hn,OutPDC);
+OutPDC=MyOutputOpti(1,impad,40);
+PDC=OptiPrimalDualCondat(F*H,R_POS,Fn,Hn,OutPDC);
 PDC.tau=1e-2;          % set algorithm parameters
 PDC.sig=1;             %
 PDC.rho=1.95;          %
@@ -82,8 +81,8 @@ PDC.maxiter=200;       % max number of iterations
 PDC.run(y);            % run the algorithm 
 
 % -- Richardson-Lucy-TV  KL + TV + NonNeg (implicit)
-OutRLTV=OutputOpti(1,impad,40);
-RLTV=OptiRichLucy(F_KL,1,lamb,OutRLTV);
+OutRLTV=MyOutputOpti(1,impad,40);
+RLTV=OptiRichLucy(F*H,1,lamb,OutRLTV);
 RLTV.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 RLTV.maxiter=200;  % max number of iterations
 RLTV.run(y);       % run the algorithm 

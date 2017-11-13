@@ -1,17 +1,18 @@
 classdef LinOpConv <  LinOp
-    %% LinOpConv : Convolution operator
-    %  Matlab Linear Operator Library
+    % LinOpConv: Convolution operator
+    %  
+    % :param mtf: Fourier transform of Point Spread Function 
+    % :param isReal: if true (default) the result of the convolution should be real
+    % :param index: dimensions along which the convolution is performed (the MTF must have a comformable size)
+    % 
+    % All attributes of parent class :class:`LinOp` are inherited. 
     %
-    % -- Example:
-    % Obj = LinOpConv(psf, index)
-    % Convolution operator with  PSF psf along the dimension
-    % indexed in INDEX (all by default)
+    % **Example** H=LinOpConv(mtf,isReal,index)
     %
-    % Please refer to the LINOP superclass for general documentation about
-    % linear operators class
-    % See also LinOp DFT Sfft iSFFT
+    % See also :class:`LinOp`, :class:`Map`
     
-    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+    %%    Copyright (C) 2015 
+    %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -26,27 +27,33 @@ classdef LinOpConv <  LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (SetAccess = protected, GetAccess = public)
-        psf
-        mtf
-        index
-        Notindex
-        ndms
+    properties
+        mtf;       % Fourier transform of the PSF
+        index;     % Dimensions along which the convolution is performed
+        Notindex;  % Remaining dimensions
+        ndms;      % number of dimensions 
+        isReal;    % true (default) if the result of the convolution should be real
     end
+	
+    %% Constructor
     methods
-        function this = LinOpConv(psf,index)
+        function this = LinOpConv(mtf,isReal,index)
             if nargin == 1
                 index = [];
+                isReal=1;                
             end
-            this.name ='LinOp Convolution';
-            this.isinvertible=false;
+            if nargin<3
+                index = [];
+            end
+            this.name ='LinOpConv';
+            this.isInvertible=false;
+            this.isDifferentiable=true;
+            assert(isnumeric(mtf),'The mtf should be numeric');
             
-            assert(isnumeric(psf),'The psf should be a');
-            this.psf = psf;
-            if ~isreal(psf), this.iscomplex= true; end
-            this.sizeout =size( this.psf);
-            this.sizein = this.sizeout;
+            this.isReal= isReal;
             
+            this.sizeout =size(mtf);
+            this.sizein = this.sizeout;           
             this.ndms = length(this.sizein);
             % Special case for vectors as matlab thought it is matrix ;-(
             if this.ndms==2 && (this.sizein(2) ==1 || this.sizein(1) ==1)
@@ -65,57 +72,120 @@ classdef LinOpConv <  LinOp
                 this.Notindex = [];
             end
             
-            this.mtf = Sfft(this.psf, this.Notindex);
+            this.mtf = mtf; %Sfft(psf, this.Notindex);
             
             if all(this.mtf)
-                this.isinvertible=true;
+                this.isInvertible=true;
             else
-                this.isinvertible=false;
+                this.isInvertible=false;
             end
             
             % -- Norm of the operator
-            this.norm=max(abs(this.mtf(:)));
-            
-        end
-        function y = apply(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d]',this.sizein);
-            y = iSfft( this.mtf .* Sfft(x, this.Notindex), this.Notindex );
-            if (~this.iscomplex)&&isreal(x)
-                y = real(y);
-            end
-        end
-        function y = adjoint(this,x)
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
-            y = iSfft( conj(this.mtf) .* Sfft(x, this.Notindex), this.Notindex );
-            if (~this.iscomplex)&&isreal(x)
-                y = real(y);
-            end
-        end
-        function y = HtH(this,x)
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d]',this.sizein);
-            y = iSfft( (real(this.mtf).^2 + imag(this.mtf).^2) .* Sfft(x, this.Notindex), this.Notindex );
-            if (~this.iscomplex)&&isreal(x)
-                y = real(y);
-            end
-        end
-        function y = HHt(this,x)
-            y=this.HtH(x);
-        end
-        function y=inverse(this,x) % apply the inverse
-            if this.isinvertible
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d]',this.sizein);
-            y = iSfft( 1./this.mtf .* Sfft(x, this.Notindex), this.Notindex );       
-            else
-                error('Operator not invertible');
-            end
-        end
-        function y=adjointInverse(this,x) % apply the inverse
-            if this.isinvertible
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d]',this.sizeout);
-            y = iSfft( 1./conj(this.mtf) .* Sfft(x, this.Notindex), this.Notindex );
-            else
-                error('Operator not invertible');
-            end
-        end
+            this.norm=max(abs(this.mtf(:)));        
+		end
     end
+	
+    %% Core Methods containing implementations (Protected)
+	methods (Access = protected)
+        function y = apply_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
+            y = iSfft( this.mtf .* Sfft(x, this.Notindex), this.Notindex );
+            if (this.isReal) && isreal(x) 
+                y = real(y);
+            end
+        end	
+        function y = applyAdjoint_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
+            y = iSfft( conj(this.mtf) .* Sfft(x, this.Notindex), this.Notindex );
+            if (this.isReal)&&isreal(x)
+                y = real(y);
+            end
+        end	
+        function y = applyHtH_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
+            y = iSfft( (real(this.mtf).^2 + imag(this.mtf).^2) .* Sfft(x, this.Notindex), this.Notindex );
+            if (this.isReal)&&isreal(x) 
+                y = real(y);
+            end
+        end	
+        function y = applyHHt_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
+            y=this.applyHtH_(x);
+        end	
+        function y = applyInverse_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
+			if this.isInvertible				
+                y = iSfft( 1./this.mtf .* Sfft(x, this.Notindex), this.Notindex );
+                if (this.isReal)&&isreal(x)
+                    y = real(y);
+                end
+            else
+                y = applyInverse_@LinOp(this,x);
+			end
+        end		
+        function y = applyAdjointInverse_(this,x) 
+            % Reimplemented from parent class :class:`LinOp`.
+            if this.isInvertible
+                y = iSfft( 1./conj(this.mtf) .* Sfft(x, this.Notindex), this.Notindex );
+                if (this.isReal)&&isreal(x)
+                    y = real(y);
+                end
+            else
+                y = applyAdjointInverse_@LinOp(this,x);
+            end
+        end
+        function M = plus_(this,G)
+            % Reimplemented from parent class :class:`LinOp`.
+            if isa(G,'LinOpDiag') && G.isScaledIdentity
+                M=LinOpConv(G.diag+this.mtf,this.isReal,this.index);
+            elseif isa(G,'LinOpConv') 
+                M=LinOpConv(this.mtf+G.mtf,this.isReal,this.index);
+            else
+                M=plus_@LinOp(this,G);
+            end
+        end
+        function M = minus_(this,G)
+            % Reimplemented from parent class :class:`LinOp`.
+            if isa(G,'LinOpDiag')  && G.isScaledIdentity
+                M=LinOpDiag(this.mtf-G.diag,this.isReal,this.index);
+            elseif isa(G,'LinOpConv')
+                M=LinOpConv(this.mtf-G.mtf,this.isReal,this.index);
+            else
+                M=minus_@LinOp(this,G);
+            end
+        end
+        function M = makeAdjoint_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            M=LinOpConv(conj(this.mtf),this.isReal,this.index);
+        end
+        function M = makeHHt_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            M=LinOpConv(abs(this.mtf).^2,this.isReal,this.index);
+        end
+        function M = makeHtH_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            M=LinOpConv(abs(this.mtf).^2,this.index);
+        end
+        function M = mpower_(this,p)
+            % Reimplemented from parent class :class:`LinOp`
+            if p==-1
+                if this.isInvertible
+                    M=LinOpConv(1./this.mtf,this.isReal,this.index);
+                end
+            else
+                M=mpower_@LinOp(this,p);
+            end
+        end
+		function G = makeComposition_(this, H)
+            % Reimplemented from parent class :class:`LinOp`
+			if isa(H, 'LinOpConv')
+				G = LinOpConv(this.mtf.*H.mtf,this.isReal,this.index); 
+            elseif isa(H,'LinOpDiag') && H.isScaledIdentity
+                G = LinOpConv(this.mtf.*H.diag,this.isReal,this.index); 
+			else
+				G = makeComposition_@LinOp(this, H);
+			end
+		end
+	end
+	
 end

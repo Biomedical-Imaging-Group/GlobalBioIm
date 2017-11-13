@@ -1,30 +1,37 @@
 classdef OptiRichLucy < Opti
-    %% OptiRichLucy : Richardson-Lucy algorithm
-    %  Matlab inverse Problems Library
+    % Richardson-Lucy algorithm [1,2] which minimizes the KullbackLeibler
+    % divergence :class:`CostKullLeib` (with TV regularization [3]).
+    % $$ C(\\mathrm{x})= F(\\mathrm{x}) + \\lambda \\Vert \\mathrm{x} \\Vert_{\\mathrm{TV}} $$
     %
-    % -- Description
-    % Implements the Richardson-Lucy algorithm [1] to minimize the functional (CostKullLeib):
-	% $$\sum_n -d_n log((H*x)_n + bet) + (Hx)_n$$
-    % where H is a LinOp object (default LinOpIdentity), d are the data
-    % and bet is a small scalar (default 1e-3) to smooth the function at zero.
+    % :param F: :class:`CostKullLeib` object or a :class:`CostComposition`
+    %  with a :class:`CostKullLeib` and a :class:`LinOp`
+    % :param TV: boolean true if TV regularization used  (default false)
+    % :param lambda: regularization parameter (when TV used)
+    % :param epsl: smoothing parameter to make TV differentiable at 0 (default \\(10^{-6}\\))
     %
-    % -- Example
-    % OptiRL=OptiRichLucy(F,TV,lamb,OutOp)
-    % where F is a CostKullLeib object, TV a boolean to activate the TV regularized version or not
-    % (default false), lamb the regularization parameter used when TV and OutOp a OutputOpti object.
+    % All attributes of parent class :class:`Opti` are inherited. 
     %
-    % -- Properties
-    % *|lamb|   regularization parameter when TV is activated
-    % *|epsl|   smoothing parameter for TV
+    % **Note** An interesting property of this algorithm is that it ensures 
+    % the positivity of the solution from any positive initialization.
+    % However, when TV is used, the positivity of the iterates is not ensured 
+    % anymore if \\(\\lambda \\) is too large. Hence, \\(\\lambda \\) needs to be carefully chosen.
     %
-    % -- References
+    % **References**
+    %
 	% [1] Lucy, Leon B. "An iterative technique for the rectification of observed distributions" The astronomical journal (1974)
+    %
 	% [2] Richardson, William Hadley. "Bayesian-based iterative method of image restoration." JOSA (1972): 55-59.
     %
-    % Please refer to the OPTI superclass for general documentation about optimization class
-    % See also Opti, CostKullLeib, OutputOpti
+    % [3] N. Dey et al. "Richardson-Lucy Algorithm With Total Variation Regularization for 3D Confocal Microscope 
+    % Deconvolution." Microscopy research and technique (2006).
     %
-    %     Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+    % **Example** RL=OptiRichLucy(F,TV,lamb,OutOp)
+    %
+    % See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`,
+    % :class:`CostKullLeib`
+    
+    %%    Copyright (C) 2017 
+    %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -41,7 +48,7 @@ classdef OptiRichLucy < Opti
     
     % Full public properties     
     properties (SetAccess = public,GetAccess = public)
-		epsl=1e-10; % smoothing parameter for TV
+		epsl=1e-6; % smoothing parameter for TV
     end
     % Protected set public read    
     properties (SetAccess = public,GetAccess = public)
@@ -51,37 +58,45 @@ classdef OptiRichLucy < Opti
     % Full protected properties
     properties (SetAccess = protected,GetAccess = protected)
 		G;   % gradient operator (used if TV activated)
-		Fkl; % Kullback-Leibler divergence
+		F;   % Kullback-Leibler divergence
+        isH; % boolean true if F is a CostComposition
     end
    
     methods
     	%% Constructor
     	function this=OptiRichLucy(F,TV,lamb,OutOp)
     		this.name='Opti Richardson-Lucy';
-    		assert(isa(F,'CostKullLeib'), 'The minimized functional should be the FuncKullLeib');
-    		this.cost=F;
+    		assert((isa(F,'CostComposition') && isa(F.H1,'CostKullLeib') && isa(F.H2,'LinOp') ) || ...
+                isa(F,'CostKullLeib'), 'The minimized functional should be the FuncKullLeib or a CostComposition between a CostKullLeib and a LinOp');
+            if ~isa(F,'CostComposition')
+                this.F=F*LinOpDiag(F.sizein);
+            else
+                this.F=F;
+            end
     		if nargin==4 && ~isempty(OutOp)
     			this.OutOp=OutOp;
     		end
-    		if nargin>=2 && ~isempty(TV), this.TV=TV; end
-    		this.Fkl=F;
+    		if nargin>=2 && ~isempty(TV), this.TV=TV; end    		
+            this.cost=this.F;
     		if nargin>=3 && ~isempty(lamb), this.lamb=lamb; end
     		if this.TV
-    			this.G=LinOpGrad(this.Fkl.H.sizein);
-    			if length(this.Fkl.H.sizein)==2  % 2D
-    				this.cost=this.cost + this.lamb*CostMixNorm12([3],this.G);
-    			elseif length(this.Fkl.H.sizein)==3
-    				this.cost=this.cost + this.lamb*CostMixNorm12([4],this.G);
+    			this.G=LinOpGrad(this.F.sizein);
+    			if length(this.F.sizein)==2  % 2D
+    				this.cost=this.cost + this.lamb*CostMixNorm21([this.F.sizein,2],3)*this.G;
+    			elseif length(this.F.sizein)==3
+    				this.cost=this.cost + this.lamb*CostMixNorm21([this.F.sizein,3],4)*this.G;
     			end
     		end
     	end 
     	%% Run the algorithm
         function run(this,x0) 
+            % Reimplementation from :class:`Opti`. For details see [1-3].
+            
 			if ~isempty(x0),this.xopt=x0;end;  % To restart from current state if wanted
-			assert(~isempty(this.xopt),'Missing starting point x0');
-        	data=this.Fkl.y;
-        	He1=this.Fkl.H.adjoint(ones(this.Fkl.H.sizein));
-        	bet=this.Fkl.bet;
+            assert(~isempty(this.xopt),'Missing starting point x0');
+            data=this.F.H1.y;
+            He1=this.F.H2.applyAdjoint(ones(this.F.sizein));
+            bet=this.F.H1.bet;
             if bet==0, error('Smoothing parameter beta has to be different from 0 (see constructor of CostKullLeib)'); end;
 			tstart=tic;
 			this.OutOp.init();
@@ -90,23 +105,23 @@ classdef OptiRichLucy < Opti
 			while (this.niter<this.maxiter)
 				this.niter=this.niter+1;
 				xold=this.xopt;
-				% - Algorithm iteration
-				if ~this.TV
-					this.xopt=this.xopt./He1.*this.Fkl.H.adjoint(data./(this.Fkl.H.apply(this.xopt)+bet));	
-				else
-					tmp=this.G.apply(this.xopt);
-					if length(size(tmp))==2     % 1D
-						nor=sqrt(tmp.^2+this.epsl);
+                % - Algorithm iteration
+                if ~this.TV
+                    this.xopt=this.xopt./He1.*this.F.H2.applyAdjoint(data./(this.F.H2.apply(this.xopt)+bet));
+                else
+                    tmp=this.G.apply(this.xopt);
+                    if length(size(tmp))==2     % 1D
+                        nor=sqrt(tmp.^2+this.epsl);
 					elseif length(size(tmp))==3 % 2D
 						nor=repmat(sqrt(sum(tmp.^2,3)+this.epsl),[1,1,size(tmp,3)]);
-					elseif length(size(tmp))==4 % 3D
-						nor=repmat(sqrt(sum(tmp.^2,4)+this.epsl),[1,1,1,size(tmp,4)]);
-					end
-					gradReg=this.G.adjoint(tmp./nor);
-					this.xopt=this.xopt./(He1 + this.lamb*gradReg).*this.Fkl.H.adjoint(data./(this.Fkl.H.apply(this.xopt)+bet));
-					if sum(this.xopt(:)<0)~=0
-  						warning('Violation of the positivity of the solution (the regularization parameter should be decreased).');
-  					end
+                    elseif length(size(tmp))==4 % 3D
+                        nor=repmat(sqrt(sum(tmp.^2,4)+this.epsl),[1,1,1,size(tmp,4)]);
+                    end
+                    gradReg=this.G.applyAdjoint(tmp./nor);
+                    this.xopt=this.xopt./(He1 + this.lamb*gradReg).*this.F.H2.applyAdjoint(data./(this.F.H2.apply(this.xopt)+bet));
+                    if sum(this.xopt(:)<0)~=0
+                        warning('Violation of the positivity of the solution (the regularization parameter should be decreased).');
+                    end
 				end		
 				% - Convergence test
 				if this.test_convergence(xold), break; end

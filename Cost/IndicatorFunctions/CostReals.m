@@ -1,19 +1,20 @@
 classdef CostReals < CostRectangle
-    %% CostReals : Reals Indicator function
-    %  Matlab Inverse Problems Library
+    % CostReals: Reals Indicator function
+    % $$ C(x) = \\left\\lbrace \\begin{array}[l]
+    % \\text{0~if } \\mathrm{xmin} \\leq \\mathrm{x-y} \\leq \\mathrm{xmax} \\newline
+    % + \\infty \\text{ otherwise.} \\end{array} \\right. $$
     %
-    % Obj = CostReals(xmin, xmax,H,y):
-    % Implement the indicator function of the Real set defined by xmin and xmax for the
-    % $$ \phi(x) = 0 \textrm{ if } xmin <= (x-y) <= xmax textrm{ and }  +\inf \textrm{ otherwise } $$
+    % :param xmin: minimum value (default -inf)
+    % :param xmax: maximum value (default +inf)
     %
+    % All attributes of parent class :class:`CostRectangle` are inherited 
     %
-    %% Properties
-    % * |xmin|         - minimum value (default -inf)
-    % * |xmax|         - minimum value (default +inf)
+    % **Example** C=CostReals(sz,xmin,xmax,y)
     %
-    %%
+    % See also :class:`Map`, :class:`Cost`, :class:`CostIndicator`, :class:`CostRectangle`
     
-    %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+    %%    Copyright (C) 2017
+    %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -28,39 +29,13 @@ classdef CostReals < CostRectangle
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (SetAccess = protected,GetAccess = public)
-    end
-    
+    %% Constructor
     methods
-        function this = CostReals(xmin, xmax,H,y)
-            
-            this.name='Cost Reals';
-            
-            % -- Set entries
-            if nargin<4
-                y=0;
-            end
-            if nargin<3
-                H=[];
-            end
-            set_y(this,y);
-            set_H(this,H);
-            
-            if nargin<2
-                xmax=[];
-            end
-            if nargin==0
-                xmin =-inf;
-            end
-            
-            if isempty(xmax)
-                xmax = +inf;
-            end
-            this.xmin = xmin;
-            this.xmax = xmax;
-            
-        this.iscomplex = false;
-            
+        function this = CostReals(sz,xmin,xmax,y)
+            if nargin<4, y=0; end
+            assert(all(isreal(xmin))&&all(isreal(xmax)),'In CostReal bounds xmin and xmax must be real');
+            this@CostRectangle(sz,y);
+            this.name='CostReals';   
         end
     end
 end

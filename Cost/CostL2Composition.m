@@ -138,7 +138,8 @@ classdef CostL2Composition <  CostComposition
                     fftr=this.precomputeCache.fftHstarSdata+Sfft(x/alpha,this.H2.H2.Notindex);
                     y=real(iSfft(alpha*fftr - alpha*conj(this.H2.H2.mtf).*this.OpSumP.applyAdjoint(this.OpSumP.apply(this.H2.H2.mtf.*fftr)./(prod(this.H2.H1.df)/alpha+this.LLt)),this.H2.H2.Notindex));
                  else
-                     
+                    fftr=conj(this.H2.H2.mtf).*Sfft(this.H2.H1.applyAdjoint(this.H1.y),this.H2.H2.Notindex)+Sfft(x/alpha,this.H2.H2.Notindex);
+                    y=real(iSfft(alpha*fftr - alpha*conj(this.H2.H2.mtf).*this.OpSumP.applyAdjoint(this.OpSumP.apply(this.H2.H2.mtf.*fftr)./(prod(this.H2.H1.df)/alpha+this.LLt)),this.H2.H2.Notindex));
                  end                                           
             % Default implementation
             elseif this.isH2LinOp && ~this.isH2SemiOrtho

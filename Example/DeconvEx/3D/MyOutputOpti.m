@@ -117,7 +117,6 @@ classdef MyOutputOpti < handle
         		this.evolsnr(this.count)=snr;
         	end
         	%this.evolxopt{this.count}=opti.xopt;
-            saveastiff(opti.xopt,'temp.tif');
         	this.iternum(this.count)=opti.niter;
         	this.count=this.count+1;
         	if (mod(opti.niter,this.iterVerb)==0) || opti.niter==1,

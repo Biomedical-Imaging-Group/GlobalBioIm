@@ -6,7 +6,15 @@ classdef OptiFBS < Opti
     % :param G: a :class:`Cost` with an implementation of the :meth:`applyProx`.
     % :param gam: descent step
     % :param fista: boolean true if the accelerated version FISTA [3] is used (default false) 
-    %
+    % :param doFullGradient: boolean (default true), false if F gradient is computed from a subset of "angles" (requires F = CostSummation)
+    % :param stochastic_gradient: boolean (default false), true if stochastic gradient descent rule (requires F = CostSummation and doFullGradient = false)
+    % :param L: Total number of available "angles"
+    % :param set: indices of mapsCell (CostSummation) to consider as an "angle" (e.g. F is composed of 100 CostL2 (i.e., angles) + 1 CostHyperbolic)
+    % :param Lsub: Number of "angles" used if doFullGradient==0
+    % :param subset: current subset of angles used to compute F grad
+    % :param counter: counter for subset update
+    
+    
     % All attributes of parent class :class:`Opti` are inherited. 
 	%
 	% **Note**: When the functional are convex and \\(F\\) has a Lipschitz continuous gradient, convergence is
@@ -51,32 +59,50 @@ classdef OptiFBS < Opti
     properties (SetAccess = protected,GetAccess = public)
 		F;  % Cost F
 		G;  % Cost G
+        
+        set; %indices of mapsCell (CostSummation) to consider as an "angle" (e.g. F is composed of 100 CostL2 (i.e., angles) + 1 CostHyperbolic)
+        L; % Total number of available "angles"
     end
     % Full protected properties 
     properties (SetAccess = protected,GetAccess = protected)
 		y;    % Internal parameters
 		tk;
+        counter; % counter for subset update
     end
     % Full public properties
     properties
     	gam=[];        % descent step
     	fista=false;   % FISTA option [3]
+        
+        reducedStep = false; % reduce the step size (TODO : add the possibilty to chose the update rule)
+        mingam;
+        alpha = 1; % see Kamilov paper
+        
+        doFullGradient = 1; % boolean. If false, F gradient is computed from a subset of "angles" (requires F = CostSummation)
+        stochastic_gradient = 0; % boolean, stochastic gradient descent rule (requires F = CostSummation and doFullGradient = false)
+        
+        Lsub; % Number of "angles" used if doFullGradient==0
+        subset; % current subset of angles used to compute F grad 
     end
     
     methods
 
-    	function this=OptiFBS(F,G,OutOp)
-    		this.name='Opti FBS';
-    		this.cost=F+G;
-    		this.F=F;
-    		this.G=G;
-    		if F.lip~=-1
-    			this.gam=1/F.lip;
-    		end
-    		if nargin==3 && ~isempty(OutOp)
-    			this.OutOp=OutOp;
-    		end
-    	end 
+        function this=OptiFBS(F,G,OutOp)
+            this.name='Opti FBS';
+            this.cost=F+G;
+            this.F=F;
+            this.G=G;
+            if F.lip~=-1
+                this.gam=1/F.lip;
+            end
+            if nargin==3 && ~isempty(OutOp)
+                this.OutOp=OutOp;
+            end
+            if isa(F,'CostSummation')
+                this.L = F.numMaps;
+                this.set = 1:this.L;
+            end
+        end
 
         function run(this,x0) 
         	% Reimplementation from :class:`Opti`. For details see [1-3].
@@ -88,23 +114,27 @@ classdef OptiFBS < Opti
 					this.tk=1; 
 					this.y=this.xopt;
 				end
-			end;  
+            end  
 			assert(~isempty(this.xopt),'Missing starting point x0');
 			tstart=tic;
 			this.OutOp.init();
 			this.niter=1;
 			this.starting_verb();		
 			while (this.niter<this.maxiter)
+                if this.reducedStep
+                    this.gam = max(this.gam*sqrt(max(this.niter-1,1)/this.niter),this.mingam);
+                end
+                
 				this.niter=this.niter+1;
 				xold=this.xopt;
 				% - Algorithm iteration
 				if this.fista  % if fista
-					this.xopt=this.G.applyProx(this.y - this.gam*this.F.applyGrad(this.y),this.gam);
+					this.xopt=this.G.applyProx(this.y - this.gam*this.computeGrad(this.y),this.gam);
 					told=this.tk;
 					this.tk=0.5*(1+sqrt(1+4*this.tk^2));
-					this.y=this.xopt + (told-1)/this.tk*(this.xopt-xold);
+					this.y=this.xopt + this.alpha*(told-1)/this.tk*(this.xopt-xold);
 				else 
-					this.xopt=this.G.applyProx(this.xopt - this.gam*this.F.applyGrad(this.xopt),this.gam);
+					this.xopt=this.G.applyProx(this.xopt - this.gam*this.computeGrad(this.xopt),this.gam);
 				end
 				% - Convergence test
 				if this.test_convergence(xold), break; end
@@ -113,6 +143,51 @@ classdef OptiFBS < Opti
 			end 
 			this.time=toc(tstart);
 			this.ending_verb();
+        end
+        
+        function grad = computeGrad(this,x)
+            
+            if this.Lsub < this.L
+                if isempty(this.subset)
+                    this.updateSubset(sort(1 + mod(round(this.counter...
+                        + (1:this.L/this.Lsub:this.L)),this.L)));
+                end
+                grad = zeros(size(x));
+                for kk = 1:this.Lsub
+                    ind = this.set(this.subset(kk));
+                    grad = grad + this.F.mapsCell{ind}.applyGrad(x);
+                end
+                grad = real(grad)/this.Lsub;%ad hoc
+                
+                if this.stochastic_gradient
+                    this.updateSubset(randi(this.L,this.Lsub,1));
+                else
+                    this.updateSubset(sort(1 + mod(round(this.counter...
+                        + (1:this.L/this.Lsub:this.L)),this.L)));
+                    this.counter = this.counter + 1;
+                end
+            else
+                grad = this.F.applyGrad(x);
+            end
+        end
+        
+        function updateSet(this,new_set)
+            this.set = new_set;
+            this.L = length(new_set);
+        end
+        
+        function updateSubset(this,subset)
+            this.subset = subset;
+            this.Lsub = length(subset);
+        end
+        
+        function reset(this)
+            this.counter = 0;
+            if this.stochastic_gradient
+                this.updateSubset(randi(this.L,this.Lsub,1));
+            else
+                this.updateSubset(unique(round(1:this.L/this.Lsub:this.L)));
+            end
         end
 	end
 end

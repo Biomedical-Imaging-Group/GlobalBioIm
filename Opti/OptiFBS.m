@@ -10,6 +10,7 @@ classdef OptiFBS < Opti
     % :param stochastic_gradient: boolean (default false), true if stochastic gradient descent rule (requires F = CostSummation and doFullGradient = false)
     % :param L: Total number of available "angles"
     % :param set: indices of mapsCell (CostSummation) to consider as an "angle" (e.g. F is composed of 100 CostL2 (i.e., angles) + 1 CostHyperbolic)
+    % :param nonset: indices of mapsCell (CostSummation) not to consider as an "angle"
     % :param Lsub: Number of "angles" used if doFullGradient==0
     % :param subset: current subset of angles used to compute F grad
     % :param counter: counter for subset update
@@ -61,6 +62,7 @@ classdef OptiFBS < Opti
 		G;  % Cost G
         
         set; %indices of mapsCell (CostSummation) to consider as an "angle" (e.g. F is composed of 100 CostL2 (i.e., angles) + 1 CostHyperbolic)
+        nonset; %indices of mapsCell (CostSummation) not to consider as an "angle"
         L; % Total number of available "angles"
     end
     % Full protected properties 
@@ -100,7 +102,7 @@ classdef OptiFBS < Opti
             end
             if isa(F,'CostSummation')
                 this.L = F.numMaps;
-                this.set = 1:this.L;
+                this.updateSet(1:this.L);
             end
         end
 
@@ -155,9 +157,13 @@ classdef OptiFBS < Opti
                 grad = zeros(size(x));
                 for kk = 1:this.Lsub
                     ind = this.set(this.subset(kk));
-                    grad = grad + this.F.mapsCell{ind}.applyGrad(x);
+                    grad = grad + this.F.alpha(ind)*this.F.mapsCell{ind}.applyGrad(x);
                 end
-                grad = real(grad)/this.Lsub;%ad hoc
+                grad = real(grad);%/this.Lsub;%ad hoc
+                
+                for kk = 1:length(this.nonset)
+                    grad = grad + this.F.alpha(this.nonset(kk))*this.F.mapsCell{this.nonset(kk)}.applyGrad(x);
+                end
                 
                 if this.stochastic_gradient
                     this.updateSubset(randi(this.L,this.Lsub,1));
@@ -174,6 +180,7 @@ classdef OptiFBS < Opti
         function updateSet(this,new_set)
             this.set = new_set;
             this.L = length(new_set);
+            this.nonset = find(~ismember(1:this.F.numMaps,this.set));
         end
         
         function updateSubset(this,subset)

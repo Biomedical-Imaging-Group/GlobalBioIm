@@ -33,8 +33,10 @@ classdef CostSummation <  MapSummation & Cost
             allcosts = all( cellfun(@(x)(isa(x, 'Cost')), costs) );
 			assert(iscell(costs) && allcosts, 'First input should be a cell array Cost');
 			this.isConvex=costs{1}.isConvex; 
-            for n =2:this.numMaps
-                this.isConvex = this.isConvex & costs{1}.isConvex; 
+            this.lip=costs{1}.lip;
+            for n =2:length(costs)
+                this.isConvex = this.isConvex & costs{n}.isConvex; 
+                this.lip = this.lip + costs{n}.lip;
             end
         end
     end

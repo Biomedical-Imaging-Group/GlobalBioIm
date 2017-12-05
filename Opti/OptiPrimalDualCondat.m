@@ -137,7 +137,7 @@ classdef OptiPrimalDualCondat < Opti
 					this.y{n}=this.rho*ytilde{n}+(1-this.rho)*this.y{n};
 				end
 				% - Convergence test
-				if this.test_convergence(xold), break; end
+				if this.test_convergence(xold) && this.niter>2, break; end  % this.niter>2 to avoid stopping at the first iteration if x0=0
 				% - Call OutputOpti object
 				if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
 			end 

@@ -102,17 +102,22 @@ classdef OptiADMM < Opti
                 for n=2:length(this.Hn)
                     this.A=this.A + this.rho_n(n)*(this.Hn{n})' * this.Hn{n};
                 end
-                if ~isempty(this.F0) && isa(this.F0,'CostL2Composition')
-                    this.A=this.A + this.F0.H2'*this.F0.H2;
-                    this.b0=this.F0.H2'*this.F0.H1.y;
-                elseif ~isempty(this.F0) && isa(this.F0,'CostL2')
-                    this.A=this.A + LinOpDiag(this.A.sizein);
-                    this.b0=this.F0.y;
+                if ~isempty(this.F0)
+                    if isa(this.F0,'CostL2Composition')
+                        this.A=this.A + this.F0.H2'*this.F0.H2;
+                        this.b0=this.F0.H2'*this.F0.H1.y;
+                    elseif isa(this.F0,'CostL2')
+                        this.A=this.A + LinOpDiag(this.A.sizein);
+                        this.b0=this.F0.y;
+                    else
+                        error('If F0 is not a CostL2 / CostL2Composition, a solver is required in ADMM');
+                    end
                 end
                 if ~this.A.isInvertible  % If A is non invertible -> intanciate a CG
                     this.CG=OptiConjGrad(this.A,zeros(this.A.sizeout),[],OutputOpti());
                     this.CG.maxiter=20;
                     this.CG.ItUpOut=0;
+                    disp('Warning : ADMM will use a Conjugate Gradient to compute the linear step');
                 end
             end
         end

@@ -61,7 +61,7 @@ if H.isInvertible
 		fprintf('H.isInvertible, but applyInverse FAILs:\n\t%s\n', ME.message);
 	end
 	
-	if s.applyOK && s.inverseOK
+	if s.applyOK && s.applyInverseOK
 		curSNR = snr(x, x-xhat);
 		s.applyInverseOK = checkSNR(curSNR);
 	else

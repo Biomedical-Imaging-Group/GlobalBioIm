@@ -36,7 +36,12 @@ classdef CostSummation <  MapSummation & Cost
             this.lip=costs{1}.lip;
             for n =2:length(costs)
                 this.isConvex = this.isConvex & costs{n}.isConvex; 
-                this.lip = this.lip + costs{n}.lip;
+                if costs{n}.lip~=-1
+                    this.lip = this.lip + costs{n}.lip;
+                else
+                    this.lip=-1;
+                    break;
+                end
             end
         end
     end

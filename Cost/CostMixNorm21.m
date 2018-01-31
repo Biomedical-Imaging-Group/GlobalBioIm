@@ -106,5 +106,15 @@ classdef CostMixNorm21 < Cost
             % x(||x|| > alpha) = x(||x|| > alpha) - ...
             %      x(||x|| > alpha) / ||x|| * alpha
         end
+        function M=makeComposition_(this,G)
+            % Reimplemented from parent class :class:`Cost`. Instantiates a
+            % :class:`CostL2Composition`.
+            if isa(G,'LinOpGrad')
+                M = CostTV(this,G);
+            else
+                M = makeComposition_@Cost(this,G);
+            end
+        end
+        
     end
 end

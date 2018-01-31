@@ -176,7 +176,7 @@ classdef CostL2Composition <  CostComposition
         end
         function M = makeComposition_(this,G)
             % Reimplemented from :class:`Cost`. Instantiates a new
-            % :class:`CostL2Compoisition` with the updated composed
+            % :class:`CostL2Composition` with the updated composed
             % :class:`Map`.
             M=CostL2Composition(this.H1,this.H2*G);
         end

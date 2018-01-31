@@ -54,7 +54,7 @@ classdef CostComplexHyperBolic < Cost
             this.index = index;
             
             if index~=0
-                this.sumOp = LinOpSum(this.H.sizeout,index);
+                this.sumOp = LinOpSum(sz,index);
             else
                 this.sumOp = LinOpDiag(this.H.sizeout);
             end
@@ -87,7 +87,7 @@ classdef CostComplexHyperBolic < Cost
             R = this.sumOp.apply(u);
             
             F = sqrt(R + this.epsilon.^2);
-            g = u.*this.sumOp.adjoint(1./F);           
+            g = u.*this.sumOp.applyAdjoint(1./F);           
         end
     end
 end

@@ -33,8 +33,6 @@ sudo -H pip install --ignore-installed sphinxcontrib-email
        <img src="logo.png"  width="300" />  <<<------- HERE
     <div class="wy-side-nav-search">
     
-    set the href of  <a href="#" class="icon icon-home"> GlobalBioIm Library </a> to 
-    http://bigwww.epfl.ch/algorithms/globalbioim/
 
 ###### HOW TO USE
 

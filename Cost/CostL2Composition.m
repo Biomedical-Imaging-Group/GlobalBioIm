@@ -30,7 +30,7 @@ classdef CostL2Composition <  CostComposition
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (Access=private)
+    properties (Access=public)
         OpSumP;  % Operator used to compute the prox when H2 is the combination of a LinOpDownsample with a LinOpConv
         LLt;     % averaged convolution kernel used to compute the prox when H2 is the combination of a LinOpDownsample with a LinOpConv
     end
@@ -136,10 +136,10 @@ classdef CostL2Composition <  CostComposition
                         this.precomputeCache.fftHstarSdata=conj(this.H2.H2.mtf).*Sfft(this.H2.H1.applyAdjoint(this.H1.y),this.H2.H2.Notindex);
                     end
                     fftr=this.precomputeCache.fftHstarSdata+Sfft(x/alpha,this.H2.H2.Notindex);
-                    y=real(iSfft(alpha*fftr - alpha*conj(this.H2.H2.mtf).*this.OpSumP.applyAdjoint(this.OpSumP.apply(this.H2.H2.mtf.*fftr)./(prod(this.H2.H1.df)/alpha+this.LLt)),this.H2.H2.Notindex));
+                    y=real(iSfft(alpha*(fftr - conj(this.H2.H2.mtf).*this.OpSumP.applyAdjoint(this.OpSumP.apply(this.H2.H2.mtf.*fftr)./(prod(this.H2.H1.df)/alpha+this.LLt))),this.H2.H2.Notindex));
                  else
                     fftr=conj(this.H2.H2.mtf).*Sfft(this.H2.H1.applyAdjoint(this.H1.y),this.H2.H2.Notindex)+Sfft(x/alpha,this.H2.H2.Notindex);
-                    y=real(iSfft(alpha*fftr - alpha*conj(this.H2.H2.mtf).*this.OpSumP.applyAdjoint(this.OpSumP.apply(this.H2.H2.mtf.*fftr)./(prod(this.H2.H1.df)/alpha+this.LLt)),this.H2.H2.Notindex));
+                    y=real(iSfft(alpha*(fftr - conj(this.H2.H2.mtf).*this.OpSumP.applyAdjoint(this.OpSumP.apply(this.H2.H2.mtf.*fftr)./(prod(this.H2.H1.df)/alpha+this.LLt))),this.H2.H2.Notindex));
                  end                                           
             % Default implementation
             elseif this.isH2LinOp && ~this.isH2SemiOrtho

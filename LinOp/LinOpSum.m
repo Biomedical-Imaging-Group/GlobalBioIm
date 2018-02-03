@@ -100,5 +100,9 @@ classdef LinOpSum <  LinOp
             a = prod(this.kerdims);
             y = x.*a;
         end
+        function M=makeHHt_(this)
+            % Reimplemented from parent class :class:`LinOp`.   
+            M= LinOpDiag(this.sizeout,prod(this.kerdims));
+        end
     end
 end

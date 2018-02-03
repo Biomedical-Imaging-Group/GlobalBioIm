@@ -5,7 +5,7 @@ classdef OptiFBS < Opti
     % :param F: a differentiable :class:`Cost` (i.e. with an implementation of :meth:`applyGrad`).
     % :param G: a :class:`Cost` with an implementation of the :meth:`applyProx`.
     % :param gam: descent step
-    % :param fista: boolean true if the accelerated version FISTA [3] is used (default false) 
+    % :param fista: boolean true if the accelerated version FISTA [3] is used (default false)
     % :param doFullGradient: boolean (default true), false if F gradient is computed from a subset of "angles" (requires F = CostSummation)
     % :param stochastic_gradient: boolean (default false), true if stochastic gradient descent rule (requires F = CostSummation and doFullGradient = false)
     % :param L: Total number of available "angles"
@@ -16,31 +16,31 @@ classdef OptiFBS < Opti
     % :param counter: counter for subset update
     
     
-    % All attributes of parent class :class:`Opti` are inherited. 
-	%
-	% **Note**: When the functional are convex and \\(F\\) has a Lipschitz continuous gradient, convergence is
-	% ensured by taking \\(\\gamma \\in (0,2/L] \\) where \\(L\\) is the Lipschitz constant of \\(\\nabla F\\) (see [1]).
-	% When FISTA is used [3], \\(\\gamma \\) should be in \\((0,1/L]\\). For nonconvex functions [2] take \\(\\gamma \\in (0,1/L]\\).    
+    % All attributes of parent class :class:`Opti` are inherited.
+    %
+    % **Note**: When the functional are convex and \\(F\\) has a Lipschitz continuous gradient, convergence is
+    % ensured by taking \\(\\gamma \\in (0,2/L] \\) where \\(L\\) is the Lipschitz constant of \\(\\nabla F\\) (see [1]).
+    % When FISTA is used [3], \\(\\gamma \\) should be in \\((0,1/L]\\). For nonconvex functions [2] take \\(\\gamma \\in (0,1/L]\\).
     % If \\(L\\) is known (i.e. F.lip different from -1), parameter \\(\\gamma\\) is automatically set to \\(1/L\\).
     %
-    % **References**: 
+    % **References**:
     %
-	% [1] P.L. Combettes and V.R. Wajs, "Signal recovery by proximal forward-backward splitting", SIAM Journal on
-	% Multiscale Modeling & Simulation, vol 4, no. 4, pp 1168-1200, (2005).
-	%
-	% [2] Hedy Attouch, Jerome Bolte and Benar Fux Svaiter "Convergence of descent methods for semi-algebraic and 
-	% tame problems: proximal algorithms, forward-backward splitting, and regularized gaussiedel methods." 
-	% Mathematical Programming, 137 (2013).
-	%
-	% [3] Amir Beck and Marc Teboulle, "A Fast Iterative Shrinkage-Thresholding Algorithm for Linear inverse Problems",
-	% SIAM Journal on Imaging Science, vol 2, no. 1, pp 182-202 (2009)
+    % [1] P.L. Combettes and V.R. Wajs, "Signal recovery by proximal forward-backward splitting", SIAM Journal on
+    % Multiscale Modeling & Simulation, vol 4, no. 4, pp 1168-1200, (2005).
+    %
+    % [2] Hedy Attouch, Jerome Bolte and Benar Fux Svaiter "Convergence of descent methods for semi-algebraic and
+    % tame problems: proximal algorithms, forward-backward splitting, and regularized gaussiedel methods."
+    % Mathematical Programming, 137 (2013).
+    %
+    % [3] Amir Beck and Marc Teboulle, "A Fast Iterative Shrinkage-Thresholding Algorithm for Linear inverse Problems",
+    % SIAM Journal on Imaging Science, vol 2, no. 1, pp 182-202 (2009)
     %
     % **Example** FBS=OptiFBS(F,G,OutOp)
     %
     % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
-
-
-    %%     Copyright (C) 2017 
+    
+    
+    %%     Copyright (C) 2017
     %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -55,26 +55,26 @@ classdef OptiFBS < Opti
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-    % Protected Set and public Read properties     
-    properties (SetAccess = protected,GetAccess = public)
-		F;  % Cost F
-		G;  % Cost G
+    
+    % Protected Set and public Read properties
+    properties (SetAccess = public,GetAccess = public) %Change by Thanh-an
+        F;  % Cost F
+        G;  % Cost G
         
         set; %indices of mapsCell (CostSummation) to consider as an "angle" (e.g. F is composed of 100 CostL2 (i.e., angles) + 1 CostHyperbolic)
         nonset; %indices of mapsCell (CostSummation) not to consider as an "angle"
         L; % Total number of available "angles"
     end
-    % Full protected properties 
+    % Full protected properties
     properties (SetAccess = protected,GetAccess = protected)
-		y;    % Internal parameters
-		tk;
-        counter; % counter for subset update
+        y;    % Internal parameters
+        tk;
+        counter=0; % counter for subset update
     end
     % Full public properties
     properties
-    	gam=[];        % descent step
-    	fista=false;   % FISTA option [3]
+        gam=[];        % descent step
+        fista=false;   % FISTA option [3]
         
         reducedStep = false; % reduce the step size (TODO : add the possibilty to chose the update rule)
         mingam;
@@ -84,11 +84,11 @@ classdef OptiFBS < Opti
         stochastic_gradient = 0; % boolean, stochastic gradient descent rule (requires F = CostSummation and doFullGradient = false)
         
         Lsub; % Number of "angles" used if doFullGradient==0
-        subset; % current subset of angles used to compute F grad 
+        subset; % current subset of angles used to compute F grad
     end
     
     methods
-
+        
         function this=OptiFBS(F,G,OutOp)
             this.name='Opti FBS';
             this.cost=F+G;
@@ -105,46 +105,46 @@ classdef OptiFBS < Opti
                 this.updateSet(1:this.L);
             end
         end
-
-        function run(this,x0) 
-        	% Reimplementation from :class:`Opti`. For details see [1-3].
-        	
-        	assert(~isempty(this.gam),'parameter gam is not setted');
-			if ~isempty(x0) % To restart from current state if wanted
-				this.xopt=x0;
-				if this.fista
-					this.tk=1; 
-					this.y=this.xopt;
-				end
-            end  
-			assert(~isempty(this.xopt),'Missing starting point x0');
-			tstart=tic;
-			this.OutOp.init();
-			this.niter=1;
-			this.starting_verb();		
-			while (this.niter<this.maxiter)
+        
+        function run(this,x0)
+            % Reimplementation from :class:`Opti`. For details see [1-3].
+            
+            assert(~isempty(this.gam),'parameter gam is not setted');
+            if ~isempty(x0) % To restart from current state if wanted
+                this.xopt=x0;
+                if this.fista
+                    this.tk=1;
+                    this.y=this.xopt;
+                end
+            end
+            assert(~isempty(this.xopt),'Missing starting point x0');
+            tstart=tic;
+            this.OutOp.init();
+            this.niter=1;
+            this.starting_verb();
+            while (this.niter<this.maxiter)
                 if this.reducedStep
                     this.gam = max(this.gam*sqrt(max(this.niter-1,1)/this.niter),this.mingam);
                 end
                 
-				this.niter=this.niter+1;
-				xold=this.xopt;
-				% - Algorithm iteration
-				if this.fista  % if fista
-					this.xopt=this.G.applyProx(this.y - this.gam*this.computeGrad(this.y),this.gam);
-					told=this.tk;
-					this.tk=0.5*(1+sqrt(1+4*this.tk^2));
-					this.y=this.xopt + this.alpha*(told-1)/this.tk*(this.xopt-xold);
-				else 
-					this.xopt=this.G.applyProx(this.xopt - this.gam*this.computeGrad(this.xopt),this.gam);
-				end
-				% - Convergence test
-				if this.test_convergence(xold), break; end
-				% - Call OutputOpti object
-				if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
-			end 
-			this.time=toc(tstart);
-			this.ending_verb();
+                this.niter=this.niter+1;
+                xold=this.xopt;
+                % - Algorithm iteration
+                if this.fista  % if fista
+                    this.xopt=this.G.applyProx(this.y - this.gam*this.computeGrad(this.y),this.gam);
+                    told=this.tk;
+                    this.tk=0.5*(1+sqrt(1+4*this.tk^2));
+                    this.y=this.xopt + this.alpha*(told-1)/this.tk*(this.xopt - xold);
+                else
+                    this.xopt=this.G.applyProx(this.xopt - this.gam*this.computeGrad(this.xopt),this.gam);
+                end
+                % - Convergence test
+                if this.test_convergence(xold), break; end
+                % - Call OutputOpti object
+                if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
+            end
+            this.time=toc(tstart);
+            this.ending_verb();
         end
         
         function grad = computeGrad(this,x)
@@ -159,7 +159,7 @@ classdef OptiFBS < Opti
                     ind = this.set(this.subset(kk));
                     grad = grad + this.F.alpha(ind)*this.F.mapsCell{ind}.applyGrad(x);
                 end
-                grad = real(grad);%/this.Lsub;%ad hoc
+                grad = real(grad)/this.Lsub;%ad hoc
                 
                 for kk = 1:length(this.nonset)
                     grad = grad + this.F.alpha(this.nonset(kk))*this.F.mapsCell{this.nonset(kk)}.applyGrad(x);
@@ -196,5 +196,5 @@ classdef OptiFBS < Opti
                 this.updateSubset(unique(round(1:this.L/this.Lsub:this.L)));
             end
         end
-	end
+    end
 end

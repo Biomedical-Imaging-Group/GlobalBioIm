@@ -34,8 +34,7 @@ We start by reading the data
    y=double(loadtiff(dataname));maxy=max(y(:));y=y/maxy;
    sz=size(y);
 
-We then resize the PSF in order to properly deal with the periodic assumption of the FFT (principally in z where the data
-are present on boundaries of the volume). Note that we use the function *fft_best_dim* (Util/ folder) which allows to find sizes that are 
+We then resize the PSF in order to properly deal with the periodic assumption of the FFT (principally in z where  there is signal at the boundaries of the volume). Note that we use the function *fft_best_dim* (Util/ folder) which allows to find sizes that are
 suited for efficient FFT operations.
 
 .. code:: matlab
@@ -45,7 +44,7 @@ suited for efficient FFT operations.
     halfPad=(sznew-sz)/2;
     psf=padarray(psf,halfPad,0,'both');
 
-We can now define our data fidelity term, TV regularization and positivity constraint.
+We can now define our data fidelity term, TV regularization, and positivity constraint.
 
 .. code:: matlab
 
@@ -67,7 +66,7 @@ We can now define our data fidelity term, TV regularization and positivity const
 Here, our cost function is as follows
 $$ \\mathcal{C}(\\mathrm{x}) = \\frac12 \\|\\mathrm{SHx - y} \\|_2^2 + \\lambda \\|\\nabla \\mathrm{x} \\|_{2,1} + i_{\\geq 0}(\\mathrm{x})$$
 where \\(\\lambda >0\\) is the regularization parameter, \\(\\mathrm{S}\\) a selector operator that selects the "non-padded"
-part of the convolution result \\(\\mathrm{Hx}\\) and the two others terms are respectively the TV regularization and the positivity
+part of the convolution result \\(\\mathrm{Hx}\\), and the two others terms are respectively the TV regularization and the positivity
 constraint. We are now ready to instanciate and run our algorithm (here ADMM) in order to minimize the above functional.
 
 .. code:: matlab
@@ -81,11 +80,12 @@ constraint. We are now ready to instanciate and run our algorithm (here ADMM) in
       ADMM.maxiter=maxIt;
       ADMM.run(xopt);
 
-Note that here we do not need to give a solver to the ADMM algorithm (5th argument) since the library operator algebra makes that
+Here, three splitting have been done: \\(\\mathrm{u_1=Hx}, \\; \\mathrm{u_2=\\nabla x}\\) and \\(\\mathrm{u_3=x}\\).
+Note that we do not need to give a solver to the ADMM algorithm (5th argument) since the library operator algebra makes that
 building the operator
 $$\\rho_1 \\mathrm{H^*H} + \\rho_2 \\nabla^* \\nabla + \\rho_3 \\mathrm{I}$$
 results in a :class:`LinOpConv` which is invertible. Hence ADMM builds this operator automatically and uses its inverse for the
-quadratic step of the algorithm.
+linear step  of the algorithm (minimization over \\(\\mathrm{x}\\)).
 
 The deconvolved image is presented in Fig. 2.
 

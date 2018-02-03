@@ -178,7 +178,16 @@ classdef CostL2Composition <  CostComposition
             % Reimplemented from :class:`Cost`. Instantiates a new
             % :class:`CostL2Compoisition` with the updated composed
             % :class:`Map`.
-            M=CostL2Composition(this.H1,this.H2*G);
+            if isa(G,'LinOp')
+                T=G*G';
+                if isa(T,'LinOpDiag') && T.isScaledIdentity
+                    M=CostComposition(this,G);
+                else
+                    M=CostL2Composition(this.H1,this.H2*G);
+                end
+            else
+                M=CostL2Composition(this.H1,this.H2*G);
+            end
         end
     end
 end

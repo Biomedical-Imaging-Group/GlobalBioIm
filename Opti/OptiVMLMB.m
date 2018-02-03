@@ -7,9 +7,9 @@ classdef OptiVMLMB<Opti
     % :param xmin: min bound (optional)
     % :param xmax: max bound (optional)
     %
-    % All attributes of parent class :class:`Opti` are inherited. 
+    % All attributes of parent class :class:`Opti` are inherited.
     %
-    % **Note** 
+    % **Note**
     % This Optimizer has many other variables that are set by
     % default to reasonable values. See the function m_vmlmb_first.m in the
     % MatlabOptimPack folder for more details.
@@ -23,7 +23,7 @@ classdef OptiVMLMB<Opti
     % **Example** VMLMB=OptiVMLMB(C,xmin,xmax,OutOp)
     %
     % See also :class:`Opti`, :class:`OptiConjGrad` :class:`OutputOpti`, :class:`Cost`
-
+    
     %%    Copyright (C) 2017
     %     Ferreol Soulez ferreol.soulez@univ-lyon1.fr
     %
@@ -59,6 +59,13 @@ classdef OptiVMLMB<Opti
         sxtol=0.1;
         epsilon=0.01;
         costheta=0.4;
+        
+        doFullGradient = 1; % boolean. If false, F gradient is computed from a subset of "angles" (requires F = CostSummation)
+        stochastic_gradient = 0; % boolean, stochastic gradient descent rule (requires F = CostSummation and doFullGradient = false)
+        
+        Lsub; % Number of "angles" used if doFullGradient==0
+        subset; % current subset of angles used to compute F grad
+        nrepeat; % number of repetition of one subset
     end
     properties (SetAccess = protected,GetAccess = public)
         nparam;
@@ -70,10 +77,16 @@ classdef OptiVMLMB<Opti
         csave;
         isave;
         dsave;
+        
+        set; %indices of mapsCell (CostSummation) to consider as an "angle" (e.g. F is composed of 100 CostL2 (i.e., angles) + 1 CostHyperbolic)
+        nonset; %indices of mapsCell (CostSummation) not to consider as an "angle"
+        L; % Total number of available "angles"
+        counter; % counter for subset update
+        count4rep; % counter for subset repeat
     end
     methods
-        function this = OptiVMLMB(C,xmin,xmax,OutOp)         
-            this.name='OptiVMLMB';          
+        function this = OptiVMLMB(C,xmin,xmax,OutOp)
+            this.name='OptiVMLMB';
             if(nargin>1)
                 if(~isempty(xmin))
                     this.bounds=1;
@@ -87,14 +100,14 @@ classdef OptiVMLMB<Opti
             end
             this.cost=C;
         end
-        function Init(this)    
+        function Init(this)
             [this.csave, this.isave, this.dsave] = m_vmlmb_first(this.nparam, this.m, this.fatol, this.frtol,...
                 this.sftol, this.sgtol, this.sxtol, this.epsilon, this.costheta);
             this.task =  this.isave(3);
         end
         function  run(this,x0)
             % Reimplementation from :class:`Opti`. For details see [1].
-
+            
             this.nparam =numel(x0);
             if isscalar(this.xmin)
                 this.xmin=ones(size(x0))*this.xmin;
@@ -124,7 +137,15 @@ classdef OptiVMLMB<Opti
                         test = (x>this.xmax);
                         if any(test(:)), x(test) = this.xmax(test); end
                     end
-                    [cost,grad] = this.cost.eval_grad(x);     % evaluate the function and its gradient at X;
+                    
+                    
+                    %cost = this.cost.apply(x);
+                    %grad = this.cost.applyGrad(x);
+                    
+                    cost = this.computeCost(x);
+                    grad = this.computeGrad(x);
+                    
+                    %[cost,grad] = this.cost.eval_grad(x);     % evaluate the function and its gradient at X;
                     normg= sum(grad(:).^2);
                     
                     nbeval=nbeval+1;
@@ -141,7 +162,7 @@ classdef OptiVMLMB<Opti
                     % gradient G, are available for inspection.
                 else
                     % Convergence, or error, or warning
-                    fprintf('Convergence, or error, or warning : %d  , %s\n',this.task,this.csave);                    
+                    fprintf('Convergence, or error, or warning : %d  , %s\n',this.task,this.csave);
                     this.time=toc(tstart);
                     this.ending_verb();
                     break;
@@ -168,6 +189,84 @@ classdef OptiVMLMB<Opti
                 end
             end
             
+        end
+        
+        function grad = computeGrad(this,x)
+            
+            if this.Lsub < this.L
+%                 if isempty(this.subset)
+%                     this.updateSubset(sort(1 + mod(round(this.counter...
+%                         + (1:this.L/this.Lsub:this.L)),this.L)));
+%                 end
+                grad = zeros(size(x));
+                for kk = 1:this.Lsub
+                    ind = this.set(this.subset(kk));
+                    grad = grad + this.cost.alpha(ind)*this.cost.mapsCell{ind}.applyGrad(x);
+                end
+                grad = real(grad)/this.Lsub;%ad hoc
+                
+                for kk = 1:length(this.nonset)
+                    grad = grad + this.cost.alpha(this.nonset(kk))*this.cost.mapsCell{this.nonset(kk)}.applyGrad(x);
+                end
+                
+                if mod(this.count4rep,this.nrepeat) == this.nrepeat - 1
+                    if this.stochastic_gradient
+                        this.updateSubset(randi(this.L,this.Lsub,1));
+                    else
+                        this.updateSubset(sort(1 + mod(round(this.counter...
+                            + (1:this.L/this.Lsub:this.L)),this.L)));
+                        this.counter = this.counter + 1;
+                    end
+                    this.count4rep = 0;
+                else
+                    this.count4rep = this.count4rep + 1;
+                end
+            else
+                grad = this.cost.applyGrad(x);
+            end
+        end
+        
+        function cost = computeCost(this,x)
+            
+            if this.Lsub < this.L
+                if isempty(this.subset)
+                    this.updateSubset(sort(1 + mod(round(this.counter...
+                        + (1:this.L/this.Lsub:this.L)),this.L)));
+                end
+                cost = 0;
+                for kk = 1:this.Lsub
+                    ind = this.set(this.subset(kk));
+                    cost = cost + this.cost.alpha(ind)*this.cost.mapsCell{ind}.apply(x);
+                end
+                cost = real(cost)/this.Lsub;%ad hoc
+                
+                for kk = 1:length(this.nonset)
+                    cost = cost + this.cost.alpha(this.nonset(kk))*this.cost.mapsCell{this.nonset(kk)}.apply(x);
+                end
+            else
+                cost = this.cost.apply(x);
+            end
+         end
+        
+        function updateSet(this,new_set)
+            this.set = new_set;
+            this.L = length(new_set);
+            this.nonset = find(~ismember(1:this.cost.numMaps,this.set));
+        end
+        
+        function updateSubset(this,subset)
+            this.subset = subset;
+            this.Lsub = length(subset);
+        end
+        
+        function reset(this)
+            this.counter = 0;
+            this.count4rep = 0;
+            if this.stochastic_gradient
+                this.updateSubset(randi(this.L,this.Lsub,1));
+            else
+                this.updateSubset(unique(round(1:this.L/this.Lsub:this.L)));
+            end
         end
     end
 end

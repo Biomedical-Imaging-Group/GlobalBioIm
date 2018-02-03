@@ -1,7 +1,7 @@
 classdef StackLinOp < LinOp
     %% StackLinOp : Stack of linear operators
     %  Matlab Linear Operator Library
-        %
+    %
     % TODO: INTEGRATE THIS IN THE NEW VERSION
     %
     % Example
@@ -36,31 +36,31 @@ classdef StackLinOp < LinOp
         numLinOp   % number of linop
         alpha      % scalar factor
         usecomplex = true; % if false complex are represented as an extra dimension of size 2 containning Real and imagenary parts of x
-  prmtIndex;
+        prmtIndex;
     end
     
     methods
         function this = StackLinOp(ALinOp,alpha, varargin)
             this.name ='StackLinOp';
-			
-			if nargin == 1
-				alpha = 1;
-			end
-			
-			this.numLinOp = numel(ALinOp);
-			assert(isnumeric(alpha)&& ( isscalar(alpha) || ( isvector(alpha) && (numel(alpha)== this.numLinOp))),'second input should be a scalar or an array of scalar of the same size as the first input');
-			if  isscalar(alpha)
-				this.alpha = repmat(alpha, 1, this.numLinOp) ;
-			else
-				this.alpha = alpha;
-			end
-			
-			allLinOps = all( cellfun(@(x)(isa(x, 'LinOp')), ALinOp) );
-			assert(iscell(ALinOp) && allLinOps, 'First input should be a cell array LinOp');
-			
-			
-			this.ALinOp = ALinOp;
-			this.isComplex= this.ALinOp{1}(1).isComplex;
+            
+            if nargin == 1
+                alpha = 1;
+            end
+            
+            this.numLinOp = numel(ALinOp);
+            assert(isnumeric(alpha)&& ( isscalar(alpha) || ( isvector(alpha) && (numel(alpha)== this.numLinOp))),'second input should be a scalar or an array of scalar of the same size as the first input');
+            if  isscalar(alpha)
+                this.alpha = repmat(alpha, 1, this.numLinOp) ;
+            else
+                this.alpha = alpha;
+            end
+            
+            allLinOps = all( cellfun(@(x)(isa(x, 'LinOp')), ALinOp) );
+            assert(iscell(ALinOp) && allLinOps, 'First input should be a cell array LinOp');
+            
+            
+            this.ALinOp = ALinOp;
+            this.isComplex= this.ALinOp{1}(1).isComplex;
             this.isInvertible=false;
             this.sizein =  this.ALinOp{1}(1).sizein;
             this.sizeout =  [this.ALinOp{1}(1).sizeout this.numLinOp];
@@ -83,11 +83,12 @@ classdef StackLinOp < LinOp
             end
             
             
-                 
+            
         end
-        
-        function y = apply(this,x) % apply the operator
-			assert(checkSize(x, this.sizein));
+    end
+    methods (Access = protected)
+        function y = apply_(this,x) % apply the operator
+            assert(checkSize(x, this.sizein));
             
             y = zeros(prod(this.ALinOp{1}.sizeout),this.numLinOp);
             for n = 1:this.numLinOp
@@ -96,14 +97,14 @@ classdef StackLinOp < LinOp
             end
             
             if ~this.usecomplex
-            y = reshape(y, [this.ALinOp{1}.sizeout this.numLinOp]);
+                y = reshape(y, [this.ALinOp{1}.sizeout this.numLinOp]);
                 y = permute(y,this.prmtIndex);
             else
                 y = reshape(y, this.sizeout);
             end
         end
-        function y = adjoint(this,x) % apply the adjoint
-			assert(checkSize(x, this.sizeout));
+        function y = adjoint_(this,x) % apply the adjoint
+            assert(checkSize(x, this.sizeout));
             y =  zeros(this.sizein);
             
             if ~this.usecomplex

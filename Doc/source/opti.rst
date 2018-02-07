@@ -41,14 +41,14 @@ OptiFBS
 
 .. autoclass:: OptiFBS
     :show-inheritance:
-    :members: run, starting_verb, ending_verb, test_convergence
+    :members: run, starting_verb, ending_verb, test_convergence, updateSet
     
 OptiGradDsct
 ------------
 
 .. autoclass:: OptiGradDsct
     :show-inheritance:
-    :members: run, starting_verb, ending_verb, test_convergence, set_b(
+    :members: run, starting_verb, ending_verb, test_convergence, set_b
 
 OptiPrimalDualCondat
 --------------------

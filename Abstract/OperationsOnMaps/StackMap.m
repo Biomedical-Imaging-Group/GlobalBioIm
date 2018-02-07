@@ -10,7 +10,7 @@ classdef StackMap < Map
     % See also :class:`Map`, :class:`LinOpSummation`
     
     %%    Copyright (C) 2017 
-    %     E. Soubies emmanuel.soubies@epfl.ch
+    %     T-A. Pham thanh-an.pham@epfl.ch
     %  
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by

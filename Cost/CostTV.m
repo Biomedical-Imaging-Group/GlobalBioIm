@@ -13,9 +13,7 @@ classdef CostTV < CostComposition
     % See also :class:`Map`, :class:`Cost`, :class:`CostL2`, :class:`CostComposition`, :class:`LinOp`
     
     %%    Copyright (C) 2017
-    %     E. Soubies emmanuel.soubies@epfl.ch &
-    %     F. Soulez ferreol.soulez@epfl.ch &
-    %     M. T. McCann michael.mccann@epfl.ch
+    %     T-A. Pham thanh-an.pham@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by

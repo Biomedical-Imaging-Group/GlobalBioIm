@@ -121,13 +121,13 @@ classdef OptiADMM < Opti
                 end
             end
         end
-    	%% Run the algorithm
-        function run(this,x0)
-            % Reimplementation from :class:`Opti`. For details see [1].          
+        function initialize(this,x0)
+            % Reimplementation from :class:`Opti`.
+            
+            initialize@Opti(this,x0);
             if ~isempty(x0) % To restart from current state if wanted
-                this.xopt=x0;
                 for n=1:length(this.Hn)
-                    this.yn{n}=this.Hn{n}.apply(this.xopt);
+                    this.yn{n}=this.Hn{n}.apply(x0);
                     this.Hnx{n}=this.yn{n};
                     this.wn{n}=zeros(size(this.yn{n}));
                 end
@@ -141,48 +141,37 @@ classdef OptiADMM < Opti
                     this.b0=this.F0.y;
                 end
             end
-            assert(~isempty(this.xopt),'Missing starting point x0');
-            tstart=tic;
-            this.OutOp.init();
-            this.niter=1;
-            this.starting_verb();
-            while (this.niter<this.maxiter)
-                this.niter=this.niter+1;
-                xold=this.xopt;
-                % - Algorithm iteration
-                for n=1:length(this.Fn)
-                    this.yn{n}=this.Fn{n}.applyProx(this.Hnx{n} + this.wn{n}/this.rho_n(n),1/this.rho_n(n));
-                    this.zn{n}=this.yn{n}-this.wn{n}/this.rho_n(n);
-                end
-                if isempty(this.solver)                  
-                    b=this.rho_n(1)*this.Hn{1}.applyAdjoint(this.zn{1});
-                    for n=2:length(this.Hn)
-                        b=b+this.rho_n(n)*this.Hn{n}.applyAdjoint(this.zn{n});
-                    end
-                    if ~isempty(this.b0)
-                        b=b+this.b0;
-                    end
-                    if this.A.isInvertible
-                        this.xopt=this.A.applyInverse(b);
-                    else
-                        this.CG.set_b(b);
-                        this.CG.run(this.xopt);
-                        this.xopt=this.CG.xopt;
-                    end
-                else
-                    this.xopt=this.solver(this.zn,this.rho_n, this.xopt);
-                end
-                for n=1:length(this.wn)
-                    this.Hnx{n}=this.Hn{n}.apply(this.xopt);
-                    this.wn{n}=this.wn{n} + this.rho_n(n)*(this.Hnx{n}-this.yn{n});
-                end
-                % - Convergence test
-                if this.test_convergence(xold), break; end
-                % - Call OutputOpti object
-                if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
-            end
-            this.time=toc(tstart);
-            this.ending_verb();
         end
+        function flag=doIteration(this)
+            % Reimplementation from :class:`Opti`. For details see [1].
+            
+            for n=1:length(this.Fn)
+                this.yn{n}=this.Fn{n}.applyProx(this.Hnx{n} + this.wn{n}/this.rho_n(n),1/this.rho_n(n));
+                this.zn{n}=this.yn{n}-this.wn{n}/this.rho_n(n);
+            end
+            if isempty(this.solver)
+                b=this.rho_n(1)*this.Hn{1}.applyAdjoint(this.zn{1});
+                for n=2:length(this.Hn)
+                    b=b+this.rho_n(n)*this.Hn{n}.applyAdjoint(this.zn{n});
+                end
+                if ~isempty(this.b0)
+                    b=b+this.b0;
+                end
+                if this.A.isInvertible
+                    this.xopt=this.A.applyInverse(b);
+                else
+                    this.CG.set_b(b);
+                    this.CG.run(this.xopt);
+                    this.xopt=this.CG.xopt;
+                end
+            else
+                this.xopt=this.solver(this.zn,this.rho_n, this.xopt);
+            end
+            for n=1:length(this.wn)
+                this.Hnx{n}=this.Hn{n}.apply(this.xopt);
+                this.wn{n}=this.wn{n} + this.rho_n(n)*(this.Hnx{n}-this.yn{n});
+            end
+            flag=0;
+        end 
     end
 end

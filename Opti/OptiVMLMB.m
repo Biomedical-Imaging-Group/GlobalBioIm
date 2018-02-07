@@ -84,6 +84,10 @@ classdef OptiVMLMB<Opti
         counter; % counter for subset update
         count4rep; % counter for subset repeat
     end
+    properties (SetAccess = protected,GetAccess = protected)
+        nbeval;
+        x;
+    end
     methods
         function this = OptiVMLMB(C,xmin,xmax,OutOp)
             this.name='OptiVMLMB';
@@ -100,14 +104,10 @@ classdef OptiVMLMB<Opti
             end
             this.cost=C;
         end
-        function Init(this)
-            [this.csave, this.isave, this.dsave] = m_vmlmb_first(this.nparam, this.m, this.fatol, this.frtol,...
-                this.sftol, this.sgtol, this.sxtol, this.epsilon, this.costheta);
-            this.task =  this.isave(3);
-        end
-        function  run(this,x0)
-            % Reimplementation from :class:`Opti`. For details see [1].
+        function initialize(this,x0)
+            % Reimplementation from :class:`Opti`.
             
+            initialize@Opti(this,x0);
             this.nparam =numel(x0);
             if isscalar(this.xmin)
                 this.xmin=ones(size(x0))*this.xmin;
@@ -115,89 +115,90 @@ classdef OptiVMLMB<Opti
             if isscalar(this.xmax)
                 this.xmax=ones(size(x0))*this.xmax;
             end
-            this.Init();
-            this.xopt = x0;
-            x = x0;
-            x(1)= x0(1); % Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
+            [this.csave, this.isave, this.dsave] = m_vmlmb_first(this.nparam, this.m, this.fatol, this.frtol,...
+                this.sftol, this.sgtol, this.sxtol, this.epsilon, this.costheta);
+            this.task =  this.isave(3);
             this.task = this.OP_TASK_FG;
-            tstart=tic;
-            this.OutOp.init();
-            nbeval=0;
-            this.niter =1;
-            starting_verb(this);
-            while(this.niter< this.maxiter)
-                if (this.task == this.OP_TASK_FG)
-                    % apply bound constraints
-                    % op_bounds_apply(n, x, xmin, xmax);
-                    if(bitand(this.bounds,1))
-                        test = (x<this.xmin);
-                        if any(test(:)), x(test) = this.xmin(test); end
-                    end
-                    if (bitand(this.bounds,2))
-                        test = (x>this.xmax);
-                        if any(test(:)), x(test) = this.xmax(test); end
-                    end
-                    
-                    
-                    %cost = this.cost.apply(x);
-                    %grad = this.cost.applyGrad(x);
-                    
-                    cost = this.computeCost(x);
-                    grad = this.computeGrad(x);
-                    
-                    %[cost,grad] = this.cost.eval_grad(x);     % evaluate the function and its gradient at X;
-                    normg= sum(grad(:).^2);
-                    
-                    nbeval=nbeval+1;
-                    if (normg< this.gtol)
-                        fprintf('Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d\t%d \n',this.niter,nbeval,cost,normg,this.task,this.isave(4));
-                        this.time=toc(tstart);
-                        this.ending_verb();
-                        break;
-                    end
-                elseif (this.task == this.OP_TASK_NEWX)
-                    this.niter = this.niter +1;
-                    this.xopt = x;
-                    if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end% New successful step: the approximation X, function F, and
-                    % gradient G, are available for inspection.
-                else
-                    % Convergence, or error, or warning
-                    fprintf('Convergence, or error, or warning : %d  , %s\n',this.task,this.csave);
+            this.nbeval=0;
+            this.x = x0;
+            this.x(1)= x0(1); %Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
+        end
+        
+        function flag=doIteration(this)
+            % Reimplementation from :class:`Opti`. For details see [1].
+            
+            flag=0;
+            if (this.task == this.OP_TASK_FG)
+                % apply bound constraints
+                % op_bounds_apply(n, x, xmin, xmax);
+                if(bitand(this.bounds,1))
+                    test = (this.x<this.xmin);
+                    if any(test(:)), this.x(test) = this.xmin(test); end
+                end
+                if (bitand(this.bounds,2))
+                    test = (this.x>this.xmax);
+                    if any(test(:)), this.x(test) = this.xmax(test); end
+                end
+                
+                
+                %cost = this.cost.apply(x);
+                %grad = this.cost.applyGrad(x);
+                
+                cost = this.computeCost(this.x);
+                grad = this.computeGrad(this.x);
+                
+                %[cost,grad] = this.cost.eval_grad(x);     % evaluate the function and its gradient at X;
+                normg= sum(grad(:).^2);
+                
+                this.nbeval=this.nbeval+1;
+                if (normg< this.gtol)
+                    fprintf('Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d\t%d \n',this.niter,this.nbeval,cost,normg,this.task,this.isave(4));
                     this.time=toc(tstart);
                     this.ending_verb();
-                    break;
+                    flag=1;
                 end
-                if ( (nbeval==1) || (this.task == this.OP_TASK_NEWX))
-                    % Computes set of active parameters :
-                    % op_bounds_active(n, active, x, g, xmin, xmax);
-                    switch(this.bounds)
-                        case 0
-                            active = [];
-                        case 1
-                            active = int32( (x>this.xmin) + (grad<0) );
-                        case 2
-                            active = int32( (grad>0) + (x<this.xmax) );
-                        case 3
-                            active = int32( ( (x>this.xmin) + (grad<0) ).*( (x<this.xmax) + (grad>0) ) );
-                    end
-                end
-                % Computes next step:
-                [this.task, this.csave]= m_vmlmb_next(x,cost,grad,active,this.isave,this.dsave);
-                
-                if (this.niter==this.maxiter)
-                    this.ending_verb();
+            elseif (this.task == this.OP_TASK_NEWX)
+                this.niter = this.niter +1;
+                this.xopt = this.x;
+                if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end% New successful step: the approximation X, function F, and
+                % gradient G, are available for inspection.
+            else
+                % Convergence, or error, or warning
+                fprintf('Convergence, or error, or warning : %d  , %s\n',this.task,this.csave);
+                this.time=toc(tstart);
+                this.ending_verb();
+                flag=1;
+            end
+            if ( (this.nbeval==1) || (this.task == this.OP_TASK_NEWX))
+                % Computes set of active parameters :
+                % op_bounds_active(n, active, x, g, xmin, xmax);
+                switch(this.bounds)
+                    case 0
+                        active = [];
+                    case 1
+                        active = int32( (this.x>this.xmin) + (grad<0) );
+                    case 2
+                        active = int32( (grad>0) + (this.x<this.xmax) );
+                    case 3
+                        active = int32( ( (this.x>this.xmin) + (grad<0) ).*( (this.x<this.xmax) + (grad>0) ) );
                 end
             end
+            % Computes next step:
+            [this.task, this.csave]= m_vmlmb_next(this.x,cost,grad,active,this.isave,this.dsave);
             
+            %                 if (this.niter==this.maxiter)
+            %                     this.ending_verb();
+            %                 end
         end
+        
         
         function grad = computeGrad(this,x)
             
             if this.Lsub < this.L
-%                 if isempty(this.subset)
-%                     this.updateSubset(sort(1 + mod(round(this.counter...
-%                         + (1:this.L/this.Lsub:this.L)),this.L)));
-%                 end
+                %                 if isempty(this.subset)
+                %                     this.updateSubset(sort(1 + mod(round(this.counter...
+                %                         + (1:this.L/this.Lsub:this.L)),this.L)));
+                %                 end
                 grad = zeros(size(x));
                 for kk = 1:this.Lsub
                     ind = this.set(this.subset(kk));
@@ -246,7 +247,7 @@ classdef OptiVMLMB<Opti
             else
                 cost = this.cost.apply(x);
             end
-         end
+        end
         
         function updateSet(this,new_set)
             this.set = new_set;

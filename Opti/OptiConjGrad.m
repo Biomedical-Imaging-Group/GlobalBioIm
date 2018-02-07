@@ -5,14 +5,13 @@ classdef OptiConjGrad < Opti
     %
     % :param A: symmetric definite positive :class:`LinOp`
     % :param b: right-hand term
-    % :param W: :class:`LinOpDiag`, if set then the algorithm solves \\(\\mathrm{A^TWAx=b}\\)
     %
     % All attributes of parent class :class:`Opti` are inherited. 
     %
     % **Note**: In this algorithm the parameter cost is not fixed to the above functional
     % but to the squared resildual \\( 0.5\\Vert \\mathrm{Ax - b}\\Vert^2 \\)
     %
-    % **Example** CG=OptiConjGrad(A,b,W,OutOp)
+    % **Example** CG=OptiConjGrad(A,b,OutOp)
     %
     % See also :class:`Opti`, :class:`OutputOpti` :class:`Cost`
 
@@ -40,23 +39,19 @@ classdef OptiConjGrad < Opti
     % Full protected properties 
     properties (SetAccess = protected,GetAccess = protected)
 		r; % residual
+        rho_prec;
+        p;
     end
     
     methods
     	%% Constructor
-    	function this=OptiConjGrad(A,b,W,OutOp)
-    		this.name='Opti Conjugate Gradient';
-    		if nargin<=2, W=[]; end
-    		if nargin==4 && ~isempty(OutOp),this.OutOp=OutOp;end  
-    		if isempty(W)
-    			this.A=A;
-    		else
-    			assert(isa(W,'LinOpDiag'),'W must be a LinOpDiag object');
-    			this.A=A'*W*A; 			
-    		end
-    		this.cost=CostL2Composition(CostL2([],b),this.A);
-    		assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
-    		this.b=b;
+    	function this=OptiConjGrad(A,b,OutOp)
+            this.name='Opti Conjugate Gradient';
+            if nargin==3 && ~isempty(OutOp),this.OutOp=OutOp;end
+            this.A=A;
+            this.cost=CostL2Composition(CostL2([],b),this.A);
+            assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
+            this.b=b;
         end 
         %% Set data b
         function set_b(this,b)
@@ -65,41 +60,31 @@ classdef OptiConjGrad < Opti
             this.b=b;
             this.cost.H1.y=b;
         end
-    	%% Run the algorithm
-        function run(this,x0) 
+        function initialize(this,x0)
+            % Reimplementation from :class:`Opti`.
+            
+            initialize@Opti(this,x0);
+            if ~isempty(x0) % To restart from current state if wanted
+                this.r= this.b - this.A.apply(this.xopt);
+                this.p = this.r;
+            end;
+        end
+        function flag=doIteration(this)
             % Reimplementation from :class:`Opti`. For a detailled
             % algorithm scheme see `here
             % <https://en.wikipedia.org/wiki/Conjugate_gradient_method#The_resulting_algorithm>`_
             
-			if ~isempty(x0) % To restart from current state if wanted
-				this.xopt=x0;
-				this.r= this.b - this.A.apply(this.xopt);
-			end;  
-			assert(~isempty(this.xopt),'Missing starting point x0');
-			tstart=tic;
-			this.OutOp.init();
-			this.niter=1;
-			this.starting_verb();			
-			while (this.niter<this.maxiter)
-				this.niter=this.niter+1;
-				% - Algorithm iteration
-   				rho = dot(this.r(:),this.r(:));
-    			if this.niter == 2 && ~isempty(x0)
-        			p = this.r;
-                else
-                    beta = rho/rho_prec;
-                    p = this.r + beta*p;
-    			end
-        		q = this.A*p;
-    			alpha = rho/dot(p(:), q(:));
-    			this.xopt = this.xopt + alpha*p;
-    			this.r = this.r - alpha*q;
-    			rho_prec = rho;
-				% - Call OutputOpti object
-				if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
-			end 
-			this.time=toc(tstart);
-			this.ending_verb();
+            rho = dot(this.r(:),this.r(:));
+            if this.niter>1
+                beta = rho/this.rho_prec;
+                this.p = this.r + beta*this.p;
+            end
+            q = this.A*this.p;
+            alpha = rho/dot(this.p(:), q(:));
+            this.xopt = this.xopt + alpha*this.p;
+            this.r = this.r - alpha*q;
+            this.rho_prec = rho;
+            flag=0;
         end
-	end
+ 	end
 end

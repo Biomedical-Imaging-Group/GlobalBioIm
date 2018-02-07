@@ -96,51 +96,32 @@ classdef OptiFBS < Opti
                 this.updateSet(1:this.L);
             end
         end
-        
-        function run(this,x0)
-            % Reimplementation from :class:`Opti`. For details see [1-3].
+        function initialize(this,x0)
+            % Reimplementation from :class:`Opti`.
             
-            assert(~isempty(this.gam),'parameter gam is not setted');
+            initialize@Opti(this,x0);
             if ~isempty(x0) % To restart from current state if wanted
-                this.xopt=x0;
+                assert(~isempty(this.gam),'parameter gam is not setted');
                 this.counter=0;
                 if this.fista
                     this.tk=1;
-                    this.y=this.xopt;
+                    this.y=x0;
                 end
             end
-            assert(~isempty(this.xopt),'Missing starting point x0');
-            tstart=tic;
-            this.OutOp.init();
-            this.niter=1;
-            this.starting_verb();
-            while (this.niter<this.maxiter)
-                if this.reducedStep
-                    this.gam = max(this.gam*sqrt(max(this.niter-1,1)/this.niter),this.mingam);
-                end
-                this.updateGam(this);
-                
-                this.niter=this.niter+1;
-                xold=this.xopt;
-                % - Algorithm iteration
-                if this.fista  % if fista
-                    this.xopt=this.G.applyProx(this.y - this.gam*this.computeGrad(this.y),this.gam);
-                    told=this.tk;
-                    this.tk=0.5*(1+sqrt(1+4*this.tk^2));
-                    this.y=this.xopt + this.alpha*(told-1)/this.tk*(this.xopt - xold);
-                else
-                    this.xopt=this.G.applyProx(this.xopt - this.gam*this.computeGrad(this.xopt),this.gam);
-                end
-                % - Convergence test
-                if this.test_convergence(xold), break; end
-                % - Call OutputOpti object
-                if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
-            end
-            this.time=toc(tstart);
-            this.ending_verb();
         end
-                
-        
+        function flag=doIteration(this)
+            % Reimplementation from :class:`Opti`. For details see [1-3].
+            
+            if this.fista  % if fista
+                this.xopt=this.G.applyProx(this.y - this.gam*this.computeGrad(this.y),this.gam);
+                told=this.tk;
+                this.tk=0.5*(1+sqrt(1+4*this.tk^2));
+                this.y=this.xopt + this.alpha*(told-1)/this.tk*(this.xopt - this.xold);
+            else
+                this.xopt=this.G.applyProx(this.xopt - this.gam*this.computeGrad(this.xopt),this.gam);
+            end
+            flag=0;
+        end   
         function updateSet(this,new_set)
             % Changes the attribute set
             

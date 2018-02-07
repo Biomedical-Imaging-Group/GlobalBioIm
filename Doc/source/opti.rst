@@ -12,21 +12,21 @@ OptiADMM
 
 .. autoclass:: OptiADMM
     :show-inheritance:
-    :members: run, starting_verb, ending_verb, test_convergence
+    :members: run, starting_verb, ending_verb, test_convergence, initialize, doIteration, updateParams
 
 OptiChambPock
 -------------
 
 .. autoclass:: OptiChambPock
     :show-inheritance:
-    :members: run, starting_verb, ending_verb, test_convergence
+    :members: run, starting_verb, ending_verb, test_convergence, initialize, doIteration, updateParams
 
 OptiConjGrad
 ------------
 
 .. autoclass:: OptiConjGrad
     :show-inheritance:
-    :members: run, starting_verb, ending_verb, test_convergence
+    :members: run, starting_verb, ending_verb, test_convergence, initialize, doIteration, updateParams
 
 
 OptiDouglasRachford
@@ -34,42 +34,42 @@ OptiDouglasRachford
 
 .. autoclass:: OptiDouglasRachford
     :show-inheritance:
-    :members: run, starting_verb, ending_verb, test_convergence
+    :members: run, starting_verb, ending_verb, test_convergence, initialize, doIteration, updateParams
 
 OptiFBS
 -------
 
 .. autoclass:: OptiFBS
     :show-inheritance:
-    :members: run, starting_verb, ending_verb, test_convergence, updateSet
+    :members: run, starting_verb, ending_verb, test_convergence, updateSet, initialize, doIteration, updateParams
     
 OptiGradDsct
 ------------
 
 .. autoclass:: OptiGradDsct
     :show-inheritance:
-    :members: run, starting_verb, ending_verb, test_convergence, set_b
+    :members: run, starting_verb, ending_verb, test_convergence, set_b, initialize, doIteration, updateParams
 
 OptiPrimalDualCondat
 --------------------
 
 .. autoclass:: OptiPrimalDualCondat
     :show-inheritance:
-    :members: run, starting_verb, ending_verb, test_convergence
+    :members: run, starting_verb, ending_verb, test_convergence, initialize, doIteration, updateParams
 
 OptiRichLucy
 ------------
 
 .. autoclass:: OptiRichLucy
     :show-inheritance:
-    :members: run, starting_verb, ending_verb, test_convergence
+    :members: run, starting_verb, ending_verb, test_convergence, initialize, doIteration, updateParams
 
 OptiVMLMB
 ---------
 
 .. autoclass:: OptiVMLMB
     :show-inheritance:
-    :members: run, starting_verb, ending_verb, test_convergence
+    :members: run, starting_verb, ending_verb, test_convergence, initialize, doIteration, updateParams
 
 OutputOpti
 ----------

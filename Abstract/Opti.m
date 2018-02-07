@@ -38,6 +38,9 @@ classdef Opti < matlab.mixin.SetGet
     	xopt=[];             % optimization variable
     	OutOp=OutputOpti();  % OutputOpti object
     end
+    properties  (SetAccess = protected,GetAccess = protected)
+        xold;
+    end
     % Full public properties
     properties
     	maxiter=50;     % maximal number of iterates
@@ -52,8 +55,49 @@ classdef Opti < matlab.mixin.SetGet
         	% :param x0: initial point in \\(\\in X\\), if x0=[] restarts from the current value :attr:`xopt`.
         	%
 			% **note**: this method does not return anything, the result being stored in public attribute :attr:`xopt`.
-
-            error(['In ',this.name,': run method is not implemented']);
+            
+            this.initialize(x0);
+			assert(~isempty(this.xopt),'Missing starting point x0');
+			tstart=tic;
+            this.OutOp.init();
+			this.niter=0;
+			this.starting_verb();
+            while (this.niter<this.maxiter)
+                this.niter=this.niter+1;
+                this.xold=this.xopt;
+                % - Update parameters
+                this.updateParams();
+                % - Algorithm iteration
+                flag=this.doIteration();
+                % - Convergence test
+                if this.test_convergence() || flag, break; end
+                % - Call OutputOpti object
+                if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
+            end
+            this.time=toc(tstart);
+			this.ending_verb();                    
+        end
+        function initialize(this,x0)
+            % Implements initialization of the algorithm
+            %
+            % :param x0: initial point
+            
+            if ~isempty(x0) % To restart from current state if wanted
+                this.xopt=x0;               
+            end
+        end
+        function flag=doIteration(this)
+            % Implements algorithm iteration
+            %
+            % flag=1 if loop has to break (0 to continue)
+            
+            error(['In ',this.name,': doIteration method is not implemented']);
+        end
+        function updateParams(this)
+            % Updates the parameters of the algorithm at each iteration
+            % (default: no update). This method can be overloaded to makes
+            % some parameters varying during iterations (e.g. descent step,
+            % lagrangian parameters...)
         end
         function starting_verb(this)  
         	% Generic method to display a starting message in verbose mode.
@@ -72,15 +116,14 @@ classdef Opti < matlab.mixin.SetGet
 				fprintf('... Optimization finished \nElapsed time (s): %4.2d (%i iterations). \n',this.time, this.niter);
         	end
         end
-        function stop=test_convergence(this,xold)
+        function stop=test_convergence(this)
         	% Tests algorithm convergence from the relative difference between two successive iterates 
         	%
-        	% :param xold: iterate \\( \\mathrm{x}^{k-1}\\).
         	% :returns stop: boolean true if
         	% $$ \\frac{\\| \\mathrm{x}^{k} - \\mathrm{x}^{k-1}\\|}{\\|\\mathrm{x}^{k-1}\\|} < x_{tol}.$$
         	
-        	r=this.xopt-xold;
-        	xdiff=norm(r(:))/(norm(xold(:))+eps);
+        	r=this.xopt-this.xold;
+        	xdiff=norm(r(:))/(norm(this.xold(:))+eps);
         	stop=xdiff<this.xtol;
         end
     end

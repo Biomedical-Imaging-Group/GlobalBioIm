@@ -106,7 +106,7 @@ classdef MyOutputOpti < handle
         function update(this,opti)
         	str=sprintf('Iter: %5i',opti.niter);
         	if this.computecost
-        		cc=opti.cost.apply(abs(opti.xopt));
+        		cc=opti.cost.apply(max(opti.xopt,0));
         		str=sprintf('%s | Cost: %4.4e',str,cc);
         		this.evolcost(this.count)=cc;
         	end

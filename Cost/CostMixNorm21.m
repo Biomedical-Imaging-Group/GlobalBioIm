@@ -109,11 +109,11 @@ classdef CostMixNorm21 < Cost
         function M=makeComposition_(this,G)
             % Reimplemented from parent class :class:`Cost`. Instantiates a
             % :class:`CostL2Composition`.
-            if isa(G,'LinOpGrad')
-                M = CostTV(this,G);
-            else
+%             if isa(G,'LinOpGrad')
+%                 M = CostTV(this,G);
+%             else
                 M = makeComposition_@Cost(this,G);
-            end
+%             end
         end
         
     end

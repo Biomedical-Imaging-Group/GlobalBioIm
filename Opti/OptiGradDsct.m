@@ -52,30 +52,19 @@ classdef OptiGradDsct < Opti
     			this.OutOp=OutOp;
     		end
     	end 
-    	%% Run the algorithm
-        function xopt = run(this,x0) 
+        %% Run the algorithm
+        function initialize(this,x0)
+            % Reimplementation from :class:`Opti`.
+            
+            initialize@Opti(this,x0);
+            if isempty(this.gam), error('Parameter gam is not setted'); end
+        end
+        function flag=doIteration(this)
             % Reimplementation from :class:`Opti`.  Performs:
             % $$ \\mathrm{x}^{k+1} = \\mathrm{x}^k - \\gamma \\nabla C(\\mathrm{x}^k) $$
-        	if isempty(this.gam), error('Parameter gam is not setted'); end
-			if ~isempty(x0),this.xopt=x0;end;  % To restart from current state if wanted
-			assert(~isempty(this.xopt),'Missing starting point x0');
-			tstart=tic;
-			this.OutOp.init();
-			this.niter=1;
-			this.starting_verb();
-			while (this.niter<=this.maxiter)
-				this.niter=this.niter+1;
-				xold=this.xopt;
-				% - Algorithm iteration
-				this.xopt=this.xopt-this.gam*this.cost.applyGrad(this.xopt);
-				% - Convergence test
-				if this.test_convergence(xold), break; end
-				% - Call OutputOpti object
-				if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
-			end 
-			this.time=toc(tstart);
-			this.ending_verb();
-			xopt = this.xopt;
+            
+            this.xopt=this.xopt-this.gam*this.cost.applyGrad(this.xopt);
+            flag=0;
         end
 	end
 end

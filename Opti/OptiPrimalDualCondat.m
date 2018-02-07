@@ -71,13 +71,13 @@ classdef OptiPrimalDualCondat < Opti
     methods
     	%% Constructor
     	function this=OptiPrimalDualCondat(F0,G,Fn,Hn,OutOp)
-    		this.name='Opti Primal-Dual Condat';
-    		if nargin==5 && ~isempty(OutOp), this.OutOp=OutOp; end
-    		assert(length(Fn)==length(Hn),'Fn, Hn and rho_n must have the same length');
-    		this.Fn=Fn;
-    		this.Hn=Hn;
-    		this.F0=F0;
-    		this.G=G;
+            this.name='Opti Primal-Dual Condat';
+            if nargin==5 && ~isempty(OutOp), this.OutOp=OutOp; end
+            assert(length(Fn)==length(Hn),'Fn, Hn and rho_n must have the same length');
+            this.Fn=Fn;
+            this.Hn=Hn;
+            this.F0=F0;
+            this.G=G;
             if ~isempty(F0), this.cost=F0;end
             if ~isempty(G)
                 if isempty(this.cost), this.cost=G;
@@ -91,58 +91,46 @@ classdef OptiPrimalDualCondat < Opti
                 this.cost=this.cost+Fn{n}*Hn{n};
             end
         end
-    	%% Run the algorithm
-        function run(this,x0) 
-            % Reimplementation from :class:`Opti`. For details see [1].
+        function initialize(this,x0)
+            % Reimplementation from :class:`Opti`.
             
-			if ~isempty(x0)   % To restart from current state if wanted
-				this.xopt=x0;
-				% initialization of the dual variables y
-				for n=1:length(this.Hn)
-    				this.y{n}=this.Hn{n}.apply(x0); 	 
-				end
-			end; 
-			% Check parameters
-        	assert(~isempty(this.sig),'parameter sig is not set');
-        	assert(~isempty(this.tau),'parameter tau is not set');
-        	assert(~isempty(this.rho),'parameter rho is not set');
-			assert(~isempty(this.xopt),'Missing starting point x0');
-			tstart=tic;
-			this.OutOp.init();
-			this.niter=1;
-			this.starting_verb();
-			while (this.niter<this.maxiter)
-				this.niter=this.niter+1;
-				xold=this.xopt;
-				% - Algorithm iteration
-				% Update xtilde
-				if ~isempty(this.F0)
-					temp=this.xopt-this.tau*this.F0.applyGrad(this.xopt);
-				else
-					temp=this.xopt;
-				end
-				for n=1:length(this.Hn) 
-					temp=temp-this.tau*this.Hn{n}.applyAdjoint(this.y{n});
-				end
-				if ~isempty(this.G)
-					xtilde=this.G.applyProx(temp,this.tau);
-				else
-					xtilde=temp;
-				end
-				% Update xopt
-				this.xopt=this.rho*xtilde+(1-this.rho)*this.xopt;
-				% Update ytilde and y
-				for n=1:length(this.Fn) 
-					ytilde{n}=this.Fn{n}.applyProxFench(this.y{n}+this.sig*this.Hn{n}.apply(2*xtilde-xold),this.sig);
-					this.y{n}=this.rho*ytilde{n}+(1-this.rho)*this.y{n};
-				end
-				% - Convergence test
-				if this.test_convergence(xold) && this.niter>2, break; end  % this.niter>2 to avoid stopping at the first iteration if x0=0
-				% - Call OutputOpti object
-				if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
-			end 
-			this.time=toc(tstart);
-			this.ending_verb();
+            initialize@Opti(this,x0);
+            if ~isempty(x0) % To restart from current state if wanted
+                % initialization of the dual variables y
+                for n=1:length(this.Hn)
+                    this.y{n}=this.Hn{n}.apply(x0);
+                end
+            end
+            % Check parameters
+            assert(~isempty(this.sig),'parameter sig is not set');
+            assert(~isempty(this.tau),'parameter tau is not set');
+            assert(~isempty(this.rho),'parameter rho is not set');
+        end
+        function flag=doIteration(this)
+            % Reimplementation from :class:`Opti`. For details see [1].
+            % Update xtilde
+            
+            if ~isempty(this.F0)
+                temp=this.xopt-this.tau*this.F0.applyGrad(this.xopt);
+            else
+                temp=this.xopt;
+            end
+            for n=1:length(this.Hn)
+                temp=temp-this.tau*this.Hn{n}.applyAdjoint(this.y{n});
+            end
+            if ~isempty(this.G)
+                xtilde=this.G.applyProx(temp,this.tau);
+            else
+                xtilde=temp;
+            end
+            % Update xopt
+            this.xopt=this.rho*xtilde+(1-this.rho)*this.xopt;
+            % Update ytilde and y
+            for n=1:length(this.Fn)
+                ytilde{n}=this.Fn{n}.applyProxFench(this.y{n}+this.sig*this.Hn{n}.apply(2*xtilde-this.xold),this.sig);
+                this.y{n}=this.rho*ytilde{n}+(1-this.rho)*this.y{n};
+            end
+            flag=0;
         end
 	end
 end

@@ -6,16 +6,10 @@ classdef OptiFBS < Opti
     % :param G: a :class:`Cost` with an implementation of the :meth:`applyProx`.
     % :param gam: descent step
     % :param fista: boolean true if the accelerated version FISTA [3] is used (default false)
-    % :param doFullGradient: boolean (default true), false if F gradient is computed from a subset of "angles" (requires F = CostSummation)
-    % :param stochastic_gradient: boolean (default false), true if stochastic gradient descent rule (requires F = CostSummation and doFullGradient = false)
-    % :param L: Total number of available "angles"
-    % :param set: indices of mapsCell (CostSummation) to consider as an "angle" (e.g. F is composed of 100 CostL2 (i.e., angles) + 1 CostHyperbolic)
-    % :param nonset: indices of mapsCell (CostSummation) not to consider as an "angle"
-    % :param Lsub: Number of "angles" used if doFullGradient==0
-    % :param subset: current subset of angles used to compute F grad
-    % :param counter: counter for subset update
-    
-    
+    % :param partialGrad: when F is a :class:`CostSummation`, uses a subset of this sum of Costs to compute the gradient. 0: desactivated (default), 1: circular shift of uniform subset, 2: stochastic subset selection
+    % :param set: when partialGrad>0, subset of F.mapsCells on which the partial gradient is applied (remaining cost will always be used in the gradient computation).
+    % :param Lsub: number of costs used to compute the partial gradient (Lsub < length(set))
+    %
     % All attributes of parent class :class:`Opti` are inherited.
     %
     % **Note**: When the functional are convex and \\(F\\) has a Lipschitz continuous gradient, convergence is
@@ -42,6 +36,7 @@ classdef OptiFBS < Opti
     
     %%     Copyright (C) 2017
     %     E. Soubies emmanuel.soubies@epfl.ch
+    %     T-A. Pham thanh-an.pham@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -56,23 +51,22 @@ classdef OptiFBS < Opti
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    % Protected Set and public Read properties
-    properties (SetAccess = public,GetAccess = public) %Change by Thanh-an
-        F;  % Cost F
-        G;  % Cost G
-        
-        set; %indices of mapsCell (CostSummation) to consider as an "angle" (e.g. F is composed of 100 CostL2 (i.e., angles) + 1 CostHyperbolic)
-        nonset; %indices of mapsCell (CostSummation) not to consider as an "angle"
-        L; % Total number of available "angles"
-    end
     % Full protected properties
     properties (SetAccess = protected,GetAccess = protected)
-        y;    % Internal parameters
+        y;         % Internal parameters
         tk;
         counter=0; % counter for subset update
+        set;       %indices of mapsCell (CostSummation) to consider as an "angle" (e.g. F is composed of 100 CostL2 (i.e., angles) + 1 CostHyperbolic)
+        nonset;    %indices of mapsCell (CostSummation) not to consider as an "angle"
+        L;         % Total number of available "angles"
+        subset; % current subset of angles used to compute F grad
     end
     % Full public properties
     properties
+        F;  % Cost F
+        G;  % Cost G
+        
+        partialGrad=0; % activate partial gradient option
         gam=[];        % descent step
         fista=false;   % FISTA option [3]
         
@@ -80,11 +74,7 @@ classdef OptiFBS < Opti
         mingam;
         alpha = 1; % see Kamilov paper
         
-        doFullGradient = 1; % boolean. If false, F gradient is computed from a subset of "angles" (requires F = CostSummation)
-        stochastic_gradient = 0; % boolean, stochastic gradient descent rule (requires F = CostSummation and doFullGradient = false)
-        
-        Lsub; % Number of "angles" used if doFullGradient==0
-        subset; % current subset of angles used to compute F grad
+        Lsub;   % Number of costs used in partial gradient
     end
     
     methods
@@ -102,6 +92,7 @@ classdef OptiFBS < Opti
             end
             if isa(F,'CostSummation')
                 this.L = F.numMaps;
+                this.Lsub=this.L;
                 this.updateSet(1:this.L);
             end
         end
@@ -112,6 +103,7 @@ classdef OptiFBS < Opti
             assert(~isempty(this.gam),'parameter gam is not setted');
             if ~isempty(x0) % To restart from current state if wanted
                 this.xopt=x0;
+                this.counter=0;
                 if this.fista
                     this.tk=1;
                     this.y=this.xopt;
@@ -126,6 +118,7 @@ classdef OptiFBS < Opti
                 if this.reducedStep
                     this.gam = max(this.gam*sqrt(max(this.niter-1,1)/this.niter),this.mingam);
                 end
+                this.updateGam(this);
                 
                 this.niter=this.niter+1;
                 xold=this.xopt;
@@ -146,55 +139,43 @@ classdef OptiFBS < Opti
             this.time=toc(tstart);
             this.ending_verb();
         end
+                
+        
+        function updateSet(this,new_set)
+            % Changes the attribute set
+            
+            this.set = new_set;
+            this.L = length(new_set);
+            this.nonset = find(~ismember(1:this.F.numMaps,this.set));
+        end   
         
         function grad = computeGrad(this,x)
-            
-            if this.Lsub < this.L
-                if isempty(this.subset)
-                    this.updateSubset(sort(1 + mod(round(this.counter...
-                        + (1:this.L/this.Lsub:this.L)),this.L)));
+            if this.partialGrad >0
+                switch this.partialGrad
+                    case 1
+                        this.updateSubset(randi(this.L,this.Lsub,1));
+                    case 2
+                        this.updateSubset(sort(1 + mod(round(this.counter...
+                            + (1:this.L/this.Lsub:this.L)),this.L)));
+                        this.counter = this.counter + 1;
                 end
                 grad = zeros(size(x));
                 for kk = 1:this.Lsub
                     ind = this.set(this.subset(kk));
                     grad = grad + this.F.alpha(ind)*this.F.mapsCell{ind}.applyGrad(x);
                 end
-                grad = real(grad)/this.Lsub;%ad hoc
-                
+                grad = real(grad)/this.Lsub;%ad hoc               
                 for kk = 1:length(this.nonset)
                     grad = grad + this.F.alpha(this.nonset(kk))*this.F.mapsCell{this.nonset(kk)}.applyGrad(x);
-                end
-                
-                if this.stochastic_gradient
-                    this.updateSubset(randi(this.L,this.Lsub,1));
-                else
-                    this.updateSubset(sort(1 + mod(round(this.counter...
-                        + (1:this.L/this.Lsub:this.L)),this.L)));
-                    this.counter = this.counter + 1;
                 end
             else
                 grad = this.F.applyGrad(x);
             end
         end
         
-        function updateSet(this,new_set)
-            this.set = new_set;
-            this.L = length(new_set);
-            this.nonset = find(~ismember(1:this.F.numMaps,this.set));
-        end
-        
         function updateSubset(this,subset)
             this.subset = subset;
             this.Lsub = length(subset);
-        end
-        
-        function reset(this)
-            this.counter = 0;
-            if this.stochastic_gradient
-                this.updateSubset(randi(this.L,this.Lsub,1));
-            else
-                this.updateSubset(unique(round(1:this.L/this.Lsub:this.L)));
-            end
-        end
+        end        
     end
 end

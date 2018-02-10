@@ -12,7 +12,7 @@
 % CostMixNorm12, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
 % CostHyperBolic, OptiVMLMB
 %------------------------------------------------------------
-clear all; close all; clc;
+clear; close all; 
 help Deconv_LS_TV_NonNeg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch

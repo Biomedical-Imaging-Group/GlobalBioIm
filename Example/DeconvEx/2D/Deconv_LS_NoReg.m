@@ -7,7 +7,7 @@
 % See LinOp, LinOpConv, Cost, CostL2, CostL2Composition, Opti,
 % OptiGradDsct, OutpuOpti
 %------------------------------------------------------------
-clear; close all; clc;
+clear; close all;
 help Deconv_LS_NoReg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch

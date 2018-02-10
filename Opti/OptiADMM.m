@@ -130,7 +130,7 @@ classdef OptiADMM < Opti
                 for n=1:length(this.Hn)
                     this.yn{n}=this.Hn{n}.apply(x0);
                     this.Hnx{n}=this.yn{n};
-                    this.wn{n}=zeros(size(this.yn{n}));
+                    this.wn{n}=zeros_(size(this.yn{n}));
                 end
             end
             % This is done here in case one change the y in F0 between two

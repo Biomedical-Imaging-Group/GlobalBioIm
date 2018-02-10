@@ -44,21 +44,21 @@ classdef LinOpSummation < MapSummation &  LinOp
     methods (Access = protected)      		
         function x = applyAdjoint_(this,y) 
             % Reimplemented from :class:`LinOp` 
-            x =  zeros(this.sizein);
+            x =  zeros_(this.sizein);
             for n = 1:this.numMaps
                 x = x + this.alpha(n) .* this.mapsCell{n}(1).applyAdjoint(y);
             end
         end	
 		function y = applyHtH_(this,x) 
             % Reimplemented from :class:`LinOp` 
-			y =  zeros(this.sizein);
+			y =  zeros_(this.sizein);
 			for n = 1:this.numMaps
 				y = y + this.alpha(n) .* this.mapsCell{n}.applyHtH(x);
 			end
         end		
 		function x = applyHHt_(this,y) 
             % Reimplemented from :class:`LinOp` 
-            x =  zeros(this.sizeout);
+            x =  zeros_(this.sizeout);
             for n = 1:this.numMaps
                 x = x + this.alpha(n) .* this.mapsCell{n}.applyHHt(y);
             end

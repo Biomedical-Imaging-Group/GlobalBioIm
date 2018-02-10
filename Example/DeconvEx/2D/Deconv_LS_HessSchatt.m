@@ -9,7 +9,7 @@
 % See LinOp, LinOpConv, LinOpHess, Cost, CostL2,   
 % CostMixNorm1Schatt, Opti, OptiChambPock, OptiADMM, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;
+clear; close all;
 help Deconv_LS_HessSchatt
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch

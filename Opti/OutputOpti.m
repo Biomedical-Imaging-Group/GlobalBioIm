@@ -92,8 +92,8 @@ classdef OutputOpti < handle
         function init(this)
             % Initialize the arrays and counters.
         	this.count=1;
-        	this.evolcost=[];
-        	this.evolsnr=[];
+        	this.evolcost=zeros_(1);
+        	this.evolsnr=zeros_(1);
 			this.iternum = [];
 			this.evolxopt = {};
         end

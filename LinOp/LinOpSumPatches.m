@@ -42,7 +42,7 @@ classdef LinOpSumPatches <  LinOp
             this.szPatch=szPatch;
             this.sizeout=this.szPatch;           
             for n=1:length(this.sizein)
-                this.sel{n}=this.szPatch(n)*ones(1,this.sizein(n)/this.szPatch(n));
+                this.sel{n}=this.szPatch(n)*ones_(1,this.sizein(n)/this.szPatch(n));
             end
 		end
     end
@@ -51,7 +51,7 @@ classdef LinOpSumPatches <  LinOp
 	methods (Access = protected)
         function y = apply_(this,x)
             % Reimplemented from parent class :class:`LinOp`.   
-            y=zeros(this.szPatch);
+            y=zeros_(this.szPatch);
             tmp=mat2cell(x,this.sel{:});
             for n=1:numel(tmp)
                 y=y+tmp{n};

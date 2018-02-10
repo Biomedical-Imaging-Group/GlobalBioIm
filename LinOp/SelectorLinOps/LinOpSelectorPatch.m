@@ -79,7 +79,7 @@ classdef LinOpSelectorPatch < LinOpSelector
         end
         function M = makeHtH_(this)
             % Reimplemented from parent class :class:`LinOpSelector`. 
-            w=zeros(this.sizein);w(this.sel{:})=1;
+            w=zeros_(this.sizein);w(this.sel{:})=1;
             M=LinOpDiag([],w);
         end
     end

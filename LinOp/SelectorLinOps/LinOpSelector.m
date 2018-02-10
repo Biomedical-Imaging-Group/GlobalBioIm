@@ -80,7 +80,7 @@ classdef LinOpSelector <  LinOp
         end
         function M = makeHtH_(this)
             % Reimplemented from parent class :class:`LinOp`.
-            w=zeros(size(this.sel));w(this.sel)=1;
+            w=zeros_(size(this.sel));w(this.sel)=1;
             M=LinOpDiag([],w);
         end
     end

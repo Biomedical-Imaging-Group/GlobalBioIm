@@ -102,10 +102,10 @@ classdef OptiVMLMB<Opti
             initialize@Opti(this,x0);
             this.nparam =numel(x0);
             if isscalar(this.xmin)
-                this.xmin=ones(size(x0))*this.xmin;
+                this.xmin=ones_(size(x0))*this.xmin;
             end
             if isscalar(this.xmax)
-                this.xmax=ones(size(x0))*this.xmax;
+                this.xmax=ones_(size(x0))*this.xmax;
             end
             this.ws = m_opl_vmlmb_create(this.nparam, this.m, this.fatol, this.frtol,...
                 this.sftol, this.sgtol, this.sxtol, this.epsilon, this.delta);
@@ -173,10 +173,8 @@ classdef OptiVMLMB<Opti
             end
             
             % Computes next step:
-            this.task = m_opl_vmlmb_iterate(this.ws,this.xopt,this.cc,this.grad,this.active);
-            
-            
-            
+            this.task = m_opl_vmlmb_iterate(this.ws,this.xopt,this.cc,this.grad,this.active);           
+                    
         end
         
     end

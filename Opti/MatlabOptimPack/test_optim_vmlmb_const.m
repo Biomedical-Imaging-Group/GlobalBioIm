@@ -7,7 +7,7 @@
  % and the OptimPack functions op_vmlmb_first and op_vmlmb_next 
  % or through the optim_vmlmb.m optimisation function
  % 
- % The results are identical to the test_optim_vmlmb_const.c ones.
+ % The results are identical to the test_optim_vmlmb_const.c ones
   clc
   clear all
 
@@ -47,7 +47,7 @@
   f = fun(x)+1e8;
   task = OP_TASK_FG;
   nbeval=0;
-  list_x = zeros(length(x),nbitermax);
+  list_x = zeros_(length(x),nbitermax);
   list_J = zeros(1,nbitermax);
   fprintf('it\t nbeval\t x \t\t\t f\t df\t normg\t task\tstage\n');
   % Iterations

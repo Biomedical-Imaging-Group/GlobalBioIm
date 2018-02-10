@@ -96,7 +96,7 @@ classdef OptiRichLucy < Opti
             
             initialize@Opti(this,x0);
             this.data=this.F.H1.y;
-            this.He1=this.F.H2.applyAdjoint(ones(this.F.sizein));
+            this.He1=this.F.H2.applyAdjoint(ones_(this.F.sizein));
             this.bet=this.F.H1.bet;
             if this.bet==0, error('Smoothing parameter beta has to be different from 0 (see constructor of CostKullLeib)'); end;
         end

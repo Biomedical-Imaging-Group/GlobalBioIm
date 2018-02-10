@@ -68,7 +68,7 @@ classdef LinOpDico <  LinOp
         end		
         function y = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            y=sum(reshape(bsxfun(@times,this.D,x),[this.numelAtom,ones(this.ndms-2),this.sizein(end)]),1);
+            y=sum(reshape(bsxfun(@times,this.D,x),[this.numelAtom,ones_(this.ndms-2),this.sizein(end)]),1);
             y=y(:);
         end
     end

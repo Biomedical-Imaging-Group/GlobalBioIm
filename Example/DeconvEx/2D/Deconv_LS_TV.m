@@ -9,7 +9,7 @@
 % See LinOp, LinOpConv, LinOpGrad, Cost, CostL2,   
 % CostMixNorm12, Opti, OptiChambPock, OptiADMM, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;
+clear; close all;
 help Deconv_LS_TV
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -28,16 +28,21 @@ help Deconv_LS_TV
 %  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %---------------------------------------------------------------
 
+% -- To run on GPU (0: CPU / 1: Matlab Parrallel Computing Toolbox / 2: CudaMat) 
+useGPU(1)
+
 % -- fix the random seed (for reproductibility)
 rng(1);
 
 % -- Input image and psf
 load('StarLikeSample');    % Load image (variable im)
 load('psf');               % Load psf (variable psf)
+psf=gpuCpuConverter(psf);
+im=gpuCpuConverter(im);
 imdisp(im,'Input Image',1);
 
 % -- Image padding
-impad=zeros(512); idx=129:384;
+impad=zeros_(512); idx=129:384;
 impad(idx,idx)=im;
 
 % -- Convolution Operator definition
@@ -45,6 +50,7 @@ H=LinOpConv(fft2(psf));
 
 % -- Generate data
 load('data');    % load data (variable y)
+y=gpuCpuConverter(y);
 imdisp(y(idx,idx),'Convolved and noisy data',1);
 sz=size(y);
 
@@ -76,8 +82,8 @@ ADMM.maxiter=200;      % max number of iterations
 ADMM.run(y);           % run the algorithm 
 
 % -- Display
-imdisp(OutCP.evolxopt{end}(idx,idx),'LS + TV (CP)',1);
-imdisp(OutADMM.evolxopt{end}(idx,idx),'LS + TV (ADMM)',1);
+imdisp(CP.xopt(idx,idx),'LS + TV (CP)',1);
+imdisp(ADMM.xopt(idx,idx),'LS + TV (ADMM)',1);
 figure;plot(OutCP.iternum,OutCP.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 hold all;plot(OutADMM.iternum,OutADMM.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 legend('CP','ADMM');title('Cost evolution');

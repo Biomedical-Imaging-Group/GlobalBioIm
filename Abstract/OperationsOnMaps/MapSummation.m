@@ -84,14 +84,14 @@ classdef MapSummation < Map
     methods (Access = protected)
         function y = apply_(this,x) 
             % Reimplemented from :class:`Map`   
-            y = zeros(this.sizeout);
+            y = zeros_(this.sizeout);
             for n = 1:this.numMaps
                 y = y + this.alpha(n) .* this.mapsCell{n}.apply(x);
             end
         end  
         function x = applyJacobianT_(this, y, v)
             % Reimplemented from :class:`Map`   
-            x = zeros(this.sizeout);
+            x = zeros_(this.sizeout);
             for n = 1:this.numMaps
                 x = x + this.alpha(n) .* this.mapsCell{n}.applyJacobianT(y,v);
             end

@@ -7,7 +7,7 @@
 % See LinOp, LinOpConv, Cost, CostL2, CostL2Composition, Opti,
 % OptiGradDsct, OutpuOpti
 %------------------------------------------------------------
-clear; close all; clc;
+clear; close all;
 help Deconv_LS_NoReg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -26,16 +26,21 @@ help Deconv_LS_NoReg
 %  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %---------------------------------------------------------------
 
+% -- To run on GPU (0: CPU / 1: Matlab Parrallel Computing Toolbox / 2: CudaMat) 
+useGPU(2)
+
 % -- fix the random seed (for reproductibility)
 rng(1);
 
 % -- Input image and psf
 load('StarLikeSample');    % Load image (variable im)
 load('psf');               % Load psf (variable psf)
+psf=gpuCpuConverter(psf);
+im=gpuCpuConverter(im);
 imdisp(im,'Input Image',1);
 
 % -- Image padding
-impad=zeros(512); idx=129:384;
+impad=zeros_(512); idx=129:384;
 impad(idx,idx)=im;
 
 % -- Convolution Operator definition
@@ -46,6 +51,7 @@ H.memoizeOpts.applyHtH=1;
 
 % -- Generate data
 load('data');    % load data (variable y)
+y=gpuCpuConverter(y);
 imdisp(y(idx,idx),'Convolved and noisy data',1);
 
 % -- Function definition
@@ -70,7 +76,7 @@ GD.run(y);        % run the algorithm (Note that gam is fixed automatically to 1
 
 % -- Display
 [v,n]=max(OutOp.evolsnr(:));
-imdisp(OutOp.evolxopt{n}(idx,idx),'LS (GD)',1);
+imdisp(GD.xopt(idx,idx),'LS (GD)',1);
 figure;plot(OutOp.iternum,OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');title('Cost evolution');
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
 semilogy(OutOp.iternum,OutOp.evolsnr,'LineWidth',1.5); 

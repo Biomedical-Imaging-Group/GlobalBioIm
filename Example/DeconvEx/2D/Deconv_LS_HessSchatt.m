@@ -9,7 +9,7 @@
 % See LinOp, LinOpConv, LinOpHess, Cost, CostL2,   
 % CostMixNorm1Schatt, Opti, OptiChambPock, OptiADMM, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;
+clear; close all;
 help Deconv_LS_HessSchatt
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -28,16 +28,23 @@ help Deconv_LS_HessSchatt
 %  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %---------------------------------------------------------------
 
+% -- To run on GPU (0: CPU / 1: Matlab Parrallel Computing Toolbox / 2: CudaMat) 
+%    Note: when using Matlab Parrallel Computing Toolbox, svd computations are done with a mex
+%          function on the cpu (so lost of time in transfert CPU/GPU)
+useGPU(0)
+
 % -- fix the random seed (for reproductibility)
 rng(1);
 
 % -- Input image and psf
 load('StarLikeSample');    % Load image (variable im)
 load('psf');               % Load psf (variable psf)
+psf=gpuCpuConverter(psf);
+im=gpuCpuConverter(im);
 imdisp(im,'Input Image',1);
 
 % -- Image padding
-impad=zeros(512); idx=129:384;
+impad=zeros_(512); idx=129:384;
 impad(idx,idx)=im;
 
 % -- Convolution Operator definition
@@ -45,6 +52,7 @@ H=LinOpConv(fft2(psf));
 
 % -- Generate data
 load('data');    % load data (variable y)
+y=gpuCpuConverter(y);
 imdisp(y(idx,idx),'Convolved and noisy data',1);
 sz=size(y);
 

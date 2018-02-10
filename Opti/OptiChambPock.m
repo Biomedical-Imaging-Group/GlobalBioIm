@@ -67,7 +67,7 @@ classdef OptiChambPock < Opti
 		H;  % LinOp H
     end
     % Full protected properties 
-    properties (SetAccess = protected,GetAccess = protected)
+    properties (SetAccess = protected,GetAccess = public)
 		theta=1; % parameter of the algorithm (fixed to 1 but can could be set as a user defined 
                  % parameter for future upgrades of the Library)
         % Internal variables

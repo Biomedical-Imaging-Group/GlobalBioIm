@@ -110,10 +110,10 @@ classdef OptiVMLMB<Opti
             initialize@Opti(this,x0);
             this.nparam =numel(x0);
             if isscalar(this.xmin)
-                this.xmin=ones(size(x0))*this.xmin;
+                this.xmin=ones_(size(x0))*this.xmin;
             end
             if isscalar(this.xmax)
-                this.xmax=ones(size(x0))*this.xmax;
+                this.xmax=ones_(size(x0))*this.xmax;
             end
             [this.csave, this.isave, this.dsave] = m_vmlmb_first(this.nparam, this.m, this.fatol, this.frtol,...
                 this.sftol, this.sgtol, this.sxtol, this.epsilon, this.costheta);
@@ -199,7 +199,7 @@ classdef OptiVMLMB<Opti
                 %                     this.updateSubset(sort(1 + mod(round(this.counter...
                 %                         + (1:this.L/this.Lsub:this.L)),this.L)));
                 %                 end
-                grad = zeros(size(x));
+                grad = zeros_(size(x));
                 for kk = 1:this.Lsub
                     ind = this.set(this.subset(kk));
                     grad = grad + this.cost.alpha(ind)*this.cost.mapsCell{ind}.applyGrad(x);

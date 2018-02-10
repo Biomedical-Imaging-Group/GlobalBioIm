@@ -73,11 +73,23 @@ classdef CostMixNormSchatt1 < Cost
     methods (Access = protected)
         function y=apply_(this,x)
             % Reimplemented from parent class :class:`Cost`.
+            
+            global isGPU
             dim=size(x);
             if dim(3)==3     % 2D
-                [E,V]=svd2D_decomp(x);
+                if isGPU==1
+                    [E,V]=svd2D_decomp(gather(x));
+                    E=gpuArray(E);
+                else
+                    [E,V]=svd2D_decomp(x);
+                end
             elseif dim(4)==6 % 3D
-                [E,V]=svd3D_decomp(x);
+                if isGPU==1
+                    [E,V]=svd3D_decomp(gather(x));
+                    E=gpuArray(E);
+                else
+                    [E,V]=svd3D_decomp(x);
+                end
             else
                 error('third dimension of x should be 3 or 6');
             end
@@ -90,16 +102,32 @@ classdef CostMixNormSchatt1 < Cost
         end
         function y=applyProx_(this,x,alpha)
             % Reimplemented from parent class :class:`Cost`.
+            
+            global isGPU
             dim=size(x);
             if this.p==1
                 if dim(3)==3     % 2D
-                    [E,V]=svd2D_decomp(x);
-                    E=max(abs(E)-alpha,0).*sign(E);
-                    y=svd2D_recomp(E,V);
+                    if isGPU==1                       
+                        [E,V]=svd2D_decomp(gather(x));
+                        E=max(abs(E)-alpha,0).*sign(E);
+                        y=svd2D_recomp(E,V);
+                        y=gpuArray(y);
+                    else
+                        [E,V]=svd2D_decomp(x);
+                        E=max(abs(E)-alpha,0).*sign(E);
+                        y=svd2D_recomp(E,V);
+                    end
                 elseif dim(4)==6 % 3D
-                    [E,V]=svd3D_decomp(x);
-                    E=max(abs(E)-alpha,0).*sign(E);
-                    y=svd3D_recomp(E,V);
+                    if isGPU==1
+                        [E,V]=svd3D_decomp(gather(x));
+                        E=max(abs(E)-alpha,0).*sign(E);
+                        y=svd3D_recomp(E,V);
+                        y=gpuArray(y);
+                    else
+                        [E,V]=svd3D_decomp(x);
+                        E=max(abs(E)-alpha,0).*sign(E);
+                        y=svd3D_recomp(E,V);
+                    end
                 else
                     error('third dimension of x should be 3 or 6');
                 end

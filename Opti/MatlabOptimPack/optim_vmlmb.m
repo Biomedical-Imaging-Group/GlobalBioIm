@@ -80,7 +80,7 @@ function [x, J , list_x] = optim_cont(fun, grad_fun, x_init, x_min, x_max, optio
     if nargout>1,
         J = zeros(1,nbitermax);
         if nargout==3,
-            list_x = zeros(length(x),nbitermax);
+            list_x = zeros_(length(x),nbitermax);
         end
     end
     

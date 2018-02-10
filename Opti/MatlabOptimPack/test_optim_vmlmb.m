@@ -40,8 +40,8 @@
   f = fun(x)+1e8;
   task = OP_TASK_FG;
   nbeval=0;
-  list_x = zeros(length(x),nbitermax);
-  list_J = zeros(1,nbitermax);
+  list_x = zeros_(length(x),nbitermax);
+  list_J = zeros_(1,nbitermax);
   fprintf('it\t nbeval\t x \t\t\t f\t df\t normg\t task\tstage\n');
   % Iterations
   for iter=1:nbitermax

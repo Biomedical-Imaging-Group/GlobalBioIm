@@ -68,7 +68,7 @@ classdef LinOpHess <  LinOp
     methods (Access = protected)
         function y = apply_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            y = zeros(this.sizeout);
+            y = zeros_(this.sizeout);
             nidx = 0;
             % switch according to the boundary condition
             switch(this.bc)
@@ -177,7 +177,7 @@ classdef LinOpHess <  LinOp
         function y = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             nidx = 0;
-            y = zeros(this.sizein);
+            y = zeros_(this.sizein);
             % switch according to the boundary condition
             switch(this.bc)
                 case('circular')
@@ -326,7 +326,7 @@ classdef LinOpHess <  LinOp
 		function y = applyHtH_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             nidx = 0;
-            y = zeros(this.sizein);
+            y = zeros_(this.sizein);
             % switch according to the number of dimension of the input
             % Emmanuel : FOR LARGE IMAGES IT SEEMS THAT THIS IMPLEMENTATION OF HTH DO NOT MAKE ANY 
             % IMPROVEMENT WITH RESPECT TO SUCCESSIVELY APPLY  H AND HT
@@ -431,7 +431,7 @@ classdef LinOpHess <  LinOp
         function M = makeHtH_(this)
             % Reimplemented from parent class :class:`LinOp`.
             if strcmp(this.bc,'circular')&&(this.ndms<=3)
-                fHtH=zeros(this.sizein);
+                fHtH=zeros_(this.sizein);
                 switch(this.ndms)
                     case(2), fHtH(1,1)=16;fHtH(1,2)=-6;fHtH(2,1)=-6;fHtH(end,1)=-6;fHtH(1,end)=-6;fHtH(1,3)=1;
                         fHtH(2,2)=1;fHtH(3,1)=1;fHtH(end-1,1)=1;fHtH(end,2)=1;fHtH(2,end)=1;fHtH(1,end-1)=1;

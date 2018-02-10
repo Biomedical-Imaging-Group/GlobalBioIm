@@ -93,7 +93,7 @@ classdef CostMixNorm21 < Cost
             
             % Computes the prox
             t = sx > alpha;
-            b = zeros(size(sx));
+            b = zeros_(size(sx));
             
             b(t) = 1-alpha./sx(t);
             if(isscalar(this.y)&&(this.y==0))

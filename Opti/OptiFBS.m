@@ -140,7 +140,7 @@ classdef OptiFBS < Opti
                             + (1:this.L/this.Lsub:this.L)),this.L)));
                         this.counter = this.counter + 1;
                 end
-                grad = zeros(size(x));
+                grad = zeros_(size(x));
                 for kk = 1:this.Lsub
                     ind = this.set(this.subset(kk));
                     grad = grad + this.F.alpha(ind)*this.F.mapsCell{ind}.applyGrad(x);

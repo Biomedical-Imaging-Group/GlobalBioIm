@@ -114,7 +114,7 @@ classdef OptiADMM < Opti
                     end
                 end
                 if ~this.A.isInvertible  % If A is non invertible -> intanciate a CG
-                    this.CG=OptiConjGrad(this.A,zeros(this.A.sizeout));
+                    this.CG=OptiConjGrad(this.A,zeros_(this.A.sizeout));
                     this.CG.verbose=0;
                     this.CG.maxiter=20;
                     this.CG.ItUpOut=0;
@@ -130,7 +130,7 @@ classdef OptiADMM < Opti
                 for n=1:length(this.Hn)
                     this.yn{n}=this.Hn{n}.apply(x0);
                     this.Hnx{n}=this.yn{n};
-                    this.wn{n}=zeros(size(this.yn{n}));
+                    this.wn{n}=zeros_(size(this.yn{n}));
                 end
             end
             % This is done here in case one change the y in F0 between two

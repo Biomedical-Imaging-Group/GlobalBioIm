@@ -8,7 +8,7 @@
 % See LinOp, LinOpConv, Cost, CostL2, CostNonNeg, Opti, 
 % OptiFBS, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;
+clear; close all; 
 help Deconv_Ls_NonNeg_NoReg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch

@@ -12,7 +12,7 @@
 % CostMixNorm12, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
 % CostHyperBolic, OptiVMLMB
 %------------------------------------------------------------
-clear all; close all; clc;
+clear; close all; 
 help Deconv_LS_TV_NonNeg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -30,6 +30,9 @@ help Deconv_LS_TV_NonNeg
 %  You should have received a copy of the GNU General Public License
 %  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %---------------------------------------------------------------
+
+% -- To run on GPU (0: CPU / 1: Matlab Parrallel Computing Toolbox / 2: CudaMat) 
+useGPU(0)
 
 % -- fix the random seed (for reproductibility)
 rng(1);

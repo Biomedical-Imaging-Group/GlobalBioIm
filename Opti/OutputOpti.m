@@ -85,8 +85,8 @@ classdef OutputOpti < handle
         function init(this)
             % Initialize the arrays and counters.
         	this.count=1;
-        	this.evolcost=[];
-        	this.evolsnr=[];
+        	this.evolcost=zeros_(1);
+        	this.evolsnr=zeros_(1);
 			this.iternum = [];
 			this.evolxopt = {};
         end
@@ -96,7 +96,7 @@ classdef OutputOpti < handle
         	str=sprintf('Iter: %5i',opti.niter);
         	if this.computecost
         		cc=opti.cost.apply(opti.xopt);
-        		str=sprintf('%s | Cost: %4.4e',str,cc);
+        		str=sprintf('%s | Cost: %4.4e',str,cc);            
         		this.evolcost(this.count)=cc;
         	end
         	if this.isgt

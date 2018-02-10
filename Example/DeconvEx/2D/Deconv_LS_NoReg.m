@@ -7,7 +7,7 @@
 % See LinOp, LinOpConv, Cost, CostL2, CostL2Composition, Opti,
 % OptiGradDsct, OutpuOpti
 %------------------------------------------------------------
-clear; close all; clc;
+clear; close all;
 help Deconv_LS_NoReg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -33,6 +33,7 @@ rng(1);
 load('GT');                % Load ground truth (variable im)
 load('psf');               % Load psf (variable psf)
 imdisp(im,'Input Image (GT)',1);
+
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));

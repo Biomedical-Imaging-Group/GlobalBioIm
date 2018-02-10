@@ -10,7 +10,7 @@
 % See LinOp, LinOpConv, LinOpHess, Cost, CostKullLeib, CostNonNeg,  
 % CostMixNorm1Schatt, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;
+clear; close all; 
 help Deconv_KL_HessSchatt_NonNeg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -69,8 +69,8 @@ Hn={Hess,H};
 PDC=OptiPrimalDualCondat([],R_POS,Fn,Hn);
 PDC.OutOp=MyOutputOpti(1,im,40);
 PDC.tau=5e-2;          % set algorithm parameters
-PDC.sig=1;            %
-PDC.rho=1.2;          %
+PDC.sig=1;             %
+PDC.rho=1.2;           %
 PDC.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
 PDC.maxiter=200;       % max number of iterations
 PDC.run(y);            % run the algorithm 

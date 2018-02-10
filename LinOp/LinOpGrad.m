@@ -47,7 +47,7 @@ classdef LinOpGrad <  LinOp
         function this = LinOpGrad(sz,index,bc,res)
             if nargin == 1, index = [];end
             if nargin<=2 || isempty(bc), bc='circular';end
-            if nargin<=3 || isempty(res), res=ones(size(sz));end
+            if nargin<=3 || isempty(res), res=ones_(size(sz));end
             this.name ='LinOpGrad';
             this.isInvertible=false;
             this.isDifferentiable=true;
@@ -93,7 +93,7 @@ classdef LinOpGrad <  LinOp
     methods (Access = protected)
         function y = apply_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            y = zeros(this.sizeout);
+            y = zeros_(this.sizeout);
             allElements = repmat({':'}, 1, this.ndms);
             for diffDimInd = 1:length(this.index)
                 diffDim = this.index(diffDimInd);
@@ -122,7 +122,7 @@ classdef LinOpGrad <  LinOp
         end
         function y = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            y = zeros(this.sizein);
+            y = zeros_(this.sizein);
             allElements = repmat({':'}, 1, this.ndms);
             for diffDimInd = 1:length(this.index)
                 diffDim = this.index(diffDimInd);
@@ -160,7 +160,7 @@ classdef LinOpGrad <  LinOp
         end
         function y = applyHtH_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            y = zeros(this.sizein);
+            y = zeros_(this.sizein);
             allElements = repmat({':'}, 1, this.ndms);
             for diffDimInd = 1:length(this.index)
                 diffDim = this.index(diffDimInd);
@@ -205,7 +205,7 @@ classdef LinOpGrad <  LinOp
         function M = makeHtH_(this)
             % Reimplemented from parent class :class:`LinOp`.
             if strcmp(this.bc,'circular')&&(this.ndms<=4)
-                fHtH=zeros(this.sizein);
+                fHtH=zeros_(this.sizein);
                 switch(this.ndms)
                     case(1), fHtH(1)=2;fHtH(2)=-1;fHtH(end)=-1;fHtH=fHtH/this.res(1)^2;
                     case(2), fHtH(1,1)=2/this.res(1)^2+2/this.res(2)^2;fHtH(1,2)=-1/this.res(2)^2;fHtH(2,1)=-1/this.res(1)^2;fHtH(1,end)=-1/this.res(2)^2;fHtH(end,1)=-1/this.res(1)^2;

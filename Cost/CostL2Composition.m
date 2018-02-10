@@ -72,9 +72,9 @@ classdef CostL2Composition <  CostComposition
 					this.precomputeCache.WHty=this.H1.W*this.H2.applyAdjoint(this.H1.y);
 				end
 				if ~isfield(this.precomputeCache,'ytWy')
-					this.precomputeCache.ytWy= this.H1.y(:)' * reshape(this.H1.W * this.H1.y, [], 1);
+					this.precomputeCache.ytWy= this.H1.y(:)' * reshape(this.H1.W * this.H1.y,numel(this.H1.y), 1);
 				end
-				y=0.5 * x(:)' * reshape(this.H1.W*this.H2.applyHtH(x), [],1) - x(:)' * this.precomputeCache.WHty(:) + 0.5 * this.precomputeCache.ytWy;
+				y=0.5 * x(:)' * reshape(this.H1.W*this.H2.applyHtH(x),numel(this.H1.y),1) - x(:)' * this.precomputeCache.WHty(:) + 0.5 * this.precomputeCache.ytWy;
 				y = real(y); % due to numerical error
 			else
 				y=apply_@CostComposition(this,x);
@@ -121,10 +121,11 @@ classdef CostL2Composition <  CostComposition
                         this.precomputeCache.fftHstardata=conj(this.H2.mtf).*Sfft(this.H1.y*this.H1.W,this.H2.Notindex);
                     end
                     y=iSfft((Sfft(x,this.H2.Notindex) + this.H1.W*alpha*this.precomputeCache.fftHstardata)./(1+this.H1.W*alpha*(abs(this.H2.mtf).^2)), this.H2.Notindex);
-                    if ~this.H2.isReal, y=real(y);end
+                    if this.H2.isReal, y=real(y);end
                 else
                     fftHstardata=conj(this.H2.mtf).*Sfft(this.H1.W*this.H1.y,this.H2.Notindex);
                     y=iSfft((Sfft(x,this.H2.Notindex) + this.H1.W*alpha*fftHstardata)./(1+this.H1.W*alpha*(abs(this.H2.mtf).^2)), this.H2.Notindex);
+                    if this.H2.isReal, y=real(y);end
                 end
             % If the composed operator is a composition between a LinOpDownsample and a LinOpConv    
             elseif isa(this.H2,'LinOpComposition') && isa(this.H2.H1,'LinOpDownsample') &&  isa(this.H2.H2,'LinOpConv') && isnumeric(this.H1.W) && this.H1.W==1
@@ -136,10 +137,10 @@ classdef CostL2Composition <  CostComposition
                         this.precomputeCache.fftHstarSdata=conj(this.H2.H2.mtf).*Sfft(this.H2.H1.applyAdjoint(this.H1.y),this.H2.H2.Notindex);
                     end
                     fftr=this.precomputeCache.fftHstarSdata+Sfft(x/alpha,this.H2.H2.Notindex);
-                    y=real(iSfft(alpha*(fftr - conj(this.H2.H2.mtf).*this.OpSumP.applyAdjoint(this.OpSumP.apply(this.H2.H2.mtf.*fftr)./(prod(this.H2.H1.df)/alpha+this.LLt))),this.H2.H2.Notindex));
+                    y=real(iSfft(alpha*(fftr - conj(this.H2.H2.mtf).*this.OpSumP.applyAdjoint(this.OpSumP.apply(this.H2.H2.mtf.*fftr)./(prod(this.H2.H1.df)/alpha+this.LLt))),this.H2.H2.Notindex));                 
                  else
                     fftr=conj(this.H2.H2.mtf).*Sfft(this.H2.H1.applyAdjoint(this.H1.y),this.H2.H2.Notindex)+Sfft(x/alpha,this.H2.H2.Notindex);
-                    y=real(iSfft(alpha*(fftr - conj(this.H2.H2.mtf).*this.OpSumP.applyAdjoint(this.OpSumP.apply(this.H2.H2.mtf.*fftr)./(prod(this.H2.H1.df)/alpha+this.LLt))),this.H2.H2.Notindex));
+                    y=real(iSfft(alpha*(fftr - conj(this.H2.H2.mtf).*this.OpSumP.applyAdjoint(this.OpSumP.apply(this.H2.H2.mtf.*fftr)./(prod(this.H2.H1.df)/alpha+this.LLt))),this.H2.H2.Notindex));                
                  end                                           
             % Default implementation
             elseif this.isH2LinOp && ~this.isH2SemiOrtho

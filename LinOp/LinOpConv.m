@@ -192,7 +192,7 @@ classdef LinOpConv <  LinOp
                 
             this.mtf = mtf; %Sfft(psf, this.Notindex);
             
-            if all(this.mtf)
+            if all(this.mtf(:))
                 this.isInvertible=true;
             else
                 this.isInvertible=false;

@@ -10,7 +10,7 @@
 % See LinOp, LinOpConv, Cost, CostKullLeib, CostNonNeg, Opti, 
 % OptiFBS, OptiRichLucy, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;
+clear; close all; 
 help Deconv_KL_NonNeg_NoReg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch

@@ -35,6 +35,7 @@ imdisp(im,'Input Image (GT)',1);
 imdisp(y,'Convolved and noisy data',1);
 sz=size(y);
 
+
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
 % If true, applyHtH method will save its result. Hence for two consecutive HtH*x with the

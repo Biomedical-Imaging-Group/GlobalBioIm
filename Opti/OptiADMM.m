@@ -114,7 +114,7 @@ classdef OptiADMM < Opti
                     end
                 end
                 if ~this.A.isInvertible  % If A is non invertible -> intanciate a CG
-                    this.CG=OptiConjGrad(this.A,zeros(this.A.sizeout));
+                    this.CG=OptiConjGrad(this.A,zeros_(this.A.sizeout));
                     this.CG.verbose=0;
                     this.CG.maxiter=20;
                     this.CG.ItUpOut=0;

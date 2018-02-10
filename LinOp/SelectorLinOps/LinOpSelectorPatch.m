@@ -65,12 +65,12 @@ classdef LinOpSelectorPatch < LinOpSelector
         end        
         function y = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOpSelector`.  
-            y = zeros(this.sizein);
+            y = zeros_(this.sizein);
             y(this.sel{:}) = x;
         end
         function y = applyHtH_(this,x)
             % Reimplemented from parent class :class:`LinOpSelector`.  
-            y = zeros(this.sizein);
+            y = zeros_(this.sizein);
             y(this.sel{:}) = x(this.sel{:});            
         end
         function y = applyHHt_(this,x)

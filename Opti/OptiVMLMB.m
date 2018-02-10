@@ -160,8 +160,7 @@ classdef OptiVMLMB<Opti
                         this.active = int32( (this.grad>0) + (this.xopt<this.xmax) );
                     case 3
                         this.active = int32( ( (this.xopt>this.xmin) + (this.grad<0) ).*( (this.xopt<this.xmax) + (this.grad>0) ) );
-                end
-                
+                end               
             else
                 % Convergence, or error, or warning
                 this.endingMessage = ['Convergence, or error, or warning : ',this.task,m_opl_vmlmb_get_reason(this.ws)];
@@ -174,7 +173,7 @@ classdef OptiVMLMB<Opti
             
             % Computes next step:
             this.task = m_opl_vmlmb_iterate(this.ws,this.xopt,this.cc,this.grad,this.active);           
-                    
+
         end
         
     end

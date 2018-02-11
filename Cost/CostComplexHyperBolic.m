@@ -42,7 +42,7 @@ classdef CostComplexHyperBolic < Cost
             this@Cost(sz,y);
             this.name='CostComplexHyperBolic';
             this.isConvex=true;
-            this.isDifferentiable=false;
+            this.isDifferentiable=true;
            
             if nargin<3|| isempty(index) %no sum
                 index=0;

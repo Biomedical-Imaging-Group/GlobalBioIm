@@ -32,8 +32,10 @@ classdef LinOp < Map
         function this=LinOp()
             % Add new fields to memoizeOpts and memoCache
             this.memoizeOpts.applyAdjoint=false; 
+            this.memoizeOpts.applyAdjointInverse=false; 
             this.memoizeOpts.applyHtH=false;
             this.memoizeOpts.applyHHt=false;
+            this.memoCache.applyAdjointInverse=struct('in', [], 'out', []); 
             this.memoCache.applyAdjoint=struct('in', [], 'out', []); 
             this.memoCache.applyHtH=struct('in', [], 'out', []);
             this.memoCache.applyHHt=struct('in', [], 'out', []);
@@ -128,18 +130,6 @@ classdef LinOp < Map
             if ~checkSize(y, this.sizeout)
                 warning('Output of applyAdjointInverse was size [%s], didn''t match stated sizeout: [%s].',...
                     num2str(size(y)), num2str(this.sizeout));
-            end
-            
-            % **(Abstract method)** Apply \\(\\mathrm{H}^{-*}\\) (if applicable)
-            %
-            % :param x: \\(\\in X\\)
-            % :returns y: \\(= \\mathrm{H^{-*}x}\\)
-            %
-            
-            if this.isinvertible
-                error('adjointInverse not implemented');
-            else
-                error('Operator not invertible');
             end
         end
         function M=makeHtH(this)

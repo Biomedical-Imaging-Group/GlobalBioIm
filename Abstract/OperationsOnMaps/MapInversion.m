@@ -34,8 +34,6 @@ classdef MapInversion < Map
             assert(isa(M,'Map'),'Input should be a Map');
             assert(M.isInvertible,'Input should be invertible');
             this.M = M;
-            this.isComplexIn= this.M.isComplexOut;
-            this.isComplexOut= this.M.isComplexIn;
             this.isDifferentiable= this.M.isDifferentiable;
             this.isInvertible=this.M.isInvertible;
             this.sizein =this.M.sizeout;
@@ -69,7 +67,7 @@ classdef MapInversion < Map
         function M = makeComposition_(this, G)
             % Reimplemented from parent class :class:`LinOp`.
             if  isequal(this.M,G)
-                M=LinOpScaledIdentity(this.sizein,1);
+                M=LinOpIdentity(this.sizein);
             else
                 M=makeComposition_@Map(this,G);
             end

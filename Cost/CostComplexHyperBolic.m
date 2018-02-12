@@ -87,7 +87,7 @@ classdef CostComplexHyperBolic < Cost
             R = this.sumOp.apply(u);
             
             F = sqrt(R + this.epsilon.^2);
-            g = u.*this.sumOp.applyAdjoint(1./F);           
+            g = x.*this.sumOp.applyAdjoint(1./F);  
         end
     end
 end

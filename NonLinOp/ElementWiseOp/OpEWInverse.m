@@ -1,16 +1,16 @@
-classdef OpSquaredMagnitude < Map
-    % SquaredMagnitude operator: compute the pointwise N power magnitude
-    % $$[\\mathrm{H}(x)]_k = |x_k|^2 $$
+classdef OpEWInverse < Map
+    % Element-wise Inverse operator: compute the pointwise inverse
+    % $$[\\mathrm{H}(x)]_k = \\frac{1}{x_k} $$
     % 
     % :param sz: input size
     %
     % All attributes of parent class :class:`Map` are inherited. 
     %
-    % **Example** H=
+    % **Example** H=OpEWInverse(sz)
     %
     % See also :class:`Map`
     
-    %%    Copyright (C) 2015 
+    %%    Copyright (C) 2018 
     %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -28,11 +28,12 @@ classdef OpSquaredMagnitude < Map
     
     %% Constructor
     methods
-        function this = OpSquaredMagnitude(sz)
-            this.name ='OpSquaredMagnitude ';
+        function this = OpEWInverse(sz)
+            this.name ='OpEWInverse ';
             this.sizein=sz;
             this.sizeout=sz;
             this.isDifferentiable=true;
+            this.isInvertible=true;
         end
     end
 	
@@ -40,13 +41,15 @@ classdef OpSquaredMagnitude < Map
 	methods (Access = protected)
         function y = apply_(this,x)
             % Reimplemented from parent class :class:`Map`.
-
-            y=abs(x).^2;
+            
+            assert(all(x(:)),'Input vector contains zeros');
+            y=1./x;
         end	
-        function y = applyJacobianT_(this,y,v)
+        function x = applyJacobianT_(this,y,v)
             % Reimplemented from parent class :class:`Map`.
 
-            y=2*v.*y;
+            assert(all(v(:)),'Input vector contains zeros');
+            x=-1./v.^2.*y;
         end	
     end
 end

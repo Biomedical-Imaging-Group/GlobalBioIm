@@ -37,7 +37,7 @@ Opti
 
 .. autoclass:: Opti
     :show-inheritance:
-    :members: run, starting_verb, ending_verb, test_convergence, initialize, doIteration
+    :members: run, starting_verb, ending_verb, test_convergence, initialize, doIteration, updateParams
 
 
 .. automodule:: Abstract.Compositions

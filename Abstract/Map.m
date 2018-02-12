@@ -67,6 +67,7 @@ classdef (Abstract) Map < handle
     % - minus(this,G)
     % - mpower(this,p)
     % - mtimes(this,G)
+    % - times(this,G)
 	% - size(this, [dim])
     methods (Sealed)
         function y = apply(this, x)
@@ -174,6 +175,8 @@ classdef (Abstract) Map < handle
         function M = mpower(this,p)
             % Returns a new :class:`Map` which is the power p \\(\\mathrm{H}^{p}\\) of the
             % current \\(\\mathrm{H}\\).  
+            %
+            % Calls the method :meth:`mpower_`
             M=this.mpower_(p);
         end
         function M = mtimes(this,G)
@@ -197,6 +200,22 @@ classdef (Abstract) Map < handle
                 M = this.apply(G);
             end
         end
+        function M = times(this,G)
+            % Returns a new :class:`Map` which is the element-wise multiplication of the
+            % current \\(\\mathrm{H}\\) with \\(\\mathrm{G}\\)
+            % $$ \\mathrm{M}(\\mathrm{x}) := \\mathrm{H}(\\mathrm{x}) \\times \\mathrm{G}(\\mathrm{x})$$  
+            %
+            % Calls the method :meth:`times_`
+            if ~isequal(this.sizein, G.sizein) % check input size
+                error('Input to times is a %s of sizein  [%s], which didn''t match the multiplied %s sizein [%s].',...
+                    class(G),num2str(G.sizein),class(this), num2str(this.sizein));
+            end
+            if ~isequal(this.sizeout, G.sizeout) % check input size
+                error('Input to times is a %s of sizeout  [%s], which didn''t match the multiplied %s sizeout [%s].',...
+                    class(G),num2str(G.sizeout),class(this), num2str(this.sizeout));
+            end
+            M=this.times_(G);
+        end
         % TODO Overload operator .* to multiply term by term two Maps ? (avoid the use of LinOpDiag)
         % TODO Overload operator .^ to do (H(x)).^p ?
 		function sz = size(this, varargin)
@@ -216,6 +235,7 @@ classdef (Abstract) Map < handle
     % - plus_(this,G)
     % - minus_(this,G)
     % - mpower_(this,p)
+    % - times_(this,G)
     % - makeComposition_(this, H)
     methods (Access = protected)
         function y = apply_(this, x)
@@ -249,6 +269,12 @@ classdef (Abstract) Map < handle
             else
                 error('mpower_ method not implemented for the given power==%d',p);
             end
+        end
+        function M = times_(this,G)
+            % Constructs a :class:`MapMultiplication` object to element-wise multiply the
+            % current :class:`Map` \\(\\mathrm{H}\\) with the given \\(\\mathrm{G}\\).
+            
+            M=MapMultiplication(this,G);
         end
         function M = makeComposition_(this, G)
             % Constructs a :class:`MapComposition` object to compose the

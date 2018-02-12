@@ -87,6 +87,9 @@ classdef OptiVMLMB<Opti
     properties (SetAccess = protected,GetAccess = protected)
         nbeval;
         x;
+        active;
+        grad;
+        cc;
     end
     methods
         function this = OptiVMLMB(C,xmin,xmax,OutOp)
@@ -144,29 +147,29 @@ classdef OptiVMLMB<Opti
                 %cost = this.cost.apply(x);
                 %grad = this.cost.applyGrad(x);
                 
-                cost = this.computeCost(this.x);
-                grad = this.computeGrad(this.x);
+                this.cc = this.computeCost(this.x);
+                this.grad = this.computeGrad(this.x);
                 
                 %[cost,grad] = this.cost.eval_grad(x);     % evaluate the function and its gradient at X;
-                normg= sum(grad(:).^2);
+                normg= sum(this.grad(:).^2);
                 
                 this.nbeval=this.nbeval+1;
                 if (normg< this.gtol)
-                    fprintf('Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d\t%d \n',this.niter,this.nbeval,cost,normg,this.task,this.isave(4));
-                    this.time=toc(tstart);
-                    this.ending_verb();
+                    fprintf('Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d\t%d \n',this.niter,this.nbeval,this.cc,normg,this.task,this.isave(4));
+                    %this.time=toc(tstart);
+                    %this.ending_verb();
                     flag=1;
                 end
             elseif (this.task == this.OP_TASK_NEWX)
                 this.niter = this.niter +1;
                 this.xopt = this.x;
-                if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end% New successful step: the approximation X, function F, and
+                %if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end% New successful step: the approximation X, function F, and
                 % gradient G, are available for inspection.
             else
                 % Convergence, or error, or warning
                 fprintf('Convergence, or error, or warning : %d  , %s\n',this.task,this.csave);
-                this.time=toc(tstart);
-                this.ending_verb();
+                %this.time=toc(tstart);
+                %this.ending_verb();
                 flag=1;
             end
             if ( (this.nbeval==1) || (this.task == this.OP_TASK_NEWX))
@@ -174,21 +177,49 @@ classdef OptiVMLMB<Opti
                 % op_bounds_active(n, active, x, g, xmin, xmax);
                 switch(this.bounds)
                     case 0
-                        active = [];
+                        this.active = [];
                     case 1
-                        active = int32( (this.x>this.xmin) + (grad<0) );
+                        this.active = int32( (this.x>this.xmin) + (this.grad<0) );
                     case 2
-                        active = int32( (grad>0) + (this.x<this.xmax) );
+                        this.active = int32( (this.grad>0) + (this.x<this.xmax) );
                     case 3
-                        active = int32( ( (this.x>this.xmin) + (grad<0) ).*( (this.x<this.xmax) + (grad>0) ) );
+                        this.active = int32( ( (this.x>this.xmin) + (this.grad<0) ).*( (this.x<this.xmax) + (this.grad>0) ) );
                 end
             end
             % Computes next step:
-            [this.task, this.csave]= m_vmlmb_next(this.x,cost,grad,active,this.isave,this.dsave);
+            [this.task, this.csave]= m_vmlmb_next(this.x,this.cc,this.grad,this.active,this.isave,this.dsave);
             
             %                 if (this.niter==this.maxiter)
             %                     this.ending_verb();
             %                 end
+            if this.niter<3
+                flag=0;
+            end
+        end
+        
+        function run(this,x0)
+            % Reimplemented from :class:`Opti`
+            
+            this.initialize(x0);
+            assert(~isempty(this.xopt),'Missing starting point x0');
+            tstart=tic;
+            this.OutOp.init();
+            this.niter=0;
+            this.starting_verb();
+            while (this.niter<this.maxiter)
+                this.niter=this.niter+1;
+                this.xold=this.xopt;
+                % - Update parameters
+                this.updateParams();
+                % - Algorithm iteration
+                flag=this.doIteration();
+                % - Convergence test
+                if flag, break; end
+                % - Call OutputOpti object
+                if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
+            end
+            this.time=toc(tstart);
+            this.ending_verb();
         end
         
         

@@ -139,6 +139,7 @@ classdef LinOpDiag <  LinOp
         end
         function M = makeComposition_(this, G)
             % Reimplemented from parent class :class:`LinOp`.
+            
             if isa(G,'LinOpDiag')
                 M=LinOpDiag(this.sizein,G.diag.*this.diag);
             elseif isa(G,'LinOpConv') && this.isScaledIdentity

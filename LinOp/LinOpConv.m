@@ -147,7 +147,7 @@ classdef LinOpConv <  LinOp
         function M = minus_(this,G)
             % Reimplemented from parent class :class:`LinOp`.
             if isa(G,'LinOpDiag')  && G.isScaledIdentity
-                M=LinOpDiag(this.mtf-G.diag,this.isReal,this.index);
+                M=LinOpConv(this.mtf-G.diag,this.isReal,this.index);
             elseif isa(G,'LinOpConv')
                 M=LinOpConv(this.mtf-G.mtf,this.isReal,this.index);
             else
@@ -164,7 +164,7 @@ classdef LinOpConv <  LinOp
         end
         function M = makeHtH_(this)
             % Reimplemented from parent class :class:`LinOp`.
-            M=LinOpConv(abs(this.mtf).^2,this.index);
+            M=LinOpConv(abs(this.mtf).^2,this.isReal,this.index);
         end
         function M = mpower_(this,p)
             % Reimplemented from parent class :class:`LinOp`

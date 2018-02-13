@@ -46,12 +46,12 @@ classdef OptiConjGrad < Opti
     methods
     	%% Constructor
     	function this=OptiConjGrad(A,b,OutOp)
-            this.name='Opti Conjugate Gradient';
+    		this.name='Opti Conjugate Gradient';
             if nargin==3 && ~isempty(OutOp),this.OutOp=OutOp;end
-            this.A=A;
-            this.cost=CostL2Composition(CostL2([],b),this.A);
-            assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
-            this.b=b;
+    			this.A=A;
+    		this.cost=CostL2Composition(CostL2([],b),this.A);
+    		assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
+    		this.b=b;
         end 
         %% Set data b
         function set_b(this,b)
@@ -64,8 +64,8 @@ classdef OptiConjGrad < Opti
             % Reimplementation from :class:`Opti`.
             
             initialize@Opti(this,x0);
-            if ~isempty(x0) % To restart from current state if wanted
-                this.r= this.b - this.A.apply(this.xopt);
+			if ~isempty(x0) % To restart from current state if wanted
+				this.r= this.b - this.A.apply(this.xopt);
                 this.p = this.r;
             end;
         end
@@ -79,12 +79,18 @@ classdef OptiConjGrad < Opti
                 beta = rho/this.rho_prec;
                 this.p = this.r + beta*this.p;
             end
-            q = this.A*this.p;
-            alpha = rho/dot(this.p(:), q(:));
-            this.xopt = this.xopt + alpha*this.p;
+            q = this.A*p;
+            alpha = rho/dot(p(:), q(:));
+
+            % stop if rounding errors
+            if dot(p(:),this.r(:))<0
+                flag = 1;
+                return
+            end
+            this.xopt = this.xopt + alpha*p;
             this.r = this.r - alpha*q;
             this.rho_prec = rho;
             flag=0;
         end
- 	end
+    end
 end

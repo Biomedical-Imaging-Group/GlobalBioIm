@@ -5,16 +5,16 @@ classdef LinOpBroadcast <  LinOp
     %
     % :param sz: size of \\(\\mathrm{y}\\) the output of the :class:`LinOpBroadcast`.
     % :param index: dimensions along which vector will be broadcasted
-    % 
+    %
     % LinOpBroadcast is the Adjoint of the LinOpSum operator
     %
-    % All attributes of parent class :class:`LinOp` are inherited. 
+    % All attributes of parent class :class:`LinOp` are inherited.
     %
     % **Example** S=LinOpSum(sz,index)
     %
     % See also :class:`LinOp`, :class:`Map`
     
-    %%    Copyright (C) 2015 
+    %%    Copyright (C) 2018
     %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ classdef LinOpBroadcast <  LinOp
             end
             this.name ='LinOpBroadcast ';
             this.isInvertible=false;
-            this.isDifferentiable=true;  
+            this.isDifferentiable=true;
             this.sizeout = sz;
             
             this.ndms = length(this.sizeout);
@@ -68,51 +68,52 @@ classdef LinOpBroadcast <  LinOp
             % Special case for scalar vectors as matlab thought it is 2D matrix ;-(
             switch(length(this.index))
                 case(this.ndms)
-                this.sizein= [1 1];
+                    this.sizein= [1 1];
                 case(this.ndms-1)
-                this.sizein= [this.sizeout(T) 1];
+                    this.sizein= [this.sizeout(T) 1];
                 otherwise
-                this.sizein= this.sizeout(T);
+                    this.sizein= this.sizeout(T);
             end
             this.kerdims = this.sizeout;
             this.kerdims(T)=1;
             this.imdims = this.sizeout;
             this.imdims(~T)=1;
             this.norm = prod(this.kerdims); % To be checked
-		end
+        end
     end
-	
+    
     %% Core Methods containing implementations (Protected)
-	methods (Access = protected)
+    methods (Access = protected)
         function y = apply_(this,x)
-            % Reimplemented from parent class :class:`LinOp`.  
-                        % $$\\mathrm{H}^* : \\mathrm{x} \\mapsto \\mathrm{y_{k,l}} =  \\mathrm{x}_{k} \\; \\forall l$$            
-                        y = reshape(repmat(reshape(x,this.imdims),this.kerdims),this.sizeout);
-
-        end		
+            % Reimplemented from parent class :class:`LinOp`.
+            % $$\\mathrm{H}^* : \\mathrm{x} \\mapsto \\mathrm{y_{k,l}} =  \\mathrm{x}_{k} \\; \\forall l$$
+            y = reshape(repmat(reshape(x,this.imdims),this.kerdims),this.sizeout);
+            
+        end
         function y = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-         % $$\\mathrm{H} : \\mathrm{x} \\mapsto \\mathrm{y_k} = \\sum_l \\mathrm{x}_{k,l} $$
+            % $$\\mathrm{H} : \\mathrm{x} \\mapsto \\mathrm{y_k} = \\sum_l \\mathrm{x}_{k,l} $$
             for n=this.index
                 x = sum(x,n);
             end
-            y = squeeze(x);     
-        end		
+            y = squeeze(x);
+        end
         function y = applyHtH_(this,x)
-            % Reimplemented from parent class :class:`LinOp`.            
+            % Reimplemented from parent class :class:`LinOp`.
             a = prod(this.kerdims);
             y = x.*a;
         end
-%         
-%         function M = makeAdjoint_(this)
-%             % Reimplemented from parent class :class:`LinOp`.
-%             M=LinOpSum(this.sizeout, this.index);
-%         end
-%         
+        
+        function M = makeAdjoint_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            M=LinOpSum(this.sizeout, this.index);
+        end
+        %
         function M = makeHtH_(this)
             % Reimplemented from parent class :class:`LinOp`.
             a = prod(this.kerdims);
             M=LinOpDiag(this.sizein,a);
         end
+        
     end
 end

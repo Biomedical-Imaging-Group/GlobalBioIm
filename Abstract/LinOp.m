@@ -114,6 +114,10 @@ classdef LinOp < Map
         function L = ctranspose(this)
             % Do the same as :meth:`transpose`
             L = this.makeAdjoint_();
+        end   
+        function L = makeAdjoint(this)
+            % Do the same as :meth:`transpose`
+            L = this.makeAdjoint_();
         end
         function y= applyAdjointInverse(this,x)
             % Computes \\(\\mathrm{y} = \\mathrm{H}^{-\star} \\mathrm{x}\\) for the given

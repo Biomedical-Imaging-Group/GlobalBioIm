@@ -32,12 +32,14 @@ classdef LinOpAdjoint < LinOp
         function this = LinOpAdjoint(TLinOp)
             this.name =sprintf('%s Adjoint', TLinOp.name);           
             assert(isa(TLinOp,'LinOp'),'Input should be a  LinOp');
+          
             this.TLinOp = TLinOp;
             this.isDifferentiable= this.TLinOp.isDifferentiable;
             this.isInvertible=this.TLinOp.isInvertible;
             this.sizein =  this.TLinOp.sizeout;
             this.sizeout =  this.TLinOp.sizein;			
-			this.norm = this.TLinOp.norm;        
+			this.norm = this.TLinOp.norm;  
+             
         end       
     end
 	
@@ -70,11 +72,11 @@ classdef LinOpAdjoint < LinOp
         end
         function y = applyInverse_(this,x)
             % Reimplemented from :class:`LinOp`
-            y =this.TLinOp.applyInverse(x);
+            y =this.TLinOp.applyAdjointInverse(x);
         end
         function y = applyAdjointInverse_(this,x)
             % Reimplemented from :class:`LinOp`
-            y =this.TLinOp.applyAdjointInverse(x); 
+            y =this.TLinOp.applyInverse(x); 
         end
         function M = makeAdjoint_(this)
             % Reimplemented from parent class :class:`LinOp`.

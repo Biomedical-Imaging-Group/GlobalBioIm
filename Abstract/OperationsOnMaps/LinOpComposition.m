@@ -95,6 +95,10 @@ classdef LinOpComposition < MapComposition & LinOp
                 y = applyAdjointInverse_@LinOp(x);
             end
         end
+        function M = makeAdjoint_(this) 
+            % Reimplemented from parent class :class:`LinOp`.
+                M=this.H2'* this.H1';      
+        end
         function M = makeHtH_(this)
             % Reimplemented from :class:`LinOp`
             M=this.H2'*this.H1.makeHtH()*this.H2;

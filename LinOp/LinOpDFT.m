@@ -8,7 +8,7 @@ classdef LinOpDFT <  LinOp
     % :param pad: padding size (see the doc of fftn function).
     % :param unitary: boolean true when normalized DFT (default false)
     %
-    % All attributes of parent class :class:`LinOp` are inherited. 
+    % All attributes of parent class :class:`LinOp` are inherited.
     %
     % **Example** DFT=LinOpDFT(sz, pad)
     %
@@ -17,7 +17,7 @@ classdef LinOpDFT <  LinOp
     
     % FIXME : Should better be merged with DFT
     
-    %%    Copyright (C) 2015 
+    %%    Copyright (C) 2015
     %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -42,11 +42,11 @@ classdef LinOpDFT <  LinOp
     
     %% Constructor
     methods
-        function this = LinOpDFT(sz, pad)        
+        function this = LinOpDFT(sz, pad)
             assert(issize(sz),'The input size sz should be a conformable  to a size ');
             this.name ='LinOpDFT';
             this.isInvertible=true;
-            this.isDifferentiable=true;           
+            this.isDifferentiable=true;
             this.sizein = sz;
             this.sizeout=sz;
             this.N=prod(sz);
@@ -56,18 +56,18 @@ classdef LinOpDFT <  LinOp
                 else
                     error('PAD should be conformable to size() output');
                 end
-            end           
-		end
+            end
+        end
     end
     
     %% Core Methods containing implementations (Protected)
-	methods (Access = protected)
+    methods (Access = protected)
         function y = apply_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             if this.unitary
                 y = 1./sqrt(this.N) * fftn(x,this.pad);
             else
-                y =  fftn(x,this.pad);              
+                y =  fftn(x,this.pad);
             end
         end
         function y = applyAdjoint_(this,x)
@@ -86,20 +86,48 @@ classdef LinOpDFT <  LinOp
                 y = ifftn(x,this.pad);
             end
         end
-        function y = applyHtH_(this,x) 
-            % Reimplemented from parent class :class:`LinOp`.       
+        function y = applyHtH_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
             if this.unitary
                 y = x;
             else
                 y =this.N *x;
             end
         end
-        function y = applyAdjointInverse_(this,x) 
+        function y = applyHHt_(this,x)
+            % Reimplemented from parent class :class:`LinOp`.
+            y=this.applyHtH_(x);
+        end	
+        function y = applyAdjointInverse_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             if this.unitary
                 y = 1/sqrt(this.N) * fftn(x,this.pad);
             else
                 y = 1/this.N * fftn(x,this.pad);
+            end
+        end
+        function M = makeHHt_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            if isempty(this.pad)
+                if this.unitary
+                    M=LinOpDiag(this.sizein);
+                else
+                    M=LinOpDiag(this.sizein,this.N );
+                end
+            else
+                M=makeHHt_@LinOp(this);
+            end
+        end
+        function M = makeHtH_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            if isempty(this.pad)
+                if this.unitary
+                    M=LinOpDiag(this.sizein);
+                else
+                    M=LinOpDiag(this.sizein,this.N );
+                end
+            else
+                M=makeHtH_@LinOp(this);
             end
         end
     end

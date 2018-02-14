@@ -112,21 +112,24 @@ classdef LinOpSum <  LinOp
         end
         function G = makeComposition_(this, H)
             % Reimplemented from parent class :class:`LinOp`
-            if isa(H, 'LinOpConv')
-                C = LinOpConv(squeeze(mean(H.mtf,this.index)),H.isReal); %,this.index
-                G = C * this;
-            elseif isa(H,'LinOpDiag')
-                if H.isScaledIdentity
-                    a = prod(this.kerdims).*H.diag;
-                    G = LinOpDiag(this.sizeout,H.diag)*this;
-                else
-                    a = squeeze(sum(H.diag,this.index));
-                    G = LinOpDiag(this.sizeout,a)*this;
+            if isa(H, 'LinOpComposition')
+                if isa(H.H2,'LinOpBroadcast') && all(this.kerdims == H.H2.kerdims)
+                    if isa(H.H1, 'LinOpConv')
+                        G = LinOpConv(squeeze(mean(H.H1.mtf,this.index)),H.H1.isReal); %,this.index                
+                    elseif isa(H.H1,'LinOpDiag')
+                        if H.H1.isScaledIdentity
+                            a = prod(this.kerdims).*H.H1.diag;
+                            G = LinOpDiag(this.sizeout,H.H1.diag);
+                        else
+                            a = squeeze(sum(H.H1.diag,this.index));
+                            G = LinOpDiag(this.sizeout,a);
+                        end
+                    end
                 end
             elseif isa(H,'LinOpBroadcast') && all(this.kerdims == H.kerdims)
                 a = prod(this.kerdims);
                 G=LinOpDiag(this.sizeout,a);
-             else
+            else
                 G = makeComposition_@LinOp(this, H);
             end
         end

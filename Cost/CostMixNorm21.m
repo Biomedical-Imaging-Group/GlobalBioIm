@@ -10,7 +10,7 @@ classdef CostMixNorm21 < Cost
     %
     % See also :class:`Map` :class:`Cost`, :class:`LinOp`
     
-    %%    Copyright (C) 2017 
+    %%    Copyright (C) 2017
     %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -79,13 +79,13 @@ classdef CostMixNorm21 < Cost
             T = true(ndms,1);
             T(this.index)=false;
             kerdims = sz; kerdims(T)=1;
-            imdims = sz; imdims(~T)=1;           
+            imdims = sz; imdims(~T)=1;
             % Computes the l2-norm along the dimensions given by index
             if(isscalar(this.y)&&(this.y==0))
                 sx = abs(x).^2;
             else
                 sx = abs(x-this.y).^2;
-            end                    
+            end
             for n=1:length(this.index)
                 sx = sum(sx,this.index(n));
             end
@@ -109,11 +109,11 @@ classdef CostMixNorm21 < Cost
         function M=makeComposition_(this,G)
             % Reimplemented from parent class :class:`Cost`. Instantiates a
             % :class:`CostL2Composition`.
-%             if isa(G,'LinOpGrad')
-%                 M = CostTV(this,G);
-%             else
+            if isa(G,'LinOpGrad')
+                M = CostTV(this,G);
+            else
                 M = makeComposition_@Cost(this,G);
-%             end
+            end
         end
         
     end

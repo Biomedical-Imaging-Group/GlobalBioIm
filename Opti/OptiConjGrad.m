@@ -79,15 +79,15 @@ classdef OptiConjGrad < Opti
                 beta = rho/this.rho_prec;
                 this.p = this.r + beta*this.p;
             end
-            q = this.A*p;
-            alpha = rho/dot(p(:), q(:));
+            q = this.A*this.p;
+            alpha = rho/dot(this.p(:), q(:));
 
             % stop if rounding errors
-            if dot(p(:),this.r(:))<0
+            if dot(this.p(:),this.r(:))<0
                 flag = 1;
                 return
             end
-            this.xopt = this.xopt + alpha*p;
+            this.xopt = this.xopt + alpha*this.p;
             this.r = this.r - alpha*q;
             this.rho_prec = rho;
             flag=0;

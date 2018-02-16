@@ -114,7 +114,7 @@ classdef OptiADMM < Opti
                     end
                 end
                 if ~this.A.isInvertible  % If A is non invertible -> intanciate a CG
-                    this.CG=OptiConjGrad(this.A,zeros(this.A.sizeout),[],OutputOpti());
+                    this.CG=OptiConjGrad(this.A,zeros(this.A.sizeout),OutputOpti());
                     this.CG.maxiter=20;
                     this.CG.ItUpOut=0;
                     disp('Warning : ADMM will use a Conjugate Gradient to compute the linear step');

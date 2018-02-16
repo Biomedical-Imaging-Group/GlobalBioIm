@@ -57,19 +57,17 @@ classdef LinOpConv <  LinOp
             if isnumeric(varargin{1})
                 mtf = varargin{1};
                         ndms = ndims(mtf);
-                if nargin == 1
-                    index =  1:ndms;
-                    isReal=true;
-                end
-                if nargin<3
-                    isReal = varargin{2};
-                    index =  1:ndms;
-                end
-                if nargin==3
-                    isReal = varargin{2};
-                    index = varargin{3};
-                end
-                
+                        if nargin == 1
+                            index =  1:ndms;
+                            isReal=true;                          
+                        elseif nargin<3
+                            isReal = varargin{2};
+                            index =  1:ndms;
+                        elseif nargin==3
+                            isReal = varargin{2};
+                            index = varargin{3};
+                        end
+                        
             else switch varargin{1}
                     case('PSF')
                         ispsf = true;

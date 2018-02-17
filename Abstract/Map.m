@@ -186,12 +186,16 @@ classdef (Abstract) Map < handle
             %  - If \\(\\mathrm{G}\\) is a :class:`Map`, then a
             %    :class:`MapComposition`is intanciated
             if isa(G,'Map')
-                if (isnumeric(this) && isscalar(this)) % Left multiplication by scalar  
-                    if isa(G,'Cost')
-                        M=CostMultiplication(this,G);
+                if (isnumeric(this) && isscalar(this)) % Left multiplication by scalar
+                    if ~isequal(this,1) % if multiply by 1 do noting
+                        if isa(G,'Cost')
+                            M=CostMultiplication(this,G);
+                        else
+                            H=LinOpDiag(G.sizeout,this);
+                            M=H.makeComposition(G);
+                        end
                     else
-                        H=LinOpDiag(G.sizeout,this);
-                        M=H.makeComposition(G);
+                        M=G;
                     end
                 else
                     M =this.makeComposition(G);
@@ -216,7 +220,6 @@ classdef (Abstract) Map < handle
             end
             M=this.times_(G);
         end
-        % TODO Overload operator .* to multiply term by term two Maps ? (avoid the use of LinOpDiag)
         % TODO Overload operator .^ to do (H(x)).^p ?
 		function sz = size(this, varargin)
 			sz = {this.sizeout, this.sizein};
@@ -283,7 +286,7 @@ classdef (Abstract) Map < handle
             if isa(G,'MapInversion') && isequal(G.M,this)
                 M=LinOpScaledIdentity(this.sizein,1);
             elseif isa(G,'MapComposition')
-                M=this*G.H1*G.H2;
+                M=(this*G.H1)*G.H2;
             else
                 M = MapComposition(this,G);
             end

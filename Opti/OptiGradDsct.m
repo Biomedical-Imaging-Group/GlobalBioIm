@@ -45,7 +45,7 @@ classdef OptiGradDsct < Opti
     	function this=OptiGradDsct(F,OutOp)
     		this.name='Opti Gradient Descent';
     		this.cost=F;
-    		if F.lip~=-1
+    		if F.lip>0
     			this.gam=1/F.lip;
     		end
     		if nargin==2 && ~isempty(OutOp)

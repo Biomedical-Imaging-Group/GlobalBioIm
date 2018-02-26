@@ -60,6 +60,14 @@ CostMixNorm21
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
       applyGrad_, applyProx_, applyProxFench_, set_y
 
+CostTV
+------
+    
+.. autoclass:: CostTV
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+      applyGrad_, applyProx_, applyProxFench_, set_y, setProxAlgo
+
 CostMixNormSchatt1
 ------------------
     

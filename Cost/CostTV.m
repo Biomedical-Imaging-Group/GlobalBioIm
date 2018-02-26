@@ -4,18 +4,18 @@ classdef CostTV < CostComposition
     % $$C(\\mathrm{x}) := \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{H_2 x}-y)_{k,l}^2}= \\sum_{k=1}^K \\Vert (\\mathrm{H_2 x-y})_{k\\cdot} \\Vert_2$$
     %
     % :param H1: :class:`CostMixNorm21` object
-    % :param H2:  :class:`LinOpGrad` object
+    % :param H2: :class:`LinOpGrad` object
     %
     % All attributes of parent :class:`CostComposition` are inherited.
     %
-    % **Example** C=CostMixNorm21(sz,index,y)*LinOpGrad(sz);
+    % **Example** C=CostTV(sz)
+    %
+    % **Example** C=CostTV(H1,H2); with H1=CostMixNorm21(sz,index,y); and H2=LinOpGrad(sz);
     %
     % See also :class:`Map`, :class:`Cost`, :class:`CostL2`, :class:`CostComposition`, :class:`LinOp`
     
     %%    Copyright (C) 2017
-    %     E. Soubies emmanuel.soubies@epfl.ch &
-    %     F. Soulez ferreol.soulez@epfl.ch &
-    %     M. T. McCann michael.mccann@epfl.ch
+    %     T-a Pham  thanh-an.pham@epfl.ch &
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -30,123 +30,70 @@ classdef CostTV < CostComposition
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (Access=private)
-        OpSumP;  % Operator used to compute the prox when H2 is the combination of a LinOpDownsample with a LinOpConv
-        LLt;     % averaged convolution kernel used to compute the prox when H2 is the combination of a LinOpDownsample with a LinOpConv
-    end
     properties
-        optimizer = 'FGP';  % flag used to choose the computation of the proximity operator (e.g. 'FGP' for total variation if H2 is a LinOpGrad). Note a set constraint (e.g. nonnegativity) can be imposed.
         optim;
         bounds = [-inf,inf];% Bounds for set constraint
         maxiter = 20;
-        %Parameters related to ADMM
     end
     
     %% Constructor
     methods
-        function this = CostTV(H1,H2)
-            assert(isa(H1,'CostMixNorm21'),'First argument must be a CostMixNorm21 object');
+        function this = CostTV(varargin)
+            if nargin==1
+                assert(issize(varargin{1}),'argument must be conformable to a size');
+                H2=LinOpGrad(varargin{1});
+                H1=CostMixNorm21(H2.sizeout,numel(H2.sizeout));
+            elseif nargin==2
+                assert(isa(varargin{1},'CostMixNorm21'),'First argument must be a CostMixNorm21 object');
+                assert(isa(varargin{2},'LinOpGrad'),'Second argument must be a LinOpGrad object');
+                H1=varargin{1};H2=varargin{2};
+            end    
             this@CostComposition(H1,H2);
-            %if this.H2.norm>=0
-            %    this.lip=this.H1.lip*this.H2.norm^2;
-            %end
-            this.name=sprintf('CostMixNorm21Composition ( %s )', H2.name);
+            this.name='CostTV';
             LS = CostL2(this.sizein);
-            switch this.optimizer
-                case 'FGP'
-                    this.optim = OptiFGP(LS,this,this.bounds,OutputOpti(0));
-                    this.optim.Nesterov = true;
-                    this.optim.maxiter = this.maxiter;
-                    this.optim.ItUpOut = 0;
-                    
-                case 'ADMM'
-                    NN = this.bounds;
-                    this.optim = OptiADMM(LS,{NN, this.L12},...
-                        this.Hn,this.rhon, [], []);
-                    this.optim.maxiter = this.maxiter;
-                    this.optim.xtol = this.xtol;
-            end
+            this.optim = OptiFGP(LS,this,this.bounds,OutputOpti(0));
+            this.optim.maxiter = this.maxiter;
+            this.optim.ItUpOut = 0;
         end
         
-        function setProxAlgo(this,optiType,bounds,maxiter,par,xtol,Outop)
-            this.optimizer = optiType;
-            if nargin<=2 || isempty(bounds),bounds = this.bounds;end
-            if nargin<=3 || isempty(maxiter),maxiter = this.maxiter;end
-            if nargin<=4 || isempty(par), par = [];end
-            if nargin<=5 || isempty(xtol),xtol = [];end
-            if nargin<=6 || isempty(Outop),Outop = OutputOpti(0);end
+        function setProxAlgo(this,bounds,maxiter,L,xtol,Outop)
+            % Set the parameters of :class:`OptiFGP` used to compute the proximity
+            % operator. 
+            
+            if nargin<=1 || isempty(bounds),bounds = this.bounds;end
+            if nargin<=2 || isempty(maxiter),maxiter = this.maxiter;end
+            if nargin<=3 || isempty(L), L = [];end
+            if nargin<=4 || isempty(xtol),xtol = [];end
+            if nargin<=5 || isempty(Outop),Outop = OutputOpti(0);end
             
             this.bounds = bounds;
             this.maxiter = maxiter;
-            
-            switch this.optimizer
-                case 'FGP'
-                    LS = CostL2(this.sizein);
-                    this.optim = OptiFGP(LS,this,this.bounds,Outop);
-                    this.optim.Nesterov = true;
-                    if ~isempty(par)
-                        this.optim.L = par;
-                    end
-                    this.optim.maxiter = this.maxiter;
-                    this.optim.ItUpOut = 0;
-                    if ~isempty(xtol)
-                        this.optim.xtol = xtol;
-                    end
-                case 'ADMM'
-                    LS = CostL2(this.sizein);
-                    if isempty(par)
-                        par = 4e-1*[0.5,1];
-                    end
-                    Hn = {LinOpIdentity(this.sizein), this.H2};%circular boundary
-                    NN = CostRectangle(this.sizein,this.bounds(1),this.bounds(2));
-                    
-                    this.optim = OptiADMM(LS,{NN, this.H1},Hn,par, [], Outop);
-                    this.optim.maxiter = this.maxiter;
-                    this.optim.ItUpOut = 0;
-                    if ~isempty(xtol)
-                        this.optim.xtol = xtol;
-                    end
+      
+            LS = CostL2(this.sizein);
+            this.optim = OptiFGP(LS,this,this.bounds,Outop);
+            this.optim.Nesterov = true;
+            if ~isempty(L)
+                this.optim.L = L;
             end
-        end
-        
-%         function setZ(this,new_z)
-%             switch this.optimizer
-%                 case 'FGP'
-%                     this.optim.F0.set_y(new_z);
-%                 case 'ADMM'
-%                     this.optim.F0.set_y(new_z);
-%             end
-%         end
-        
+            this.optim.maxiter = this.maxiter;
+            this.optim.ItUpOut = 0;
+            if ~isempty(xtol)
+                this.optim.xtol = xtol;
+            end
+        end       
     end
     
     %% Core Methods containing implementations (Protected)
-    % - apply_(this, x)
-    % - applyGrad_(this,x)
     % - applyProx_(this,z,alpha)
-    % - makeComposition_(this,G)
     methods (Access = protected)
-        function y = apply_(this, x)
-            % Reimplemented from parent class :class:`CostComposition`.
-            % $$C(\\mathrm{x}) := \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{Hx}-y)_{k,l}^2}
-            y = apply_@CostComposition(this, x);
-            % Should the constraint set be added ? (i.e. cost indicator)
-        end
         function y = applyProx_(this,x,alpha)
             % Reimplemented from parent class :class:`CostComposition`.
-            % Implemented
-            %  - if the operator \mathrm{H} is a LinOpGrad (i.e., this class is Total Variation)
-            %    optimizer 'FGP', 'ADMM'
+            % Computed using the iterative :class:`OptiFGP` 
             
-            % If the composed operator is a LinOpGrad & y==0
-            if this.y==0
-                switch this.optimizer
-                    case 'FGP'
-                        this.optim.setLambda(alpha);
-                    case 'ADMM'
-                        for k = 1:length(this.optim.Fn)
-                            this.optim.Fn{k} = alpha*this.optim.Fn{k};
-                        end
+            % If y==0
+            if this.y==0                
+                for k = 1:length(this.optim.Fn)
+                    this.optim.Fn{k} = alpha*this.optim.Fn{k};
                 end
                 this.optim.F0.set_y(x);
                 this.optim.run(x);
@@ -158,12 +105,16 @@ classdef CostTV < CostComposition
         
         
         function M = sum_(this,H)
+            % Reimplemented from parent class :class:`CostComposition`.
+            
             if isa(H,'CostRectangle')
                 this.bounds = [max(H.xmin,this.bounds(1)), min(H.xmax,this.bounds(end))]; %Combine existing bounds with new one
                 if diff(this.bounds) < 0
                     error('There is no intersection between the combined set constraints. If you want to replace the already existing bounds, change this.bounds property');
                 end
                 M = this;
+            else
+                M=sum_@CostComposition(H);
             end
         end
     end

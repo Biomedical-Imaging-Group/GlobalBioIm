@@ -101,9 +101,9 @@ classdef OptiADMM < Opti
                 this.cost=this.cost+Fn{n}*Hn{n};
             end
             if isempty(this.solver)
-                this.A=this.rho_n(1)* (this.Hn{1})' *this.Hn{1};
+                this.A=this.rho_n(1)* ((this.Hn{1})' *this.Hn{1});
                 for n=2:length(this.Hn)
-                    this.A=this.A + this.rho_n(n)*(this.Hn{n})' * this.Hn{n};
+                    this.A=this.A + this.rho_n(n)*((this.Hn{n})' * this.Hn{n});
                 end
                 if ~isempty(this.F0)
                     if isa(this.F0,'CostL2Composition')

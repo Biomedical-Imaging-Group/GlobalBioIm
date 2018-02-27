@@ -50,7 +50,7 @@ imdisp(y(idx,idx),'Convolved and noisy data',1);
 sz=size(y);
 
 % -- Functions definition
-LS=CostL2([],y);                 % Least-Sqaures data term
+LS=CostL2([],y);                 % Least-Squares data term
 F=LS*H;
 F.doPrecomputation=1;
 R_N12=CostMixNorm21([sz,2],3);   % Mixed Norm 2-1
@@ -81,21 +81,35 @@ PDC.maxiter=200;                             % max number of iterations
 PDC.run(y);                                  % run the algorithm 
 
 
+%% -- VMLMB LS + hyperbolicTV + NonNeg
+hyperB = CostComplexHyperBolic(G.sizeout,   1e-7,  3)*G; 
+C = F+ lamb*hyperB;
+OutVMLMB=MyOutputOpti(1,impad,40);
+VMLMB=OptiVMLMB(C,0., [],OutVMLMB);                            %
+VMLMB.ItUpOut=10;   
+VMLMB.maxiter=200;                             % max number of iterations
+VMLMB.run(y);                                  % run the algorithm 
+
+
 % -- Display
 imdisp(OutADMM.evolxopt{end}(idx,idx),'LS+TV+POS (ADMM)',1);
 imdisp(OutPDC.evolxopt{end}(idx,idx),'LS+TV+POS (Condat)',1);
+imdisp(OutVMLMB.evolxopt{end}(idx,idx),'LS+TV+POS (VMLMB)',1);
 figure; plot(OutADMM.iternum,OutADMM.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 hold all;plot(OutPDC.iternum,OutPDC.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
-legend('ADMM','Condat');title('Cost evolution');
+plot(OutVMLMB.iternum,OutVMLMB.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+legend('ADMM','Condat','VMLMB');title('Cost evolution');
 
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
 semilogy(OutADMM.iternum,OutADMM.evolsnr,'LineWidth',1.5); 
 semilogy(OutPDC.iternum,OutPDC.evolsnr,'LineWidth',1.5);
-legend('LS+TV+POS (ADMM)','LS+TV+POS (Condat)');xlabel('Iterations');ylabel('SNR (dB)');
+semilogy(OutVMLMB.iternum,OutVMLMB.evolsnr,'LineWidth',1.5);
+legend('LS+TV+POS (ADMM)','LS+TV+POS (Condat)','LS+TV+POS (VMLMB)');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[ADMM.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
 bar(2,[PDC.time],'FaceColor',orderCol(2,:),'EdgeColor','k');
-set(gca,'xtick',[1 2]);ylabel('Time (s)');
-set(gca,'xticklabels',{'LS+TV+POS (ADMM)','LS+TV+POS (Condat)'});set(gca,'XTickLabelRotation',45)
+bar(3,[VMLMB.time],'FaceColor',orderCol(3,:),'EdgeColor','k');
+set(gca,'xtick',[1 2 3]);ylabel('Time (s)');
+set(gca,'xticklabels',{'LS+TV+POS (ADMM)','LS+TV+POS (Condat)','LS+TV+POS (VMLMB)'});set(gca,'XTickLabelRotation',45)
 

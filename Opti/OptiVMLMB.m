@@ -93,6 +93,11 @@ classdef OptiVMLMB<Opti
                 if nargin==4 && ~isempty(OutOp),this.OutOp=OutOp;end
             end
             this.cost=C;
+            
+            mexCheckNCompile('m_vmlmb_next','liboptimpack.a')
+
+            mexCheckNCompile('m_vmlmb_first','liboptimpack.a')
+
         end
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
@@ -131,7 +136,7 @@ classdef OptiVMLMB<Opti
                 end
                 
                 
-                this.cost = this.cost.apply(this.x);
+                this.cc = this.cost.apply(this.x);
                 this.grad = this.cost.applyGrad(this.x);
                 
                 

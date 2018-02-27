@@ -5,12 +5,12 @@ classdef LinOpDFT <  LinOp
     % that (equivalent to y = fftn(x,pad))
     %
     % :param sz: sizein of the operator.
-    % :param pad: padding size (see the doc of fftn function).
     % :param unitary: boolean true when normalized DFT (default false)
+    % :param pad: padding size (see the doc of fftn function).
     %
     % All attributes of parent class :class:`LinOp` are inherited.
     %
-    % **Example** DFT=LinOpDFT(sz, pad)
+    % **Example** DFT=LinOpDFT(sz,unitary, pad)
     %
     % See also :class:`LinOp`, :class:`Map`, :class:`LinOpSDFT`, fftn,
     % ifftn
@@ -42,7 +42,7 @@ classdef LinOpDFT <  LinOp
     
     %% Constructor
     methods
-        function this = LinOpDFT(sz, pad)
+        function this = LinOpDFT(sz, unitary, pad)
             assert(issize(sz),'The input size sz should be a conformable  to a size ');
             this.name ='LinOpDFT';
             this.isInvertible=true;
@@ -51,6 +51,10 @@ classdef LinOpDFT <  LinOp
             this.sizeout=sz;
             this.N=prod(sz);
             if nargin>1
+                assert(islogical(unitary), 'UNITARY should be logical');
+                this.unitary= unitary;
+            end
+            if nargin>2
                 if issize(pad)
                     this.pad= pad  ;
                 else
@@ -97,7 +101,7 @@ classdef LinOpDFT <  LinOp
         function y = applyHHt_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             y=this.applyHtH_(x);
-        end	
+        end
         function y = applyAdjointInverse_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             if this.unitary
@@ -128,6 +132,15 @@ classdef LinOpDFT <  LinOp
                 end
             else
                 M=makeHtH_@LinOp(this);
+            end
+        end
+        
+        function M = makeInversion_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            if this.unitary
+                M = this.makeAdjoint;
+            else
+                M = 1./this.N * this.makeAdjoint;
             end
         end
     end

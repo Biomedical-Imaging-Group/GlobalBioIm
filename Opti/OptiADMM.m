@@ -61,18 +61,21 @@ classdef OptiADMM < Opti
 		solver=[];           % solver for the last step of the algorithm
     end
     % Full protected properties
-    properties %(SetAccess = protected,GetAccess = protected)
+    properties (SetAccess = protected,GetAccess = protected)
 		yn;    % Internal parameters
 		zn;
 		wn;
 		Hnx;
         b0=[];
 		A;     % LinOp for conjugate gradient (if used)
+        yold=0;  % Parameter needed for termination criterion
     end
     % Full public properties
     properties
 		rho_n;                 % vector containing the multipliers
-        CG;                    % conjugate gradient algot (Opti Object, when used)
+        CG;                    % conjugate gradient algo (Opti Object, when used)
+        eps_abs=[];   % Termination criterion tolerances. By default, the
+        eps_rel=[];   % test_convergence method of superclass Opti is used
     end
     
     methods
@@ -98,9 +101,9 @@ classdef OptiADMM < Opti
                 this.cost=this.cost+Fn{n}*Hn{n};
             end
             if isempty(this.solver)
-                this.A=this.rho_n(1)* (this.Hn{1})' *this.Hn{1};
+                this.A=this.rho_n(1)* ((this.Hn{1})' *this.Hn{1});
                 for n=2:length(this.Hn)
-                    this.A=this.A + this.rho_n(n)*(this.Hn{n})' * this.Hn{n};
+                    this.A=this.A + this.rho_n(n)*((this.Hn{n})' * this.Hn{n});
                 end
                 if ~isempty(this.F0)
                     if isa(this.F0,'CostL2Composition')
@@ -144,7 +147,7 @@ classdef OptiADMM < Opti
         end
         function flag=doIteration(this)
             % Reimplementation from :class:`Opti`. For details see [1].
-            
+            this.yold = this.yn;
             for n=1:length(this.Fn)
                 this.yn{n}=this.Fn{n}.applyProx(this.Hnx{n} + this.wn{n}/this.rho_n(n),1/this.rho_n(n));
                 this.zn{n}=this.yn{n}-this.wn{n}/this.rho_n(n);
@@ -172,6 +175,36 @@ classdef OptiADMM < Opti
                 this.wn{n}=this.wn{n} + this.rho_n(n)*(this.Hnx{n}-this.yn{n});
             end
             flag=0;
-        end 
+        end
+        
+        %% Stopping criterion
+        % Warning: the termination criterion described in [1] requires to
+        % apply the adjoint of Hn at every iteration, which may be costly
+        function stop = test_convergence(this)
+            if (isempty(this.eps_abs) || isempty(this.eps_rel))
+                % By default, criterion of superclass Opti
+                stop = test_convergence@Opti(this);
+            else
+                % Termination criterion described in [1]
+                p = 0; % Number of constraints
+                r_norm = 0; % Primal residual norm
+                s_norm = 0; % Dual residual norm
+                Hnx_norm = 0; % ||Hx||
+                y_norm = 0; % ||y||
+                adjHnwn_norm = 0; % ||H'w||
+                for n = 1:length(this.wn)
+                    p = p + length(this.yn{n});
+                    r_norm = r_norm + norm(this.Hnx{n}-this.yn{n})^2;
+                    s_norm = s_norm + norm(this.rho_n(n)*this.Hn{n}.applyAdjoint(this.yn{n} - this.yold{n}))^2;
+                    Hnx_norm = Hnx_norm + norm(this.Hnx{n})^2;
+                    y_norm = y_norm + norm(this.yn{n})^2;
+                    adjHnwn_norm = adjHnwn_norm + norm(this.Hn{n}.applyAdjoint(this.wn{n}))^2;
+                end
+                eps_primal = sqrt(p)*this.eps_abs + this.eps_rel*sqrt(max(Hnx_norm, y_norm));
+                eps_dual = sqrt(length(this.xopt))*this.eps_abs + this.eps_rel*sqrt(adjHnwn_norm);
+                
+                stop = (sqrt(r_norm) <= eps_primal) && (sqrt(s_norm) <= eps_dual);
+            end
+        end
     end
 end

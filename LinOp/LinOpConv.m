@@ -4,19 +4,23 @@ classdef LinOpConv <  LinOp
     % :param mtf: Fourier transform of Point Spread Function
     % :param isReal: if true (default) the result of the convolution should be real
     % :param index: dimensions along which the convolution is performed (the MTF must have a comformable size
-    % :param 'MTF' keyword to provide MTF (default)
-    % :param 'PSF' keyword to provide PSF instead of MTF
-    % :param 'Centered' is the PSF is centered in the image
-    % :param 'Pad' is the PSF must be padded to the size SZ with the
-    % value padvalue (default 0) 
+    % :param 'MTF': keyword to provide MTF (default)
+    % :param 'PSF': keyword to provide PSF instead of MTF
+    % :param 'Centered': is the PSF is centered in the image
+    % :param 'Pad': is the PSF must be padded to the size SZ with the value padvalue (default 0) 
     %
     % All attributes of parent class :class:`LinOp` are inherited.
     %
     % **Example** H=LinOpConv(mtf,isReal,index)
+    %
     % **Example** H=LinOpConv('MTF',mtf,isReal,index)
+    %
     % **Example** H=LinOpConv('PSF', psf,isReal,index)   
-    % **Example** H=LinOpConv('PSF', psf,isReal,index,'Centered')    
+    %
+    % **Example** H=LinOpConv('PSF', psf,isReal,index,'Centered') 
+    %
     % **Example** H=LinOpConv('PSF', psf,isReal,index,'Pad',sz,padvalue)
+    %
     % **Example** H=LinOpConv('PSF', psf,isReal,index,'Centered','Pad',sz,padvalue)
     %
     % See also :class:`LinOp`, :class:`Map`

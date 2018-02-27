@@ -7,13 +7,13 @@ classdef Opti < matlab.mixin.SetGet
     % :param xtol: tolerance on the relative difference between two iterates (default 1e-5)
     % :param OutOp: :class:`OutputOpti` object
     % :param ItUpOut: number of iterations between two calls to the update method of the  :class:`OutputOpti` object :attr:`OutOp` (default 0)
-	% :param time: execution time of the algorithm
-	% :param niter: iteration counter
-	% :param xopt: optimization variable
+    % :param time: execution time of the algorithm
+    % :param niter: iteration counter
+    % :param xopt: optimization variable
     %
     % See also :class:`OutputOpti` :class:`Cost`
-
-    %%    Copyright (C) 2017 
+    
+    %%    Copyright (C) 2017
     %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -28,40 +28,41 @@ classdef Opti < matlab.mixin.SetGet
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-    % Protected Set and public Read properties     
+    
+    % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
         name = 'none'        % name of the optimization algorithm
-    	cost;                % minimized cost
-    	time;                % running time of the algorithm (last run)
-    	niter;               % iteration counter
-    	xopt=[];             % optimization variable
-    	OutOp=OutputOpti();  % OutputOpti object
+        cost;                % minimized cost
+        time;                % running time of the algorithm (last run)
+        niter;               % iteration counter
+        xopt=[];             % optimization variable
+        OutOp=OutputOpti();  % OutputOpti object
     end
     properties  (SetAccess = protected,GetAccess = protected)
         xold;
     end
     % Full public properties
     properties
-    	maxiter=50;     % maximal number of iterates
-    	xtol=1e-5;      % stopping criteria tolerance on the relative difference btw two successive iterates
-    	ItUpOut=0;      % period (in number of iterations) of calling the OutputOpti object
+        maxiter=50;     % maximal number of iterates
+        xtol=1e-5;      % stopping criteria tolerance on the relative difference btw two successive iterates
+        ItUpOut=0;      % period (in number of iterations) of calling the OutputOpti object
+        checkConvergence = true; % if true run test_convergence() to compute a stopping criterion otherwise it will stop after maxiter iterations
     end
     
     methods
-        function run(this,x0) 
-        	% Run the algorithm. 
-        	%
-        	% :param x0: initial point in \\(\\in X\\), if x0=[] restarts from the current value :attr:`xopt`.
-        	%
-			% **note**: this method does not return anything, the result being stored in public attribute :attr:`xopt`.
+        function run(this,x0)
+            % Run the algorithm.
+            %
+            % :param x0: initial point in \\(\\in X\\), if x0=[] restarts from the current value :attr:`xopt`.
+            %
+            % **note**: this method does not return anything, the result being stored in public attribute :attr:`xopt`.
             
             this.initialize(x0);
-			assert(~isempty(this.xopt),'Missing starting point x0');
-			tstart=tic;
+            assert(~isempty(this.xopt),'Missing starting point x0');
+            tstart=tic;
             this.OutOp.init();
-			this.niter=0;
-			this.starting_verb();
+            this.niter=0;
+            this.starting_verb();
             while (this.niter<this.maxiter)
                 this.niter=this.niter+1;
                 this.xold=this.xopt;
@@ -70,12 +71,14 @@ classdef Opti < matlab.mixin.SetGet
                 % - Algorithm iteration
                 flag=this.doIteration();
                 % - Convergence test
-                if this.test_convergence() || flag, break; end
+                if this.checkConvergence
+                    if this.test_convergence() || flag, break; end
+                end
                 % - Call OutputOpti object
                 if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
             end
             this.time=toc(tstart);
-			this.ending_verb();                    
+            this.ending_verb();
         end
         function initialize(this,x0)
             % Implements initialization of the algorithm
@@ -83,7 +86,7 @@ classdef Opti < matlab.mixin.SetGet
             % :param x0: initial point
             
             if ~isempty(x0) % To restart from current state if wanted
-                this.xopt=x0;               
+                this.xopt=x0;
             end
         end
         function flag=doIteration(this)
@@ -99,9 +102,9 @@ classdef Opti < matlab.mixin.SetGet
             % some parameters varying during iterations (e.g. descent step,
             % lagrangian parameters...)
         end
-        function starting_verb(this)  
-        	% Generic method to display a starting message in verbose mode.
-        	   	
+        function starting_verb(this)
+            % Generic method to display a starting message in verbose mode.
+            
             if this.ItUpOut~=0
                 if this.OutOp.iterVerb~=0
                     fprintf('---> Start %s ... \n',this.name);
@@ -110,21 +113,21 @@ classdef Opti < matlab.mixin.SetGet
             end
         end
         function ending_verb(this)
-        	% Generic method to display a ending message in verbose mode.
-        	
-        	if this.ItUpOut~=0 && this.OutOp.iterVerb~=0 
-				fprintf('... Optimization finished \nElapsed time (s): %4.2d (%i iterations). \n',this.time, this.niter);
-        	end
+            % Generic method to display a ending message in verbose mode.
+            
+            if this.ItUpOut~=0 && this.OutOp.iterVerb~=0
+                fprintf('... Optimization finished \nElapsed time (s): %4.2d (%i iterations). \n',this.time, this.niter);
+            end
         end
         function stop=test_convergence(this)
-        	% Tests algorithm convergence from the relative difference between two successive iterates 
-        	%
-        	% :returns stop: boolean true if
-        	% $$ \\frac{\\| \\mathrm{x}^{k} - \\mathrm{x}^{k-1}\\|}{\\|\\mathrm{x}^{k-1}\\|} < x_{tol}.$$
-        	
-        	r=this.xopt-this.xold;
-        	xdiff=norm(r(:))/(norm(this.xold(:))+eps);
-        	stop=xdiff<this.xtol;
+            % Tests algorithm convergence from the relative difference between two successive iterates
+            %
+            % :returns stop: boolean true if
+            % $$ \\frac{\\| \\mathrm{x}^{k} - \\mathrm{x}^{k-1}\\|}{\\|\\mathrm{x}^{k-1}\\|} < x_{tol}.$$
+            
+            r=this.xopt-this.xold;
+            xdiff=norm(r(:))/(norm(this.xold(:))+eps);
+            stop=xdiff<this.xtol;
         end
     end
 end

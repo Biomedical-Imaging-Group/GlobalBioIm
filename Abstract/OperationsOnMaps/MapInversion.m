@@ -65,7 +65,7 @@ classdef MapInversion < Map
             end
         end
         function M = makeComposition_(this, G)
-            % Reimplemented from parent class :class:`LinOp`.
+            % Reimplemented from parent class :class:`Map`.
             if  isequal(this.M,G)
                 M=LinOpIdentity(this.sizein);
             else

@@ -134,5 +134,14 @@ classdef LinOpDFT <  LinOp
                 M=makeHtH_@LinOp(this);
             end
         end
+        
+        function M = makeInversion_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            if this.unitary
+                M = this.makeAdjoint;
+            else
+                M = 1./this.N * this.makeAdjoint;
+            end
+        end
     end
 end

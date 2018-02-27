@@ -3,17 +3,17 @@ classdef LinOpDiag <  LinOp
     % $$ \\mathrm{Hx}= \\mathrm{\\mathbf{diag}(w)x}$$
     % where \\(\\mathrm{w} \\in \\mathbb{R}^N\\) or \\(\\mathbb{C}^N\\) is a
     % vector containing the diagonal elements of \\(\\mathrm{H}\\).
-    % 
+    %
     % :param diag: elements of the diagonal (vector)
     % :param sz: size (if the given diag is scalar) to build a scaled identity operator.
     %
-    % All attributes of parent class :class:`LinOp` are inherited. 
+    % All attributes of parent class :class:`LinOp` are inherited.
     %
     % **Example** D=LinOpDiag(sz,diag)
     %
     % See also :class:`LinOp`, :class:`Map`
-        
-    %%    Copyright (C) 2015 
+    
+    %%    Copyright (C) 2015
     %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -31,13 +31,13 @@ classdef LinOpDiag <  LinOp
     
     properties (SetAccess = protected,GetAccess = public)
         diag;                    % diagonal or a scalar
-        isScaledIdentity=false;  % if diag is constant, it is not stored 
+        isScaledIdentity=false;  % if diag is constant, it is not stored
     end
     
     %% Constructor
     methods
         function this = LinOpDiag(sz,diag)
-            this.name ='LinOpDiag'; 
+            this.name ='LinOpDiag';
             if nargin <1, error('At least a size should be given');end
             if nargin <2, diag=1; end
             if isempty(sz), sz=size(diag); end
@@ -55,14 +55,14 @@ classdef LinOpDiag <  LinOp
                 this.diag = diag(1);
             else
                 this.diag=diag;
-            end          
+            end
             % -- Norm of the operator
             this.norm=max(abs(diag(:)));
-		end
+        end
     end
     
     %% Core Methods containing implementations (Protected)
-	methods (Access = protected)		
+    methods (Access = protected)
         function y = apply_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             y =this.diag .* x;
@@ -70,15 +70,15 @@ classdef LinOpDiag <  LinOp
         function y = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             y =conj(this.diag) .*x;
-        end		
+        end
         function y = applyHtH_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             y =abs(this.diag).^2 .*x;
-        end		
+        end
         function y = applyHHt_(this,x)
-            % Reimplemented from parent class :class:`LinOp`.  
+            % Reimplemented from parent class :class:`LinOp`.
             y=this.applyHtH(x);
-        end       
+        end
         function y = applyInverse_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             if this.isInvertible
@@ -86,7 +86,7 @@ classdef LinOpDiag <  LinOp
             else
                 y = applyInverse_@LinOp(this,x);
             end
-        end	
+        end
         function y = applyAdjointInverse_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             if this.isInvertible
@@ -129,12 +129,16 @@ classdef LinOpDiag <  LinOp
         end
         function M = mpower_(this,p)
             % Reimplemented from parent class :class:`LinOp`
-            if p==-1
-                if this.isInvertible
-                    M=LinOpDiag(this.sizein,1./this.diag);
-                end
+            if p>=0 || this.isInvertible
+                M=LinOpDiag(this.sizein,(this.diag).^p);
             else
                 M=mpower_@LinOp(this,p);
+            end
+        end
+        function  M = makeInversion_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            if this.isInvertible
+                M=LinOpDiag(this.sizein,1./this.diag);
             end
         end
         function M = makeComposition_(this, G)
@@ -143,7 +147,7 @@ classdef LinOpDiag <  LinOp
             if isa(G,'LinOpDiag')
                 M=LinOpDiag(this.sizein,G.diag.*this.diag);
             elseif isa(G,'LinOpConv') && this.isScaledIdentity
-                M = LinOpConv(G.mtf.*this.diag,G.isReal,G.index); 
+                M = LinOpConv(G.mtf.*this.diag,G.isReal,G.index);
             else
                 M=makeComposition_@LinOp(this,G);
             end

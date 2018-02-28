@@ -95,7 +95,6 @@ classdef OptiVMLMB<Opti
             this.cost=C;
             
             mexCheckNCompile('m_vmlmb_next','liboptimpack.a')
-
             mexCheckNCompile('m_vmlmb_first','liboptimpack.a')
 
         end

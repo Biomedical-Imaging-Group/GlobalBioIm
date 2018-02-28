@@ -32,7 +32,7 @@ sqr=OpEWSquareRoot(sz);              % Elem-wise square root
 SS=LinOpSum(sz);                     % Final sum of all pixels
 
 op=SS*sqr*S*sq*G;                           % Combinaison of Maps
-TV=CostComplexHyperBolic([sz,2],0,3)*G;  % smoothed TV
+TV=CostHyperBolic([sz,2],0,3)*G;  % smoothed TV
 
 % Test if apply and gradient methods give identical results
 % By the way, one can note that combining maps is less efficient than a one block implementation  

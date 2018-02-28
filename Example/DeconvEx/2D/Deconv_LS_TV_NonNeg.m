@@ -43,6 +43,7 @@ impad(idx,idx)=im;
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
+H.memoizeOpts.applyHtH=true;
 
 % -- Generate data
 load('data');    % load data (variable y)
@@ -82,7 +83,9 @@ PDC.run(y);                                  % run the algorithm
 
 
 %% -- VMLMB LS + hyperbolicTV + NonNeg
-hyperB = CostComplexHyperBolic(G.sizeout,   1e-7,  3)*G; 
+hyperB = CostHyperBolic(G.sizeout,   1e-7,  3)*G;
+hyperB.doPrecomputation=1;
+hyperB.memoizeOpts.apply=true;
 C = F+ lamb*hyperB;
 OutVMLMB=MyOutputOpti(1,impad,40);
 VMLMB=OptiVMLMB(C,0., [],OutVMLMB);                            %

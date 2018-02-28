@@ -58,6 +58,9 @@ classdef CostHyperBolic < Cost
             else
                 this.sumOp = LinOpDiag(this.H.sizeout);
             end
+            
+            this.memoizeOpts.computeF=true;
+            this.memoCache.computeF= struct('in',[],'out', []);
         end
     end
     
@@ -72,22 +75,24 @@ classdef CostHyperBolic < Cost
             else
                 u=abs(x-this.y).^2;
             end
-            R = this.sumOp.apply(u);
-            
-            F = sqrt(R + this.epsilon.^2);
+           % F = this.computeF(x);
+            F = this.memoize('computeF',@this.computeF_,x);
             y = sum(F(:)) - numel(F).*this.epsilon;
         end    
         function g=applyGrad_(this,x)
+            % Reimplemented from parent class :class:`Cost`.             
+            F = this.memoize('computeF',@this.computeF_,x);
+            g = x.*this.sumOp.applyAdjoint(1./F);  
+        end
+         function F = computeF_(this,x)
             % Reimplemented from parent class :class:`Cost`.             
             if(isscalar(this.y)&&(this.y==0))
                 u=abs(x).^2;
             else
                 u=abs(x-this.y).^2;
             end
-            R = this.sumOp.apply(u);
             
-            F = sqrt(R + this.epsilon.^2);
-            g = x.*this.sumOp.applyAdjoint(1./F);  
+            F = sqrt(this.sumOp*u + this.epsilon.^2);
         end
     end
 end

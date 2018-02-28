@@ -7,10 +7,10 @@ Cost Functions (Cost)
 	
 .. automodule:: Cost
 
-CostComplexHyperBolic
+CostHyperBolic
 ---------------------
     
-.. autoclass:: CostComplexHyperBolic
+.. autoclass:: CostHyperBolic
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
       applyGrad_, applyProx_, applyProxFench_, set_y 

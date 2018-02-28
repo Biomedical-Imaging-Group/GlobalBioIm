@@ -107,7 +107,7 @@ classdef OutputOpti < handle
         	this.evolxopt{this.count}=opti.xopt;
         	this.iternum(this.count)=opti.niter;
         	this.count=this.count+1;
-        	if (mod(opti.niter,this.iterVerb)==0) || (opti.niter==1 && this.iterVerb~=0),
+        	if opti.niter~=0 && (mod(opti.niter,this.iterVerb)==0) || (opti.niter==1 && this.iterVerb~=0),
         		disp(str);
         	end
         end

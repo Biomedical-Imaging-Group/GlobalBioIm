@@ -41,12 +41,13 @@ classdef OptiVMLMB<Opti
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     properties (Constant)
-        OP_TASK_START  = 0; % first entry, start search
-        OP_TASK_FG     = 1; % computation of F and G requested
-        OP_TASK_NEWX   = 2; % new improved solution available for inspection
-        OP_TASK_CONV   = 3; % search has converged
-        OP_TASK_WARN   = 4; % search aborted with warning
-        OP_TASK_ERROR  = 5; % search aborted with error
+        OPL_TASK_START  = 0; % first entry, start search
+        OPL_TASK_FG     = 1; % computation of F and G requested
+        OPL_TASK_FREEVARS  = 2; % caller has to determine the free variables */
+        OPL_TASK_NEWX      = 3; % new variables available for inspection */
+        OPL_TASK_CONV      = 4; % search has converged */
+        OPL_TASK_WARN      = 5; % search aborted with warning */
+        OPL_TASK_ERROR     = 6; % search aborted with error */
     end
     % Full public properties
     properties
@@ -58,7 +59,7 @@ classdef OptiVMLMB<Opti
         sgtol=0.9;
         sxtol=0.1;
         epsilon=0.01;
-        costheta=0.4;
+        delta=0.1;
     end
     properties (SetAccess = protected,GetAccess = public)
         nparam;
@@ -67,13 +68,10 @@ classdef OptiVMLMB<Opti
         xmax=[];
         neval;
         bounds =0;
-        csave;
-        isave;
-        dsave;
+        ws;
     end
     properties (SetAccess = protected,GetAccess = protected)
         nbeval;
-        x;
         active;
         grad;
         cc;
@@ -94,10 +92,9 @@ classdef OptiVMLMB<Opti
             end
             this.cost=C;
             
-            mexCheckNCompile('m_vmlmb_next','liboptimpack.a')
-
-            mexCheckNCompile('m_vmlmb_first','liboptimpack.a')
-
+            mexCheckNCompile('m_opl_vmlmb_get_reason','liboptimpacklegacy.a')
+            mexCheckNCompile('m_opl_vmlmb_create','liboptimpacklegacy.a')
+            mexCheckNCompile('m_opl_vmlmb_iterate','liboptimpacklegacy.a')            
         end
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
@@ -110,73 +107,76 @@ classdef OptiVMLMB<Opti
             if isscalar(this.xmax)
                 this.xmax=ones(size(x0))*this.xmax;
             end
-            [this.csave, this.isave, this.dsave] = m_vmlmb_first(this.nparam, this.m, this.fatol, this.frtol,...
-                this.sftol, this.sgtol, this.sxtol, this.epsilon, this.costheta);
-            this.task =  this.isave(3);
-            this.task = this.OP_TASK_FG;
+            this.ws = m_opl_vmlmb_create(this.nparam, this.m, this.fatol, this.frtol,...
+                this.sftol, this.sgtol, this.sxtol, this.epsilon, this.delta);
+            
+         this.task = this.OPL_TASK_FG;
             this.nbeval=0;
-            this.x = x0;
-            this.x(1)= x0(1); %Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
+            this.xopt = x0;
+            this.xopt(1)= x0(1); %Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
         end
         
         function flag=doIteration(this)
             % Reimplementation from :class:`Opti`. For details see [1].
             
             flag=0;
-            if (this.task == this.OP_TASK_FG)
+            if (this.task == this.OPL_TASK_FG)
                 % apply bound constraints
                 % op_bounds_apply(n, x, xmin, xmax);
                 if(bitand(this.bounds,1))
-                    test = (this.x<this.xmin);
-                    if any(test(:)), this.x(test) = this.xmin(test); end
+                    test = (this.xopt<this.xmin);
+                    if any(test(:)), this.xopt(test) = this.xmin(test); end
                 end
                 if (bitand(this.bounds,2))
-                    test = (this.x>this.xmax);
-                    if any(test(:)), this.x(test) = this.xmax(test); end
+                    test = (this.xopt>this.xmax);
+                    if any(test(:)), this.xopt(test) = this.xmax(test); end
                 end
                 
                 
-                this.cc = this.cost.apply(this.x);
-                this.grad = this.cost.applyGrad(this.x);
+                this.cc = this.cost.apply(this.xopt);
+                this.grad = this.cost.applyGrad(this.xopt);
                 
                 
                 normg= sum(this.grad(:).^2);
                 
                 this.nbeval=this.nbeval+1;
                 if (normg< this.gtol)
-                    fprintf('Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d\t%d \n',this.niter,this.nbeval,this.cc,normg,this.task,this.isave(4));
+                    fprintf('Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d \n',this.niter,this.nbeval,this.cc,normg,this.task);
                     %this.time=toc(tstart);
                     %this.ending_verb();
                     flag=1;
                 end
-            elseif (this.task == this.OP_TASK_NEWX)
+            elseif (this.task == this.OPL_TASK_NEWX)
                 this.niter = this.niter +1;
-                this.xopt = this.x;
                 %if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end% New successful step: the approximation X, function F, and
                 % gradient G, are available for inspection.
-            else
-                % Convergence, or error, or warning
-                fprintf('Convergence, or error, or warning : %d  , %s\n',this.task,this.csave);
-                %this.time=toc(tstart);
-                %this.ending_verb();
-                flag=1;
-            end
-            if ( (this.nbeval==1) || (this.task == this.OP_TASK_NEWX))
+            elseif (this.task == this.OPL_TASK_FREEVARS)
                 % Computes set of active parameters :
                 % op_bounds_active(n, active, x, g, xmin, xmax);
                 switch(this.bounds)
                     case 0
                         this.active = [];
                     case 1
-                        this.active = int32( (this.x>this.xmin) + (this.grad<0) );
+                        this.active = int32( (this.xopt>this.xmin) + (this.grad<0) );
                     case 2
-                        this.active = int32( (this.grad>0) + (this.x<this.xmax) );
+                        this.active = int32( (this.grad>0) + (this.xopt<this.xmax) );
                     case 3
-                        this.active = int32( ( (this.x>this.xmin) + (this.grad<0) ).*( (this.x<this.xmax) + (this.grad>0) ) );
+                        this.active = int32( ( (this.xopt>this.xmin) + (this.grad<0) ).*( (this.xopt<this.xmax) + (this.grad>0) ) );
                 end
+                
+            else
+                % Convergence, or error, or warning
+                fprintf('Convergence, or error, or warning : %d  , %s\n',this.task,m_opl_vmlmb_get_reason(this.ws));
+                %this.time=toc(tstart);
+                %this.ending_verb();
+                flag=1;
+                this.xopt = m_opl_vmlmb_restore(this.ws,this.xopt,this.cc,this.grad);
+
+                return;
             end
+            
             % Computes next step:
-            [this.task, this.csave]= m_vmlmb_next(this.x,this.cc,this.grad,this.active,this.isave,this.dsave);
+            this.task = m_opl_vmlmb_iterate(this.ws,this.xopt,this.cc,this.grad,this.active);
             
             
             if this.niter<3
@@ -195,7 +195,6 @@ classdef OptiVMLMB<Opti
             this.starting_verb();
             while (this.niter<this.maxiter)
                 this.niter=this.niter+1;
-                this.xold=this.xopt;
                 % - Update parameters
                 this.updateParams();
                 % - Algorithm iteration

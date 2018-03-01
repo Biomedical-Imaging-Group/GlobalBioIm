@@ -43,6 +43,7 @@ impad(idx,idx)=im;
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
+H.memoizeOpts.applyHtH=true;
 
 % -- Generate data
 load('data');    % load data (variable y)
@@ -82,16 +83,19 @@ PDC.run(y);                                  % run the algorithm
 
 
 %% -- VMLMB LS + hyperbolicTV + NonNeg
-hyperB = CostComplexHyperBolic(G.sizeout,   1e-7,  3)*G; 
+hyperB = CostHyperBolic(G.sizeout,   1e-7,  3)*G;
+hyperB.doPrecomputation=1;
+hyperB.memoizeOpts.apply=true;
 C = F+ lamb*hyperB;
 OutVMLMB=MyOutputOpti(1,impad,40);
 VMLMB=OptiVMLMB(C,0., [],OutVMLMB);                            %
-VMLMB.ItUpOut=10;   
+VMLMB.ItUpOut=10; 
 VMLMB.maxiter=200;                             % max number of iterations
+VMLMB.m=5;                                     % number of memorized step in hessian approximation
 VMLMB.run(y);                                  % run the algorithm 
 
 
-% -- Display
+%% -- Display
 imdisp(OutADMM.evolxopt{end}(idx,idx),'LS+TV+POS (ADMM)',1);
 imdisp(OutPDC.evolxopt{end}(idx,idx),'LS+TV+POS (Condat)',1);
 imdisp(OutVMLMB.evolxopt{end}(idx,idx),'LS+TV+POS (VMLMB)',1);
@@ -104,7 +108,7 @@ figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize'
 semilogy(OutADMM.iternum,OutADMM.evolsnr,'LineWidth',1.5); 
 semilogy(OutPDC.iternum,OutPDC.evolsnr,'LineWidth',1.5);
 semilogy(OutVMLMB.iternum,OutVMLMB.evolsnr,'LineWidth',1.5);
-legend('LS+TV+POS (ADMM)','LS+TV+POS (Condat)','LS+TV+POS (VMLMB)');xlabel('Iterations');ylabel('SNR (dB)');
+legend('LS+TV+POS (ADMM)','LS+TV+POS (Condat)','LS+TV+POS (VMLMB)','Location','southeast');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[ADMM.time],'FaceColor',orderCol(1,:),'EdgeColor','k');

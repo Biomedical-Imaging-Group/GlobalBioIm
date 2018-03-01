@@ -91,10 +91,9 @@ classdef OptiVMLMB<Opti
                 if nargin==4 && ~isempty(OutOp),this.OutOp=OutOp;end
             end
             this.cost=C;
-            
-            mexCheckNCompile('m_opl_vmlmb_get_reason','liboptimpacklegacy.a')
-            mexCheckNCompile('m_opl_vmlmb_create','liboptimpacklegacy.a')
-            mexCheckNCompile('m_opl_vmlmb_iterate','liboptimpacklegacy.a')            
+            if (exist('m_opl_vmlmb_create')~=3)||(exist('m_opl_vmlmb_restore')~=3)||(exist('m_opl_vmlmb_iterate')~=3)||(exist('m_opl_vmlmb_get_reason')~=3)
+                installOptimPack();
+            end
         end
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
@@ -110,7 +109,7 @@ classdef OptiVMLMB<Opti
             this.ws = m_opl_vmlmb_create(this.nparam, this.m, this.fatol, this.frtol,...
                 this.sftol, this.sgtol, this.sxtol, this.epsilon, this.delta);
             
-         this.task = this.OPL_TASK_FG;
+            this.task = this.OPL_TASK_FG;
             this.nbeval=0;
             this.xopt = x0;
             this.xopt(1)= x0(1); %Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
@@ -171,7 +170,7 @@ classdef OptiVMLMB<Opti
                 %this.ending_verb();
                 flag=1;
                 this.xopt = m_opl_vmlmb_restore(this.ws,this.xopt,this.cc,this.grad);
-
+                
                 return;
             end
             

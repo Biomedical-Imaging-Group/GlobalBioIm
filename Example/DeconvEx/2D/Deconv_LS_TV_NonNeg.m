@@ -57,7 +57,7 @@ F.doPrecomputation=1;
 R_N12=CostMixNorm21([sz,2],3);   % Mixed Norm 2-1
 G=LinOpGrad(sz);                 % Operator Gradient
 R_POS=CostNonNeg(sz);            % Non-Negativity
-lamb=7e-4;                       % Hyperparameter
+lamb=5e-4;                       % Hyperparameter
 
 % -- ADMM LS + TV + NonNeg
 Fn={lamb*R_N12,R_POS};
@@ -84,8 +84,6 @@ PDC.run(y);                                  % run the algorithm
 
 %% -- VMLMB LS + hyperbolicTV + NonNeg
 hyperB = CostHyperBolic(G.sizeout,   1e-7,  3)*G;
-hyperB.doPrecomputation=1;
-hyperB.memoizeOpts.apply=true;
 C = F+ lamb*hyperB;
 OutVMLMB=MyOutputOpti(1,impad,40);
 VMLMB=OptiVMLMB(C,0., [],OutVMLMB);                            %

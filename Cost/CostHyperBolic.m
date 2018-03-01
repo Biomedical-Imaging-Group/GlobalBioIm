@@ -70,12 +70,6 @@ classdef CostHyperBolic < Cost
     methods (Access = protected)
         function y=apply_(this,x)
             % Reimplemented from parent class :class:`Cost`.            
-            if(isscalar(this.y)&&(this.y==0))
-                u=abs(x).^2;
-            else
-                u=abs(x-this.y).^2;
-            end
-           % F = this.computeF(x);
             F = this.memoize('computeF',@this.computeF_,x);
             y = sum(F(:)) - numel(F).*this.epsilon;
         end    

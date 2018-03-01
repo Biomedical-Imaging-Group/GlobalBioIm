@@ -56,6 +56,11 @@ classdef CostMixNormSchatt1 < Cost
     %% Constructor
     methods        
         function this = CostMixNormSchatt1(sz,p,y)
+            % Verify if the mexgl files exist
+            if (exist('svd2D_decomp')~=3)||(exist('svd2D_recomp')~=3)||(exist('svd3D_decomp')~=3)||(exist('svd3D_recomp')~=3)
+                buildHessianSchatten();
+            end
+            
             if nargin<3, y=0; end
             this@Cost(sz,y);
             this.name='CostMixNormSchatt1';

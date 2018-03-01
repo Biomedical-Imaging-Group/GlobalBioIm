@@ -27,10 +27,10 @@ matDir = 'OptimPackLegacy-master/matlab/';
 srcDir = 'OptimPackLegacy-master/src/';
 MexOpt= ['-DUSE_BLAS_LIB ' '-DNEW_MATLAB_BLAS ' '-DINT_64BITS '  '-largeArrayDims ' 'COMPFLAGS=''$COMPFLAGS -Wall -mtune=native  -fomit-frame-pointer -O2 '''];
 CFiles =  [srcDir,'opl_vmlmb.c ',srcDir,'opl_algebra.c ',srcDir,'opl_lnsrch.c ',srcDir,'opl_utils.c ','-IOptimPackLegacy-master/src/ '];
-eval(['mex ',matDir,'m_opl_vmlmb_get_reason.c ', CFiles,MexOpt])
-eval(['mex ',matDir,'m_opl_vmlmb_create.c ', CFiles,MexOpt])
-eval(['mex ',matDir,'m_opl_vmlmb_iterate.c ', CFiles,MexOpt])
-eval(['mex ',matDir,'m_opl_vmlmb_restore.c ', CFiles,MexOpt])
+eval(['mex ',matDir,'m_opl_vmlmb_get_reason.c ', CFiles,MexOpt]);
+eval(['mex ',matDir,'m_opl_vmlmb_create.c ', CFiles,MexOpt]);
+eval(['mex ',matDir,'m_opl_vmlmb_iterate.c ', CFiles,MexOpt]);
+eval(['mex ',matDir,'m_opl_vmlmb_restore.c ', CFiles,MexOpt]);
 movefile('OptimPackLegacy-master/matlab/*.m')
 delete('OptimPackLegacy.zip');
 rmdir('OptimPackLegacy-master','s');

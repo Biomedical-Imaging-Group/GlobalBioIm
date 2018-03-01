@@ -12,6 +12,7 @@ addpath([pathToDir,'/LinOp/LinOp_Utils/']);
 addpath([pathToDir,'/LinOp/SelectorLinOps/']);
 addpath([pathToDir,'/Cost/']);
 addpath([pathToDir,'/Cost/CostUtils/']);
+addpath([pathToDir,'/Cost/CostUtils/HessianSchatten/']);
 addpath([pathToDir,'/Cost/IndicatorFunctions/']);
 addpath([pathToDir,'/Example/']);
 

@@ -1,5 +1,6 @@
 classdef OptiVMLMB<Opti
-    % Variable Metric Limited Memory Bounded (VMLMB) [1] algorithm that
+    % Variable Metric Limited Memory Bounded (VMLMB) from OptimPackLegacy [1].
+    % This algorithm 
     % minimizes a cost \\(C(\\mathrm{x})\\) which is differentiable with bound
     % constraints and/or preconditioning.
     %
@@ -17,8 +18,8 @@ classdef OptiVMLMB<Opti
     % **Reference**
     %
     % [1] Eric Thiebaut, "Optimization issues in blind deconvolution algorithms",
-    % SPIE Conf. Astronomical Data Analysis II, 4847, 174-183 (2002). See
-    % `here <https://github.com/emmt/OptimPackLegacy>`_.
+    % SPIE Conf. Astronomical Data Analysis II, 4847, 174-183 (2002). 
+    % See OptimPackLegacy `repository <https://github.com/emmt/OptimPackLegacy>`_.
     %
     % **Example** VMLMB=OptiVMLMB(C,xmin,xmax,OutOp)
     %
@@ -169,7 +170,7 @@ classdef OptiVMLMB<Opti
                 %this.time=toc(tstart);
                 %this.ending_verb();
                 flag=1;
-                this.xopt = m_opl_vmlmb_restore(this.ws,this.xopt,this.cc,this.grad);
+                this.task = m_opl_vmlmb_restore(this.ws,this.xopt,this.cc,this.grad);
                 
                 return;
             end

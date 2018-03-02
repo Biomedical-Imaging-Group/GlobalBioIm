@@ -31,7 +31,8 @@ eval(['mex ',matDir,'m_opl_vmlmb_get_reason.c ', CFiles,MexOpt]);
 eval(['mex ',matDir,'m_opl_vmlmb_create.c ', CFiles,MexOpt]);
 eval(['mex ',matDir,'m_opl_vmlmb_iterate.c ', CFiles,MexOpt]);
 eval(['mex ',matDir,'m_opl_vmlmb_restore.c ', CFiles,MexOpt]);
-movefile('OptimPackLegacy-master/matlab/*.m')
+movefile('OptimPackLegacy-master/matlab/*.m');
+delete('makeOptimPack.m');
 delete('OptimPackLegacy.zip');
 rmdir('OptimPackLegacy-master','s');
 cd(pth);

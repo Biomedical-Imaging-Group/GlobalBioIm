@@ -36,17 +36,17 @@ classdef Opti < matlab.mixin.SetGet
         time;                % running time of the algorithm (last run)
         niter;               % iteration counter
         xopt=[];             % optimization variable
-        OutOp=OutputOpti();  % OutputOpti object
+        message;
     end
     properties  (SetAccess = protected,GetAccess = protected)
         xold;
     end
     % Full public properties
     properties
+        OutOp=OutputOpti();  % OutputOpti object
+        CvOp=TestCvg(false);      % OutputOpti object
         maxiter=50;     % maximal number of iterates
-        xtol=1e-5;      % stopping criteria tolerance on the relative difference btw two successive iterates
         ItUpOut=0;      % period (in number of iterations) of calling the OutputOpti object
-        checkConvergence = true; % if true run test_convergence() to compute a stopping criterion otherwise it will stop after maxiter iterations
     end
     
     methods
@@ -71,9 +71,8 @@ classdef Opti < matlab.mixin.SetGet
                 % - Algorithm iteration
                 flag=this.doIteration();
                 % - Convergence test
-                if this.checkConvergence
-                    if this.test_convergence() || flag, break; end
-                end
+                if this.CvOp.testConvergence() || flag, break; end
+                
                 % - Call OutputOpti object
                 if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
             end

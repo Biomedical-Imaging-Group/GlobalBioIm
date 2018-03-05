@@ -5,6 +5,7 @@ addpath([pathToDir,'/Abstract/OperationsOnMaps']);
 addpath([pathToDir,'/Abstract/']);
 addpath([pathToDir,'/Util/']);
 addpath([pathToDir,'/Opti/']);
+addpath([pathToDir,'/Opti/TestCvg']);
 addpath([pathToDir,'/Opti/OptiUtils/MatlabOptimPack']);
 addpath([pathToDir,'/LinOp/']);
 addpath([pathToDir,'/NonLinOp/']);

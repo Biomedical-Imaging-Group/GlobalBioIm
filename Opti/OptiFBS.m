@@ -52,29 +52,21 @@ classdef OptiFBS < Opti
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     % Full protected properties
-    properties (SetAccess = protected,GetAccess = protected)
+    properties (SetAccess = protected,GetAccess = public)
         y;         % Internal parameters
         tk;
-        counter=0; % counter for subset update
-        set;       %indices of mapsCell (CostSummation) to consider as an "angle" (e.g. F is composed of 100 CostL2 (i.e., angles) + 1 CostHyperbolic)
-        nonset;    %indices of mapsCell (CostSummation) not to consider as an "angle"
-        L;         % Total number of available "angles"
-        subset; % current subset of angles used to compute F grad
     end
     % Full public properties
     properties
         F;  % Cost F
         G;  % Cost G
         
-        partialGrad=0; % activate partial gradient option
         gam=[];        % descent step
         fista=false;   % FISTA option [3]
         
         reducedStep = false; % reduce the step size (TODO : add the possibilty to chose the update rule)
         mingam;
         alpha = 1; % see Kamilov paper
-        
-        Lsub;   % Number of costs used in partial gradient
     end
     
     methods
@@ -90,11 +82,6 @@ classdef OptiFBS < Opti
             if nargin==3 && ~isempty(OutOp)
                 this.OutOp=OutOp;
             end
-            if isa(F,'CostSummation')
-                this.L = F.numMaps;
-                this.Lsub=this.L;
-                this.updateSet(1:this.L);
-            end
         end
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
@@ -102,7 +89,6 @@ classdef OptiFBS < Opti
             initialize@Opti(this,x0);
             if ~isempty(x0) % To restart from current state if wanted
                 assert(~isempty(this.gam),'parameter gam is not setted');
-                this.counter=0;
                 if this.fista
                     this.tk=1;
                     this.y=x0;
@@ -113,50 +99,14 @@ classdef OptiFBS < Opti
             % Reimplementation from :class:`Opti`. For details see [1-3].
             
             if this.fista  % if fista
-                this.xopt=this.G.applyProx(this.y - this.gam*this.computeGrad(this.y),this.gam);
+                this.xopt=this.G.applyProx(this.y - this.gam*this.F.applyGrad(this.y),this.gam);
                 told=this.tk;
                 this.tk=0.5*(1+sqrt(1+4*this.tk^2));
                 this.y=this.xopt + this.alpha*(told-1)/this.tk*(this.xopt - this.xold);
             else
-                this.xopt=this.G.applyProx(this.xopt - this.gam*this.computeGrad(this.xopt),this.gam);
+                this.xopt=this.G.applyProx(this.xopt - this.gam*this.F.applyGrad(this.xopt),this.gam);
             end
             flag=0;
-        end   
-        function updateSet(this,new_set)
-            % Changes the attribute set
-            
-            this.set = new_set;
-            this.L = length(new_set);
-            this.nonset = find(~ismember(1:this.F.numMaps,this.set));
-        end   
-        
-        function grad = computeGrad(this,x)
-            if this.partialGrad >0
-                switch this.partialGrad
-                    case 1
-                        this.updateSubset(randi(this.L,this.Lsub,1));
-                    case 2
-                        this.updateSubset(sort(1 + mod(round(this.counter...
-                            + (1:this.L/this.Lsub:this.L)),this.L)));
-                        this.counter = this.counter + 1;
-                end
-                grad = zeros(size(x));
-                for kk = 1:this.Lsub
-                    ind = this.set(this.subset(kk));
-                    grad = grad + this.F.alpha(ind)*this.F.mapsCell{ind}.applyGrad(x);
-                end
-                grad = real(grad)/this.Lsub;%ad hoc               
-                for kk = 1:length(this.nonset)
-                    grad = grad + this.F.alpha(this.nonset(kk))*this.F.mapsCell{this.nonset(kk)}.applyGrad(x);
-                end
-            else
-                grad = this.F.applyGrad(x);
-            end
         end
-        
-        function updateSubset(this,subset)
-            this.subset = subset;
-            this.Lsub = length(subset);
-        end        
     end
 end

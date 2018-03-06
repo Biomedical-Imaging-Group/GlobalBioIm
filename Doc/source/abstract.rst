@@ -142,10 +142,9 @@ CostSummation
       applyGrad_, applyProx_, applyProxFench_, set_y, times_, makePartialSummation
 
 CostPartialSummation
---------------------
+....................
     
 .. autoclass:: CostPartialSummation
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
       applyGrad_, applyProx_, applyProxFench_, set_y, setLsub
-

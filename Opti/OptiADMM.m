@@ -11,19 +11,19 @@ classdef OptiADMM < Opti
     % :param OutOpCG: :class:`OutputOpti` object for CG (when used)
     % :param ItUpOutCG: :attr:`ItUpOut` parameter for CG (when used, default 0)
     %
-    % All attributes of parent class :class:`Opti` are inherited. 
+    % All attributes of parent class :class:`Opti` are inherited.
     %
-    % **Principle** 
+    % **Principle**
     % The algorithm aims at minimizing the Lagrangian formulation of the above problem:
     % $$ \\mathcal{L}(\\mathrm{x,y_1...y_n,w_1...w_n}) = F_0(\\mathrm{x}) + \\sum_{n=1}^N \\frac12\\rho_n\\Vert \\mathrm{H_nx - y_n + w_n/\\rho_n} \\Vert^2 + F_n(\\mathrm{y_n})$$
     % using an alternating minimization scheme [1].
     %
-    % **Note** The minimization of \\(\\mathcal{L}\\) over \\(\\mathrm{x}\\), 
+    % **Note** The minimization of \\(\\mathcal{L}\\) over \\(\\mathrm{x}\\),
     % $$ F_0(\\mathrm{x}) + \\sum_{n=1}^N \\frac12\\rho_n\\Vert \\mathrm{H_nx -z_n}\\Vert^2, \\quad \\mathrm{z_n= y_n - w_n/\\rho_n} $$
     % is performed  either using the conjugate-gradient :class:`OptiConjGrad` algoriothm, a direct inversion or the given solver
     %
     %  - If \\(F_0\\) is empty or is a :class:`CostL2`, then if the :class:`LinOp` \\(\\sum_{n=0}^N \\mathrm{H_n}^*\\mathrm{H_n}\\)
-    %    is not invertible the :class:`OptiConjGrad` is used by default if no more efficient solver is provided. 
+    %    is not invertible the :class:`OptiConjGrad` is used by default if no more efficient solver is provided.
     %    Here \\(\\mathrm{H_0}\\) is the :class:`LinOp` associated to \\(F_0\\).
     %
     %  - Otherwithe the solver is required.
@@ -37,7 +37,7 @@ classdef OptiADMM < Opti
     %
     % See also :class:`Opti`, :class:`OptiConjGrad` :class:`OutputOpti`, :class:`Cost`
     
-    %%    Copyright (C) 2017 
+    %%    Copyright (C) 2017
     %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -55,31 +55,29 @@ classdef OptiADMM < Opti
     
     % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
-		F0=[];               % func F0
-		Fn;                  % Cell containing the Cost Fn
-		Hn;                  % Cell containing the LinOp Hn
-		solver=[];           % solver for the last step of the algorithm
+        F0=[];               % func F0
+        Fn;                  % Cell containing the Cost Fn
+        Hn;                  % Cell containing the LinOp Hn
+        solver=[];           % solver for the last step of the algorithm
     end
     % Full protected properties
     properties (SetAccess = protected,GetAccess = protected)
-		yn;    % Internal parameters
-		zn;
-		wn;
-		Hnx;
+        yn;    % Internal parameters
+        zn;
+        wn;
+        Hnx;
         b0=[];
-		A;     % LinOp for conjugate gradient (if used)
+        A;     % LinOp for conjugate gradient (if used)
         yold=0;  % Parameter needed for termination criterion
     end
     % Full public properties
     properties
-		rho_n;                 % vector containing the multipliers
+        rho_n;                 % vector containing the multipliers
         CG;                    % conjugate gradient algo (Opti Object, when used)
-        eps_abs=[];   % Termination criterion tolerances. By default, the
-        eps_rel=[];   % test_convergence method of superclass Opti is used
     end
     
     methods
-    	%% Constructor
+        %% Constructor
         function this=OptiADMM(F0,Fn,Hn,rho_n,solver,OutOp)
             this.name='Opti ADMM';
             if ~isempty(F0), this.F0=F0; end
@@ -177,34 +175,6 @@ classdef OptiADMM < Opti
             flag=0;
         end
         
-        %% Stopping criterion
-        % Warning: the termination criterion described in [1] requires to
-        % apply the adjoint of Hn at every iteration, which may be costly
-        function stop = test_convergence(this)
-            if (isempty(this.eps_abs) || isempty(this.eps_rel))
-                % By default, criterion of superclass Opti
-                stop = test_convergence@Opti(this);
-            else
-                % Termination criterion described in [1]
-                p = 0; % Number of constraints
-                r_norm = 0; % Primal residual norm
-                s_norm = 0; % Dual residual norm
-                Hnx_norm = 0; % ||Hx||
-                y_norm = 0; % ||y||
-                adjHnwn_norm = 0; % ||H'w||
-                for n = 1:length(this.wn)
-                    p = p + length(this.yn{n});
-                    r_norm = r_norm + norm(this.Hnx{n}-this.yn{n})^2;
-                    s_norm = s_norm + norm(this.rho_n(n)*this.Hn{n}.applyAdjoint(this.yn{n} - this.yold{n}))^2;
-                    Hnx_norm = Hnx_norm + norm(this.Hnx{n})^2;
-                    y_norm = y_norm + norm(this.yn{n})^2;
-                    adjHnwn_norm = adjHnwn_norm + norm(this.Hn{n}.applyAdjoint(this.wn{n}))^2;
-                end
-                eps_primal = sqrt(p)*this.eps_abs + this.eps_rel*sqrt(max(Hnx_norm, y_norm));
-                eps_dual = sqrt(length(this.xopt))*this.eps_abs + this.eps_rel*sqrt(adjHnwn_norm);
-                
-                stop = (sqrt(r_norm) <= eps_primal) && (sqrt(s_norm) <= eps_dual);
-            end
-        end
+        
     end
 end

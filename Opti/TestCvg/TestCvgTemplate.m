@@ -41,7 +41,7 @@ classdef TestCvgTemplate < TestCvg
             this.name = 'TestCvgTemplate';
         end
         %% Update method
-        function stop = testConvergence(this,opti)            % Tests algorithm convergence from the relative difference between two successive iterates
+        function stop = testConvergence(this,opti)      
             stop = false;
             
             if condition

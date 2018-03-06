@@ -63,7 +63,7 @@ classdef TestCvgCombine < TestCvg
             end
         end
         %% Update method
-        function stop = testConvergence(this,opti)            % Tests algorithm convergence from the relative difference between two successive iterates
+        function stop = testConvergence(this,opti)         
             stop = false;
             for n=1:this.testNumber
                 stop = this.cvList{n}.testConvergence(opti);

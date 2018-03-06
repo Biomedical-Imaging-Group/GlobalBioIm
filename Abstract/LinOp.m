@@ -164,7 +164,7 @@ classdef LinOp < Map
     % - makeHHt_(this)
     % - makeComposition_(this, G)
     methods (Access = protected) % all the other underscore methods
-        function x = applyAdjoint_(this, y)
+        function x = applyAdjoint_(~, ~)
             % Not implemented in this Abstract class
             error('applyAdjoint_ method not implemented');
         end
@@ -181,7 +181,7 @@ classdef LinOp < Map
             % way to perform computation.
             x = this.apply(this.applyAdjoint(y));
         end
-        function y = applyAdjointInverse_(this,x)
+        function y = applyAdjointInverse_(~,~)
             % Not implemented in this Abstract class
             error('applyAdjointInverse_ method not implemented');
         end
@@ -219,6 +219,11 @@ classdef LinOp < Map
             % Constructs a :class:`LinOpComposition` corresponding to 
             % \\(\\mathrm{H}\\mathrm{H}^{\\star}\\)
             M=LinOpComposition(this,this');
+        end
+        function M = makeInversion_(this)
+            % Constructs a :class:`LinOpInversion` corresponding to 
+            % \\mathrm{H}^{-1}
+            M=LinOpInversion(this );
         end
         function M = makeComposition_(this, G)
             % Reimplemented from parent class :class:`Map`.
@@ -264,7 +269,7 @@ classdef LinOp < Map
         function M = mpower_(this,p)
             % Reimplemented from :class:`Map`  
             if p==-1
-                M=LinOpInversion(this);
+                M= makeInversion_(this);
             else
                 M=mpower_@Map(this,p);
             end
@@ -274,7 +279,7 @@ classdef LinOp < Map
     %% Methods of superclass Map that do not need to be reimplemented in derived Costs
     % - applyJacobianT_(this, y, v)
     methods (Access = protected, Sealed)
-        function x = applyJacobianT_(this, y, v)
+        function x = applyJacobianT_(this, y, ~)
             % Uses the method applyAdjoint (hence do not need to be
             % reimplemented in derived classes)
             x = this.applyAdjoint(y);

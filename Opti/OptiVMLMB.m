@@ -1,5 +1,6 @@
 classdef OptiVMLMB<Opti
-    % Variable Metric Limited Memory Bounded (VMLMB) [1] algorithm that
+    % Variable Metric Limited Memory Bounded (VMLMB) from OptimPackLegacy [1].
+    % This algorithm
     % minimizes a cost \\(C(\\mathrm{x})\\) which is differentiable with bound
     % constraints and/or preconditioning.
     %
@@ -17,8 +18,8 @@ classdef OptiVMLMB<Opti
     % **Reference**
     %
     % [1] Eric Thiebaut, "Optimization issues in blind deconvolution algorithms",
-    % SPIE Conf. Astronomical Data Analysis II, 4847, 174-183 (2002). See
-    % `here <https://github.com/emmt/OptimPackLegacy>`_.
+    % SPIE Conf. Astronomical Data Analysis II, 4847, 174-183 (2002).
+    % See OptimPackLegacy `repository <https://github.com/emmt/OptimPackLegacy>`_.
     %
     % **Example** VMLMB=OptiVMLMB(C,xmin,xmax,OutOp)
     %
@@ -41,12 +42,13 @@ classdef OptiVMLMB<Opti
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     properties (Constant)
-        OP_TASK_START  = 0; % first entry, start search
-        OP_TASK_FG     = 1; % computation of F and G requested
-        OP_TASK_NEWX   = 2; % new improved solution available for inspection
-        OP_TASK_CONV   = 3; % search has converged
-        OP_TASK_WARN   = 4; % search aborted with warning
-        OP_TASK_ERROR  = 5; % search aborted with error
+        OPL_TASK_START  = 0; % first entry, start search
+        OPL_TASK_FG     = 1; % computation of F and G requested
+        OPL_TASK_FREEVARS  = 2; % caller has to determine the free variables
+        OPL_TASK_NEWX      = 3; % new variables available for inspection
+        OPL_TASK_CONV      = 4; % search has converged
+        OPL_TASK_WARN      = 5; % search aborted with warning
+        OPL_TASK_ERROR     = 6; % search aborted with error
     end
     % Full public properties
     properties
@@ -58,14 +60,7 @@ classdef OptiVMLMB<Opti
         sgtol=0.9;
         sxtol=0.1;
         epsilon=0.01;
-        costheta=0.4;
-        
-        doFullGradient = 1; % boolean. If false, F gradient is computed from a subset of "angles" (requires F = CostSummation)
-        stochastic_gradient = 0; % boolean, stochastic gradient descent rule (requires F = CostSummation and doFullGradient = false)
-        
-        Lsub; % Number of "angles" used if doFullGradient==0
-        subset; % current subset of angles used to compute F grad
-        nrepeat; % number of repetition of one subset
+        delta=0.1;
     end
     properties (SetAccess = protected,GetAccess = public)
         nparam;
@@ -74,25 +69,16 @@ classdef OptiVMLMB<Opti
         xmax=[];
         neval;
         bounds =0;
-        csave;
-        isave;
-        dsave;
-        
-        set; %indices of mapsCell (CostSummation) to consider as an "angle" (e.g. F is composed of 100 CostL2 (i.e., angles) + 1 CostHyperbolic)
-        nonset; %indices of mapsCell (CostSummation) not to consider as an "angle"
-        L; % Total number of available "angles"
-        counter; % counter for subset update
-        count4rep; % counter for subset repeat
+        ws;
     end
     properties (SetAccess = protected,GetAccess = protected)
         nbeval;
-        x;
         active;
         grad;
         cc;
     end
     methods
-        function this = OptiVMLMB(C,xmin,xmax,OutOp)
+        function this = OptiVMLMB(C,xmin,xmax,OutOp,CvOp)
             this.name='OptiVMLMB';
             if(nargin>1)
                 if(~isempty(xmin))
@@ -103,9 +89,13 @@ classdef OptiVMLMB<Opti
                     this.bounds=bitor(this.bounds,2);
                     this.xmax = xmax;
                 end
-                if nargin==4 && ~isempty(OutOp),this.OutOp=OutOp;end
+                if nargin>3 && ~isempty(OutOp),this.OutOp=OutOp;end
+                if nargin==5 && ~isempty(CvOp),this.CvOp=CvOp;end
             end
             this.cost=C;
+            if (exist('m_opl_vmlmb_create')~=3)||(exist('m_opl_vmlmb_restore')~=3)||(exist('m_opl_vmlmb_iterate')~=3)||(exist('m_opl_vmlmb_get_reason')~=3)
+                installOptimPack();
+            end
         end
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
@@ -118,187 +108,78 @@ classdef OptiVMLMB<Opti
             if isscalar(this.xmax)
                 this.xmax=ones(size(x0))*this.xmax;
             end
-            [this.csave, this.isave, this.dsave] = m_vmlmb_first(this.nparam, this.m, this.fatol, this.frtol,...
-                this.sftol, this.sgtol, this.sxtol, this.epsilon, this.costheta);
-            this.task =  this.isave(3);
-            this.task = this.OP_TASK_FG;
+            this.ws = m_opl_vmlmb_create(this.nparam, this.m, this.fatol, this.frtol,...
+                this.sftol, this.sgtol, this.sxtol, this.epsilon, this.delta);
+            
+            this.task = this.OPL_TASK_FG;
             this.nbeval=0;
-            this.x = x0;
-            this.x(1)= x0(1); %Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
+            this.xopt = x0;
+            this.xopt(1)= x0(1); %Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
         end
         
         function flag=doIteration(this)
             % Reimplementation from :class:`Opti`. For details see [1].
             
-            flag=0;
-            if (this.task == this.OP_TASK_FG)
+            flag=this.OPTI_REDO_IT;
+            if (this.task == this.OPL_TASK_FG)
                 % apply bound constraints
                 % op_bounds_apply(n, x, xmin, xmax);
                 if(bitand(this.bounds,1))
-                    test = (this.x<this.xmin);
-                    if any(test(:)), this.x(test) = this.xmin(test); end
+                    test = (this.xopt<this.xmin);
+                    if any(test(:)), this.xopt(test) = this.xmin(test); end
                 end
                 if (bitand(this.bounds,2))
-                    test = (this.x>this.xmax);
-                    if any(test(:)), this.x(test) = this.xmax(test); end
+                    test = (this.xopt>this.xmax);
+                    if any(test(:)), this.xopt(test) = this.xmax(test); end
                 end
                 
                 
-                %cost = this.cost.apply(x);
-                %grad = this.cost.applyGrad(x);
+                this.cc = this.cost.apply(this.xopt);
+                this.grad = this.cost.applyGrad(this.xopt);
                 
-                this.cc = this.computeCost(this.x);
-                this.grad = this.computeGrad(this.x);
                 
-                %[cost,grad] = this.cost.eval_grad(x);     % evaluate the function and its gradient at X;
                 normg= sum(this.grad(:).^2);
                 
                 this.nbeval=this.nbeval+1;
                 if (normg< this.gtol)
-                    fprintf('Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d\t%d \n',this.niter,this.nbeval,this.cc,normg,this.task,this.isave(4));
+                    this.message = ['Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d \n',this.niter,this.nbeval,this.cc,normg,this.task];
                     %this.time=toc(tstart);
                     %this.ending_verb();
-                    flag=1;
+                    flag=this.OPTI_STOP;
                 end
-            elseif (this.task == this.OP_TASK_NEWX)
-                this.niter = this.niter +1;
-                this.xopt = this.x;
-                %if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end% New successful step: the approximation X, function F, and
-                % gradient G, are available for inspection.
-            else
-                % Convergence, or error, or warning
-                fprintf('Convergence, or error, or warning : %d  , %s\n',this.task,this.csave);
-                %this.time=toc(tstart);
-                %this.ending_verb();
-                flag=1;
-            end
-            if ( (this.nbeval==1) || (this.task == this.OP_TASK_NEWX))
+            elseif (this.task == this.OPL_TASK_NEWX)
+                flag=this.OPTI_NEXT_IT;
+            elseif (this.task == this.OPL_TASK_FREEVARS)
                 % Computes set of active parameters :
                 % op_bounds_active(n, active, x, g, xmin, xmax);
                 switch(this.bounds)
                     case 0
                         this.active = [];
                     case 1
-                        this.active = int32( (this.x>this.xmin) + (this.grad<0) );
+                        this.active = int32( (this.xopt>this.xmin) + (this.grad<0) );
                     case 2
-                        this.active = int32( (this.grad>0) + (this.x<this.xmax) );
+                        this.active = int32( (this.grad>0) + (this.xopt<this.xmax) );
                     case 3
-                        this.active = int32( ( (this.x>this.xmin) + (this.grad<0) ).*( (this.x<this.xmax) + (this.grad>0) ) );
+                        this.active = int32( ( (this.xopt>this.xmin) + (this.grad<0) ).*( (this.xopt<this.xmax) + (this.grad>0) ) );
                 end
+                
+            else
+                % Convergence, or error, or warning
+                this.message = ['Convergence, or error, or warning : %d  , %s\n',this.task,m_opl_vmlmb_get_reason(this.ws)];
+                
+                flag=this.OPTI_STOP;
+                this.task = m_opl_vmlmb_restore(this.ws,this.xopt,this.cc,this.grad);
+                
+                return;
             end
+            
             % Computes next step:
-            [this.task, this.csave]= m_vmlmb_next(this.x,this.cc,this.grad,this.active,this.isave,this.dsave);
+            this.task = m_opl_vmlmb_iterate(this.ws,this.xopt,this.cc,this.grad,this.active);
             
-            %                 if (this.niter==this.maxiter)
-            %                     this.ending_verb();
-            %                 end
-            if this.niter<3
-                flag=0;
-            end
-        end
-        
-        function run(this,x0)
-            % Reimplemented from :class:`Opti`
             
-            this.initialize(x0);
-            assert(~isempty(this.xopt),'Missing starting point x0');
-            tstart=tic;
-            this.OutOp.init();
-            this.niter=0;
-            this.starting_verb();
-            while (this.niter<this.maxiter)
-                this.niter=this.niter+1;
-                this.xold=this.xopt;
-                % - Update parameters
-                this.updateParams();
-                % - Algorithm iteration
-                flag=this.doIteration();
-                % - Convergence test
-                if flag, break; end
-                % - Call OutputOpti object
-                if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
-            end
-            this.time=toc(tstart);
-            this.ending_verb();
+             
         end
         
-        
-        function grad = computeGrad(this,x)
-            
-            if this.Lsub < this.L
-                %                 if isempty(this.subset)
-                %                     this.updateSubset(sort(1 + mod(round(this.counter...
-                %                         + (1:this.L/this.Lsub:this.L)),this.L)));
-                %                 end
-                grad = zeros(size(x));
-                for kk = 1:this.Lsub
-                    ind = this.set(this.subset(kk));
-                    grad = grad + this.cost.alpha(ind)*this.cost.mapsCell{ind}.applyGrad(x);
-                end
-                grad = real(grad)/this.Lsub;%ad hoc
-                
-                for kk = 1:length(this.nonset)
-                    grad = grad + this.cost.alpha(this.nonset(kk))*this.cost.mapsCell{this.nonset(kk)}.applyGrad(x);
-                end
-                
-                if mod(this.count4rep,this.nrepeat) == this.nrepeat - 1
-                    if this.stochastic_gradient
-                        this.updateSubset(randi(this.L,this.Lsub,1));
-                    else
-                        this.updateSubset(sort(1 + mod(round(this.counter...
-                            + (1:this.L/this.Lsub:this.L)),this.L)));
-                        this.counter = this.counter + 1;
-                    end
-                    this.count4rep = 0;
-                else
-                    this.count4rep = this.count4rep + 1;
-                end
-            else
-                grad = this.cost.applyGrad(x);
-            end
-        end
-        
-        function cost = computeCost(this,x)
-            
-            if this.Lsub < this.L
-                if isempty(this.subset)
-                    this.updateSubset(sort(1 + mod(round(this.counter...
-                        + (1:this.L/this.Lsub:this.L)),this.L)));
-                end
-                cost = 0;
-                for kk = 1:this.Lsub
-                    ind = this.set(this.subset(kk));
-                    cost = cost + this.cost.alpha(ind)*this.cost.mapsCell{ind}.apply(x);
-                end
-                cost = real(cost)/this.Lsub;%ad hoc
-                
-                for kk = 1:length(this.nonset)
-                    cost = cost + this.cost.alpha(this.nonset(kk))*this.cost.mapsCell{this.nonset(kk)}.apply(x);
-                end
-            else
-                cost = this.cost.apply(x);
-            end
-        end
-        
-        function updateSet(this,new_set)
-            this.set = new_set;
-            this.L = length(new_set);
-            this.nonset = find(~ismember(1:this.cost.numMaps,this.set));
-        end
-        
-        function updateSubset(this,subset)
-            this.subset = subset;
-            this.Lsub = length(subset);
-        end
-        
-        function reset(this)
-            this.counter = 0;
-            this.count4rep = 0;
-            if this.stochastic_gradient
-                this.updateSubset(randi(this.L,this.Lsub,1));
-            else
-                this.updateSubset(unique(round(1:this.L/this.Lsub:this.L)));
-            end
-        end
     end
+    
 end

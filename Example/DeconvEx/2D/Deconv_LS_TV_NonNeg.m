@@ -43,6 +43,7 @@ impad(idx,idx)=im;
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
+H.memoizeOpts.applyHtH=true;
 
 % -- Generate data
 load('data');    % load data (variable y)
@@ -50,25 +51,25 @@ imdisp(y(idx,idx),'Convolved and noisy data',1);
 sz=size(y);
 
 % -- Functions definition
-LS=CostL2([],y);                 % Least-Sqaures data term
+LS=CostL2([],y);                 % Least-Squares data term
 F=LS*H;
 F.doPrecomputation=1;
 R_N12=CostMixNorm21([sz,2],3);   % Mixed Norm 2-1
 G=LinOpGrad(sz);                 % Operator Gradient
 R_POS=CostNonNeg(sz);            % Non-Negativity
-lamb=7e-4;                       % Hyperparameter
+lamb=5e-4;                       % Hyperparameter
 
-% -- ADMM LS + TV + NonNeg
+%% -- ADMM LS + TV + NonNeg
 Fn={lamb*R_N12,R_POS};
 Hn={G,LinOpIdentity(sz)};
 rho_n=[1e-1,1e-1];
 OutADMM=MyOutputOpti(1,impad,40);
 ADMM=OptiADMM(F,Fn,Hn,rho_n,[],OutADMM);
-ADMM.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
+ADMM.ItUpOut=2;        % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 
 
-% -- PrimalDual Condat LS + TV + NonNeg
+%% -- PrimalDual Condat LS + TV + NonNeg
 Fn={lamb*R_N12};
 Hn={G};
 OutPDC=MyOutputOpti(1,impad,40);
@@ -76,26 +77,43 @@ PDC=OptiPrimalDualCondat(F,R_POS,Fn,Hn,OutPDC);
 PDC.tau=1;                                   % set algorithm parameters
 PDC.sig=(1/PDC.tau-F.lip/2)/G.norm^2*0.9; %
 PDC.rho=1.95;                                %
-PDC.ItUpOut=10;                              % call OutputOpti update every ItUpOut iterations
+PDC.ItUpOut=2;                              % call OutputOpti update every ItUpOut iterations
 PDC.maxiter=200;                             % max number of iterations
 PDC.run(y);                                  % run the algorithm 
 
 
-% -- Display
+%% -- VMLMB LS + hyperbolicTV + NonNeg
+hyperB = CostHyperBolic(G.sizeout,   1e-7,  3)*G;
+C = F+ lamb*hyperB; 
+C.memoizeOpts.apply=true;
+OutVMLMB=MyOutputOpti(1,impad,40);
+    VMLMB=OptiVMLMB(C,0., [],OutVMLMB,TestCvgCostRelative( 0.00001,1));                            %
+VMLMB.ItUpOut=2; 
+
+VMLMB.maxiter=200;                             % max number of iterations
+VMLMB.m=1;                                     % number of memorized step in hessian approximation
+VMLMB.run(y);                                  % run the algorithm 
+
+
+%% -- Display
 imdisp(OutADMM.evolxopt{end}(idx,idx),'LS+TV+POS (ADMM)',1);
 imdisp(OutPDC.evolxopt{end}(idx,idx),'LS+TV+POS (Condat)',1);
+imdisp(OutVMLMB.evolxopt{end}(idx,idx),'LS+TV+POS (VMLMB)',1);
 figure; plot(OutADMM.iternum,OutADMM.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 hold all;plot(OutPDC.iternum,OutPDC.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
-legend('ADMM','Condat');title('Cost evolution');
+plot(OutVMLMB.iternum,OutVMLMB.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+legend('ADMM','Condat','VMLMB');title('Cost evolution');
 
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
 semilogy(OutADMM.iternum,OutADMM.evolsnr,'LineWidth',1.5); 
 semilogy(OutPDC.iternum,OutPDC.evolsnr,'LineWidth',1.5);
-legend('LS+TV+POS (ADMM)','LS+TV+POS (Condat)');xlabel('Iterations');ylabel('SNR (dB)');
+semilogy(OutVMLMB.iternum,OutVMLMB.evolsnr,'LineWidth',1.5);
+legend('LS+TV+POS (ADMM)','LS+TV+POS (Condat)','LS+TV+POS (VMLMB)','Location','southeast');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[ADMM.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
 bar(2,[PDC.time],'FaceColor',orderCol(2,:),'EdgeColor','k');
-set(gca,'xtick',[1 2]);ylabel('Time (s)');
-set(gca,'xticklabels',{'LS+TV+POS (ADMM)','LS+TV+POS (Condat)'});set(gca,'XTickLabelRotation',45)
+bar(3,[VMLMB.time],'FaceColor',orderCol(3,:),'EdgeColor','k');
+set(gca,'xtick',[1 2 3]);ylabel('Time (s)');
+set(gca,'xticklabels',{'LS+TV+POS (ADMM)','LS+TV+POS (Condat)','LS+TV+POS (VMLMB)'});set(gca,'XTickLabelRotation',45)
 

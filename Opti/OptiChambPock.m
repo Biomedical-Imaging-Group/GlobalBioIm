@@ -29,7 +29,7 @@ classdef OptiChambPock < Opti
     %   - To ensure convergence (see [1]), parameters sig and tau have to verify 
     %     $$ \\sigma \\times \\tau \\times \\Vert \\mathrm{H} \\Vert^2 < 1 $$ 
     %     where \\(\\Vert \\mathrm{H}\\Vert\\) denotes the norm of the linear operator H.
-    %
+    %f
 	%   - When the accelerated version is used (i.e. parameter gam is non-empty), 
     %     sig and tau will be updated at each iteration and the initial 
     %     ones (given by user)  have to verify
@@ -157,7 +157,7 @@ classdef OptiChambPock < Opti
                 this.ybar=(1+this.theta)*this.y - this.theta*this.yold;
                 this.KTybar=(1+this.theta)*this.KTy - this.theta*this.KTyold;
             end
-            flag=0;
+            flag=OPTI_NEXT_IT;
         end
 	end
 end

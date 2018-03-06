@@ -1,6 +1,8 @@
 #include <mex.h>
 #include <math.h>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 #include "matrix.h"
 
 /***************************************************************************
@@ -19,7 +21,9 @@
      -mac  : mex svd2D_decomp.cpp -DUSE_BLAS_LIB -DNEW_MATLAB_BLAS -DINT_64BITS -largeArrayDims CXX=/usr/local/Cellar/gcc/6.3.0_1/bin/g++-6 CXXOPTIMFLAGS="-O3
                    -mtune=native -fomit-frame-pointer -fopenmp" LDOPTIMFLAGS=" -O " LINKLIBS="$LINKLIBS -lmwblas -lmwlapack -L"/usr/local/Cellar/gcc/6.3.0_1/lib/gcc/6" -L/ -fopenmp"
  
-  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+  Copyright (C) 2017 
+  E. Soubies emmanuel.soubies@epfl.ch
+  F. Soulez
 
 ****************************************************************************/
 

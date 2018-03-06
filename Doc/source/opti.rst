@@ -42,6 +42,13 @@ OptiFBS
 .. autoclass:: OptiFBS
     :show-inheritance:
     :members: run, starting_verb, ending_verb, test_convergence, updateSet, initialize, doIteration, updateParams
+
+OptiFGP
+-------
+
+.. autoclass:: OptiFGP
+    :show-inheritance:
+    :members: run, starting_verb, ending_verb, test_convergence, updateSet, initialize, doIteration, updateParams, setBounds, setLambda
     
 OptiGradDsct
 ------------
@@ -76,4 +83,11 @@ OutputOpti
 
 .. autoclass:: OutputOpti
     :show-inheritance:
+    :members: init, update
+
+TestCvg
+----------
+
+.. autoclass:: TestCvg 
+    :show-inheritance:   
     :members: init, update

@@ -1,3 +1,6 @@
-function s = checkLinOp(H)
+function s = checkLinOp(H,checkComplex)
 % see checkMap
-s = checkMap(H);
+if ~exist('checkComplex', 'var') || isempty(checkComplex)
+    checkComplex = false;
+end
+s = checkMap(H,checkComplex);

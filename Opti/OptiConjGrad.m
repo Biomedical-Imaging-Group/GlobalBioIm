@@ -6,7 +6,7 @@ classdef OptiConjGrad < Opti
     % :param A: symmetric definite positive :class:`LinOp`
     % :param b: right-hand term
     %
-    % All attributes of parent class :class:`Opti` are inherited. 
+    % All attributes of parent class :class:`Opti` are inherited.
     %
     % **Note**: In this algorithm the parameter cost is not fixed to the above functional
     % but to the squared resildual \\( 0.5\\Vert \\mathrm{Ax - b}\\Vert^2 \\)
@@ -14,8 +14,8 @@ classdef OptiConjGrad < Opti
     % **Example** CG=OptiConjGrad(A,b,OutOp)
     %
     % See also :class:`Opti`, :class:`OutputOpti` :class:`Cost`
-
-	%%    Copyright (C) 2015 
+    
+    %%    Copyright (C) 2015
     %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -30,32 +30,32 @@ classdef OptiConjGrad < Opti
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-    % Protected Set and public Read properties     
+    
+    % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
-		A;  % Linear operator
-		b;  % right hand side term
+        A;  % Linear operator
+        b;  % right hand side term
     end
-    % Full protected properties 
+    % Full protected properties
     properties (SetAccess = protected,GetAccess = protected)
-		r; % residual
+        r; % residual
         rho_prec;
         p;
     end
     
     methods
-    	%% Constructor
-    	function this=OptiConjGrad(A,b,OutOp)
-    		this.name='Opti Conjugate Gradient';
+        %% Constructor
+        function this=OptiConjGrad(A,b,OutOp)
+            this.name='Opti Conjugate Gradient';
             if nargin==3 && ~isempty(OutOp),this.OutOp=OutOp;end
-    			this.A=A;
-    		this.cost=CostL2Composition(CostL2([],b),this.A);
-    		assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
-    		this.b=b;
-        end 
+            this.A=A;
+            this.cost=CostL2Composition(CostL2([],b),this.A);
+            assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
+            this.b=b;
+        end
         %% Set data b
         function set_b(this,b)
-            % Set the right-hand side \\(\\mathrm{b}\\)       	
+            % Set the right-hand side \\(\\mathrm{b}\\)
             assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
             this.b=b;
             this.cost.H1.y=b;
@@ -64,10 +64,10 @@ classdef OptiConjGrad < Opti
             % Reimplementation from :class:`Opti`.
             
             initialize@Opti(this,x0);
-			if ~isempty(x0) % To restart from current state if wanted
-				this.r= this.b - this.A.apply(this.xopt);
+            if ~isempty(x0) % To restart from current state if wanted
+                this.r= this.b - this.A.apply(this.xopt);
                 this.p = this.r;
-            end;
+            end
         end
         function flag=doIteration(this)
             % Reimplementation from :class:`Opti`. For a detailled
@@ -81,16 +81,17 @@ classdef OptiConjGrad < Opti
             end
             q = this.A*this.p;
             alpha = rho/dot(this.p(:), q(:));
-
+            
             % stop if rounding errors
             if dot(this.p(:),this.r(:))<0
-                flag = 1;
+                this.endingMessage = [this.name ,'Rounding errors prevent further optimization'];
+                flag = OPTI_STOP;
                 return
             end
             this.xopt = this.xopt + alpha*this.p;
             this.r = this.r - alpha*q;
             this.rho_prec = rho;
-            flag=0;
+            flag=OPTI_NEXT_IT;
         end
     end
 end

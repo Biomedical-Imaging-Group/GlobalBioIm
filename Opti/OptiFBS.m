@@ -106,7 +106,40 @@ classdef OptiFBS < Opti
             else
                 this.xopt=this.G.applyProx(this.xopt - this.gam*this.F.applyGrad(this.xopt),this.gam);
             end
-            flag=0;
+
+            flag=OPTI_NEXT_IT;
+        end   
+        function updateSet(this,new_set)
+            % Changes the attribute set
+            
+            this.set = new_set;
+            this.L = length(new_set);
+            this.nonset = find(~ismember(1:this.F.numMaps,this.set));
+        end   
+        
+        function grad = computeGrad(this,x)
+            if this.partialGrad >0
+                switch this.partialGrad
+                    case 1
+                        this.updateSubset(randi(this.L,this.Lsub,1));
+                    case 2
+                        this.updateSubset(sort(1 + mod(round(this.counter...
+                            + (1:this.L/this.Lsub:this.L)),this.L)));
+                        this.counter = this.counter + 1;
+                end
+                grad = zeros(size(x));
+                for kk = 1:this.Lsub
+                    ind = this.set(this.subset(kk));
+                    grad = grad + this.F.alpha(ind)*this.F.mapsCell{ind}.applyGrad(x);
+                end
+                grad = real(grad)/this.Lsub;%ad hoc               
+                for kk = 1:length(this.nonset)
+                    grad = grad + this.F.alpha(this.nonset(kk))*this.F.mapsCell{this.nonset(kk)}.applyGrad(x);
+                end
+            else
+                grad = this.F.applyGrad(x);
+            end
+>>>>>>> 3bf3cb896c324530efae022f91143812191f30b7
         end
     end
 end

@@ -1,6 +1,8 @@
 #include <mex.h>
 #include <math.h>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 #include "matrix.h"
 #include "matLib3D.h"
 

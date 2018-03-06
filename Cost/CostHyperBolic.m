@@ -1,5 +1,5 @@
-classdef CostComplexHyperBolic < Cost
-    % CostComplexHyperBolic: Hyperbolic cost function
+classdef CostHyperBolic < Cost
+    % CostHyperBolic: Hyperbolic cost function
     % $$C(\\mathrm{x}) := \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{x}-y)_{k,l}^2 + \\varepsilon^2}$$
     %
     % :param index: dimensions along which the l2-norm will be applied (inner sum over l)
@@ -8,7 +8,7 @@ classdef CostComplexHyperBolic < Cost
     %
     % All attributes of parent class :class:`Cost` are inherited. 
     %
-    % **Example** C=CostComplexHyperBolic(sz,epsilon,index,y)
+    % **Example** C=CostHyperBolic(sz,epsilon,index,y)
     %
     % See also :class:`Map`, :class:`Cost`, :class:`LinOp`
     
@@ -37,10 +37,10 @@ classdef CostComplexHyperBolic < Cost
     
     %% Constructor
     methods
-        function this = CostComplexHyperBolic(sz,epsilon,index,y)
+        function this = CostHyperBolic(sz,epsilon,index,y)
             if nargin<4, y=0; end
             this@Cost(sz,y);
-            this.name='CostComplexHyperBolic';
+            this.name='CostHyperBolic';
             this.isConvex=true;
             this.isDifferentiable=true;
            
@@ -58,6 +58,9 @@ classdef CostComplexHyperBolic < Cost
             else
                 this.sumOp = LinOpDiag(this.H.sizeout);
             end
+            
+            this.memoizeOpts.computeF=true;
+            this.memoCache.computeF= struct('in',[],'out', []);
         end
     end
     
@@ -67,27 +70,23 @@ classdef CostComplexHyperBolic < Cost
     methods (Access = protected)
         function y=apply_(this,x)
             % Reimplemented from parent class :class:`Cost`.            
-            if(isscalar(this.y)&&(this.y==0))
-                u=abs(x).^2;
-            else
-                u=abs(x-this.y).^2;
-            end
-            R = this.sumOp.apply(u);
-            
-            F = sqrt(R + this.epsilon.^2);
+            F = this.memoize('computeF',@this.computeF_,x);
             y = sum(F(:)) - numel(F).*this.epsilon;
         end    
         function g=applyGrad_(this,x)
+            % Reimplemented from parent class :class:`Cost`.             
+            F = this.memoize('computeF',@this.computeF_,x);
+            g = x.*this.sumOp.applyAdjoint(1./F);  
+        end
+         function F = computeF_(this,x)
             % Reimplemented from parent class :class:`Cost`.             
             if(isscalar(this.y)&&(this.y==0))
                 u=abs(x).^2;
             else
                 u=abs(x-this.y).^2;
             end
-            R = this.sumOp.apply(u);
             
-            F = sqrt(R + this.epsilon.^2);
-            g = x.*this.sumOp.applyAdjoint(1./F);  
+            F = sqrt(this.sumOp*u + this.epsilon.^2);
         end
     end
 end

@@ -7,18 +7,18 @@ Cost Functions (Cost)
 	
 .. automodule:: Cost
 
-CostComplexHyperBolic
----------------------
-    
-.. autoclass:: CostComplexHyperBolic
-    :show-inheritance:
-    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
-      applyGrad_, applyProx_, applyProxFench_, set_y 
-
 CostGoodRoughness
 -----------------
     
 .. autoclass:: CostGoodRoughness
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+      applyGrad_, applyProx_, applyProxFench_, set_y 
+
+CostHyperBolic
+---------------------
+    
+.. autoclass:: CostHyperBolic
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
       applyGrad_, applyProx_, applyProxFench_, set_y 
@@ -68,6 +68,14 @@ CostMixNormSchatt1
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
       applyGrad_, applyProx_, applyProxFench_, set_y
     
+CostTV
+------
+    
+.. autoclass:: CostTV
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+      applyGrad_, applyProx_, applyProxFench_, set_y, setProxAlgo
+
 IndicatorFunctions
 ------------------
 

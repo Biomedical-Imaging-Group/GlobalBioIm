@@ -97,7 +97,7 @@ classdef OptiDouglasRachford < Opti
                 this.xopt = this.F2.prox(this.y, this.gamma(2));
             end
             this.y = this.y + this.lambda .* ( this.F1.prox(2.*this.xopt- this.y,this.gamma(1)) - this.xopt); 
-            flag=0;
+            flag=OPTI_NEXT_IT;
         end
     end
 end

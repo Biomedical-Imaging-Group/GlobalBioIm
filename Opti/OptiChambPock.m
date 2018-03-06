@@ -157,7 +157,7 @@ classdef OptiChambPock < Opti
                 this.ybar=(1+this.theta)*this.y - this.theta*this.yold;
                 this.KTybar=(1+this.theta)*this.KTy - this.theta*this.KTyold;
             end
-            flag=OPTI_NEXT_IT;
+            flag=this.OPTI_NEXT_IT;
         end
 	end
 end

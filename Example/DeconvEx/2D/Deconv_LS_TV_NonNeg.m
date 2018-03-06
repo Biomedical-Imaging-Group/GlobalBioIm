@@ -87,7 +87,9 @@ hyperB = CostHyperBolic(G.sizeout,   1e-7,  3)*G;
 C = F+ lamb*hyperB; 
 C.memoizeOpts.apply=true;
 OutVMLMB=MyOutputOpti(1,impad,40);
-    VMLMB=OptiVMLMB(C,0., [],OutVMLMB,TestCvgCostRelative( 0.00001,1));                            %
+CvTestVMLMB = TestCvgCombine('CostRelative',0.000001, 'CostAbsolute',10);
+% CvTestVMLMB = TestCvgCombine(TestCvgCostRelative(0.000001),TestCvgCostAbsolute(10));
+VMLMB=OptiVMLMB(C,0., [],OutVMLMB,CvTestVMLMB);                            %
 VMLMB.ItUpOut=2; 
 
 VMLMB.maxiter=200;                             % max number of iterations

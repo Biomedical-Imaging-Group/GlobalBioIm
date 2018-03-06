@@ -31,8 +31,7 @@ classdef TestCvgCostAbsolute  < TestCvg
     end
     methods
         %% Constructor
-        function this=TestCvgCostAbsolute(verbose, costAbsoluteTol, costIndex)
-            this.verbose= verbose;
+        function this=TestCvgCostAbsolute( costAbsoluteTol, costIndex)
             this.name ='TestCvgCostAbsolute';
 
             assert(isscalar(costAbsoluteTol),'costAbsoluteTol must be scalar');

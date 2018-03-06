@@ -1,4 +1,4 @@
-classdef TestCvgCostAbsolute  < handle
+classdef TestCvgCostAbsolute  < TestCvg
     % TestCvgCostAbsolute stops the optimization when the cost function is below the value COSTABSOLUTETOL
     %
     % :param verbose: if true will display a message before stopping the algorithm.
@@ -7,7 +7,7 @@ classdef TestCvgCostAbsolute  < handle
     %
     % **Example** CvOpti=TestCvgCostAbsolute(verbose,costAbsoluteTol, costIndex )
     %
-    % See also :class:`Opti`
+    % See also :class:`TestCvg`
     
     %%    Copyright (C) 2018
     %     F. Soulez ferreol.soulez@univ-lyon1.fr
@@ -25,13 +25,6 @@ classdef TestCvgCostAbsolute  < handle
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (Constant)
-        name = 'TestCvgCostAbsolute'% name of the optimization algorithm
-    end
-    properties (SetAccess = protected,GetAccess = public)
-        verbose = true
-        count=1; % counter
-    end
     properties (SetAccess = public,GetAccess = public)
         costAbsoluteTol=1e-5;      % stopping criteria tolerance on the value of the cost function
         costIndex=0;              % index of the cost function
@@ -40,6 +33,8 @@ classdef TestCvgCostAbsolute  < handle
         %% Constructor
         function this=TestCvgCostAbsolute(verbose, costAbsoluteTol, costIndex)
             this.verbose= verbose;
+            this.name ='TestCvgCostAbsolute';
+
             assert(isscalar(costAbsoluteTol),'costAbsoluteTol must be scalar');
             this.costAbsoluteTol =costAbsoluteTol;
             if(nargin==3)
@@ -58,12 +53,13 @@ classdef TestCvgCostAbsolute  < handle
             else
                 f = opti.cost*opti.xopt;
             end
+
             if( f < this.costAbsoluteTol)
                 stop  =true;
-                message = [this.name,': Cost below the absolute tolerance : ',f,' < ',this.costAbsoluteTol];
-                this.message = message;
+                message = [this.name,': Cost below the absolute tolerance : ',num2str(f),' < ',num2str(this.costAbsoluteTol)];
+                opti.message = message;
                 if this.verbose
-                    disp(message)
+                    disp(message);
                 end
             end
         end

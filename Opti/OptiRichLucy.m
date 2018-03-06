@@ -120,7 +120,7 @@ classdef OptiRichLucy < Opti
                     warning('Violation of the positivity of the solution (the regularization parameter should be decreased).');
                 end
             end
-            flag=0;
+            flag=OPTI_NEXT_IT;
         end
  
 	end

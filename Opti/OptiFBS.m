@@ -120,7 +120,7 @@ classdef OptiFBS < Opti
             else
                 this.xopt=this.G.applyProx(this.xopt - this.gam*this.computeGrad(this.xopt),this.gam);
             end
-            flag=0;
+            flag=OPTI_NEXT_IT;
         end   
         function updateSet(this,new_set)
             % Changes the attribute set

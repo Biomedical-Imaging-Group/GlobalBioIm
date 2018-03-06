@@ -15,6 +15,7 @@ classdef Opti < matlab.mixin.SetGet
     
     %%    Copyright (C) 2017
     %     E. Soubies emmanuel.soubies@epfl.ch
+    %     F. Soulez ferreol.soulez@univ-lyon1.fr
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -29,6 +30,11 @@ classdef Opti < matlab.mixin.SetGet
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
+    properties (Constant)
+        OPTI_NEXT_IT  = 0;   % new iteration
+        OPTI_REDO_IT    = 1; %
+        OPTI_STOP    = 2;    % stop iteration
+    end
     % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
         name = 'none'        % name of the optimization algorithm
@@ -36,15 +42,14 @@ classdef Opti < matlab.mixin.SetGet
         time;                % running time of the algorithm (last run)
         niter;               % iteration counter
         xopt=[];             % optimization variable
-        message;
-    end
-    properties  (SetAccess = protected,GetAccess = protected)
         xold;
     end
     % Full public properties
     properties
+        verbose=true;       % if true display information (starting and ending message
+        endingMessage;             % Ending message
         OutOp=OutputOpti();  % OutputOpti object
-        CvOp=TestCvg(false);      % OutputOpti object
+        CvOp=TestCvg();      % OutputOpti object
         maxiter=50;     % maximal number of iterates
         ItUpOut=0;      % period (in number of iterations) of calling the OutputOpti object
     end
@@ -63,18 +68,27 @@ classdef Opti < matlab.mixin.SetGet
             this.OutOp.init();
             this.niter=0;
             this.starting_verb();
-            while (this.niter<this.maxiter)
-                this.niter=this.niter+1;
-                this.xold=this.xopt;
+            this.endingMessage= ['Maximum number of iterations reached: ', num2str(this.maxiter)];
+            this.xold= x0;
+            while (this.niter<=this.maxiter)
+                
                 % - Update parameters
                 this.updateParams();
                 % - Algorithm iteration
                 flag=this.doIteration();
-                % - Convergence test
-                if this.CvOp.testConvergence() || flag, break; end
                 
-                % - Call OutputOpti object
-                if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
+                if(flag == this.OPTI_NEXT_IT)
+                    this.niter=this.niter+1;
+                    
+                    % - Convergence test
+                    if this.CvOp.testConvergence(this) || flag==this.OPTI_STOP, break; end
+                    
+                    % - Call OutputOpti object
+                    if this.verbose &&((mod(this.niter,this.ItUpOut)==0)|| (this.niter==1))
+                        this.OutOp.update(this);
+                    end
+                    this.xold=this.xopt;
+                end
             end
             this.time=toc(tstart);
             this.ending_verb();
@@ -91,7 +105,10 @@ classdef Opti < matlab.mixin.SetGet
         function flag=doIteration(this)
             % Implements algorithm iteration
             %
-            % flag=1 if loop has to break (0 to continue)
+            % flag:
+            %         OPTI_NEXT_IT  = 0;   % new iteration
+            %         OPTI_REDO_IT    = 1; %
+            %         OPTI_STOP    = 2;    % stop iteration
             
             error(['In ',this.name,': doIteration method is not implemented']);
         end
@@ -104,29 +121,18 @@ classdef Opti < matlab.mixin.SetGet
         function starting_verb(this)
             % Generic method to display a starting message in verbose mode.
             
-            if this.ItUpOut~=0
-                if this.OutOp.iterVerb~=0
-                    fprintf('---> Start %s ... \n',this.name);
-                end
-                this.OutOp.update(this);
+            if this.verbose
+                fprintf('---> Start %s ... \n',this.name);
+                
             end
         end
         function ending_verb(this)
             % Generic method to display a ending message in verbose mode.
             
-            if this.ItUpOut~=0 && this.OutOp.iterVerb~=0
+            if this.verbose
+                disp(this.endingMessage);
                 fprintf('... Optimization finished \nElapsed time (s): %4.2d (%i iterations). \n',this.time, this.niter);
             end
-        end
-        function stop=test_convergence(this)
-            % Tests algorithm convergence from the relative difference between two successive iterates
-            %
-            % :returns stop: boolean true if
-            % $$ \\frac{\\| \\mathrm{x}^{k} - \\mathrm{x}^{k-1}\\|}{\\|\\mathrm{x}^{k-1}\\|} < x_{tol}.$$
-            
-            r=this.xopt-this.xold;
-            xdiff=norm(r(:))/(norm(this.xold(:))+eps);
-            stop=xdiff<this.xtol;
         end
     end
 end

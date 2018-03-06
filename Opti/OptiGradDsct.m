@@ -64,7 +64,7 @@ classdef OptiGradDsct < Opti
             % $$ \\mathrm{x}^{k+1} = \\mathrm{x}^k - \\gamma \\nabla C(\\mathrm{x}^k) $$
             
             this.xopt=this.xopt-this.gam*this.cost.applyGrad(this.xopt);
-            flag=0;
+            flag=OPTI_NEXT_IT;
         end
 	end
 end

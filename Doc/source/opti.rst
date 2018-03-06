@@ -84,3 +84,10 @@ OutputOpti
 .. autoclass:: OutputOpti
     :show-inheritance:
     :members: init, update
+
+TestCvg
+----------
+
+.. autoclass:: TestCvg 
+    :show-inheritance:   
+    :members: init, update

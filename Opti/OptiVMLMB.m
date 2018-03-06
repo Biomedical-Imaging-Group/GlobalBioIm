@@ -1,6 +1,6 @@
 classdef OptiVMLMB<Opti
     % Variable Metric Limited Memory Bounded (VMLMB) from OptimPackLegacy [1].
-    % This algorithm 
+    % This algorithm
     % minimizes a cost \\(C(\\mathrm{x})\\) which is differentiable with bound
     % constraints and/or preconditioning.
     %
@@ -18,7 +18,7 @@ classdef OptiVMLMB<Opti
     % **Reference**
     %
     % [1] Eric Thiebaut, "Optimization issues in blind deconvolution algorithms",
-    % SPIE Conf. Astronomical Data Analysis II, 4847, 174-183 (2002). 
+    % SPIE Conf. Astronomical Data Analysis II, 4847, 174-183 (2002).
     % See OptimPackLegacy `repository <https://github.com/emmt/OptimPackLegacy>`_.
     %
     % **Example** VMLMB=OptiVMLMB(C,xmin,xmax,OutOp)
@@ -44,11 +44,11 @@ classdef OptiVMLMB<Opti
     properties (Constant)
         OPL_TASK_START  = 0; % first entry, start search
         OPL_TASK_FG     = 1; % computation of F and G requested
-        OPL_TASK_FREEVARS  = 2; % caller has to determine the free variables */
-        OPL_TASK_NEWX      = 3; % new variables available for inspection */
-        OPL_TASK_CONV      = 4; % search has converged */
-        OPL_TASK_WARN      = 5; % search aborted with warning */
-        OPL_TASK_ERROR     = 6; % search aborted with error */
+        OPL_TASK_FREEVARS  = 2; % caller has to determine the free variables
+        OPL_TASK_NEWX      = 3; % new variables available for inspection
+        OPL_TASK_CONV      = 4; % search has converged
+        OPL_TASK_WARN      = 5; % search aborted with warning
+        OPL_TASK_ERROR     = 6; % search aborted with error
     end
     % Full public properties
     properties
@@ -78,7 +78,7 @@ classdef OptiVMLMB<Opti
         cc;
     end
     methods
-        function this = OptiVMLMB(C,xmin,xmax,OutOp)
+        function this = OptiVMLMB(C,xmin,xmax,OutOp,CvOp)
             this.name='OptiVMLMB';
             if(nargin>1)
                 if(~isempty(xmin))
@@ -89,7 +89,8 @@ classdef OptiVMLMB<Opti
                     this.bounds=bitor(this.bounds,2);
                     this.xmax = xmax;
                 end
-                if nargin==4 && ~isempty(OutOp),this.OutOp=OutOp;end
+                if nargin>3 && ~isempty(OutOp),this.OutOp=OutOp;end
+                if nargin==5 && ~isempty(CvOp),this.CvOp=CvOp;end
             end
             this.cost=C;
             if (exist('m_opl_vmlmb_create')~=3)||(exist('m_opl_vmlmb_restore')~=3)||(exist('m_opl_vmlmb_iterate')~=3)||(exist('m_opl_vmlmb_get_reason')~=3)
@@ -119,7 +120,7 @@ classdef OptiVMLMB<Opti
         function flag=doIteration(this)
             % Reimplementation from :class:`Opti`. For details see [1].
             
-            flag=0;
+            flag=this.OPTI_REDO_IT;
             if (this.task == this.OPL_TASK_FG)
                 % apply bound constraints
                 % op_bounds_apply(n, x, xmin, xmax);
@@ -141,15 +142,13 @@ classdef OptiVMLMB<Opti
                 
                 this.nbeval=this.nbeval+1;
                 if (normg< this.gtol)
-                    fprintf('Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d \n',this.niter,this.nbeval,this.cc,normg,this.task);
+                    this.message = ['Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d \n',this.niter,this.nbeval,this.cc,normg,this.task];
                     %this.time=toc(tstart);
                     %this.ending_verb();
-                    flag=1;
+                    flag=this.OPTI_STOP;
                 end
             elseif (this.task == this.OPL_TASK_NEWX)
-                this.niter = this.niter +1;
-                %if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end% New successful step: the approximation X, function F, and
-                % gradient G, are available for inspection.
+                flag=this.OPTI_NEXT_IT;
             elseif (this.task == this.OPL_TASK_FREEVARS)
                 % Computes set of active parameters :
                 % op_bounds_active(n, active, x, g, xmin, xmax);
@@ -166,10 +165,9 @@ classdef OptiVMLMB<Opti
                 
             else
                 % Convergence, or error, or warning
-                fprintf('Convergence, or error, or warning : %d  , %s\n',this.task,m_opl_vmlmb_get_reason(this.ws));
-                %this.time=toc(tstart);
-                %this.ending_verb();
-                flag=1;
+                this.message = ['Convergence, or error, or warning : %d  , %s\n',this.task,m_opl_vmlmb_get_reason(this.ws)];
+                
+                flag=this.OPTI_STOP;
                 this.task = m_opl_vmlmb_restore(this.ws,this.xopt,this.cc,this.grad);
                 
                 return;
@@ -179,34 +177,9 @@ classdef OptiVMLMB<Opti
             this.task = m_opl_vmlmb_iterate(this.ws,this.xopt,this.cc,this.grad,this.active);
             
             
-            if this.niter<3
-                flag=0;
-            end
+             
         end
         
-        function run(this,x0)
-            % Reimplemented from :class:`Opti`
-            
-            this.initialize(x0);
-            assert(~isempty(this.xopt),'Missing starting point x0');
-            tstart=tic;
-            this.OutOp.init();
-            this.niter=0;
-            this.starting_verb();
-            while (this.niter<this.maxiter)
-                this.niter=this.niter+1;
-                % - Update parameters
-                this.updateParams();
-                % - Algorithm iteration
-                flag=this.doIteration();
-                % - Convergence test
-                if flag, break; end
-                % - Call OutputOpti object
-                if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
-            end
-            this.time=toc(tstart);
-            this.ending_verb();
-        end
     end
     
 end

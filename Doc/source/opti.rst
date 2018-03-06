@@ -85,8 +85,10 @@ OutputOpti
     :show-inheritance:
     :members: init, update
 
+.. automodule:: Opti.TestCvg
+
 TestCvg
-----------
+-------
 
 .. autoclass:: TestCvg 
     :show-inheritance:   

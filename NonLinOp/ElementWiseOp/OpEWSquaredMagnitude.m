@@ -47,7 +47,7 @@ classdef OpEWSquaredMagnitude < Map
         function x = applyJacobianT_(this,y,v)
             % Reimplemented from parent class :class:`Map`.
 
-            x=2*conj(v).*y;
+            x=2*v.*y;
         end	
     end
 end

@@ -139,7 +139,6 @@ classdef OptiFBS < Opti
             else
                 grad = this.F.applyGrad(x);
             end
->>>>>>> 3bf3cb896c324530efae022f91143812191f30b7
         end
     end
 end

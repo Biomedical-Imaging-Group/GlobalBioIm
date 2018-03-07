@@ -78,17 +78,3 @@ this.eps_rel = eps_rel;
         end
     end
 end
-    
-   
-%% Stopping criterion
-        % Warning: the termination criterion described in [1] requires to
-        % apply the adjoint of Hn at every iteration, which may be costly
-        function stop = test_convergence(this)
-            if (isempty(this.eps_abs) || isempty(this.eps_rel))
-                % By default, criterion of superclass Opti
-                stop = test_convergence@Opti(this);
-            else
-                
-                stop = (sqrt(r_norm) <= eps_primal) && (sqrt(s_norm) <= eps_dual);
-            end
-        end

@@ -6,9 +6,6 @@ classdef OptiFBS < Opti
     % :param G: a :class:`Cost` with an implementation of the :meth:`applyProx`.
     % :param gam: descent step
     % :param fista: boolean true if the accelerated version FISTA [3] is used (default false)
-    % :param partialGrad: when F is a :class:`CostSummation`, uses a subset of this sum of Costs to compute the gradient. 0: desactivated (default), 1: circular shift of uniform subset, 2: stochastic subset selection
-    % :param set: when partialGrad>0, subset of F.mapsCells on which the partial gradient is applied (remaining cost will always be used in the gradient computation).
-    % :param Lsub: number of costs used to compute the partial gradient (Lsub < length(set))
     %
     % All attributes of parent class :class:`Opti` are inherited.
     %
@@ -109,36 +106,6 @@ classdef OptiFBS < Opti
 
             flag=this.OPTI_NEXT_IT;
         end   
-        function updateSet(this,new_set)
-            % Changes the attribute set
-            
-            this.set = new_set;
-            this.L = length(new_set);
-            this.nonset = find(~ismember(1:this.F.numMaps,this.set));
-        end   
         
-        function grad = computeGrad(this,x)
-            if this.partialGrad >0
-                switch this.partialGrad
-                    case 1
-                        this.updateSubset(randi(this.L,this.Lsub,1));
-                    case 2
-                        this.updateSubset(sort(1 + mod(round(this.counter...
-                            + (1:this.L/this.Lsub:this.L)),this.L)));
-                        this.counter = this.counter + 1;
-                end
-                grad = zeros(size(x));
-                for kk = 1:this.Lsub
-                    ind = this.set(this.subset(kk));
-                    grad = grad + this.F.alpha(ind)*this.F.mapsCell{ind}.applyGrad(x);
-                end
-                grad = real(grad)/this.Lsub;%ad hoc               
-                for kk = 1:length(this.nonset)
-                    grad = grad + this.F.alpha(this.nonset(kk))*this.F.mapsCell{this.nonset(kk)}.applyGrad(x);
-                end
-            else
-                grad = this.F.applyGrad(x);
-            end
-        end
     end
 end

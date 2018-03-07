@@ -61,7 +61,7 @@ classdef OptiADMM < Opti
         solver=[];           % solver for the last step of the algorithm
     end
     % Full protected properties
-    properties (SetAccess = protected,GetAccess = public)
+    properties (SetAccess = protected,GetAccess = ?TestCvg)
         yn;    % Internal parameters
         zn;
         wn;

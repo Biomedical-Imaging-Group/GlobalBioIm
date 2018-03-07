@@ -65,14 +65,13 @@ classdef OptiFGP < Opti
             this.F0 = F0;
             if isa(TV,'CostTV')
                 this.D = TV.H2;%circular boundary
-                TV = 1*TV;
             else
                 this.D = TV.cost2.H2;
             end
             this.ndims = this.D.sizeout(end);
             ElemRep = repmat({':'}, 1, ndims(bounds) - 1 - isvector(bounds));
             this.C = CostRectangle(this.F0.sizein,bounds(ElemRep{:},1),bounds(ElemRep{:},2));
-            %this.D = LinOpTV(this.F0.sizein,this.D.bc); %For the dual variables
+            
             this.TV = TV;
             this.cost = this.F0 + this.TV;
             this.gam = 1/8;
@@ -81,7 +80,11 @@ classdef OptiFGP < Opti
         function setLambda(this,new_l)
             % Set the regularization parameter lambda
             
-            this.TV = new_l*this.TV.cost2;
+            if isa(this.TV,'CostTV')
+                this.TV = new_l*this.TV;
+            else
+                this.TV = new_l*this.TV.cost2;
+            end
             this.cost = this.F0 + this.TV;
         end
         
@@ -104,7 +107,11 @@ classdef OptiFGP < Opti
             this.t = 1;
             
             this.F = this.P;
-            this.lambda = this.TV.cost1;
+            if isa(this.TV,'CostTV')
+                this.lambda = 1;
+            else
+                this.lambda = this.TV.cost1;
+            end
         end
         function flag=doIteration(this)
             % Reimplementation from :class:`Opti`. For details see [1].
@@ -120,7 +127,7 @@ classdef OptiFGP < Opti
             
             
             this.xopt = this.C.applyProx(this.F0.y - this.lambda*this.D'*(this.P),0);
-            flag = OPTI_NEXT_IT;
+            flag = this.OPTI_NEXT_IT;
         end
     end
 end

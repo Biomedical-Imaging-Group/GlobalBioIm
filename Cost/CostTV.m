@@ -51,35 +51,32 @@ classdef CostTV < CostComposition
             this@CostComposition(H1,H2);
             this.name='CostTV';
             LS = CostL2(this.sizein);
+            %lambda is always 1 here. It can be set differently by multiplying this cost with a scalar
             this.optim = OptiFGP(LS,this,this.bounds,OutputOpti(0));
             this.optim.maxiter = this.maxiter;
             this.optim.ItUpOut = 0;
+            this.optim.verbose = 0;
         end
         
-        function setProxAlgo(this,bounds,maxiter,L,xtol,Outop)
+        function setProxAlgo(this,bounds,maxiter,xtol,Outop)
             % Set the parameters of :class:`OptiFGP` used to compute the proximity
             % operator. 
             
             if nargin<=1 || isempty(bounds),bounds = this.bounds;end
             if nargin<=2 || isempty(maxiter),maxiter = this.maxiter;end
-            if nargin<=3 || isempty(L), L = [];end
-            if nargin<=4 || isempty(xtol),xtol = [];end
-            if nargin<=5 || isempty(Outop),Outop = OutputOpti(0);end
+            if nargin<=3 || isempty(xtol),xtol = [];end
+            if nargin<=4 || isempty(Outop),Outop = OutputOpti(0);end
             
             this.bounds = bounds;
             this.maxiter = maxiter;
       
             LS = CostL2(this.sizein);
+            %lambda is always 1 here. It can be set differently by multiplying this cost with a scalar
             this.optim = OptiFGP(LS,this,this.bounds,Outop);
-            this.optim.Nesterov = true;
-            if ~isempty(L)
-                this.optim.L = L;
-            end
             this.optim.maxiter = this.maxiter;
             this.optim.ItUpOut = 0;
-            if ~isempty(xtol)
-                this.optim.xtol = xtol;
-            end
+            this.optim.CvOp = TestCvgStepRelative(xtol);
+            this.optim.verbose = 0;
         end       
     end
     
@@ -92,10 +89,15 @@ classdef CostTV < CostComposition
             
             % If y==0
             if this.y==0                
-                for k = 1:length(this.optim.Fn)
-                    this.optim.Fn{k} = alpha*this.optim.Fn{k};
-                end
+                %for k = 1:length(this.optim.Fn)
+                %    this.optim.Fn{k} = alpha*this.optim.Fn{k};%what is that
+                %end
                 this.optim.F0.set_y(x);
+                if isa(this.optim.TV,'CostTV')
+                    this.optim.TV = alpha*this.optim.TV;
+                else
+                    this.optim.TV = alpha*this.optim.TV.cost2;
+                end
                 this.optim.run(x);
                 y = this.optim.xopt;
             else

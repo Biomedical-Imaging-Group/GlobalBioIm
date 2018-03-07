@@ -65,7 +65,7 @@ classdef OptiConjGrad < Opti
             
             initialize@Opti(this,x0);
             if ~isempty(x0) % To restart from current state if wanted
-                this.r= this.b - this.A.apply(this.xopt);
+                this.r = this.b - this.A.apply(this.xopt);
                 this.p = this.r;
             end
         end
@@ -75,7 +75,7 @@ classdef OptiConjGrad < Opti
             % <https://en.wikipedia.org/wiki/Conjugate_gradient_method#The_resulting_algorithm>`_
             
             rho = dot(this.r(:),this.r(:));
-            if this.niter>1
+            if this.niter > 0
                 beta = rho/this.rho_prec;
                 this.p = this.r + beta*this.p;
             end
@@ -83,15 +83,15 @@ classdef OptiConjGrad < Opti
             alpha = rho/dot(this.p(:), q(:));
             
             % stop if rounding errors
-            if dot(this.p(:),this.r(:))<0
+            if dot(this.p(:),this.r(:))<=0
                 this.endingMessage = [this.name ,'Rounding errors prevent further optimization'];
-                flag = OPTI_STOP;
+                flag = this.OPTI_STOP;
                 return
             end
             this.xopt = this.xopt + alpha*this.p;
             this.r = this.r - alpha*q;
             this.rho_prec = rho;
-            flag=OPTI_NEXT_IT;
+            flag=this.OPTI_NEXT_IT;
         end
     end
 end

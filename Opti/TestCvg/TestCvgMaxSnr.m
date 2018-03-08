@@ -1,10 +1,9 @@
 classdef TestCvgMaxSnr  < TestCvg
-    % TestCvgMaxSnr stops the optimization when the step  is below
-    % the value MaxSnrTOL
+    % TestCvgMaxSnr stops the optimization when the SNR is decreasing
     %
-    % :param MaxSnrTol:  relative tolerance on step
+    % :param ref:  reference signal
     %
-    % **Example** CvOpti=TestCvgMaxSnr(MaxSnrTol )
+    % **Example** CvOpti=TestCvgMaxSnr(ref )
     %
     % See also :class:`TestCvg`
     
@@ -25,19 +24,17 @@ classdef TestCvgMaxSnr  < TestCvg
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     properties (SetAccess = public,GetAccess = public)
-        MaxSnrTol=1e-5;      % stopping criteria tolerance on the relative difference btw two successive iterates
         ref;                 % reference signal
     end
     properties (SetAccess = protected, GetAccess = protected)
         normRef      % norm of the reference signal
         sizeRef      % Size of the reference signal
+        oldSNR       % previous SNR value
     end
     methods
         %% Constructor
-        function this=TestCvgMaxSnr( MaxSnrTol,ref)
+        function this=TestCvgMaxSnr( ref)
             this.name = 'TestCvgMaxSnr';
-            assert(isscalar(MaxSnrTol),'MaxSnrTol must be scalar');
-            this.MaxSnrTol =MaxSnrTol;
             this.ref = ref;
             this.normRef=norm(ref(:));
         end
@@ -49,13 +46,14 @@ classdef TestCvgMaxSnr  < TestCvg
             
             stop = false;
             assert(checkSize(this.sizeRef, size(opti.xopt)), ' Reference signal and x should be conformable');
-            if ~isempty(this.oldStep)
+            if ~isempty(this.oldSNR)
                 xsnr=20*log10(this.normRef/norm(this.ref(:)-opti.xopt(:)));
-                if( xsnr < this.MaxSnrTol)
+                if( xsnr < this.oldSNR)
                     stop  =true;
-                    endingMessage = [this.name,': SNR below the  tolerance : ',num2str(xsnr),' < ',num2str(this.MaxSnrTol)];
+                    endingMessage = [this.name,': SNR  is decreasing : ',num2str(xsnr),' < ',num2str(this.oldSNR)];
                     opti.endingMessage = endingMessage;
                 end
+                this.oldSNR = xsnr;
             end
         end
     end

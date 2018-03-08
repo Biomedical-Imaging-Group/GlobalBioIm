@@ -239,6 +239,7 @@ classdef (Abstract) Map < handle
     % - minus_(this,G)
     % - mpower_(this,p)
     % - times_(this,G)
+    % - makeInversion_(this)
     % - makeComposition_(this, H)
     methods (Access = protected)
         function y = apply_(this, x)
@@ -268,7 +269,7 @@ classdef (Abstract) Map < handle
             % is the inverse Map of \\(\\mathrm{H}\\).
             % When \\(p\\neq-1\\), this method is not implemented in this Abstract class
             if p==-1
-                M=MapInversion(this);
+                M=this.makeInversion_();
             else
                 error('mpower_ method not implemented for the given power==%d',p);
             end
@@ -278,6 +279,12 @@ classdef (Abstract) Map < handle
             % current :class:`Map` \\(\\mathrm{H}\\) with the given \\(\\mathrm{G}\\).
             
             M=MapMultiplication(this,G);
+        end
+        function M = makeInversion_(this)
+            % Constructs a :class:`MapInversion` corresponding to 
+            % \\(\\mathrm{H}^{-1}\\)
+            
+            M=MapInversion(this);
         end
         function M = makeComposition_(this, G)
             % Constructs a :class:`MapComposition` object to compose the

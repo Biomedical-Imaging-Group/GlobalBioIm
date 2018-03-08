@@ -120,7 +120,7 @@ classdef LinOp < Map
             L = this.makeAdjoint_();
         end
         function y= applyAdjointInverse(this,x)
-            % Computes \\(\\mathrm{y} = \\mathrm{H}^{-\star} \\mathrm{x}\\) for the given
+            % Computes \\(\\mathrm{y} = \\mathrm{H}^{-\\star} \\mathrm{x}\\) for the given
             % \\(\\mathrm{x} \\in \\mathrm{X}\\). (if applicable)
             %
             % Calls the method :meth:`applyAdjointInverse_`
@@ -162,6 +162,7 @@ classdef LinOp < Map
     % - makeAdjoint_(this)
     % - makeHtH_(this)
     % - makeHHt_(this)
+    % - makeInversion_(this)
     % - makeComposition_(this, G)
     methods (Access = protected) % all the other underscore methods
         function x = applyAdjoint_(~, ~)
@@ -222,8 +223,9 @@ classdef LinOp < Map
         end
         function M = makeInversion_(this)
             % Constructs a :class:`LinOpInversion` corresponding to 
-            % \\mathrm{H}^{-1}
-            M=LinOpInversion(this );
+            % \\(\\mathrm{H}^{-1}\\)
+            
+            M=LinOpInversion(this);
         end
         function M = makeComposition_(this, G)
             % Reimplemented from parent class :class:`Map`.
@@ -264,14 +266,6 @@ classdef LinOp < Map
                 end
             else
                 M = makeComposition_@Map(this,G);
-            end
-        end
-        function M = mpower_(this,p)
-            % Reimplemented from :class:`Map`  
-            if p==-1
-                M= makeInversion_(this);
-            else
-                M=mpower_@Map(this,p);
             end
         end
     end

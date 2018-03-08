@@ -284,14 +284,13 @@ classdef LinOpConv <  LinOp
             % Reimplemented from parent class :class:`LinOp`.
             M=LinOpConv(abs(this.mtf).^2,this.isReal,this.index);
         end
-        function M = mpower_(this,p)
+        function M = makeInversion_(this)
             % Reimplemented from parent class :class:`LinOp`
-            if p==-1
-                if this.isInvertible
-                    M=LinOpConv(1./this.mtf,this.isReal,this.index);
-                end
+            
+            if this.isInvertible
+                M=LinOpConv(1./this.mtf,this.isReal,this.index);
             else
-                M=mpower_@LinOp(this,p);
+                M=makeInversion_@LinOp(this);
             end
         end
         function G = makeComposition_(this, H)

@@ -90,6 +90,51 @@ OutputOpti
 TestCvg
 -------
 
+TestCvg (Default)
+..................
+
 .. autoclass:: TestCvg 
     :show-inheritance:   
-    :members: init, update
+    :members: testConvergence
+
+TestCvgCombine
+..............
+
+.. autoclass:: TestCvgCombine 
+    :show-inheritance:   
+    :members: testConvergence
+
+TestCvgCostAbsolute
+...................
+
+.. autoclass:: TestCvgCostAbsolute 
+    :show-inheritance:   
+    :members: testConvergence
+
+TestCvgCostRelative
+...................
+
+.. autoclass:: TestCvgCostRelative 
+    :show-inheritance:   
+    :members: testConvergence
+
+TestCvgStepRelative
+...................
+
+.. autoclass:: TestCvgStepRelative 
+    :show-inheritance:   
+    :members: testConvergence
+
+TestCvgMaxSnr
+.............
+
+.. autoclass:: TestCvgMaxSnr 
+    :show-inheritance:   
+    :members: testConvergence
+
+TestCvgADMM
+...........
+
+.. autoclass:: TestCvgADMM 
+    :show-inheritance:   
+    :members: testConvergence

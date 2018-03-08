@@ -41,8 +41,9 @@ classdef TestCvgMaxSnr  < TestCvg
         %% Update method
         function stop = testConvergence(this,opti)
             % Tests algorithm convergence using the SNR with
-            % :returns stop: boolean true if
-            % $$ \\log\\left(\\frac{\\| \\mathrm{ref}\\|}{\\| \\mathrm{x}^{k} - \\mathrm{ref}\\|}\\right)< \\text{MaxSnrTol}.$$
+            %
+            % :return: boolean true if
+            % $$ 20\\log\\left(\\frac{\\| \\mathrm{ref}\\|}{\\| \\mathrm{x}^{k} - \\mathrm{ref}\\|}\\right)< 20\\log\\left(\\frac{\\| \\mathrm{ref}\\|}{\\| \\mathrm{x}^{k-1} - \\mathrm{ref}\\|}\\right)$$
             
             stop = false;
             assert(checkSize(this.sizeRef, size(opti.xopt)), ' Reference signal and x should be conformable');

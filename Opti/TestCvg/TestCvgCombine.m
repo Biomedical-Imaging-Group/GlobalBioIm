@@ -1,22 +1,13 @@
 classdef TestCvgCombine < TestCvg
     % TestCvgCombine:
-    % Combine several tests 
+    % Combine several :class:`TestCvg` objects. 
     %
+    % **Examples** 
     %
-    % At each iterations of an optimization algorithm (see :class:`Opti` generic class),
-    % the update method of an :class:`TestCvg` object will be executed in order to acheive user
-    % defined computations, e.g.,
-    %
-    % **Example** 
-    % CvOpti=TestCvgCombine(A, B ,C) 
-    % where A B and C are of TestCvg class
-    %
-    % CvTestVMLMB = TestCvgCombine('CostRelative',0.000001, 'CostAbsolute',10);
-    % for simple test
-    %
-    % **Important** The update method should have an unique imput that is the :class:`Opti` object in order to
-    % be generic for all Optimization routines. Hence the update method has access (in reading mode)
-    % to all the properties of :class:`Opti` objects.
+    %  - CvOpti = TestCvgCombine(A, B ,C); 
+    %    where A B and C are of TestCvg class
+    %  - CvOpti = TestCvgCombine('CostRelative',0.000001, 'CostAbsolute',10);  
+    %    for simple test
     %
     % See also :class:`TestCvg`
     
@@ -40,8 +31,6 @@ classdef TestCvgCombine < TestCvg
         cvList = {};
         testNumber = 0;
     end
-    properties (SetAccess = public,GetAccess = public)
-    end
     
     methods
         %% Constructor
@@ -63,7 +52,8 @@ classdef TestCvgCombine < TestCvg
             end
         end
         %% Update method
-        function stop = testConvergence(this,opti)         
+        function stop = testConvergence(this,opti)       
+            % Reimplemented from parent class :class:`TestCvg`.
             stop = false;
             for n=1:this.testNumber
                 stop = this.cvList{n}.testConvergence(opti);

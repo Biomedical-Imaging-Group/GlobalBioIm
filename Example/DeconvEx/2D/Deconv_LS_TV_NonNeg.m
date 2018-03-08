@@ -6,9 +6,11 @@
 % using 
 %      - Primal-Dual Condat
 %      - ADMM 
+%      - VMLMB
 %
 % See LinOp, LinOpConv, LinOpGrad, Cost, CostL2, CostNonNeg,  
 % CostMixNorm12, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
+% CostHyperBolic, OptiVMLMB
 %------------------------------------------------------------
 clear all; close all; clc;
 help Deconv_LS_TV_NonNeg

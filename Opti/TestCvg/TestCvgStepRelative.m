@@ -37,7 +37,8 @@ classdef TestCvgStepRelative  < TestCvg
         %% Update method
         function stop = testConvergence(this,opti)
             % Tests algorithm convergence from the relative difference between two successive value of the step function
-            % :returns stop: boolean true if
+            %
+            % :return: boolean true if
             % $$ \\frac{\\| \\mathrm{x}^{k} - \\mathrm{x}^{k-1}\\|}{\\|\\mathrm{x}^{k-1}\\|} < \\text{stepRelativeTol}.$$
             
             stop = false;

@@ -1,14 +1,13 @@
 classdef TestCvg  < handle
     % TestCvg class  monitor convergence criterion during optimization
     %
-    %
     % At each iterations of an optimization algorithm (see :class:`Opti` generic class),
-    % the update method of an :class:`TestCvg` object will be executed in order to acheive user
-    % defined computations, e.g.,
+    % the :meth:`testConvergence` method of an :class:`TestCvg` object will be executed in order to acheive user
+    % defined computations
     %
     % **Example** CvOpti=TestCvg()
     %
-    % **Important** The update method should have an unique imput that is the :class:`Opti` object in order to
+    % **Important** The :meth:`testConvergence` method should have an unique imput that is the :class:`Opti` object in order to
     % be generic for all Optimization routines. Hence the update method has access (in reading mode)
     % to all the properties of :class:`Opti` objects.
     %
@@ -33,17 +32,17 @@ classdef TestCvg  < handle
     properties (SetAccess = protected,GetAccess = public)
         name = 'TestCvg';
     end
-    properties (SetAccess = public,GetAccess = public)
-    end
     
     methods
         %% Constructor
         function this=TestCvg()
         end
         %% Update method
-        function stop = testConvergence(this,opti)            % Tests algorithm convergence from the relative difference between two successive iterates
-            stop = false;
+        function stop = testConvergence(this,opti)   
+            % Default implementation: do nothing (algorithm will break with
+            % max iterations).
             
+            stop = false;            
         end
     end
 end

@@ -45,8 +45,9 @@ classdef TestCvgCostRelative  < TestCvg
         %% Update method
         function stop = testConvergence(this,opti)
             % Tests algorithm convergence from the relative difference between two successive value of the cost function
-            % :returns stop: boolean true if
-            % $$ \\frac{\\| \\mathrm{f}^{k} - \\mathrm{f}^{k-1}\\|}{\\|\\mathrm{f}^{k-1}\\|} < \\text{costRelativeTol}.$$
+            %
+            % :return: boolean true if
+            % $$ \\frac{\\left| C(\\mathrm{x}^{k}) - C(\\mathrm{x}^{k-1})\\right|}{\\left|C(\\mathrm{x}^{k-1})\\right|} < \\mathrm{costRelativeTol}$$
             
           
             stop = false;

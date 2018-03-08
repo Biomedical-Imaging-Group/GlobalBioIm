@@ -11,8 +11,8 @@ This section presents some examples of use of the Library.
 
 We consider the C. elegans embryo real dataset (\\(672 \\times 712 \\times 104 \\)) which can be downloaded `here <http://bigwww.epfl.ch/deconvolution/bio/>`_ and which is presented on Fig. 1. 
 This sample contains three kind of structures:
-   - chromosomes in the nuclei (DAPI Channel - blue)
-   - point-wise spots  (CY3 Channel - red)
+   - nuclei (DAPI Channel - blue)
+   - protein spots  (CY3 Channel - red)
    - microtubules (FITC channel - green)
 The PSF for each channel, generated from a theoretical model, are also provided `here <http://bigwww.epfl.ch/deconvolution/bio/>`_.
 In the following, each channel is deconvolved separately using the same code presented below.
@@ -48,20 +48,20 @@ We can now define our data fidelity term, TV regularization, and positivity cons
 
 .. code:: matlab
 
-    %% Least-Suares Data Fidelity Term
-    H=LinOpConv(fftn(fftshift(psf)));                      % Convolution Operator  
+    %% Least-Squares Data Fidelity Term
+    H=LinOpConv(fftn(fftshift(psf)));                      % Convolution operator  
     H.memoizeOpts.apply=true;                                         
-    S=LinOpSelectorPatch(sznew,halfPad+1,sznew-halfPad);   % Selector Operator
+    S=LinOpSelectorPatch(sznew,halfPad+1,sznew-halfPad);   % Selector operator
     L2=CostL2(S.sizeout,y);                                % L2 cost function
-    LS=L2*S;                                               % Least-Sqaures data term
+    LS=L2*S;                                               % Least-squares data term
     %% TV Regularization
-    Freg=CostMixNorm21([sznew,3],4);      % TV regularizer: Mixed Norm 2-1
-    Opreg=LinOpGrad(sznew);               % TV regularizer: Operator Gradient
+    Freg=CostMixNorm21([sznew,3],4);      % TV regularizer: Mixed norm 2-1
+    Opreg=LinOpGrad(sznew);               % TV regularizer: Operator gradient
     Opreg.memoizeOpts.apply=true;  
     lamb=2e-6;                            % Regularization parameter
     %% Positivity constraint
     pos=CostNonNeg(sznew);                % Non-Negativity: Indicator function
-    Id=LinOpIdentity(sznew);              % Identity Operator 
+    Id=LinOpIdentity(sznew);              % Identity operator 
 
 Here, our cost function is as follows
 $$ \\mathcal{C}(\\mathrm{x}) = \\frac12 \\|\\mathrm{SHx - y} \\|_2^2 + \\lambda \\|\\nabla \\mathrm{x} \\|_{2,1} + i_{\\geq 0}(\\mathrm{x})$$
@@ -71,12 +71,13 @@ constraint. We are now ready to instanciate and run our algorithm (here ADMM) in
 
 .. code:: matlab
 
+      dispIt=30;                     % Verbose every 30 iterations
       maxIt=300;                     % Maximal number of iterations
       Fn={LS,lamb*Freg,pos};         % Functionals F_n constituting the cost 
       Hn={H,Opreg,Id};               % Associated operators H_n
       rho_n=[1e-3,1e-3,1e-3];        % Multipliers rho_n
-      ADMM=OptiADMM([],Fn,Hn,rho_n,[],OutputOpti(1,gt,round(maxIt/10)));
-      ADMM.ItUpOut=round(maxIt/10);
+      ADMM=OptiADMM([],Fn,Hn,rho_n,[],OutputOpti(1,gt,dispIt));
+      ADMM.ItUpOut=dispIt;
       ADMM.maxiter=maxIt;
       ADMM.run(xopt);
 

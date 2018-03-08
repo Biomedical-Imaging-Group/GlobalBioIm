@@ -34,14 +34,16 @@ classdef TestCvgADMM < TestCvg
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     properties (SetAccess = public,GetAccess = public)
-       eps_abs=0;     % Termination criterion tolerances.
-       eps_rel=1e-3;  
+       eps_abs;     % Termination criterion tolerances.
+       eps_rel;  
     end
     
     methods
         %% Constructor
         function this=TestCvgADMM(eps_abs,eps_rel)
             this.name = 'TestCvgADMM';
+            if nargin <2, eps_rel=1e-3; end
+            if nargin <1, eps_abs=0; end
             assert(isscalar(eps_abs),'eps_abs must be scalar');
             assert(isscalar(eps_rel),'eps_rel must be scalar');
             this.eps_abs = eps_abs;

@@ -21,7 +21,7 @@ LinOp
     :show-inheritance:
     :members: applyAdjoint, transpose, ctranspose, applyHtH, applyHHt, applyAdjointInverse, makeHtH, makeHHt,
       apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
-      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, times_
+      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, times_, makeInversion_
 
 Cost
 ----

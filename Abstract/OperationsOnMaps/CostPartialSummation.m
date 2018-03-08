@@ -1,5 +1,5 @@
 classdef CostPartialSummation <  CostSummation
-    % CostPartialSummation : Sum of :class:`Cost` with apply, grad, ...
+    % CostPartialSummation : Sum of :class:`Cost` with apply, applyGrad,...
     % computed from a subset of Cost
     % $$C(\\mathrm{x}) = \\sum_i \\alpha_i C_i(\\mathrm{x}) $$
     %
@@ -7,7 +7,7 @@ classdef CostPartialSummation <  CostSummation
     % :param alpha:  array of coefficients
     % :param Lsub:  number of :class:`Cost` used for computation
     % :param partialGrad: parameter for subset selection (0: no partial
-    % gradient; 1: stochastic gradient descent; 2: equally spaced indices)
+    %  gradient; 1: stochastic gradient descent; 2: equally spaced indices)
     %
     % **Example** F = CostPartialSummation(ACost,alpha,Lsub)
     %

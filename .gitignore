@@ -2,4 +2,5 @@
 *.mex*
 *html/
 *doctrees/
+*Opti/OptiUtils/MatlabOptimPack/
 .DS_Store

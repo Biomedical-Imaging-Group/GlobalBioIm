@@ -21,7 +21,7 @@ classdef OptiVMLMB<Opti
     % SPIE Conf. Astronomical Data Analysis II, 4847, 174-183 (2002).
     % See OptimPackLegacy `repository <https://github.com/emmt/OptimPackLegacy>`_.
     %
-    % **Example** VMLMB=OptiVMLMB(C,xmin,xmax,OutOp)
+    % **Example** VMLMB=OptiVMLMB(C,xmin,xmax)
     %
     % See also :class:`Opti`, :class:`OptiConjGrad` :class:`OutputOpti`, :class:`Cost`
     
@@ -78,7 +78,7 @@ classdef OptiVMLMB<Opti
         cc;
     end
     methods
-        function this = OptiVMLMB(C,xmin,xmax,OutOp,CvOp)
+        function this = OptiVMLMB(C,xmin,xmax)
             this.name='OptiVMLMB';
             if(nargin>1)
                 if(~isempty(xmin))
@@ -89,8 +89,6 @@ classdef OptiVMLMB<Opti
                     this.bounds=bitor(this.bounds,2);
                     this.xmax = xmax;
                 end
-                if nargin>3 && ~isempty(OutOp),this.OutOp=OutOp;end
-                if nargin==5 && ~isempty(CvOp),this.CvOp=CvOp;end
             end
             this.cost=C;
             if (exist('m_opl_vmlmb_create')~=3)||(exist('m_opl_vmlmb_restore')~=3)||(exist('m_opl_vmlmb_iterate')~=3)||(exist('m_opl_vmlmb_get_reason')~=3)

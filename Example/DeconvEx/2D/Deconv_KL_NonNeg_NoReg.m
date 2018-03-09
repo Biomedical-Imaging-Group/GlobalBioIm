@@ -54,8 +54,8 @@ KL=CostKullLeib([],y,1e-6);     % Kullback-Leibler divergence data term
 R_POS=CostNonNeg(sz);              % Non-Negativity
 
 % -- FISTA KL + NonNeg
-OutFista=OutputOpti(1,impad,40);
-FBS=OptiFBS(KL*H,R_POS,OutFista);
+FBS=OptiFBS(KL*H,R_POS);
+FBS.OutOp=OutputOpti(1,impad,40);
 FBS.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 FBS.fista=true;   % activate fista
 FBS.maxiter=200;  % max number of iterations
@@ -63,25 +63,22 @@ FBS.gam=1e-2;     % set gamma parameter
 FBS.run(y);       % run the algorithm 
 
 % -- Richardson-Lucy KL + NonNeg (implicit)
-OutRL=OutputOpti(1,impad,40);
-RL=OptiRichLucy(KL*H,[],[],OutRL);
+RL=OptiRichLucy(KL*H);
+RL.OutOp=OutputOpti(1,impad,40);
 RL.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 RL.maxiter=200;  % max number of iterations
 RL.run(y);       % run the algorithm 
 
 % -- Display
-[v,n]=max(OutFista.evolsnr(:));
-imdisp(OutFista.evolxopt{n}(idx,idx),'KL + NonNeg (FISTA)',1);
-[v,n]=max(OutRL.evolsnr(:));
-imdisp(OutRL.evolxopt{n}(idx,idx),'KL + NonNeg (RL)',1);
-
-figure;plot(OutFista.iternum,OutFista.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
-hold all; plot(OutRL.iternum,OutRL.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');title('Cost evolution');
+imdisp(FBS.OutOp.evolxopt{end}(idx,idx),'KL + NonNeg (FISTA)',1);
+imdisp(RL.OutOp.evolxopt{end}(idx,idx),'KL + NonNeg (RL)',1);
+figure;plot(FBS.OutOp.iternum,FBS.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+hold all; plot(RL.OutOp.iternum,RL.OutOp.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');title('Cost evolution');
 legend('FISTA','RL');
 
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
-semilogy(OutFista.iternum,OutFista.evolsnr,'LineWidth',1.5); 
-semilogy(OutRL.iternum,OutRL.evolsnr,'LineWidth',1.5); 
+semilogy(FBS.OutOp.iternum,FBS.OutOp.evolsnr,'LineWidth',1.5); 
+semilogy(RL.OutOp.iternum,RL.OutOp.evolsnr,'LineWidth',1.5); 
 legend('KL+POS (FBS)','KL+POS (RL)');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');

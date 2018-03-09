@@ -54,19 +54,19 @@ F=LS*H;
 F.doPrecomputation=1;
 
 % -- FISTA LS + NonNeg
-OutOp=OutputOpti(1,impad,40);
-FBS=OptiFBS(F,R_POS,OutOp);
+FBS=OptiFBS(F,R_POS);
+FBS.OutOp=OutputOpti(1,impad,40);
 FBS.ItUpOut=1;    % call OutputOpti update every ItUpOut iterations
 FBS.fista=true;   % activate fista
 FBS.maxiter=200;  % max number of iterations
 FBS.run(y);       % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
 
 % -- Display
-[v,n]=max(OutOp.evolsnr(:));
-imdisp(OutOp.evolxopt{n}(idx,idx),'LS + NonNeg (FISTA)',1);
-figure;plot(OutOp.iternum,OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');legend('LS+POS (FISTA)');title('Cost evolution');
+[v,n]=max(FBS.OutOp.evolsnr(:));
+imdisp(FBS.OutOp.evolxopt{n}(idx,idx),'LS + NonNeg (FISTA)',1);
+figure;plot(FBS.OutOp.iternum,FBS.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');legend('LS+POS (FISTA)');title('Cost evolution');
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
-semilogy(OutOp.iternum,OutOp.evolsnr,'LineWidth',1.5);
+semilogy(FBS.OutOp.iternum,FBS.OutOp.evolsnr,'LineWidth',1.5);
 xlabel('Iterations');ylabel('SNR (dB)');legend('LS+POS (FISTA)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');

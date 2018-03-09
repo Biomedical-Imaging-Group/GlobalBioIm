@@ -45,9 +45,8 @@ classdef OptiConjGrad < Opti
     
     methods
         %% Constructor
-        function this=OptiConjGrad(A,b,OutOp)
+        function this=OptiConjGrad(A,b)
             this.name='Opti Conjugate Gradient';
-            if nargin==3 && ~isempty(OutOp),this.OutOp=OutOp;end
             this.A=A;
             this.cost=CostL2Composition(CostL2([],b),this.A);
             assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');

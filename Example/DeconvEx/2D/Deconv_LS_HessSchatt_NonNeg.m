@@ -62,8 +62,8 @@ lamb=1e-3;                           % Hyperparameter
 Fn={lamb*R_1sch,R_POS};
 Hn={Hess,LinOpIdentity(size(impad))};
 rho_n=[1e-1,1e-1];
-OutADMM=MyOutputOpti(1,impad,40);
-ADMM=OptiADMM(F,Fn,Hn,rho_n,[],OutADMM);
+ADMM=OptiADMM(F,Fn,Hn,rho_n);
+ADMM.OutOp=MyOutputOpti(1,impad,40);
 ADMM.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 
@@ -71,8 +71,8 @@ ADMM.run(y);            % run the algorithm
 % -- PrimalDual Condat LS + ShattenHess + NonNeg
 Fn={lamb*R_1sch};
 Hn={Hess};
-OutPDC=MyOutputOpti(1,impad,40);
-PDC=OptiPrimalDualCondat(F,R_POS,Fn,Hn,OutPDC);
+PDC=OptiPrimalDualCondat(F,R_POS,Fn,Hn);
+PDC.OutOp=MyOutputOpti(1,impad,40);
 PDC.tau=1;             % set algorithm parameters
 PDC.sig=1e-2;          %
 PDC.rho=1.95;          %
@@ -82,15 +82,15 @@ PDC.run(y);            % run the algorithm
 
 
 % -- Display
-imdisp(OutADMM.evolxopt{end}(idx,idx),'LS+HESS+POS (ADMM)',1);
-imdisp(OutPDC.evolxopt{end}(idx,idx),'LS+HESS+POS (Condat)',1);
-figure; plot(OutADMM.iternum,OutADMM.evolcost,'LineWidth',1.5); grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
-hold all;plot(OutPDC.iternum,OutPDC.evolcost,'LineWidth',1.5); grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+imdisp(ADMM.OutOp.evolxopt{end}(idx,idx),'LS+HESS+POS (ADMM)',1);
+imdisp(PDC.OutOp.evolxopt{end}(idx,idx),'LS+HESS+POS (Condat)',1);
+figure; plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5); grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+hold all;plot(PDC.OutOp.iternum,PDC.OutOp.evolcost,'LineWidth',1.5); grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 legend('ADMM','Condat');title('Cost evolution');
 
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
-semilogy(OutADMM.iternum,OutADMM.evolsnr,'LineWidth',1.5); 
-semilogy(OutPDC.iternum,OutPDC.evolsnr,'LineWidth',1.5);
+semilogy(ADMM.OutOp.iternum,ADMM.OutOp.evolsnr,'LineWidth',1.5); 
+semilogy(PDC.OutOp.iternum,PDC.OutOp.evolsnr,'LineWidth',1.5);
 legend('LS+HESS+POS (ADMM)','LS+HESS+POS (Condat)');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');

@@ -33,7 +33,7 @@ classdef OptiADMM < Opti
     % [1] Boyd, Stephen, et al. "Distributed optimization and statistical learning via the alternating direction
     % method of multipliers." Foundations and Trends in Machine Learning, 2011.
     %
-    % **Example** ADMM=OptiADMM(F0,Fn,Hn,rho_n,solver,OutOp)
+    % **Example** ADMM=OptiADMM(F0,Fn,Hn,rho_n,solver)
     %
     % See also :class:`Opti`, :class:`OptiConjGrad` :class:`OutputOpti`, :class:`Cost`
     
@@ -78,11 +78,10 @@ classdef OptiADMM < Opti
     
     methods
         %% Constructor
-        function this=OptiADMM(F0,Fn,Hn,rho_n,solver,OutOp)
+        function this=OptiADMM(F0,Fn,Hn,rho_n,solver)
             this.name='Opti ADMM';
             if ~isempty(F0), this.F0=F0; end
             if nargin<=4, solver=[]; end
-            if nargin==6 && ~isempty(OutOp),this.OutOp=OutOp;end
             assert(length(Fn)==length(Hn),'Fn, Hn and rho_n must have the same length');
             assert(length(Hn)==length(rho_n),'Fn, Hn and rho_n must have the same length');
             this.Fn=Fn;

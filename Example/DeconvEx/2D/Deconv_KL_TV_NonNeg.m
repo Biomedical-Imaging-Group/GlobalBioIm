@@ -62,8 +62,8 @@ lamb=1e-2;                     % Hyperparameter
 Fn={CostKullLeib([],y,1e-6),lamb*R_N12,R_POS};
 Hn={H,G,LinOpDiag(sz)};
 rho_n=[1e-2,1e-2,1e-2];
-OutADMM=MyOutputOpti(1,impad,40);
-ADMM=OptiADMM([],Fn,Hn,rho_n,[],OutADMM);
+ADMM=OptiADMM([],Fn,Hn,rho_n);
+ADMM.OutOp=MyOutputOpti(1,impad,40);
 ADMM.ItUpOut=10;                                  % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;                                 % max number of iterations
 ADMM.run(y);                                      % run the algorithm
@@ -71,8 +71,8 @@ ADMM.run(y);                                      % run the algorithm
 % -- PrimalDual Condat KL + TV + NonNeg
 Fn={lamb*R_N12};
 Hn={G};
-OutPDC=MyOutputOpti(1,impad,40);
-PDC=OptiPrimalDualCondat(F*H,R_POS,Fn,Hn,OutPDC);
+PDC=OptiPrimalDualCondat(F*H,R_POS,Fn,Hn);
+PDC.OutOp=MyOutputOpti(1,impad,40);
 PDC.tau=1e-2;          % set algorithm parameters
 PDC.sig=1;             %
 PDC.rho=1.95;          %
@@ -81,28 +81,28 @@ PDC.maxiter=200;       % max number of iterations
 PDC.run(y);            % run the algorithm 
 
 % -- Richardson-Lucy-TV  KL + TV + NonNeg (implicit)
-OutRLTV=MyOutputOpti(1,impad,40);
-RLTV=OptiRichLucy(F*H,1,lamb,OutRLTV);
+RLTV=OptiRichLucy(F*H,1,lamb);
+RLTV.OutOp=MyOutputOpti(1,impad,40);
 RLTV.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 RLTV.maxiter=200;  % max number of iterations
 RLTV.run(y);       % run the algorithm 
 
 % -- Display
-imdisp(OutADMM.evolxopt{end}(idx,idx),'KL+TV+POS (ADMM)',1);
-imdisp(OutPDC.evolxopt{end}(idx,idx),'KL+TV+POS (Condat)',1);
-imdisp(OutRLTV.evolxopt{end}(idx,idx),'KL+TV+POS (RL-TV)',1);
+imdisp(ADMM.OutOp.evolxopt{end}(idx,idx),'KL+TV+POS (ADMM)',1);
+imdisp(PDC.OutOp.evolxopt{end}(idx,idx),'KL+TV+POS (Condat)',1);
+imdisp(RLTV.OutOp.evolxopt{end}(idx,idx),'KL+TV+POS (RL-TV)',1);
 
-figure;plot(OutADMM.iternum,OutADMM.evolcost,'LineWidth',1.5); grid;  
-hold all;plot(OutPDC.iternum,OutPDC.evolcost,'LineWidth',1.5); 
-plot(OutRLTV.iternum,OutRLTV.evolcost,'LineWidth',1.5); 
+figure;plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5); grid;  
+hold all;plot(PDC.OutOp.iternum,PDC.OutOp.evolcost,'LineWidth',1.5); 
+plot(RLTV.OutOp.iternum,RLTV.OutOp.evolcost,'LineWidth',1.5); 
 set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 legend('ADMM','Condat','RL-TV');title('Cost evolution');
 
 % -- Plot Evolution SNR and Running Time for Hess-Reg-Pos methods
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
-semilogy(OutADMM.iternum,OutADMM.evolsnr,'LineWidth',1.5);
-semilogy(OutPDC.iternum,OutPDC.evolsnr,'LineWidth',1.5);
-semilogy(OutRLTV.iternum,OutRLTV.evolsnr,'LineWidth',1.5);
+semilogy(ADMM.OutOp.iternum,ADMM.OutOp.evolsnr,'LineWidth',1.5);
+semilogy(PDC.OutOp.iternum,PDC.OutOp.evolsnr,'LineWidth',1.5);
+semilogy(RLTV.OutOp.iternum,RLTV.OutOp.evolsnr,'LineWidth',1.5);
 legend('KL+TV+POS (ADMM)','KL+TV+POS (Condat)','KL+TV+POS (RL-TV)');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');

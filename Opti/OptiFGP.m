@@ -16,7 +16,7 @@ classdef OptiFGP < Opti
     % [1] Beck, A., and Teboulle, M. (2009). Fast gradient-based algorithms for constrained total variation image denoising 
     % and deblurring problems. IEEE Transactions on Image Processing, 18(11), 2419-2434.
     %
-    % **Example** FGP=OptiFGP(F0,TV,bounds,OutOp)
+    % **Example** FGP=OptiFGP(F0,TV,bounds)
     %
     % See also :class:`Opti`, :class:`OutputOpti` :class:`Cost`
 
@@ -52,16 +52,14 @@ classdef OptiFGP < Opti
         P;
     end
     methods
-        function this = OptiFGP(F0,TV,bounds,OutOp)
+        function this = OptiFGP(F0,TV,bounds)
             this.name = 'OptiFGP';
             
             assert(isa(F0,'CostL2'), 'F0 must be a CostL2');
             assert(isa(TV,'CostTV') || (isa(TV,'CostMultiplication') && isa(TV.cost2,'CostTV')),...
                 'TV must be a CostTV or a CostMultiplication with cost2 as a CostTV');
             if nargin<=2 || isempty(bounds), bounds=[-inf,inf];end
-            if nargin<=3 || isempty(OutOp), OutOp = OutputOpti(0);end
             
-            this.OutOp = OutOp;
             this.F0 = F0;
             if isa(TV,'CostTV')
                 this.D = TV.H2;%circular boundary

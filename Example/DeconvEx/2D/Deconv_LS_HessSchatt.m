@@ -57,8 +57,8 @@ R_1sch=CostMixNormSchatt1([sz,3],1); % Mixed Norm 1-Schatten (p=1)
 lamb=2e-3;                           % Hyperparameter
 
 % -- Chambolle-Pock  LS + ShattenHess
-OutCP=OutputOpti(1,impad,40);
-CP=OptiChambPock(lamb*R_1sch,Hess,F,OutCP);
+CP=OptiChambPock(lamb*R_1sch,Hess,F);
+CP.OutOp=OutputOpti(1,impad,40);
 CP.tau=1;        % algorithm parameters
 CP.sig=0.02;     %
 CP.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
@@ -69,22 +69,22 @@ CP.run(y);       % run the algorithm
 Fn={lamb*R_1sch};
 Hn={Hess};
 rho_n=[1e-1];
-OutADMM=OutputOpti(1,impad,40);
-ADMM=OptiADMM(F,Fn,Hn,rho_n,[],OutADMM);
+ADMM=OptiADMM(F,Fn,Hn,rho_n);
+ADMM.OutOp=OutputOpti(1,impad,40);
 ADMM.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;  % max number of iterations
 ADMM.run(y);       % run the algorithm 
 
 % -- Display
-imdisp(OutCP.evolxopt{end}(idx,idx),'LS + Hess (CP)',1);
-imdisp(OutADMM.evolxopt{end}(idx,idx),'LS + Hess (ADMM)',1);
-figure; plot(OutCP.iternum,OutCP.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
-hold all;plot(OutADMM.iternum,OutADMM.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+imdisp(CP.OutOp.evolxopt{end}(idx,idx),'LS + Hess (CP)',1);
+imdisp(ADMM.OutOp.evolxopt{end}(idx,idx),'LS + Hess (ADMM)',1);
+figure; plot(CP.OutOp.iternum,CP.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+hold all;plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 legend('CP','ADMM');title('Cost evolution');
 
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
-semilogy(OutCP.iternum,OutCP.evolsnr,'LineWidth',1.5); 
-semilogy(OutADMM.iternum,OutADMM.evolsnr,'LineWidth',1.5);
+semilogy(CP.OutOp.iternum,CP.OutOp.evolsnr,'LineWidth',1.5); 
+semilogy(ADMM.OutOp.iternum,ADMM.OutOp.evolsnr,'LineWidth',1.5);
 legend('LS+TV (CP)','LS+TV (ADMM)');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');

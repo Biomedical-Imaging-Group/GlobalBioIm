@@ -62,18 +62,18 @@ F.doPrecomputation=1;
 % apply make use of a fast HtH.
 
 % -- Gradient Descent LS
-OutOp=OutputOpti(1,impad,40);
-GD=OptiGradDsct(F,OutOp);
+GD=OptiGradDsct(F);
+GD.OutOp=OutputOpti(1,impad,40);
 GD.ItUpOut=1;     % call OutputOpti update every ItUpOut iterations
 GD.maxiter=200;   % max number of iterations
 GD.run(y);        % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
 
 % -- Display
-[v,n]=max(OutOp.evolsnr(:));
-imdisp(OutOp.evolxopt{n}(idx,idx),'LS (GD)',1);
-figure;plot(OutOp.iternum,OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');title('Cost evolution');
+[v,n]=max(GD.OutOp.evolsnr(:));
+imdisp(GD.OutOp.evolxopt{n}(idx,idx),'LS (GD)',1);
+figure;plot(GD.OutOp.iternum,GD.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');title('Cost evolution');
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
-semilogy(OutOp.iternum,OutOp.evolsnr,'LineWidth',1.5); 
+semilogy(GD.OutOp.iternum,GD.OutOp.evolsnr,'LineWidth',1.5); 
 legend('LS (GD)');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');

@@ -11,7 +11,7 @@ classdef OptiDouglasRachford < Opti
     %
     % All attributes of parent class :class:`Opti` are inherited. 
 	%
-    % **Example** DR=OptiDouglasRachford(F1, F2, L, gamma, lambda, OutOp)
+    % **Example** DR=OptiDouglasRachford(F1, F2, L, gamma, lambda)
     %
 	% See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`
     
@@ -45,7 +45,7 @@ classdef OptiDouglasRachford < Opti
     end
     
 	methods
-		function this = OptiDouglasRachford(F1, F2, L, gamma, lambda, OutOp)
+		function this = OptiDouglasRachford(F1, F2, L, gamma, lambda)
 			% F1, F2
 			this.F1 = F1;
 			this.F2 = F2;
@@ -71,8 +71,6 @@ classdef OptiDouglasRachford < Opti
 			
 			% lambda
 			this.lambda = lambda;
-			
-			this.OutOp = OutOp;
 			
 		end
         function initialize(this,x0)

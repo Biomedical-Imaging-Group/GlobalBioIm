@@ -65,8 +65,8 @@ lamb=5e-4;                       % Hyperparameter
 Fn={lamb*R_N12,R_POS};
 Hn={G,LinOpIdentity(sz)};
 rho_n=[1e-1,1e-1];
-OutADMM=MyOutputOpti(1,impad,40);
-ADMM=OptiADMM(F,Fn,Hn,rho_n,[],OutADMM);
+ADMM=OptiADMM(F,Fn,Hn,rho_n);
+ADMM.OutOp=MyOutputOpti(1,impad,40);
 ADMM.ItUpOut=2;        % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 
@@ -74,8 +74,8 @@ ADMM.run(y);            % run the algorithm
 %% -- PrimalDual Condat LS + TV + NonNeg
 Fn={lamb*R_N12};
 Hn={G};
-OutPDC=MyOutputOpti(1,impad,40);
-PDC=OptiPrimalDualCondat(F,R_POS,Fn,Hn,OutPDC);
+PDC=OptiPrimalDualCondat(F,R_POS,Fn,Hn);
+PDC.OutOp=MyOutputOpti(1,impad,40);
 PDC.tau=1;                                   % set algorithm parameters
 PDC.sig=(1/PDC.tau-F.lip/2)/G.norm^2*0.9; %
 PDC.rho=1.95;                                %
@@ -88,30 +88,29 @@ PDC.run(y);                                  % run the algorithm
 hyperB = CostHyperBolic(G.sizeout,   1e-7,  3)*G;
 C = F+ lamb*hyperB; 
 C.memoizeOpts.apply=true;
-OutVMLMB=MyOutputOpti(1,impad,40);
-CvTestVMLMB = TestCvgCombine('CostRelative',0.000001, 'CostAbsolute',10);
-% CvTestVMLMB = TestCvgCombine(TestCvgCostRelative(0.000001),TestCvgCostAbsolute(10));
-VMLMB=OptiVMLMB(C,0., [],OutVMLMB,CvTestVMLMB);                            %
+VMLMB=OptiVMLMB(C,0.,[]);  
+VMLMB.OutOp=MyOutputOpti(1,impad,40);
+VMLMB.CvOp=TestCvgCombine('CostRelative',0.000001, 'CostAbsolute',10);
+%VMLMB.CvOp=TestCvgCombine(TestCvgCostRelative(0.000001),TestCvgCostAbsolute(10));
 VMLMB.ItUpOut=2; 
-
 VMLMB.maxiter=200;                             % max number of iterations
 VMLMB.m=1;                                     % number of memorized step in hessian approximation
 VMLMB.run(y);                                  % run the algorithm 
 
 
 %% -- Display
-imdisp(OutADMM.evolxopt{end}(idx,idx),'LS+TV+POS (ADMM)',1);
-imdisp(OutPDC.evolxopt{end}(idx,idx),'LS+TV+POS (Condat)',1);
-imdisp(OutVMLMB.evolxopt{end}(idx,idx),'LS+TV+POS (VMLMB)',1);
-figure; plot(OutADMM.iternum,OutADMM.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
-hold all;plot(OutPDC.iternum,OutPDC.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
-plot(OutVMLMB.iternum,OutVMLMB.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+imdisp(ADMM.OutOp.evolxopt{end}(idx,idx),'LS+TV+POS (ADMM)',1);
+imdisp(PDC.OutOp.evolxopt{end}(idx,idx),'LS+TV+POS (Condat)',1);
+imdisp(VMLMB.OutOp.evolxopt{end}(idx,idx),'LS+TV+POS (VMLMB)',1);
+figure; plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+hold all;plot(PDC.OutOp.iternum,PDC.OutOp.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+plot(VMLMB.OutOp.iternum,VMLMB.OutOp.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 legend('ADMM','Condat','VMLMB');title('Cost evolution');
 
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
-semilogy(OutADMM.iternum,OutADMM.evolsnr,'LineWidth',1.5); 
-semilogy(OutPDC.iternum,OutPDC.evolsnr,'LineWidth',1.5);
-semilogy(OutVMLMB.iternum,OutVMLMB.evolsnr,'LineWidth',1.5);
+semilogy(ADMM.OutOp.iternum,ADMM.OutOp.evolsnr,'LineWidth',1.5); 
+semilogy(PDC.OutOp.iternum,PDC.OutOp.evolsnr,'LineWidth',1.5);
+semilogy(VMLMB.OutOp.iternum,VMLMB.OutOp.evolsnr,'LineWidth',1.5);
 legend('LS+TV+POS (ADMM)','LS+TV+POS (Condat)','LS+TV+POS (VMLMB)','Location','southeast');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');

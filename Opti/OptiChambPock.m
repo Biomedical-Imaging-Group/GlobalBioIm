@@ -40,7 +40,7 @@ classdef OptiChambPock < Opti
     % [1] Chambolle, Antonin, and Thomas Pock. "A first-order primal-dual algorithm for convex problems with 
 	% applications to imaging." Journal of Mathematical Imaging and Vision 40.1, pp 120-145 (2011).	
     %
-    % **Example** CP=OptiChambPock(F,H,G,OutOp)
+    % **Example** CP=OptiChambPock(F,H,G)
     %
     % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
  
@@ -92,16 +92,13 @@ classdef OptiChambPock < Opti
     
     methods
     	%% Constructor
-    	function this=OptiChambPock(F,H,G,OutOp)
+    	function this=OptiChambPock(F,H,G)
     		this.name='Opti Chambolle-Pock';
     		this.cost=F*H+G;
     		this.F=F;
     		this.G=G;
             this.H=H;
             
-            if nargin==4 && ~isempty(OutOp)
-                this.OutOp=OutOp;
-            end
             if this.H.norm>=0
                 this.sig=1/(this.tau*this.H.norm^2)-eps;
             end

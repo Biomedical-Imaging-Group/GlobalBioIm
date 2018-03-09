@@ -85,11 +85,12 @@ classdef Opti < matlab.mixin.SetGet
                     if this.CvOp.testConvergence(this), break; end
                     
                     % - Call OutputOpti object
-                    if this.verbose &&((mod(this.niter,this.ItUpOut)==0)|| (this.niter==1))
+                    if ((mod(this.niter,this.ItUpOut)==0)|| (this.niter==1))
                         this.OutOp.update(this);
                     end
                     this.xold=this.xopt;
-                elseif  flag==this.OPTI_STOP, break;
+                elseif  flag==this.OPTI_STOP,
+                    break;
                 end
                 
             end

@@ -12,4 +12,4 @@ TODO GlobalBioIm
 
     - Some LinOp need to be updated (add some missing methods)
 
-    - Put IneToMany and StackLinOp properly in the new framework
+    - Put OneToMany and StackLinOp properly in the new framework

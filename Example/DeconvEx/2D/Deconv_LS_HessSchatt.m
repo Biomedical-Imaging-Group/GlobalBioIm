@@ -32,20 +32,16 @@ help Deconv_LS_HessSchatt
 rng(1);
 
 % -- Input image and psf
-load('StarLikeSample');    % Load image (variable im)
+load('GT');                % Load ground truth (variable im)
 load('psf');               % Load psf (variable psf)
-imdisp(im,'Input Image',1);
-
-% -- Image padding
-impad=zeros(512); idx=129:384;
-impad(idx,idx)=im;
+imdisp(im,'Input Image (GT)',1);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
 
 % -- Generate data
 load('data');    % load data (variable y)
-imdisp(y(idx,idx),'Convolved and noisy data',1);
+imdisp(y,'Convolved and noisy data',1);
 sz=size(y);
 
 % -- Functions definition
@@ -58,7 +54,7 @@ lamb=2e-3;                           % Hyperparameter
 
 % -- Chambolle-Pock  LS + ShattenHess
 CP=OptiChambPock(lamb*R_1sch,Hess,F);
-CP.OutOp=OutputOpti(1,impad,40);
+CP.OutOp=OutputOpti(1,im,40);
 CP.tau=1;        % algorithm parameters
 CP.sig=0.02;     %
 CP.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
@@ -70,14 +66,14 @@ Fn={lamb*R_1sch};
 Hn={Hess};
 rho_n=[1e-1];
 ADMM=OptiADMM(F,Fn,Hn,rho_n);
-ADMM.OutOp=OutputOpti(1,impad,40);
+ADMM.OutOp=OutputOpti(1,im,40);
 ADMM.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;  % max number of iterations
 ADMM.run(y);       % run the algorithm 
 
 % -- Display
-imdisp(CP.OutOp.evolxopt{end}(idx,idx),'LS + Hess (CP)',1);
-imdisp(ADMM.OutOp.evolxopt{end}(idx,idx),'LS + Hess (ADMM)',1);
+imdisp(CP.OutOp.evolxopt{end},'LS + Hess (CP)',1);
+imdisp(ADMM.OutOp.evolxopt{end},'LS + Hess (ADMM)',1);
 figure; plot(CP.OutOp.iternum,CP.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 hold all;plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 legend('CP','ADMM');title('Cost evolution');

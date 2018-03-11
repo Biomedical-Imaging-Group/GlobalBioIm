@@ -31,20 +31,16 @@ help Deconv_Ls_NonNeg_NoReg
 rng(1);
 
 % -- Input image and psf
-load('StarLikeSample');    % Load image (variable im)
+load('GT');                % Load ground truth (variable im)
 load('psf');               % Load psf (variable psf)
-imdisp(im,'Input Image',1);
-
-% -- Image padding
-impad=zeros(512); idx=129:384;
-impad(idx,idx)=im;
+imdisp(im,'Input Image (GT)',1);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
 
 % -- Generate data
 load('data');    % load data (variable y)
-imdisp(y(idx,idx),'Convolved and noisy data',1);
+imdisp(y,'Convolved and noisy data',1);
 sz=size(y);
 
 % -- Functions definition
@@ -55,7 +51,7 @@ F.doPrecomputation=1;
 
 % -- FISTA LS + NonNeg
 FBS=OptiFBS(F,R_POS);
-FBS.OutOp=OutputOpti(1,impad,40);
+FBS.OutOp=OutputOpti(1,im,40);
 FBS.ItUpOut=1;    % call OutputOpti update every ItUpOut iterations
 FBS.fista=true;   % activate fista
 FBS.maxiter=200;  % max number of iterations
@@ -63,7 +59,7 @@ FBS.run(y);       % run the algorithm (Note that gam is fixed automatically to 1
 
 % -- Display
 [v,n]=max(FBS.OutOp.evolsnr(:));
-imdisp(FBS.OutOp.evolxopt{n}(idx,idx),'LS + NonNeg (FISTA)',1);
+imdisp(FBS.OutOp.evolxopt{n},'LS + NonNeg (FISTA)',1);
 figure;plot(FBS.OutOp.iternum,FBS.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');legend('LS+POS (FISTA)');title('Cost evolution');
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
 semilogy(FBS.OutOp.iternum,FBS.OutOp.evolsnr,'LineWidth',1.5);

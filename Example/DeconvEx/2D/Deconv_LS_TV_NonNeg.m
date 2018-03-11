@@ -35,13 +35,9 @@ help Deconv_LS_TV_NonNeg
 rng(1);
 
 % -- Input image and psf
-load('StarLikeSample');    % Load image (variable im)
+load('GT');                % Load ground truth (variable im)
 load('psf');               % Load psf (variable psf)
-imdisp(im,'Input Image',1);
-
-% -- Image padding
-impad=zeros(512); idx=129:384;
-impad(idx,idx)=im;
+imdisp(im,'Input Image (GT)',1);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
@@ -49,7 +45,7 @@ H.memoizeOpts.applyHtH=true;
 
 % -- Generate data
 load('data');    % load data (variable y)
-imdisp(y(idx,idx),'Convolved and noisy data',1);
+imdisp(y,'Convolved and noisy data',1);
 sz=size(y);
 
 % -- Functions definition
@@ -59,14 +55,14 @@ F.doPrecomputation=1;
 R_N12=CostMixNorm21([sz,2],3);   % Mixed Norm 2-1
 G=LinOpGrad(sz);                 % Operator Gradient
 R_POS=CostNonNeg(sz);            % Non-Negativity
-lamb=5e-4;                       % Hyperparameter
+lamb=1e-3;                       % Hyperparameter
 
 %% -- ADMM LS + TV + NonNeg
 Fn={lamb*R_N12,R_POS};
 Hn={G,LinOpIdentity(sz)};
 rho_n=[1e-1,1e-1];
 ADMM=OptiADMM(F,Fn,Hn,rho_n);
-ADMM.OutOp=MyOutputOpti(1,impad,40);
+ADMM.OutOp=MyOutputOpti(1,im,40);
 ADMM.ItUpOut=2;        % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 
@@ -75,7 +71,7 @@ ADMM.run(y);            % run the algorithm
 Fn={lamb*R_N12};
 Hn={G};
 PDC=OptiPrimalDualCondat(F,R_POS,Fn,Hn);
-PDC.OutOp=MyOutputOpti(1,impad,40);
+PDC.OutOp=MyOutputOpti(1,im,40);
 PDC.tau=1;                                   % set algorithm parameters
 PDC.sig=(1/PDC.tau-F.lip/2)/G.norm^2*0.9; %
 PDC.rho=1.95;                                %
@@ -89,7 +85,7 @@ hyperB = CostHyperBolic(G.sizeout,   1e-7,  3)*G;
 C = F+ lamb*hyperB; 
 C.memoizeOpts.apply=true;
 VMLMB=OptiVMLMB(C,0.,[]);  
-VMLMB.OutOp=MyOutputOpti(1,impad,40);
+VMLMB.OutOp=MyOutputOpti(1,im,40);
 VMLMB.CvOp=TestCvgCombine('CostRelative',0.000001, 'CostAbsolute',10);
 %VMLMB.CvOp=TestCvgCombine(TestCvgCostRelative(0.000001),TestCvgCostAbsolute(10));
 VMLMB.ItUpOut=2; 
@@ -99,9 +95,9 @@ VMLMB.run(y);                                  % run the algorithm
 
 
 %% -- Display
-imdisp(ADMM.OutOp.evolxopt{end}(idx,idx),'LS+TV+POS (ADMM)',1);
-imdisp(PDC.OutOp.evolxopt{end}(idx,idx),'LS+TV+POS (Condat)',1);
-imdisp(VMLMB.OutOp.evolxopt{end}(idx,idx),'LS+TV+POS (VMLMB)',1);
+imdisp(ADMM.OutOp.evolxopt{end},'LS+TV+POS (ADMM)',1);
+imdisp(PDC.OutOp.evolxopt{end},'LS+TV+POS (Condat)',1);
+imdisp(VMLMB.OutOp.evolxopt{end},'LS+TV+POS (VMLMB)',1);
 figure; plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 hold all;plot(PDC.OutOp.iternum,PDC.OutOp.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 plot(VMLMB.OutOp.iternum,VMLMB.OutOp.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');

@@ -33,20 +33,16 @@ help Deconv_KL_NonNeg_NoReg
 rng(1);
 
 % -- Input image and psf
-load('StarLikeSample');    % Load image (variable im)
+load('GT');                % Load ground truth (variable im)
 load('psf');               % Load psf (variable psf)
-imdisp(im,'Input Image',1);
-
-% -- Image padding
-impad=zeros(512); idx=129:384;
-impad(idx,idx)=im;
+imdisp(im,'Input Image (GT)',1);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
 
 % -- Generate data
 load('data');    % load data (variable y)
-imdisp(y(idx,idx),'Convolved and noisy data',1);
+imdisp(y,'Convolved and noisy data',1);
 sz=size(y);
 
 % -- Functions definition
@@ -55,23 +51,23 @@ R_POS=CostNonNeg(sz);              % Non-Negativity
 
 % -- FISTA KL + NonNeg
 FBS=OptiFBS(KL*H,R_POS);
-FBS.OutOp=OutputOpti(1,impad,40);
+FBS.OutOp=OutputOpti(1,im,40);
 FBS.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 FBS.fista=true;   % activate fista
 FBS.maxiter=200;  % max number of iterations
-FBS.gam=1e-2;     % set gamma parameter
+FBS.gam=5e-3;     % set gamma parameter
 FBS.run(y);       % run the algorithm 
 
 % -- Richardson-Lucy KL + NonNeg (implicit)
 RL=OptiRichLucy(KL*H);
-RL.OutOp=OutputOpti(1,impad,40);
+RL.OutOp=OutputOpti(1,im,40);
 RL.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 RL.maxiter=200;  % max number of iterations
 RL.run(y);       % run the algorithm 
 
 % -- Display
-imdisp(FBS.OutOp.evolxopt{end}(idx,idx),'KL + NonNeg (FISTA)',1);
-imdisp(RL.OutOp.evolxopt{end}(idx,idx),'KL + NonNeg (RL)',1);
+imdisp(FBS.OutOp.evolxopt{end},'KL + NonNeg (FISTA)',1);
+imdisp(RL.OutOp.evolxopt{end},'KL + NonNeg (RL)',1);
 figure;plot(FBS.OutOp.iternum,FBS.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 hold all; plot(RL.OutOp.iternum,RL.OutOp.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');title('Cost evolution');
 legend('FISTA','RL');

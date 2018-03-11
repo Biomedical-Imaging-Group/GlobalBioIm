@@ -30,13 +30,9 @@ help Deconv_LS_NoReg
 rng(1);
 
 % -- Input image and psf
-load('StarLikeSample');    % Load image (variable im)
+load('GT');                % Load ground truth (variable im)
 load('psf');               % Load psf (variable psf)
-imdisp(im,'Input Image',1);
-
-% -- Image padding
-impad=zeros(512); idx=129:384;
-impad(idx,idx)=im;
+imdisp(im,'Input Image (GT)',1);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
@@ -46,7 +42,7 @@ H.memoizeOpts.applyHtH=1;
 
 % -- Generate data
 load('data');    % load data (variable y)
-imdisp(y(idx,idx),'Convolved and noisy data',1);
+imdisp(y,'Convolved and noisy data',1);
 
 % -- Function definition
 LS=CostL2([],y);  % Least-Sqaures data term
@@ -63,14 +59,14 @@ F.doPrecomputation=1;
 
 % -- Gradient Descent LS
 GD=OptiGradDsct(F);
-GD.OutOp=OutputOpti(1,impad,40);
+GD.OutOp=OutputOpti(1,im,40);
 GD.ItUpOut=1;     % call OutputOpti update every ItUpOut iterations
 GD.maxiter=200;   % max number of iterations
 GD.run(y);        % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
 
 % -- Display
 [v,n]=max(GD.OutOp.evolsnr(:));
-imdisp(GD.OutOp.evolxopt{n}(idx,idx),'LS (GD)',1);
+imdisp(GD.OutOp.evolxopt{n},'LS (GD)',1);
 figure;plot(GD.OutOp.iternum,GD.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');title('Cost evolution');
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
 semilogy(GD.OutOp.iternum,GD.OutOp.evolsnr,'LineWidth',1.5); 

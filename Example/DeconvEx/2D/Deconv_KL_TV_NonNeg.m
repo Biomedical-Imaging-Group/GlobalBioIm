@@ -35,20 +35,16 @@ help Deconv_KL_TV_NonNeg
 rng(1);
 
 % -- Input image and psf
-load('StarLikeSample');    % Load image (variable im)
+load('GT');                % Load ground truth (variable im)
 load('psf');               % Load psf (variable psf)
-imdisp(im,'Input Image',1);
-
-% -- Image padding
-impad=zeros(512); idx=129:384;
-impad(idx,idx)=im;
+imdisp(im,'Input Image (GT)',1);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
 
 % -- Generate data
 load('data');    % load data (variable y)
-imdisp(y(idx,idx),'Convolved and noisy data',1);
+imdisp(y,'Convolved and noisy data',1);
 sz=size(y);
 
 % -- Functions definition
@@ -56,41 +52,41 @@ F=CostKullLeib([],y,1e-6);     % Kullback-Leibler divergence data term
 R_POS=CostNonNeg(sz);          % Non-Negativity
 R_N12=CostMixNorm21([sz,2],3); % Mixed Norm 2-1
 G=LinOpGrad(sz);               % Operator Gradient
-lamb=1e-2;                     % Hyperparameter  
+lamb=5e-3;                     % Hyperparameter  
 
 % -- ADMM KL + TV + NonNeg
 Fn={CostKullLeib([],y,1e-6),lamb*R_N12,R_POS};
 Hn={H,G,LinOpDiag(sz)};
 rho_n=[1e-2,1e-2,1e-2];
 ADMM=OptiADMM([],Fn,Hn,rho_n);
-ADMM.OutOp=MyOutputOpti(1,impad,40);
+ADMM.OutOp=MyOutputOpti(1,im,40);
 ADMM.ItUpOut=10;                                  % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;                                 % max number of iterations
 ADMM.run(y);                                      % run the algorithm
 
 % -- PrimalDual Condat KL + TV + NonNeg
-Fn={lamb*R_N12};
-Hn={G};
-PDC=OptiPrimalDualCondat(F*H,R_POS,Fn,Hn);
-PDC.OutOp=MyOutputOpti(1,impad,40);
-PDC.tau=1e-2;          % set algorithm parameters
+Fn={lamb*R_N12,F};
+Hn={G,H};
+PDC=OptiPrimalDualCondat([],R_POS,Fn,Hn);
+PDC.OutOp=MyOutputOpti(1,im,40);
+PDC.tau=5e-2;          % set algorithm parameters
 PDC.sig=1;             %
-PDC.rho=1.95;          %
+PDC.rho=1.2;          %
 PDC.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
 PDC.maxiter=200;       % max number of iterations
 PDC.run(y);            % run the algorithm 
 
 % -- Richardson-Lucy-TV  KL + TV + NonNeg (implicit)
 RLTV=OptiRichLucy(F*H,1,lamb);
-RLTV.OutOp=MyOutputOpti(1,impad,40);
+RLTV.OutOp=MyOutputOpti(1,im,40);
 RLTV.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
 RLTV.maxiter=200;  % max number of iterations
 RLTV.run(y);       % run the algorithm 
 
 % -- Display
-imdisp(ADMM.OutOp.evolxopt{end}(idx,idx),'KL+TV+POS (ADMM)',1);
-imdisp(PDC.OutOp.evolxopt{end}(idx,idx),'KL+TV+POS (Condat)',1);
-imdisp(RLTV.OutOp.evolxopt{end}(idx,idx),'KL+TV+POS (RL-TV)',1);
+imdisp(ADMM.OutOp.evolxopt{end},'KL+TV+POS (ADMM)',1);
+imdisp(PDC.OutOp.evolxopt{end},'KL+TV+POS (Condat)',1);
+imdisp(RLTV.OutOp.evolxopt{end},'KL+TV+POS (RL-TV)',1);
 
 figure;plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5); grid;  
 hold all;plot(PDC.OutOp.iternum,PDC.OutOp.evolcost,'LineWidth',1.5); 

@@ -33,20 +33,16 @@ help Deconv_LS_HessSchatt_NonNeg
 rng(1);
 
 % -- Input image and psf
-load('StarLikeSample');    % Load image (variable im)
+load('GT');                % Load ground truth (variable im)
 load('psf');               % Load psf (variable psf)
-imdisp(im,'Input Image',1);
-
-% -- Image padding
-impad=zeros(512); idx=129:384;
-impad(idx,idx)=im;
+imdisp(im,'Input Image (GT)',1);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
 
 % -- Generate data
 load('data');    % load data (variable y)
-imdisp(y(idx,idx),'Convolved and noisy data',1);
+imdisp(y,'Convolved and noisy data',1);
 sz=size(y);
 
 % -- Functions definition
@@ -56,14 +52,14 @@ F.doPrecomputation=1;
 Hess=LinOpHess(sz);                  % Hessian Operator
 R_1sch=CostMixNormSchatt1([sz,3],1); % Mixed Norm 1-Schatten (p=1)
 R_POS=CostNonNeg(sz);                % Non-Negativity
-lamb=1e-3;                           % Hyperparameter
+lamb=5e-3;                           % Hyperparameter
 
 % -- ADMM LS + ShattenHess + NonNeg
 Fn={lamb*R_1sch,R_POS};
-Hn={Hess,LinOpIdentity(size(impad))};
+Hn={Hess,LinOpIdentity(size(im))};
 rho_n=[1e-1,1e-1];
 ADMM=OptiADMM(F,Fn,Hn,rho_n);
-ADMM.OutOp=MyOutputOpti(1,impad,40);
+ADMM.OutOp=MyOutputOpti(1,im,40);
 ADMM.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 
@@ -72,7 +68,7 @@ ADMM.run(y);            % run the algorithm
 Fn={lamb*R_1sch};
 Hn={Hess};
 PDC=OptiPrimalDualCondat(F,R_POS,Fn,Hn);
-PDC.OutOp=MyOutputOpti(1,impad,40);
+PDC.OutOp=MyOutputOpti(1,im,40);
 PDC.tau=1;             % set algorithm parameters
 PDC.sig=1e-2;          %
 PDC.rho=1.95;          %
@@ -82,8 +78,8 @@ PDC.run(y);            % run the algorithm
 
 
 % -- Display
-imdisp(ADMM.OutOp.evolxopt{end}(idx,idx),'LS+HESS+POS (ADMM)',1);
-imdisp(PDC.OutOp.evolxopt{end}(idx,idx),'LS+HESS+POS (Condat)',1);
+imdisp(ADMM.OutOp.evolxopt{end},'LS+HESS+POS (ADMM)',1);
+imdisp(PDC.OutOp.evolxopt{end},'LS+HESS+POS (Condat)',1);
 figure; plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5); grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 hold all;plot(PDC.OutOp.iternum,PDC.OutOp.evolcost,'LineWidth',1.5); grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 legend('ADMM','Condat');title('Cost evolution');

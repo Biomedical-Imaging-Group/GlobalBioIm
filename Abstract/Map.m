@@ -136,7 +136,7 @@ classdef (Abstract) Map < handle
             % \\(\\mathrm{G}\\). Returns a new map \\(\\mathrm{M=HG}\\)
             %
             % Calls the method :meth:`makeComposition_`
-            if ~isequal(this.sizein, G.sizeout)
+            if ~cmpSize(this.sizein,G.sizeout)
                 error('Input to makeComposition is a %s of sizeout size [%s], which didn''t match the %s sizein [%s].',...
                     class(G),num2str(G.sizeout),class(this), num2str(this.sizein));
             end
@@ -147,11 +147,11 @@ classdef (Abstract) Map < handle
             % $$ \\mathrm{M}(\\mathrm{x}) := \\mathrm{H}(\\mathrm{x}) + \\mathrm{G}(\\mathrm{x})$$
             %
             % Calls the method :meth:`plus_`
-            if ~isequal(this.sizein, G.sizein) % check input size
+            if ~cmpSize(this.sizein, G.sizein) % check input size
                 error('Input to plus is a %s of sizein  [%s], which didn''t match the added %s sizein [%s].',...
                     class(G),num2str(G.sizein),class(this), num2str(this.sizein));
             end
-            if ~isequal(this.sizeout, G.sizeout) % check input size
+            if ~cmpSize(this.sizeout, G.sizeout) % check input size
                 error('Input to plus is a %s of sizeout  [%s], which didn''t match the added %s sizeout [%s].',...
                     class(G),num2str(G.sizeout),class(this), num2str(this.sizeout));
             end
@@ -162,11 +162,11 @@ classdef (Abstract) Map < handle
             % $$ \\mathrm{M}(\\mathrm{x}) := \\mathrm{H}(\\mathrm{x}) - \\mathrm{G}(\\mathrm{x})$$  
             %
             % Calls the method :meth:`minus_`
-            if ~isequal(this.sizein, G.sizein) % check input size
+            if ~cmpSize(this.sizein, G.sizein) % check input size
                 error('Input to plus is a %s of sizein  [%s], which didn''t match the substracted %s sizein [%s].',...
                     class(G),num2str(G.sizein),class(this), num2str(this.sizein));
             end
-            if ~isequal(this.sizeout, G.sizeout) % check input size
+            if ~cmpSize(this.sizeout, G.sizeout) % check input size
                 error('Input to plus is a %s of sizeout  [%s], which didn''t match the substracted %s sizeout [%s].',...
                     class(G),num2str(G.sizeout),class(this), num2str(this.sizeout));
             end
@@ -210,11 +210,11 @@ classdef (Abstract) Map < handle
             % $$ \\mathrm{M}(\\mathrm{x}) := \\mathrm{H}(\\mathrm{x}) \\times \\mathrm{G}(\\mathrm{x})$$  
             %
             % Calls the method :meth:`times_`
-            if ~isequal(this.sizein, G.sizein) % check input size
+            if ~cmpSize(this.sizein, G.sizein) % check input size
                 error('Input to times is a %s of sizein  [%s], which didn''t match the multiplied %s sizein [%s].',...
                     class(G),num2str(G.sizein),class(this), num2str(this.sizein));
             end
-            if ~isequal(this.sizeout, G.sizeout) % check input size
+            if ~cmpSize(this.sizeout, G.sizeout) % check input size
                 error('Input to times is a %s of sizeout  [%s], which didn''t match the multiplied %s sizeout [%s].',...
                     class(G),num2str(G.sizeout),class(this), num2str(this.sizeout));
             end

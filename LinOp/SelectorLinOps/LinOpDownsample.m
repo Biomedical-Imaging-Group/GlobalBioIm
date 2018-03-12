@@ -39,7 +39,7 @@ classdef LinOpDownsample < LinOpSelector
     methods
         function this = LinOpDownsample(sz,df)
             this.name ='LinOpDownsample';
-            assert(isequal(size(sz),size(df)),'Parameters sz and df must have the same size');
+            assert(cmpSize(size(sz),size(df)),'Parameters sz and df must have the same size');
             assert(~any(mod(sz,df)),'Sizes in sz must be multiples of downsampling factors in df');  
             this.sizein=sz;
             this.df=df;

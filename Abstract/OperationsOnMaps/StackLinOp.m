@@ -65,8 +65,8 @@ classdef StackLinOp < LinOp
             this.sizein =  this.ALinOp{1}(1).sizein;
             this.sizeout =  [this.ALinOp{1}(1).sizeout this.numLinOp];
             for n =2:this.numLinOp
-                assert(isempty(this.ALinOp{n}(1).sizein)  || isequal(this.sizein,this.ALinOp{n}(1).sizein),'%d-th input does not have the right hand side size ', n) ;
-                assert(isempty(this.ALinOp{n}(1).sizeout) ||isequal(this.ALinOp{1}(1).sizeout,this.ALinOp{n}(1).sizeout),'%d-th input does not have the left hand side size ', n);
+                assert(isempty(this.ALinOp{n}(1).sizein)  || cmpSize(this.sizein,this.ALinOp{n}(1).sizein),'%d-th input does not have the right hand side size ', n) ;
+                assert(isempty(this.ALinOp{n}(1).sizeout) ||cmpSize(this.ALinOp{1}(1).sizeout,this.ALinOp{n}(1).sizeout),'%d-th input does not have the left hand side size ', n);
                 this.isComplex= this.ALinOp{n}(1).isComplex || this.isComplex ;
             end
             

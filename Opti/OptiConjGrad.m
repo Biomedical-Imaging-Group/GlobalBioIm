@@ -49,13 +49,13 @@ classdef OptiConjGrad < Opti
             this.name='Opti Conjugate Gradient';
             this.A=A;
             this.cost=CostL2Composition(CostL2([],b),this.A);
-            assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
+            assert(checkSize(b,this.A.sizeout),'A sizeout and size of b must be equal');
             this.b=b;
         end
         %% Set data b
         function set_b(this,b)
             % Set the right-hand side \\(\\mathrm{b}\\)
-            assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
+            assert(checkSize(b,this.A.sizeout),'A sizeout and size of b must be equal');
             this.b=b;
             this.cost.H1.y=b;
         end

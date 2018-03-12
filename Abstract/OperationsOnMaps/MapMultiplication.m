@@ -40,8 +40,8 @@ classdef MapMultiplication < Map
             this.isInvertible=false;
             this.sizein = this.M1.sizein;
             this.sizeout = this.M2.sizeout;
-            assert(isequal(this.sizein,this.M2.sizein),'Given Maps do not have consistent  sizein') ;
-            assert(isequal(this.sizeout,this.M2.sizeout),'Given Maps do not have the consistent sizeout ');
+            assert(cmpSize(this.sizein,this.M2.sizein),'Given Maps do not have consistent  sizein') ;
+            assert(cmpSize(this.sizeout,this.M2.sizeout),'Given Maps do not have the consistent sizeout ');
         end
     end
     

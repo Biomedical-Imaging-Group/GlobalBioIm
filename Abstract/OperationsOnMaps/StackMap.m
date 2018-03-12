@@ -1,6 +1,6 @@
 classdef StackMap < Map
     % StackMap: Stack Maps
-    % $$ \\mathrm{H}(\\mathrm{x})_[:,:,k] = \{\\alpha_i \\mathrm{H}_i(\\mathrm{x})\}_k \forall k \in [1,\ldots,N] $$
+    % $$ \\mathrm{H}(\\mathrm{x})_[:,:,i] = \{\\alpha_i \\mathrm{H}_i(\\mathrm{x})\}_k \forall k \in [1,\ldots,N] $$
     %
     % :param Maps:  cell of :class:`Map`
     % :param alpha:  array of coefficients
@@ -70,8 +70,8 @@ classdef StackMap < Map
             this.sizein = this.mapsCell{1}.sizein;
             this.sizeout = this.mapsCell{1}.sizeout;
             for n =2:this.numMaps
-                assert(isequal(this.sizein,this.mapsCell{n}.sizein),'%d-th input does not have consistent  sizein', n) ;
-                assert(isequal(this.sizeout,this.mapsCell{n}.sizeout),'%d-th input does not have the consistent sizeout ', n);
+                assert(cmpSize(this.sizein,this.mapsCell{n}.sizein),'%d-th input does not have consistent  sizein', n) ;
+                assert(cmpSize(this.sizeout,this.mapsCell{n}.sizeout),'%d-th input does not have the consistent sizeout ', n);
                 this.isDifferentiable= this.mapsCell{n}.isDifferentiable && this.isDifferentiable;
             end
             this.sizeout = [this.sizeout,this.numMaps];

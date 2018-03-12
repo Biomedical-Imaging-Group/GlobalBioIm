@@ -36,7 +36,7 @@ classdef LinOpSumPatches <  LinOp
     methods
         function this = LinOpSumPatches(sz,szPatch)
             this.name ='LinOpSumPatches';
-            assert(isequal(size(sz),size(szPatch)),'Parameters sz and szPatches must have the same size');
+            assert(cmpSize(size(sz),size(szPatch)),'Parameters sz and szPatches must have the same size');
             assert(~any(mod(sz,szPatch)),'Sizes in sz must be multiples of patch sizes in szPatches');  
             this.sizein=sz;
             this.szPatch=szPatch;

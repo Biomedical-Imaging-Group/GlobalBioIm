@@ -30,7 +30,6 @@ classdef LinOpSumPatches <  LinOp
     properties (SetAccess = protected,GetAccess = public)
         szPatch    % array containing the patch size in each direction
         sel;
-        nbPatch;
     end
     
     %% Constructor
@@ -42,7 +41,6 @@ classdef LinOpSumPatches <  LinOp
             this.sizein=sz;
             this.szPatch=szPatch;
             this.sizeout=this.szPatch;           
-            this.nbPatch=prod(this.sizeout);
             for n=1:length(this.sizein)
                 this.sel{n}=this.szPatch(n)*ones(1,this.sizein(n)/this.szPatch(n));
             end

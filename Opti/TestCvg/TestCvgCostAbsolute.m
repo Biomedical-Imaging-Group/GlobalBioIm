@@ -55,8 +55,8 @@ classdef TestCvgCostAbsolute  < TestCvg
 
             if( f < this.costAbsoluteTol)
                 stop  =true;
-                message = [this.name,': Cost below the absolute tolerance : ',num2str(f),' < ',num2str(this.costAbsoluteTol)];
-                opti.message = message;
+                endingMessage = [this.name,': Cost below the absolute tolerance : ',num2str(f),' < ',num2str(this.costAbsoluteTol)];
+                opti.endingMessage = endingMessage;
             end
         end
     end

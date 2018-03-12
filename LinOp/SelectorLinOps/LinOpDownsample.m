@@ -55,24 +55,20 @@ classdef LinOpDownsample < LinOpSelector
 	methods (Access = protected)		
         function y = apply_(this,x)
             % Reimplemented from parent class :class:`LinOpSelector`.           
-            assert(isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
             y =x(this.sel{:});
         end        
         function y = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOpSelector`.  
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
             y = zeros(this.sizein);
             y(this.sel{:}) = x;
         end
         function y = applyHtH_(this,x)
             % Reimplemented from parent class :class:`LinOpSelector`.  
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
             y = zeros(this.sizein);
             y(this.sel{:}) = x(this.sel{:});            
         end
         function y = applyHHt_(this,x)
             % Reimplemented from parent class :class:`LinOpSelector`.  
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
             y = x;
         end
         function M = makeHtH_(this)

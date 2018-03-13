@@ -163,7 +163,7 @@ classdef OptiVMLMB<Opti
                 
             else
                 % Convergence, or error, or warning
-                this.message = ['Convergence, or error, or warning : %d  , %s\n',this.task,m_opl_vmlmb_get_reason(this.ws)];
+                this.endingMessage = ['Convergence, or error, or warning : %d  , %s\n',this.task,m_opl_vmlmb_get_reason(this.ws)];
                 
                 flag=this.OPTI_STOP;
                 this.task = m_opl_vmlmb_restore(this.ws,this.xopt,this.cc,this.grad);

@@ -34,7 +34,6 @@ load('GT');                % Load ground truth (variable im)
 load('psf');               % Load psf (variable psf)
 imdisp(im,'Input Image (GT)',1);
 
-
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
 % If true, applyHtH method will save its result. Hence for two consecutive HtH*x with the

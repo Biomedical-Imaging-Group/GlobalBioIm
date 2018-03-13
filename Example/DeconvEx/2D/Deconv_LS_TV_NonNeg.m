@@ -31,9 +31,6 @@ help Deconv_LS_TV_NonNeg
 %  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %---------------------------------------------------------------
 
-% -- To run on GPU (0: CPU / 1: Matlab Parrallel Computing Toolbox / 2: CudaMat) 
-useGPU(0)
-
 % -- fix the random seed (for reproductibility)
 rng(1);
 

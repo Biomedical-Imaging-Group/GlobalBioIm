@@ -96,11 +96,11 @@ classdef MyOutputOpti < handle
         end
         %% Initialization
         function init(this)
-        	this.count=1;
-        	this.evolcost=zeros_(1);
-        	this.evolsnr=zeros_(1);
-		this.iternum = [];
-		this.evolxopt = {};
+            this.count=1;
+            this.evolcost=zeros_(1);
+            this.evolsnr=zeros_(1);
+            this.iternum = [];
+            this.evolxopt = {};
         end
         %% Update method
         function update(this,opti)

@@ -55,7 +55,7 @@ classdef MapSummation < Map
 			for i = 1:length(Maps)
 				if isa(Maps{i}, 'MapSummation')
 					eMaps = [eMaps Maps{i}.mapsCell];
-					newAlphas = [newAlphas  Maps{i}.alpha];
+					newAlphas = [newAlphas  Maps{i}.alpha*this.alpha(i)];
 				else
 					eMaps = [eMaps Maps(i)];
 					newAlphas = [newAlphas this.alpha(i)];

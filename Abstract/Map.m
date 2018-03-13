@@ -262,7 +262,7 @@ classdef (Abstract) Map < handle
         function M = minus_(this,G)
             % Constructs a :class:`MapSummation` object to subtract to the
             % current :class:`Map` \\(\\mathrm{H}\\), the given \\(\\mathrm{G}\\). 
-            M = MapSummation({this,G},[1,-1]);
+            M = this + (-1)*G;
         end
         function M = mpower_(this,p)
             % When \\(p=-1\\), constructs a :class:`MapInversion` object which

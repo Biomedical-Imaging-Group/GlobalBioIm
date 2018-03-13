@@ -190,34 +190,44 @@ classdef LinOp < Map
             % If \\(\\mathrm{G}\\) is a :class:`LinOp`, constructs a :class:`LinOpSummation` object to sum the
             % current :class:`LinOp` \\(\\mathrm{H}\\) with the given \\(\\mathrm{G}\\).
             % Otherwise the summation will be a :class:`MapSummation`.
+                        
             if isa(G,'LinOp')
-                M = LinOpSummation({this,G},[1,1]);
-            else
+                M=[];
+                if isa(G,'LinOpSummation')
+                    % Find elements of the same type
+                    ind=find(strcmp(this.name,cellfun(@(T) T.name,G.mapsCell,'UniformOutput',false)));
+                    if length(ind)==1
+                        % To avoid infinite loops (normally it should never goes in the else because the sum of
+                        % two LinOp of the same type can always be simplified. If not the sum_ method of the corresponding
+                        % LinOp has to be implemented properly).
+                        
+                        M=this + G.alpha(1)*G.mapsCell{ind};
+                        for ii=1:G.numMaps
+                            if ii~=ind
+                                M= M+G.alpha(ii)*G.mapsCell{ii};
+                            end
+                        end
+                    end
+                end
+                if isempty(M)
+                    M=LinOpSummation({this,G},[1,1]);
+                end
+            else 
                 M = MapSummation({this,G},[1,1]);
-            end
-        end
-        function M = minus_(this,G)
-            % If \\(\\mathrm{G}\\) is a :class:`LinOp`, constructs a :class:`LinOpSummation` object to subtract to the
-            % current :class:`LinOp` \\(\\mathrm{H}\\), the given \\(\\mathrm{G}\\).
-            % Otherwise the summation will be a :class:`MapSummation`.
-            if isa(G,'LinOp')
-                M = LinOpSummation({this,G},[1,-1]);
-            else
-                M = MapSummation({this,G},[1,-1]);
             end
         end
         function M = makeAdjoint_(this)
             % Constructs a :class:`LinOpAdjoint` from the current
-            % current :class:`LinOp` \\(\\mathrm{H}\\) 
+            % current :class:`LinOp` \\(\\mathrm{H}\\)
             M=LinOpAdjoint(this);
         end
         function M = makeHtH_(this)
-            % Constructs a :class:`LinOpComposition` corresponding to 
+            % Constructs a :class:`LinOpComposition` corresponding to
             % \\(\\mathrm{H}^{\\star}\\mathrm{H}\\)
             M=LinOpComposition(this',this);
         end
         function M = makeHHt_(this)
-            % Constructs a :class:`LinOpComposition` corresponding to 
+            % Constructs a :class:`LinOpComposition` corresponding to
             % \\(\\mathrm{H}\\mathrm{H}^{\\star}\\)
             M=LinOpComposition(this,this');
         end

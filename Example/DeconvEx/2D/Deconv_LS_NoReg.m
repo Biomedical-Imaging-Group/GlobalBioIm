@@ -60,13 +60,12 @@ F.doPrecomputation=1;
 % -- Gradient Descent LS
 GD=OptiGradDsct(F);
 GD.OutOp=OutputOpti(1,im,40);
-GD.ItUpOut=1;     % call OutputOpti update every ItUpOut iterations
-GD.maxiter=200;   % max number of iterations
-GD.run(y);        % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
+GD.ItUpOut=1;           % call OutputOpti update every ItUpOut iterations
+GD.maxiter=200;         % max number of iterations
+GD.run(zeros(size(y))); % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
 
 % -- Display
-[v,n]=max(GD.OutOp.evolsnr(:));
-imdisp(GD.OutOp.evolxopt{n},'LS (GD)',1);
+imdisp(GD.OutOp.evolxopt{end},'LS (GD)',1);
 figure;plot(GD.OutOp.iternum,GD.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');title('Cost evolution');
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
 semilogy(GD.OutOp.iternum,GD.OutOp.evolsnr,'LineWidth',1.5); 

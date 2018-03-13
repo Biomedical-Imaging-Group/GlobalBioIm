@@ -63,9 +63,9 @@ Hn={G,LinOpIdentity(sz)};
 rho_n=[1e-1,1e-1];
 ADMM=OptiADMM(F,Fn,Hn,rho_n);
 ADMM.OutOp=MyOutputOpti(1,im,40);
-ADMM.ItUpOut=2;        % call OutputOpti update every ItUpOut iterations
-ADMM.maxiter=200;       % max number of iterations
-ADMM.run(y);            % run the algorithm 
+ADMM.ItUpOut=2;             % call OutputOpti update every ItUpOut iterations
+ADMM.maxiter=200;           % max number of iterations
+ADMM.run(zeros(size(y)));   % run the algorithm 
 
 %% -- PrimalDual Condat LS + TV + NonNeg
 Fn={lamb*R_N12};
@@ -73,11 +73,11 @@ Hn={G};
 PDC=OptiPrimalDualCondat(F,R_POS,Fn,Hn);
 PDC.OutOp=MyOutputOpti(1,im,40);
 PDC.tau=1;                                   % set algorithm parameters
-PDC.sig=(1/PDC.tau-F.lip/2)/G.norm^2*0.9; %
+PDC.sig=(1/PDC.tau-F.lip/2)/G.norm^2*0.9;    %
 PDC.rho=1.95;                                %
-PDC.ItUpOut=2;                              % call OutputOpti update every ItUpOut iterations
+PDC.ItUpOut=2;                               % call OutputOpti update every ItUpOut iterations
 PDC.maxiter=200;                             % max number of iterations
-PDC.run(y);                                  % run the algorithm 
+PDC.run(zeros(size(y)));                     % run the algorithm 
 
 
 %% -- VMLMB LS + hyperbolicTV + NonNeg

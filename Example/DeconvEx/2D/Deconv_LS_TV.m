@@ -59,7 +59,7 @@ CP.tau=15;                            % algorithm parameters
 CP.sig=1/(CP.tau*G.norm^2)*0.99;      %
 CP.ItUpOut=10;                        % call OutputOpti update every ItUpOut iterations
 CP.maxiter=200;                       % max number of iterations
-CP.run(y);                            % run the algorithm 
+CP.run(zeros(size(y)));               % run the algorithm 
 
 % -- ADMM LS + TV
 Fn={lamb*R_N12};
@@ -67,9 +67,9 @@ Hn={G};rho_n=[1e-1];
 % Here no solver needed in ADMM since the operator H'*H + alpha*G'*G is invertible
 ADMM=OptiADMM(F,Fn,Hn,rho_n);
 ADMM.OutOp=OutputOpti(1,im,40);
-ADMM.ItUpOut=10;       % call OutputOpti update every ItUpOut iterations
-ADMM.maxiter=200;      % max number of iterations
-ADMM.run(y);           % run the algorithm 
+ADMM.ItUpOut=10;            % call OutputOpti update every ItUpOut iterations
+ADMM.maxiter=200;           % max number of iterations
+ADMM.run(zeros(size(y)));   % run the algorithm 
 
 % -- Display
 imdisp(CP.OutOp.evolxopt{end},'LS + TV (CP)',1);

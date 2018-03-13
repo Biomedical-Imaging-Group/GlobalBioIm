@@ -60,21 +60,21 @@ Hn={Hess,LinOpIdentity(size(im))};
 rho_n=[1e-1,1e-1];
 ADMM=OptiADMM(F,Fn,Hn,rho_n);
 ADMM.OutOp=MyOutputOpti(1,im,40);
-ADMM.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
-ADMM.maxiter=200;       % max number of iterations
-ADMM.run(y);            % run the algorithm 
+ADMM.ItUpOut=10;           % call OutputOpti update every ItUpOut iterations
+ADMM.maxiter=200;          % max number of iterations
+ADMM.run(zeros(size(y)));  % run the algorithm 
 
 % -- PrimalDual Condat LS + ShattenHess + NonNeg
 Fn={lamb*R_1sch};
 Hn={Hess};
 PDC=OptiPrimalDualCondat(F,R_POS,Fn,Hn);
 PDC.OutOp=MyOutputOpti(1,im,40);
-PDC.tau=1;             % set algorithm parameters
-PDC.sig=1e-2;          %
-PDC.rho=1.95;          %
-PDC.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
-PDC.maxiter=200;       % max number of iterations
-PDC.run(y);            % run the algorithm 
+PDC.tau=1;                % set algorithm parameters
+PDC.sig=1e-2;             %
+PDC.rho=1.95;             %
+PDC.ItUpOut=10;           % call OutputOpti update every ItUpOut iterations
+PDC.maxiter=200;          % max number of iterations
+PDC.run(zeros(size(y)));  % run the algorithm 
 
 
 % -- Display

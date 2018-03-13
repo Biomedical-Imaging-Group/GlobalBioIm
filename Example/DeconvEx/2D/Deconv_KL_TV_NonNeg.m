@@ -62,7 +62,7 @@ ADMM=OptiADMM([],Fn,Hn,rho_n);
 ADMM.OutOp=MyOutputOpti(1,im,40);
 ADMM.ItUpOut=10;                                  % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;                                 % max number of iterations
-ADMM.run(y);                                      % run the algorithm
+ADMM.run(zeros(size(y)));                                      % run the algorithm
 
 % -- PrimalDual Condat KL + TV + NonNeg
 Fn={lamb*R_N12,F};
@@ -74,7 +74,7 @@ PDC.sig=1;             %
 PDC.rho=1.2;          %
 PDC.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
 PDC.maxiter=200;       % max number of iterations
-PDC.run(y);            % run the algorithm 
+PDC.run(zeros(size(y)));            % run the algorithm 
 
 % -- Richardson-Lucy-TV  KL + TV + NonNeg (implicit)
 RLTV=OptiRichLucy(F*H,1,lamb);

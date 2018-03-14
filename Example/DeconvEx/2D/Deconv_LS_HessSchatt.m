@@ -32,17 +32,13 @@ help Deconv_LS_HessSchatt
 rng(1);
 
 % -- Input image and psf
-load('GT');                % Load ground truth (variable im)
-load('psf');               % Load psf (variable psf)
+[im,psf,y]=GenerateData('Gaussian');
 imdisp(im,'Input Image (GT)',1);
+imdisp(y,'Convolved and noisy data',1);
+sz=size(y);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
-
-% -- Generate data
-load('data');    % load data (variable y)
-imdisp(y,'Convolved and noisy data',1);
-sz=size(y);
 
 % -- Functions definition
 LS=CostL2([],y);                 % Least-Sqaures data term
@@ -54,7 +50,7 @@ lamb=2e-3;                           % Hyperparameter
 
 % -- Chambolle-Pock  LS + ShattenHess
 CP=OptiChambPock(lamb*R_1sch,Hess,F);
-CP.OutOp=OutputOpti(1,im,10);
+CP.OutOp=OutputOpti(1,im,20);
 CP.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4); 
 CP.tau=1;               % algorithm parameters
 CP.sig=0.02;            %

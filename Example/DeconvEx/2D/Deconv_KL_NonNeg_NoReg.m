@@ -33,17 +33,13 @@ help Deconv_KL_NonNeg_NoReg
 rng(1);
 
 % -- Input image and psf
-load('GT');                % Load ground truth (variable im)
-load('psf');               % Load psf (variable psf)
+[im,psf,y]=GenerateData('Poisson');
 imdisp(im,'Input Image (GT)',1);
+imdisp(y,'Convolved and noisy data',1);
+sz=size(y);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
-
-% -- Generate data
-load('data');    % load data (variable y)
-imdisp(y,'Convolved and noisy data',1);
-sz=size(y);
 
 % -- Functions definition
 KL=CostKullLeib([],y,1e-6);     % Kullback-Leibler divergence data term

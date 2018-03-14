@@ -33,17 +33,13 @@ help Deconv_LS_HessSchatt_NonNeg
 rng(1);
 
 % -- Input image and psf
-load('GT');                % Load ground truth (variable im)
-load('psf');               % Load psf (variable psf)
+[im,psf,y]=GenerateData('Gaussian');
 imdisp(im,'Input Image (GT)',1);
+imdisp(y,'Convolved and noisy data',1);
+sz=size(y);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
-
-% -- Generate data
-load('data');    % load data (variable y)
-imdisp(y,'Convolved and noisy data',1);
-sz=size(y);
 
 % -- Functions definition
 LS=CostL2([],y);                 % Least-Sqaures data term
@@ -52,7 +48,7 @@ F.doPrecomputation=1;
 Hess=LinOpHess(sz);                  % Hessian Operator
 R_1sch=CostMixNormSchatt1([sz,3],1); % Mixed Norm 1-Schatten (p=1)
 R_POS=CostNonNeg(sz);                % Non-Negativity
-lamb=5e-3;                           % Hyperparameter
+lamb=1e-3;                           % Hyperparameter
 
 % -- ADMM LS + ShattenHess + NonNeg
 Fn={lamb*R_1sch,R_POS};
@@ -73,7 +69,7 @@ PDC.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4,[1 3]), 'StepRelative',1e-4);
 PDC.OutOp=OutputOpti(1,im,40,[1 3]);
 PDC.tau=1;                % set algorithm parameters
 PDC.sig=1e-2;             %
-PDC.rho=1.95;             %
+PDC.rho=1.7;             %
 PDC.ItUpOut=1;           % call OutputOpti update every ItUpOut iterations
 PDC.maxiter=200;          % max number of iterations
 PDC.run(zeros(size(y)));  % run the algorithm 

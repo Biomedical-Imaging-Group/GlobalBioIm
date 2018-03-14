@@ -35,18 +35,14 @@ help Deconv_LS_TV_NonNeg
 rng(1);
 
 % -- Input image and psf
-load('GT');                % Load ground truth (variable im)
-load('psf');               % Load psf (variable psf)
+[im,psf,y]=GenerateData('Gaussian');
 imdisp(im,'Input Image (GT)',1);
+imdisp(y,'Convolved and noisy data',1);
+sz=size(y);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
 H.memoizeOpts.applyHtH=true;
-
-% -- Generate data
-load('data');    % load data (variable y)
-imdisp(y,'Convolved and noisy data',1);
-sz=size(y);
 
 % -- Functions definition
 LS=CostL2([],y);                 % Least-Squares data term
@@ -63,7 +59,7 @@ Fn={lamb*R_N12,R_POS};
 Hn={G,LinOpIdentity(sz)};
 rho_n=[1e-1,1e-1];
 ADMM=OptiADMM(F,Fn,Hn,rho_n);
-ADMM.OutOp=OutputOpti(1,im,40,[1 2]);
+ADMM.OutOp=OutputOpti(1,im,10,[1 2]);
 % STOP when the sum successives C = F*x + Fn{1}*Hn{1}*x is lower than 1e-4 or when the distance between two successive step is lower than 1e-5
 ADMM.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4,[1 2]), 'StepRelative',1e-4);  
 ADMM.ItUpOut=2;             % call OutputOpti update every ItUpOut iterations
@@ -90,7 +86,7 @@ hyperB = CostHyperBolic(G.sizeout,   1e-7,  3)*G;
 C = F+ lamb*hyperB; 
 C.memoizeOpts.apply=true;
 VMLMB=OptiVMLMB(C,0.,[]);  
-VMLMB.OutOp=OutputOpti(1,im,40);
+VMLMB.OutOp=OutputOpti(1,im,10);
 VMLMB.CvOp=TestCvgCombine('CostRelative',1e-4, 'StepRelative',1e-4); % identical to VMLMB.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4),TestCvgStepRelative(1e-5)); 
 VMLMB.ItUpOut=2; 
 VMLMB.maxiter=200;                             % max number of iterations

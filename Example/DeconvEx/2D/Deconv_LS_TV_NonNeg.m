@@ -63,9 +63,9 @@ Fn={lamb*R_N12,R_POS};
 Hn={G,LinOpIdentity(sz)};
 rho_n=[1e-1,1e-1];
 ADMM=OptiADMM(F,Fn,Hn,rho_n);
-ADMM.OutOp=MyOutputOpti(1,im,40);
+ADMM.OutOp=OutputOpti(1,im,40,[1 2]);
 % STOP when the sum successives C = F*x + Fn{1}*Hn{1}*x is lower than 1e-4 or when the distance between two successive step is lower than 1e-5
-ADMM.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4,[1 2]), 'StepRelative',1e-5);  
+ADMM.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4,[1 2]), 'StepRelative',1e-4);  
 ADMM.ItUpOut=2;             % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;           % max number of iterations
 ADMM.run(y);   % run the algorithm 
@@ -74,9 +74,9 @@ ADMM.run(y);   % run the algorithm
 Fn={lamb*R_N12};
 Hn={G};
 PDC=OptiPrimalDualCondat(F,R_POS,Fn,Hn);
-PDC.OutOp=MyOutputOpti(1,im,40);
-% STOP when the sum successives C = F*x + Fn*Hn*x is lower than 1e-4 r when the distance between two successive step is lower than 1e-5
-PDC.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4,[1 3])  , 'StepRelative',1e-5); 
+PDC.OutOp=OutputOpti(1,im,40,[1 3]);
+% STOP when the sum successives C = F*x + Fn*Hn*x is lower than 1e-4 or when the distance between two successive step is lower than 1e-5
+PDC.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4,[1 3])  , 'StepRelative',1e-4); 
 PDC.tau=1;                                   % set algorithm parameters
 PDC.sig=(1/PDC.tau-F.lip/2)/G.norm^2*0.9;    %
 PDC.rho=1.95;                                %
@@ -90,8 +90,8 @@ hyperB = CostHyperBolic(G.sizeout,   1e-7,  3)*G;
 C = F+ lamb*hyperB; 
 C.memoizeOpts.apply=true;
 VMLMB=OptiVMLMB(C,0.,[]);  
-VMLMB.OutOp=MyOutputOpti(1,im,40);
-VMLMB.CvOp=TestCvgCombine('CostRelative',1e-5, 'StepRelative',1e-5); % identical to VMLMB.CvOp=TestCvgCombine(TestCvgCostRelative(1e-5),TestCvgStepRelative(1e-5)); 
+VMLMB.OutOp=OutputOpti(1,im,40);
+VMLMB.CvOp=TestCvgCombine('CostRelative',1e-4, 'StepRelative',1e-4); % identical to VMLMB.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4),TestCvgStepRelative(1e-5)); 
 VMLMB.ItUpOut=2; 
 VMLMB.maxiter=200;                             % max number of iterations
 VMLMB.m=3;                                     % number of memorized step in hessian approximation

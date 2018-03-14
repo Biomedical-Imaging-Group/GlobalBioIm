@@ -51,7 +51,8 @@ F.doPrecomputation=1;
 
 % -- FISTA LS + NonNeg
 FBS=OptiFBS(F,R_POS);
-FBS.OutOp=OutputOpti(1,im,40);
+FBS.OutOp=OutputOpti(1,im,20);
+FBS.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
 FBS.ItUpOut=1;          % call OutputOpti update every ItUpOut iterations
 FBS.fista=true;         % activate fista
 FBS.maxiter=200;        % max number of iterations

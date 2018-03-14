@@ -57,8 +57,8 @@ Fn={CostKullLeib([],y,1e-6),lamb*R_1sch,R_POS};
 Hn={H,Hess,LinOpDiag(sz)};
 rho_n=[1e-2,1e-2,1e-2];
 ADMM=OptiADMM([],Fn,Hn,rho_n,[]);
-ADMM.OutOp=MyOutputOpti(1,im,40);
-ADMM.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
+ADMM.OutOp=OutputOpti(1,im,40,[1 2]);
+ADMM.ItUpOut=5;        % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 
 
@@ -67,11 +67,11 @@ ADMM.run(y);            % run the algorithm
 Fn={lamb*R_1sch,F};
 Hn={Hess,H};
 PDC=OptiPrimalDualCondat([],R_POS,Fn,Hn);
-PDC.OutOp=MyOutputOpti(1,im,40);
+PDC.OutOp=OutputOpti(1,im,40,[2 3]);
 PDC.tau=5e-2;          % set algorithm parameters
 PDC.sig=1;            %
 PDC.rho=1.2;          %
-PDC.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
+PDC.ItUpOut=5;        % call OutputOpti update every ItUpOut iterations
 PDC.maxiter=200;       % max number of iterations
 PDC.run(y);            % run the algorithm 
 

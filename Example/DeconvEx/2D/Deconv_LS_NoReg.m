@@ -60,6 +60,7 @@ F.doPrecomputation=1;
 % -- Gradient Descent LS
 GD=OptiGradDsct(F);
 GD.OutOp=OutputOpti(1,im,40);
+GD.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
 GD.ItUpOut=1;           % call OutputOpti update every ItUpOut iterations
 GD.maxiter=200;         % max number of iterations
 GD.run(zeros(size(y))); % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 

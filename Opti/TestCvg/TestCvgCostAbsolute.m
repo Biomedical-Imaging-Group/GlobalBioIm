@@ -47,8 +47,11 @@ classdef TestCvgCostAbsolute  < TestCvg
             % :return: boolean true if \\( C(\\mathrm{x^k}) < \\mathrm{costAbsoluteTol}\\)
             
             stop = false;
-            if (this.costIndex && isa(opti.cost,'CostSummation') && this.costIndex<= opti.cost.numMaps)
-                f = opti.cost.mapsCell{this.costIndex}*opti.xopt;
+            if ( isa(opti.cost,'CostSummation')&& all(this.costIndex>0) &&all(this.costIndex<=opti.cost.numMaps) )
+                f = 0;
+                for n=1:numel(this.costIndex)
+                    f = f+opti.cost.mapsCell{this.costIndex(n)}*opti.xopt;
+                end
             else
                 f = opti.cost*opti.xopt;
             end

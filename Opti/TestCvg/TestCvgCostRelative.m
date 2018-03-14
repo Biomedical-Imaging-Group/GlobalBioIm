@@ -51,7 +51,7 @@ classdef TestCvgCostRelative  < TestCvg
             
             
             stop = false;
-            if (any(this.costIndex>0) && isa(opti.cost,'CostSummation'))
+            if ( isa(opti.cost,'CostSummation')&& all(this.costIndex>0) &&all(this.costIndex<=opti.cost.numMaps) )
                 f = 0;
                 for n=1:numel(this.costIndex)
                     f = f+opti.cost.mapsCell{this.costIndex(n)}*opti.xopt;

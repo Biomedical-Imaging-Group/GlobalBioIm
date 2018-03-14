@@ -63,21 +63,24 @@ Hn={G,LinOpIdentity(sz)};
 rho_n=[1e-1,1e-1];
 ADMM=OptiADMM(F,Fn,Hn,rho_n);
 ADMM.OutOp=MyOutputOpti(1,im,40);
-ADMM.ItUpOut=2;             % call OutputOpti update every ItUpOut iterations
+ADMM.CvOp=TestCvgCombine('CostRelative',1e-9, 'StepRelative',1e-3);  % identical to VMLMB.CvOp=TestCvgCombine(TestCvgCostRelative(1e-9),TestCvgStepRelative(1e-3)); 
+ADMM.CvOp=TestCvgCombine(TestCvgCostAbsolute(1, 1),TestCvgStepRelative(1e-7)); 
+ADMM.ItUpOut=1;             % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;           % max number of iterations
-ADMM.run(zeros(size(y)));   % run the algorithm 
+ADMM.run(y);   % run the algorithm 
 
 %% -- PrimalDual Condat LS + TV + NonNeg
 Fn={lamb*R_N12};
 Hn={G};
 PDC=OptiPrimalDualCondat(F,R_POS,Fn,Hn);
 PDC.OutOp=MyOutputOpti(1,im,40);
+PDC.CvOp=TestCvgCombine('CostRelative',1e-9, 'StepRelative',1e-3); % identical to VMLMB.CvOp=TestCvgCombine(TestCvgCostRelative(1e-9),TestCvgStepRelative(1e-3)); 
 PDC.tau=1;                                   % set algorithm parameters
 PDC.sig=(1/PDC.tau-F.lip/2)/G.norm^2*0.9;    %
 PDC.rho=1.95;                                %
-PDC.ItUpOut=2;                               % call OutputOpti update every ItUpOut iterations
+PDC.ItUpOut=1;                               % call OutputOpti update every ItUpOut iterations
 PDC.maxiter=200;                             % max number of iterations
-PDC.run(zeros(size(y)));                     % run the algorithm 
+PDC.run(y);                     % run the algorithm 
 
 
 %% -- VMLMB LS + hyperbolicTV + NonNeg
@@ -86,11 +89,10 @@ C = F+ lamb*hyperB;
 C.memoizeOpts.apply=true;
 VMLMB=OptiVMLMB(C,0.,[]);  
 VMLMB.OutOp=MyOutputOpti(1,im,40);
-VMLMB.CvOp=TestCvgCombine('CostRelative',0.000001, 'CostAbsolute',10);
-%VMLMB.CvOp=TestCvgCombine(TestCvgCostRelative(0.000001),TestCvgCostAbsolute(10));
-VMLMB.ItUpOut=2; 
+VMLMB.CvOp=TestCvgCombine('CostRelative',1e-9, 'StepRelative',1e-3); % identical to VMLMB.CvOp=TestCvgCombine(TestCvgCostRelative(1e-9),TestCvgStepRelative(1e-3)); 
+VMLMB.ItUpOut=1; 
 VMLMB.maxiter=200;                             % max number of iterations
-VMLMB.m=1;                                     % number of memorized step in hessian approximation
+VMLMB.m=3;                                     % number of memorized step in hessian approximation
 VMLMB.run(y);                                  % run the algorithm 
 
 

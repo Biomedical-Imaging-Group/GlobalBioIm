@@ -52,15 +52,16 @@ classdef OptiVMLMB<Opti
     end
     % Full public properties
     properties
-        m=3;
-        gtol=0;
-        fatol=0.0;
-        frtol=1e-8;
+        m=3;                %  M is the number of correction pairs to remember in order to compute the limited memory variable metric (BFGS) approximation of the inverse of the Hessian.  For large problems, M = 3 to 5 gives good results.  For small problems, M should be less or equal N.  The larger is M (and N) the more computer memory will be needed to store the workspace WS.
+        fatol=0.0;          % absolute error desired in the function (e.g. FATOL=0.0). Convergence occurs if the estimate of the absolute error between F(X) and F(XSOL), where XSOL is a local minimizer, is less or equal FATOL. FATOL must have a non-negative floating point value.
+        frtol=0.;           % relative error desired in the function (e.g.  FRTOL=1e-9). Convergence occurs if the estimate of the relative error between F(X) and F(XSOL), where XSOL is a local minimizer, is less or equal FRTOL. FRTOL must have a non-negative floating point value.
+        gtol=0;             % Convergence occurs if the norm of gradient is lower than GTOL
+        % Tolerance for the line search function
         sftol=0.001;
         sgtol=0.9;
         sxtol=0.1;
-        epsilon=0.01;
-        delta=0.1;
+        epsilon=0.01;       % a small value, in the range [0,1), equals to the cosine of the maximum angle between the search direction and the anti-gradient. The BFGS recursion is restarted, whenever the search direction is not sufficiently "descending".
+        delta=0.1;          %   DELTA is a small nonegative value used to compute a small initial step.
     end
     properties (SetAccess = protected,GetAccess = public)
         nparam;
@@ -136,14 +137,14 @@ classdef OptiVMLMB<Opti
                 this.grad = this.cost.applyGrad(this.xopt);
                 
                 
-                normg= sum(this.grad(:).^2);
                 
                 this.nbeval=this.nbeval+1;
-                if (normg< this.gtol)
-                    this.message = ['Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d \n',this.niter,this.nbeval,this.cc,normg,this.task];
-                    %this.time=toc(tstart);
-                    %this.ending_verb();
-                    flag=this.OPTI_STOP;
+                if this.gtol>0
+                    normg= sum(this.grad(:).^2);
+                    if (normg< this.gtol)
+                        this.message = ['Convergence: normg < gtol ',this.niter,this.nbeval,this.cc,normg,this.task];
+                        flag=this.OPTI_STOP;
+                    end
                 end
             elseif (this.task == this.OPL_TASK_NEWX)
                 flag=this.OPTI_NEXT_IT;
@@ -163,7 +164,7 @@ classdef OptiVMLMB<Opti
                 
             else
                 % Convergence, or error, or warning
-                this.endingMessage = ['Convergence, or error, or warning : %d  , %s\n',this.task,m_opl_vmlmb_get_reason(this.ws)];
+                this.endingMessage = ['Convergence, or error, or warning : ',this.task,m_opl_vmlmb_get_reason(this.ws)];
                 
                 flag=this.OPTI_STOP;
                 this.task = m_opl_vmlmb_restore(this.ws,this.xopt,this.cc,this.grad);
@@ -175,7 +176,7 @@ classdef OptiVMLMB<Opti
             this.task = m_opl_vmlmb_iterate(this.ws,this.xopt,this.cc,this.grad,this.active);
             
             
-             
+            
         end
         
     end

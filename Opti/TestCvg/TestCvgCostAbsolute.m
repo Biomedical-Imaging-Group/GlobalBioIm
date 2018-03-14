@@ -36,7 +36,7 @@ classdef TestCvgCostAbsolute  < TestCvg
             assert(isscalar(costAbsoluteTol),'costAbsoluteTol must be scalar');
             this.costAbsoluteTol =costAbsoluteTol;
             if(nargin==2)
-                assert(isscalar(costIndex) && isinteger(costIndex),'costIndex must be a scalar integer');
+                assert(isscalar(costIndex),'costIndex must be a scalar integer');
                 this.costIndex = costIndex;
             end
         end

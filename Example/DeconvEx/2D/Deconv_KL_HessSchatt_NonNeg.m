@@ -33,7 +33,7 @@ help Deconv_KL_HessSchatt_NonNeg
 rng(1);
 
 % -- Input image and psf
-[im,psf,y]=GenerateData('Poisson');
+[im,psf,y]=GenerateData('Poisson',100);
 imdisp(im,'Input Image (GT)',1);
 imdisp(y,'Convolved and noisy data',1);
 sz=size(y);

@@ -12,6 +12,7 @@ clear all; close all; clc;
 help Deconv_Ls_NonNeg_NoReg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+%                     F. Soulez ferreol.soulez@univ-lyon1.fr
 %
 %  This program is free software: you can redistribute it and/or modify
 %  it under the terms of the GNU General Public License as published by
@@ -31,7 +32,7 @@ help Deconv_Ls_NonNeg_NoReg
 rng(1);
 
 % -- Input image and psf
-[im,psf,y]=GenerateData('Gaussian');
+[im,psf,y]=GenerateData('Gaussian',20);
 imdisp(im,'Input Image (GT)',1);
 imdisp(y,'Convolved and noisy data',1);
 sz=size(y);
@@ -59,7 +60,7 @@ imdisp(FBS.OutOp.evolxopt{end},'LS + NonNeg (FISTA)',1);
 figure;plot(FBS.OutOp.iternum,FBS.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');legend('LS+POS (FISTA)');title('Cost evolution');
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
 semilogy(FBS.OutOp.iternum,FBS.OutOp.evolsnr,'LineWidth',1.5);
-xlabel('Iterations');ylabel('SNR (dB)');legend('LS+POS (FISTA)');
+xlabel('Iterations');ylabel('SNR (dB)');legend('LS+POS (FISTA)','Location','southeast');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[FBS.time],'FaceColor',orderCol(1,:),'EdgeColor','k');

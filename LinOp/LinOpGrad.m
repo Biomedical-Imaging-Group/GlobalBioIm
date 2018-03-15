@@ -51,7 +51,7 @@ classdef LinOpGrad <  LinOp
         function this = LinOpGrad(sz,index,bc,res)
             if nargin == 1, index = [];end
             if nargin<=2 || isempty(bc), bc='circular';end
-            if nargin<=3 || isempty(res), res=ones(size(sz));end
+            if nargin<=3 || isempty(res), res=ones_(size(sz));end
             this.name ='LinOpGrad';
             this.isInvertible=false;
             this.isDifferentiable=true;

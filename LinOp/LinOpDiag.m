@@ -105,21 +105,30 @@ classdef LinOpDiag <  LinOp
             if isa(G,'LinOpDiag')
                 M=LinOpDiag(this.sizein,bsxfun(@plus,G.diag,this.diag));
             elseif isa(G,'LinOpConv') && this.isScaledIdentity
-                M=LinOpConv(this.diag+G.mtf,G.isReal,G.index);
+                if G.useRFT
+                    M=LinOpConv(this.diag+G.mtf,G.isReal,G.index,'useRFT');
+                else
+                    M=LinOpConv(this.diag+G.mtf,G.isReal,G.index);
+                end
             else
                 M=plus_@LinOp(this,G);
             end
         end
-        function M = minus_(this,G)
-            % Reimplemented from parent class :class:`LinOp`.
-            if isa(G,'LinOpDiag')
-                M=LinOpDiag(this.sizein,bsxfun(@minus,this.diag,G.diag));
-            elseif isa(G,'LinOpConv') && this.isScaledIdentity
-                M=LinOpConv(this.diag-G.mtf,G.isReal,G.index);
-            else
-                M=minus_@LinOp(this,G);
-            end
-        end
+% Not needed anymore : will goes at the level of Map and use sum with a wight (-1).     
+%         function M = minus_(this,G)
+%             % Reimplemented from parent class :class:`LinOp`.
+%             if isa(G,'LinOpDiag')
+%                 M=LinOpDiag(this.sizein,bsxfun(@minus,this.diag,G.diag));
+%             elseif isa(G,'LinOpConv') && this.isScaledIdentity
+%                 if G.useRFT
+%                     M=LinOpConv(this.diag-G.mtf,G.isReal,G.index,'useRFT');
+%                 else
+%                     M=LinOpConv(this.diag-G.mtf,G.isReal,G.index);
+%                 end
+%             else
+%                 M=minus_@LinOp(this,G);
+%             end
+%         end
         function M = makeAdjoint_(this)
             % Reimplemented from parent class :class:`LinOp`.
             M=LinOpDiag(this.sizein,conj(this.diag));
@@ -152,7 +161,11 @@ classdef LinOpDiag <  LinOp
             if isa(G,'LinOpDiag')
                 M=LinOpDiag(this.sizein,G.diag.*this.diag);
             elseif isa(G,'LinOpConv') && this.isScaledIdentity
-                M = LinOpConv(G.mtf.*this.diag,G.isReal,G.index);
+                if G.useRFT
+                    M = LinOpConv(G.mtf.*this.diag,G.isReal,G.index,'useRFT');
+                else
+                    M = LinOpConv(G.mtf.*this.diag,G.isReal,G.index);
+                end
             else
                 M=makeComposition_@LinOp(this,G);
             end

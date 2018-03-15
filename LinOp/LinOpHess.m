@@ -3,6 +3,7 @@ classdef LinOpHess <  LinOp
     %
     % :param sz: sizein of the gradient operator
     % :param bc: boundary condition: 'circular' (default), 'zeros', 'mirror'
+    % :param useRFT: use RFT when defining the :class:`LinOpConv` associated to \\(\\mathrm{H^TH}\\) 
     %
     % All attributes of parent class :class:`LinOp` are inherited. 
     %
@@ -39,6 +40,9 @@ classdef LinOpHess <  LinOp
     properties (SetAccess = protected,GetAccess = public)
 	  ndms;      % number of dimension of the input
       bc;        % boundary condition (default mirror);
+    end
+    properties
+        useRFT=0;  % use RFT when defining the LinOpConv associated to HtH
     end
     
     %% Constructor
@@ -441,7 +445,11 @@ classdef LinOpHess <  LinOp
                         fHtH(end,end,1)=1;fHtH(2,1,2)=1;fHtH(1,2,2)=1;fHtH(end,1,2)=1; fHtH(1,end,2)=1;fHtH(2,1,end)=1;fHtH(1,2,end)=1;
                         fHtH(1,1,end-1)=1;fHtH(end,1,end)=1;fHtH(3,1,1)=1;fHtH(1,1,3)=1;fHtH(1,end,end)=1;
                 end
-                M=LinOpConv(fftn(fHtH));
+                if this.useRFT
+                    M=LinOpConv('PSF',fHtH,1,[],'useRFT');
+                else
+                    M=LinOpConv('PSF',fHtH,1);
+                end
             else
                 M=makeHtH_@LinOp(this);
             end

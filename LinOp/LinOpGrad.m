@@ -5,6 +5,7 @@ classdef LinOpGrad <  LinOp
     % :param index: dimension along which the gradient is computed (all by default)
     % :param bc: boundary condition: 'circular' (default), 'zeros', 'mirror'
     % :param res: vector containing the resolution along each dimension (default all 1)
+    % :param useRFT: use RFT when defining the :class:`LinOpConv` associated to \\(\\mathrm{H^TH}\\) 
     %
     % All attributes of parent class :class:`LinOp` are inherited. 
     % 
@@ -41,13 +42,16 @@ classdef LinOpGrad <  LinOp
         bc;        % boundary condition (default mirror);
         res;       % resolution, vector of lenght ndms
     end
+    properties
+        useRFT=0;  % use RFT when defining the LinOpConv associated to HtH
+    end
     
     %% Constructor
     methods
         function this = LinOpGrad(sz,index,bc,res)
             if nargin == 1, index = [];end
             if nargin<=2 || isempty(bc), bc='circular';end
-            if nargin<=3 || isempty(res), res=ones_(size(sz));end
+            if nargin<=3 || isempty(res), res=ones(size(sz));end
             this.name ='LinOpGrad';
             this.isInvertible=false;
             this.isDifferentiable=true;
@@ -214,7 +218,11 @@ classdef LinOpGrad <  LinOp
                     case(4), fHtH(1,1,1,1)=2/this.res(1)^2+2/this.res(2)^2+2/this.res(3)^2+2/this.res(4)^2;fHtH(1,2,1,1)=-1/this.res(2)^2;fHtH(2,1,1,1)=-1/this.res(1)^2;fHtH(1,end,1,1)=-1/this.res(2)^2;fHtH(end,1,1,1)=-1/this.res(1)^2;
                         fHtH(1,1,2,1)=-1/this.res(3)^2;fHtH(1,1,end,1)=-1/this.res(3)^2;fHtH(1,1,1,2)=-1/this.res(4)^2;fHtH(1,1,1,end)=-1/this.res(4)^2;
                 end
-                M=LinOpConv(fftn(fHtH));
+                if this.useRFT
+                    M=LinOpConv('PSF',fHtH,1,[],'useRFT');
+                else
+                    M=LinOpConv('PSF',fHtH,1);
+                end
             else
                 M=makeHtH_@LinOp(this);
             end

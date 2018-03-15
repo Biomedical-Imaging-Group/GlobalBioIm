@@ -37,8 +37,8 @@ if DataTerm==1
 elseif DataTerm==2
     [im,psf,y]=GenerateData3D('Poisson');
 end
-Orthoviews(im,'Input Image (GT)');
-Orthoviews(y,'Convolved and noisy data');
+Orthoviews(im,[],'Input Image (GT)');
+Orthoviews(y,[],'Convolved and noisy data');
 sz=size(y);
 
 %% Common operators and costs
@@ -83,7 +83,7 @@ ADMM.run(y);
 
 
 %% Displays
-Orthoviews(ADMM.xopt,'Deconvolved image');
+Orthoviews(ADMM.xopt,[],'Deconvolved image');
 
 % -- Plot Evolution SNR, cost  and Running Time for TV-Reg-Pos methods
 figure;subplot(1,3,1); grid; hold all;

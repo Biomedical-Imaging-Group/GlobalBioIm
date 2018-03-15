@@ -1,8 +1,8 @@
-function [im,psf,y]=GenerateData(noise)
+function [im,psf,y]=GenerateData3D(noise)
 %----------------------------------------------
-% function [im,psh,y]=GenerateData(noise)
+% function [im,psh,y]=GenerateData3D(noise)
 %
-% Generate data for 2D deconvolution examples
+% Generate data for 3D deconvolution example
 %
 % Input:   noise -> type of noise
 %                    - 'Gaussian'
@@ -16,8 +16,8 @@ function [im,psf,y]=GenerateData(noise)
 %----------------------------------------------
 
 %% Ground truth
-N=256;sz=[N N];                       % Image size
-im=StarLikeSample(2,N,6,20,3,0.7);   % Star-like object (help StarLikeSample to see the details of parameters)
+N=256;sz=[N N N];                       % Image size
+im=StarLikeSample(3,N,6,20,5,0.7);     % Star-like object (help StarLikeSample to see the details of parameters)
 
 %% PSF 
 lamb=561;                % Illumination wavelength
@@ -26,16 +26,16 @@ Na=1.4;                  % Objective numerica aperture
 fc=2*Na/lamb*res;        % cut-off frequency
 ll=linspace(-0.5,0,sz(1)/2+1);
 lr=linspace(0,0.5,sz(1)/2);
-[X,Y]=meshgrid([ll,lr(2:end)],[ll,lr(2:end)]);
-[th,rho]=cart2pol(X,Y);
+[X,Y,Z]=meshgrid([ll,lr(2:end)],[ll,lr(2:end)],[ll,lr(2:end)]);
+[th,ph,rho]=cart2sph(X,Y,Z);
 OTF=fftshift(1/pi*(2*acos(abs(rho)/fc)-sin(2*acos(abs(rho)/fc))).*(rho<fc));
-psf=real(ifft2(OTF));
+psf=real(ifftn(OTF));
 
 %% Data
 H=LinOpConv(OTF);
 y_noNoise=H*im;
 if strcmp(noise,'Gaussian')
-    sigN=3e-2;
+    sigN=1e-2;
     y=y_noNoise+sigN*randn(sz);
 elseif strcmp(noise,'Poisson')
     photBud=110;

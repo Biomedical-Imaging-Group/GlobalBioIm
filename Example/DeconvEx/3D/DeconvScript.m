@@ -3,7 +3,7 @@
 %    - Data-term: Least-Squares or Kullback-Leibler
 %    - regul: TV or Hessian-Schatten norm
 %--------------------------------------------------------------
-clear; close all; clc;
+close all;%clc;
 help DeconvScript
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -22,10 +22,16 @@ help DeconvScript
 %  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %---------------------------------------------------------------
 
+% -- To run on GPU (0: CPU / 1: Matlab Parrallel Computing Toolbox / 2: CudaMat) 
+%    Note: when using Matlab Parrallel Computing Toolbox (useGPU(1)), resolution with HessianSchatten Norm 
+%          may nor be optimal because svd computations are done with a mex function (see Cost/CostUtils/HessianSchatten) 
+%          on the cpu (so lost of time in transfert CPU/GPU).
+useGPU(1)
+
 %% Parameters
-lamb=1e-5;        % Hyperparameter for initial deconvolution
-maxIt=20;         % Max iterations
-Reg=1;            % 1 for TV, 2 for Hessian-Schatten 
+lamb=1e-4;        % Hyperparameter for initial deconvolution
+maxIt=100;         % Max iterations
+Reg=2;            % 1 for TV, 2 for Hessian-Schatten 
 DataTerm=1;       % 1 for LS, 2 for KL
 
 %% fix the random seed (for reproductibility)
@@ -40,6 +46,11 @@ end
 Orthoviews(im,[],'Input Image (GT)');
 Orthoviews(y,[],'Convolved and noisy data');
 sz=size(y);
+
+%% Conversion CPU/GPU is necessary
+psf=gpuCpuConverter(psf);
+im=gpuCpuConverter(im);
+y=gpuCpuConverter(y);
 
 %% Common operators and costs
 H=LinOpConv(fftn(psf));                          % Convolution Operator

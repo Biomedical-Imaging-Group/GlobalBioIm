@@ -25,7 +25,7 @@ classdef OptiRichLucy < Opti
     % [3] N. Dey et al. "Richardson-Lucy Algorithm With Total Variation Regularization for 3D Confocal Microscope 
     % Deconvolution." Microscopy research and technique (2006).
     %
-    % **Example** RL=OptiRichLucy(F,TV,lamb,OutOp)
+    % **Example** RL=OptiRichLucy(F,TV,lamb)
     %
     % See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`,
     % :class:`CostKullLeib`
@@ -60,11 +60,14 @@ classdef OptiRichLucy < Opti
 		G;   % gradient operator (used if TV activated)
 		F;   % Kullback-Leibler divergence
         isH; % boolean true if F is a CostComposition
+        data;
+        He1;
+        bet;
     end
    
     methods
     	%% Constructor
-    	function this=OptiRichLucy(F,TV,lamb,OutOp)
+    	function this=OptiRichLucy(F,TV,lamb)
     		this.name='Opti Richardson-Lucy';
     		assert((isa(F,'CostComposition') && isa(F.H1,'CostKullLeib') && isa(F.H2,'LinOp') ) || ...
                 isa(F,'CostKullLeib'), 'The minimized functional should be the FuncKullLeib or a CostComposition between a CostKullLeib and a LinOp');
@@ -73,63 +76,49 @@ classdef OptiRichLucy < Opti
             else
                 this.F=F;
             end
-    		if nargin==4 && ~isempty(OutOp)
-    			this.OutOp=OutOp;
-    		end
-    		if nargin>=2 && ~isempty(TV), this.TV=TV; end    		
+            if nargin>=2 && ~isempty(TV), this.TV=TV; end
             this.cost=this.F;
-    		if nargin>=3 && ~isempty(lamb), this.lamb=lamb; end
-    		if this.TV
-    			this.G=LinOpGrad(this.F.sizein);
-    			if length(this.F.sizein)==2  % 2D
-    				this.cost=this.cost + this.lamb*CostMixNorm21([this.F.sizein,2],3)*this.G;
-    			elseif length(this.F.sizein)==3
-    				this.cost=this.cost + this.lamb*CostMixNorm21([this.F.sizein,3],4)*this.G;
-    			end
-    		end
-    	end 
-    	%% Run the algorithm
-        function run(this,x0) 
+            if nargin>=3 && ~isempty(lamb), this.lamb=lamb; end
+            if this.TV
+                this.G=LinOpGrad(this.F.sizein);
+                if length(this.F.sizein)==2  % 2D
+                    this.cost=this.cost + this.lamb*CostMixNorm21([this.F.sizein,2],3)*this.G;
+                elseif length(this.F.sizein)==3
+                    this.cost=this.cost + this.lamb*CostMixNorm21([this.F.sizein,3],4)*this.G;
+                end
+            end
+        end
+        function initialize(this,x0)
+            % Reimplementation from :class:`Opti`.
+            
+            initialize@Opti(this,x0);
+            this.data=this.F.H1.y;
+            this.He1=this.F.H2.applyAdjoint(ones(this.F.sizein));
+            this.bet=this.F.H1.bet;
+            if this.bet==0, error('Smoothing parameter beta has to be different from 0 (see constructor of CostKullLeib)'); end;
+        end
+        function flag=doIteration(this)
             % Reimplementation from :class:`Opti`. For details see [1-3].
             
-			if ~isempty(x0),this.xopt=x0;end;  % To restart from current state if wanted
-            assert(~isempty(this.xopt),'Missing starting point x0');
-            data=this.F.H1.y;
-            He1=this.F.H2.applyAdjoint(ones(this.F.sizein));
-            bet=this.F.H1.bet;
-            if bet==0, error('Smoothing parameter beta has to be different from 0 (see constructor of CostKullLeib)'); end;
-			tstart=tic;
-			this.OutOp.init();
-			this.niter=1;
-			this.starting_verb();
-			while (this.niter<this.maxiter)
-				this.niter=this.niter+1;
-				xold=this.xopt;
-                % - Algorithm iteration
-                if ~this.TV
-                    this.xopt=this.xopt./He1.*this.F.H2.applyAdjoint(data./(this.F.H2.apply(this.xopt)+bet));
-                else
-                    tmp=this.G.apply(this.xopt);
-                    if length(size(tmp))==2     % 1D
-                        nor=sqrt(tmp.^2+this.epsl);
-					elseif length(size(tmp))==3 % 2D
-						nor=repmat(sqrt(sum(tmp.^2,3)+this.epsl),[1,1,size(tmp,3)]);
-                    elseif length(size(tmp))==4 % 3D
-                        nor=repmat(sqrt(sum(tmp.^2,4)+this.epsl),[1,1,1,size(tmp,4)]);
-                    end
-                    gradReg=this.G.applyAdjoint(tmp./nor);
-                    this.xopt=this.xopt./(He1 + this.lamb*gradReg).*this.F.H2.applyAdjoint(data./(this.F.H2.apply(this.xopt)+bet));
-                    if sum(this.xopt(:)<0)~=0
-                        warning('Violation of the positivity of the solution (the regularization parameter should be decreased).');
-                    end
-				end		
-				% - Convergence test
-				if this.test_convergence(xold), break; end
-				% - Call OutputOpti object
-				if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
-			end 
-			this.time=toc(tstart);
-			this.ending_verb();
+            if ~this.TV
+                this.xopt=this.xopt./this.He1.*this.F.H2.applyAdjoint(this.data./(this.F.H2.apply(this.xopt)+this.bet));
+            else
+                tmp=this.G.apply(this.xopt);
+                if length(size(tmp))==2     % 1D
+                    nor=sqrt(tmp.^2+this.epsl);
+                elseif length(size(tmp))==3 % 2D
+                    nor=repmat(sqrt(sum(tmp.^2,3)+this.epsl),[1,1,size(tmp,3)]);
+                elseif length(size(tmp))==4 % 3D
+                    nor=repmat(sqrt(sum(tmp.^2,4)+this.epsl),[1,1,1,size(tmp,4)]);
+                end
+                gradReg=this.G.applyAdjoint(tmp./nor);
+                this.xopt=this.xopt./(this.He1 + this.lamb*gradReg).*this.F.H2.applyAdjoint(this.data./(this.F.H2.apply(this.xopt)+this.bet));
+                if sum(this.xopt(:)<0)~=0
+                    warning('Violation of the positivity of the solution (the regularization parameter should be decreased).');
+                end
+            end
+            flag=this.OPTI_NEXT_IT;
         end
+ 
 	end
 end

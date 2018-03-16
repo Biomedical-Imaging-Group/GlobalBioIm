@@ -59,7 +59,7 @@ classdef LinOpDico <  LinOp
         %todo: size problem here?
         function y = apply_(this,x)   
             % Reimplemented from parent class :class:`LinOp`.
-            if isequal(size(x),this.sizein)
+            if cmpSize(size(x),this.sizein)
                 y=sum(bsxfun(@times,this.D,x),3);
             else
                 assert(isvector(x) && this.sizein(end)==length(x),'x must be a vector of size the number of dictionnary atoms');

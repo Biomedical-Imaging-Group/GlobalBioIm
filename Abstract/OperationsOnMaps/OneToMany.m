@@ -62,7 +62,7 @@ classdef OneToMany < LinOp
             this.isInvertible=false;
             this.sizein =  this.ALinOp{1}(1).sizein;
             for n =2:this.numLinOp
-                assert(isempty(this.ALinOp{n}(1).sizein) ||isequal(this.sizein,this.ALinOp{n}(1).sizein),'%d-th input does not have the right right hand side size ') ;
+                assert(isempty(this.ALinOp{n}(1).sizein) ||cmpSize(this.sizein,this.ALinOp{n}(1).sizein),'%d-th input does not have the right right hand side size ') ;
                 this.isComplex= this.ALinOp{n}(1).isComplex ||  this.isComplex ;
             end
             
@@ -71,7 +71,6 @@ classdef OneToMany < LinOp
         end
         
         function y = apply(this,x) % apply the operator
-               assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizein);
             y = cell(1,this.numLinOp);
             for n =1:this.numLinOp
                 y{n} = this.alpha(n) .* this.ALinOp{n}(1).apply(x);
@@ -79,25 +78,23 @@ classdef OneToMany < LinOp
         end
         function y = adjoint(this,x) % apply the adjoint
             assert( iscell(x), 'adjoint of a OneToMany must be applied to a cell array',this.sizeout);
-           assert( numel(x)==this.numLinOp, 'OneToMany LinOp: input does not have the right number of cell: %d',this.numLinOp); 
+            assert( numel(x)==this.numLinOp, 'OneToMany LinOp: input does not have the right number of cell: %d',this.numLinOp);
             y =  this.alpha(1) .* this.ALinOp{1}(1).applyAdjoint(x{1});
             for n =2:this.numLinOp
-            assert( isequal(size(x{n}),this.ALinOp{n}.sizeout),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizeout);
+                assert( checkSize(x{n},this.ALinOp{n}.sizeout),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizeout);
                 y = y + this.alpha(n) .* this.ALinOp{n}(1).applyAdjoint(x{n});
             end
         end
         function y = HtH(this,x) % apply the operator
-               assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizein);
             y = this.alpha(1) .* this.ALinOp{1}(1).HtH(x);
             for n =2:this.numLinOp
                 y = y + this.alpha(n) .* this.ALinOp{n}(1).HtH(x);
             end
         end
-        function y = HtWH(this,x,W) % apply the operator 
-           
+        function y = HtWH(this,x,W) % apply the operator
+            
             assert( iscell(W), 'W in OneToMany.HtWH must be a cell array',this.sizeout);
-           assert( numel(W)==this.numLinOp, 'OneToMany W does not have the right number of cell: %d',this.numLinOp);
-               assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d %d %d %d ]',this.sizein);
+            assert( numel(W)==this.numLinOp, 'OneToMany W does not have the right number of cell: %d',this.numLinOp);
             y = this.alpha(1) .* this.ALinOp{1}(1).HtWH(x,W{1});
             for n =2:this.numLinOp
                 y = y + this.alpha(n) .* this.ALinOp{n}(1).HtWH(x,W{n});

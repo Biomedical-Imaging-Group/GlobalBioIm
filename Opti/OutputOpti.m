@@ -21,6 +21,7 @@ classdef OutputOpti < handle
     % :param evolcost: array to save the evolution of the cost function
     % :param evolsnr: array to save the evolution of the SNR
     % :param iterVerb:  message will be displayed every iterVerb iterations (must be a multiple of the :attr:`ItUpOut` parameter of classes :class:`Opti`)
+    % :param costIndex: select a specific cost function among a sum in the case where the optimized cost function is a sum of cost functions
     %
     % **Example** OutOpti=OutputOpti(computecost,xtrue,iterVerb) 
     %
@@ -55,6 +56,7 @@ classdef OutputOpti < handle
 		evolxopt;          % cell saving the optimization variable xopt
 		iternum;           % array saving the iteration number corresponding to evolcost, evolxopt and evolerr entries
 		iterVerb=0;        % message will be displayed every iterVerb iterations
+        costIndex=0;       % index of the cost function
     end
     properties (SetAccess = protected,GetAccess = public)
     	normXtrue;         % Norm of the true signal (to compute snr)
@@ -64,7 +66,7 @@ classdef OutputOpti < handle
     
     methods
     	%% Constructor
-        function this=OutputOpti(computecost,xtrue,iterVerb) 
+        function this=OutputOpti(computecost,xtrue,iterVerb,costIndex) 
         	if nargin==1
         		this.computecost=computecost;
             elseif nargin==2
@@ -74,6 +76,11 @@ classdef OutputOpti < handle
                 this.computecost=computecost;
             	this.xtrue=xtrue;
             	this.iterVerb=iterVerb;
+            elseif nargin==4
+                this.computecost=computecost;
+            	this.xtrue=xtrue;
+            	this.iterVerb=iterVerb; 
+                this.costIndex=costIndex;
 			end
 			if ~isempty(this.xtrue)
             	this.isgt=true;
@@ -95,7 +102,14 @@ classdef OutputOpti < handle
             % Computes SNR, cost and display evolution.
         	str=sprintf('Iter: %5i',opti.niter);
         	if this.computecost
-        		cc=opti.cost.apply(opti.xopt);
+                if (any(this.costIndex>0) && isa(opti.cost,'CostSummation'))
+                    cc = 0;
+                    for n=1:numel(this.costIndex)
+                        cc = cc+opti.cost.mapsCell{this.costIndex(n)}*opti.xopt;
+                    end
+                else
+                    cc = opti.cost*opti.xopt;
+                end
         		str=sprintf('%s | Cost: %4.4e',str,cc);
         		this.evolcost(this.count)=cc;
         	end
@@ -107,7 +121,7 @@ classdef OutputOpti < handle
         	this.evolxopt{this.count}=opti.xopt;
         	this.iternum(this.count)=opti.niter;
         	this.count=this.count+1;
-        	if (mod(opti.niter,this.iterVerb)==0) || (opti.niter==1 && this.iterVerb~=0),
+        	if opti.niter~=0 && (mod(opti.niter,this.iterVerb)==0) || (opti.niter==1 && this.iterVerb~=0),
         		disp(str);
         	end
         end

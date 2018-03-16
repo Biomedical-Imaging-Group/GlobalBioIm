@@ -41,7 +41,7 @@ classdef LinOpSelectorPatch < LinOpSelector
     methods
         function this = LinOpSelectorPatch(sz,idxmin,idxmax)
             this.name ='LinOp SelectorPatch';	
-            assert(isequal(size(sz),size(idxmin)) && isequal(size(sz),size(idxmax)),'Parameters sz idxmin and idxmax must have the same size');
+            assert(cmpSize(size(sz),size(idxmin)) && cmpSize(size(sz),size(idxmax)),'Parameters sz idxmin and idxmax must have the same size');
             assert(~any(idxmin<=0) && ~any(idxmin>sz),'idxmin out of sz range');
             assert(~any(idxmax<=0) && ~any(idxmax>sz),'idxmax out of sz range');
             assert(~any(idxmin>idxmax),'idxmin must be smaller than idxmax in each dimension');
@@ -61,24 +61,20 @@ classdef LinOpSelectorPatch < LinOpSelector
 	methods (Access = protected)		
         function y = apply_(this,x)
             % Reimplemented from parent class :class:`LinOpSelector`.           
-            assert(isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
             y =x(this.sel{:});
         end        
         function y = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOpSelector`.  
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
             y = zeros(this.sizein);
             y(this.sel{:}) = x;
         end
         function y = applyHtH_(this,x)
             % Reimplemented from parent class :class:`LinOpSelector`.  
-            assert( isequal(size(x),this.sizein),  'x does not have the right size: [%d, %d, %d,%d]',this.sizein);
             y = zeros(this.sizein);
             y(this.sel{:}) = x(this.sel{:});            
         end
         function y = applyHHt_(this,x)
             % Reimplemented from parent class :class:`LinOpSelector`.  
-            assert( isequal(size(x),this.sizeout),  'x does not have the right size: [%d, %d, %d,%d,%d]',this.sizeout);
             y = x;
         end
         function M = makeHtH_(this)

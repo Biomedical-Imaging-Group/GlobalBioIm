@@ -55,7 +55,7 @@ classdef MapSummation < Map
 			for i = 1:length(Maps)
 				if isa(Maps{i}, 'MapSummation')
 					eMaps = [eMaps Maps{i}.mapsCell];
-					newAlphas = [newAlphas  Maps{i}.alpha];
+					newAlphas = [newAlphas  Maps{i}.alpha*this.alpha(i)];
 				else
 					eMaps = [eMaps Maps(i)];
 					newAlphas = [newAlphas this.alpha(i)];
@@ -70,8 +70,8 @@ classdef MapSummation < Map
             this.sizein = this.mapsCell{1}.sizein;
             this.sizeout = this.mapsCell{1}.sizeout;
             for n =2:this.numMaps
-                assert(isequal(this.sizein,this.mapsCell{n}.sizein),'%d-th input does not have consistent  sizein', n) ;
-                assert(isequal(this.sizeout,this.mapsCell{n}.sizeout),'%d-th input does not have the consistent sizeout ', n);
+                assert(cmpSize(this.sizein,this.mapsCell{n}.sizein),'%d-th input does not have consistent  sizein', n) ;
+                assert(cmpSize(this.sizeout,this.mapsCell{n}.sizeout),'%d-th input does not have the consistent sizeout ', n);
                 this.isDifferentiable= this.mapsCell{n}.isDifferentiable && this.isDifferentiable;
             end      
         end

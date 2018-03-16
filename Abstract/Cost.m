@@ -39,6 +39,10 @@ classdef Cost < Map
         y=0;				      % data y
     end    
     
+    properties (SetAccess = protected,GetAccess = protected)
+        recProxProxFench=0;      % boolean to control infinite recursion between Prox and ProxFench when not implemented in subclasses
+    end
+    
     %% Constructor
     methods
         function this=Cost(sz,y)
@@ -135,10 +139,12 @@ classdef Cost < Map
             % at \\(\\mathrm{z} \\in \\mathrm{X} \\) using the
             % Moreau's identity which uses the :meth:`applyProxFench` method
             % $$\\mathrm{prox}_{\\alpha C}(\\mathrm{z}) = \\mathrm{z} - \\alpha \\,\\mathrm{prox}_{\\frac{1}{\\alpha}C^*}\\left(\\frac{\\mathrm{z}}{\\alpha}\\right).$$
-            if this.isConvex
+            if this.isConvex && ~this.recProxProxFench
+                this.recProxProxFench=1;
                 x= z - alpha*(this.applyProxFench(z/alpha,1/alpha));
+                this.recProxProxFench=0;
             else
-                error('applyProx_ method not implemented');
+                error('applyProx_ and applyProxFench_ methods not implemented');
             end
         end
         function y=applyProxFench_(this,z,alpha)
@@ -146,10 +152,12 @@ classdef Cost < Map
             % \\(C^*\\) at \\(\\mathrm{z} \\in \\mathrm{Y} \\) using the
             % Moreau's identity which uses the :meth:`applyProx` method
             % $$\\mathrm{prox}_{\\alpha C^*}(\\mathrm{z}) = \\mathrm{z} - \\alpha \\,\\mathrm{prox}_{\\frac{1}{\\alpha}C}\\left(\\frac{\\mathrm{z}}{\\alpha}\\right).$$
-            if this.isConvex
+            if this.isConvex && ~this.recProxProxFench
+                this.recProxProxFench=1;
                 y= z - alpha*(this.applyProx(z/alpha,1/alpha));
+                this.recProxProxFench=0;
             else
-                error('applyProxFench_ method not implemented');
+                error('applyProx_ and applyProxFench_  methods not implemented');
             end
         end
         function M = plus_(this,G)

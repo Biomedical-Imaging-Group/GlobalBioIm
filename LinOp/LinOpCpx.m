@@ -65,7 +65,7 @@ classdef LinOpCpx <  LinOp
             % Reimplemented from parent class :class:`LinOp`.
             y =x;
         end      
-        function y = applyInverse_(this,x)
+        function y = applyInverse_(~,x)
             % Reimplemented from parent class :class:`LinOp`.
             y = complex(x(:,:,1),x(:,:,2));
         end

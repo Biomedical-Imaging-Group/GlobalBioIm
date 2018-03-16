@@ -54,11 +54,11 @@ classdef LinOpShape <  LinOp
             % Reimplemented from parent class :class:`LinOp`.     
             y = reshape(x, this.sizein);
         end		
-        function y = applyHHt_(this,x)
+        function y = applyHHt_(~,x)
             % Reimplemented from parent class :class:`LinOp`.     
             y=x;
         end		
-        function y = applyHtH_(this,x)
+        function y = applyHtH_(~,x)
             % Reimplemented from parent class :class:`LinOp`.     
             y=x;
 		end   		
@@ -69,6 +69,15 @@ classdef LinOpShape <  LinOp
         function y = applyAdjointInverse_(this,x)
             % Reimplemented from parent class :class:`LinOp`.     
             y = reshape(x, this.sizeout);
+        end
+        
+        function M = makeHHt_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            M=LinOpIdentity(this.sizeout);
+        end
+        function M = makeHtH_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            M=LinOpIdentity(this.sizein);
         end
     end
 end

@@ -67,6 +67,7 @@ classdef (Abstract) Map < handle
     % - minus(this,G)
     % - mpower(this,p)
     % - mtimes(this,G)
+    % - times(this,G)
 	% - size(this, [dim])
     methods (Sealed)
         function y = apply(this, x)
@@ -135,7 +136,7 @@ classdef (Abstract) Map < handle
             % \\(\\mathrm{G}\\). Returns a new map \\(\\mathrm{M=HG}\\)
             %
             % Calls the method :meth:`makeComposition_`
-            if ~isequal(this.sizein, G.sizeout)
+            if ~cmpSize(this.sizein,G.sizeout)
                 error('Input to makeComposition is a %s of sizeout size [%s], which didn''t match the %s sizein [%s].',...
                     class(G),num2str(G.sizeout),class(this), num2str(this.sizein));
             end
@@ -146,11 +147,11 @@ classdef (Abstract) Map < handle
             % $$ \\mathrm{M}(\\mathrm{x}) := \\mathrm{H}(\\mathrm{x}) + \\mathrm{G}(\\mathrm{x})$$
             %
             % Calls the method :meth:`plus_`
-            if ~isequal(this.sizein, G.sizein) % check input size
+            if ~cmpSize(this.sizein, G.sizein) % check input size
                 error('Input to plus is a %s of sizein  [%s], which didn''t match the added %s sizein [%s].',...
                     class(G),num2str(G.sizein),class(this), num2str(this.sizein));
             end
-            if ~isequal(this.sizeout, G.sizeout) % check input size
+            if ~cmpSize(this.sizeout, G.sizeout) % check input size
                 error('Input to plus is a %s of sizeout  [%s], which didn''t match the added %s sizeout [%s].',...
                     class(G),num2str(G.sizeout),class(this), num2str(this.sizeout));
             end
@@ -161,11 +162,11 @@ classdef (Abstract) Map < handle
             % $$ \\mathrm{M}(\\mathrm{x}) := \\mathrm{H}(\\mathrm{x}) - \\mathrm{G}(\\mathrm{x})$$  
             %
             % Calls the method :meth:`minus_`
-            if ~isequal(this.sizein, G.sizein) % check input size
+            if ~cmpSize(this.sizein, G.sizein) % check input size
                 error('Input to plus is a %s of sizein  [%s], which didn''t match the substracted %s sizein [%s].',...
                     class(G),num2str(G.sizein),class(this), num2str(this.sizein));
             end
-            if ~isequal(this.sizeout, G.sizeout) % check input size
+            if ~cmpSize(this.sizeout, G.sizeout) % check input size
                 error('Input to plus is a %s of sizeout  [%s], which didn''t match the substracted %s sizeout [%s].',...
                     class(G),num2str(G.sizeout),class(this), num2str(this.sizeout));
             end
@@ -174,6 +175,8 @@ classdef (Abstract) Map < handle
         function M = mpower(this,p)
             % Returns a new :class:`Map` which is the power p \\(\\mathrm{H}^{p}\\) of the
             % current \\(\\mathrm{H}\\).  
+            %
+            % Calls the method :meth:`mpower_`
             M=this.mpower_(p);
         end
         function M = mtimes(this,G)
@@ -183,12 +186,16 @@ classdef (Abstract) Map < handle
             %  - If \\(\\mathrm{G}\\) is a :class:`Map`, then a
             %    :class:`MapComposition`is intanciated
             if isa(G,'Map')
-                if (isnumeric(this) && isscalar(this)) % Left multiplication by scalar  
-                    if isa(G,'Cost')
-                        M=CostMultiplication(this,G);
+                if (isnumeric(this) && isscalar(this)) % Left multiplication by scalar
+                    if ~isequal(this,1) % if multiply by 1 do noting
+                        if isa(G,'Cost')
+                            M=CostMultiplication(this,G);
+                        else
+                            H=LinOpDiag(G.sizeout,this);
+                            M=H.makeComposition(G);
+                        end
                     else
-                        H=LinOpDiag(G.sizeout,this);
-                        M=H.makeComposition(G);
+                        M=G;
                     end
                 else
                     M =this.makeComposition(G);
@@ -197,7 +204,22 @@ classdef (Abstract) Map < handle
                 M = this.apply(G);
             end
         end
-        % TODO Overload operator .* to multiply term by term two Maps ? (avoid the use of LinOpDiag)
+        function M = times(this,G)
+            % Returns a new :class:`Map` which is the element-wise multiplication of the
+            % current \\(\\mathrm{H}\\) with \\(\\mathrm{G}\\)
+            % $$ \\mathrm{M}(\\mathrm{x}) := \\mathrm{H}(\\mathrm{x}) \\times \\mathrm{G}(\\mathrm{x})$$  
+            %
+            % Calls the method :meth:`times_`
+            if ~cmpSize(this.sizein, G.sizein) % check input size
+                error('Input to times is a %s of sizein  [%s], which didn''t match the multiplied %s sizein [%s].',...
+                    class(G),num2str(G.sizein),class(this), num2str(this.sizein));
+            end
+            if ~cmpSize(this.sizeout, G.sizeout) % check input size
+                error('Input to times is a %s of sizeout  [%s], which didn''t match the multiplied %s sizeout [%s].',...
+                    class(G),num2str(G.sizeout),class(this), num2str(this.sizeout));
+            end
+            M=this.times_(G);
+        end
         % TODO Overload operator .^ to do (H(x)).^p ?
 		function sz = size(this, varargin)
 			sz = {this.sizeout, this.sizein};
@@ -216,6 +238,8 @@ classdef (Abstract) Map < handle
     % - plus_(this,G)
     % - minus_(this,G)
     % - mpower_(this,p)
+    % - times_(this,G)
+    % - makeInversion_(this)
     % - makeComposition_(this, H)
     methods (Access = protected)
         function y = apply_(this, x)
@@ -238,17 +262,29 @@ classdef (Abstract) Map < handle
         function M = minus_(this,G)
             % Constructs a :class:`MapSummation` object to subtract to the
             % current :class:`Map` \\(\\mathrm{H}\\), the given \\(\\mathrm{G}\\). 
-            M = MapSummation({this,G},[1,-1]);
+            M = this + (-1)*G;
         end
         function M = mpower_(this,p)
             % When \\(p=-1\\), constructs a :class:`MapInversion` object which
             % is the inverse Map of \\(\\mathrm{H}\\).
             % When \\(p\\neq-1\\), this method is not implemented in this Abstract class
             if p==-1
-                M=MapInversion(this);
+                M=this.makeInversion_();
             else
                 error('mpower_ method not implemented for the given power==%d',p);
             end
+        end
+        function M = times_(this,G)
+            % Constructs a :class:`MapMultiplication` object to element-wise multiply the
+            % current :class:`Map` \\(\\mathrm{H}\\) with the given \\(\\mathrm{G}\\).
+            
+            M=MapMultiplication(this,G);
+        end
+        function M = makeInversion_(this)
+            % Constructs a :class:`MapInversion` corresponding to 
+            % \\(\\mathrm{H}^{-1}\\)
+            
+            M=MapInversion(this);
         end
         function M = makeComposition_(this, G)
             % Constructs a :class:`MapComposition` object to compose the
@@ -257,7 +293,7 @@ classdef (Abstract) Map < handle
             if isa(G,'MapInversion') && isequal(G.M,this)
                 M=LinOpScaledIdentity(this.sizein,1);
             elseif isa(G,'MapComposition')
-                M=this*G.H1*G.H2;
+                M=(this*G.H1)*G.H2;
             else
                 M = MapComposition(this,G);
             end

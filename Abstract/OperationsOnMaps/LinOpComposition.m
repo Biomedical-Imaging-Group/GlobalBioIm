@@ -95,6 +95,10 @@ classdef LinOpComposition < MapComposition & LinOp
                 y = applyAdjointInverse_@LinOp(x);
             end
         end
+        function M = makeAdjoint_(this) 
+            % Reimplemented from parent class :class:`LinOp`.
+                M=this.H2'* this.H1';      
+        end
         function M = makeHtH_(this)
             % Reimplemented from :class:`LinOp`
             M=this.H2'*this.H1.makeHtH()*this.H2;
@@ -105,11 +109,13 @@ classdef LinOpComposition < MapComposition & LinOp
         end
         function M = makeComposition_(this,G)
             % Reimplemented from :class:`MapComposition`
-            if isa(G,'LinOp')
+             if ~isa(this.H1, 'LinOpComposition')  &&  isa(G, 'LinOpComposition')                 
+                M =  this.H1*(this.H2*G); % Since H1*H2 is not simplified,
+             elseif isa(G,'LinOp')
                 H2G = this.H2*G; % Since H1*H2 is not simplified, first try to compose H2 with G
-                if ~isa(H2G, 'LinOpComposition');
+                if ~isa(H2G, 'LinOpComposition')
                     M=this.H1*H2G;
-                else
+               else
                     M = LinOpComposition(this, G);
                 end
             else

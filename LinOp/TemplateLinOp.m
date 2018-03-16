@@ -3,7 +3,7 @@ classdef TemplateLinOp <  LinOp
     % 
     % :param parName: DESCRIPTION
     %
-    % All attributes of parent class :class:`Cost` are inherited. 
+    % All attributes of parent class :class:`LinOp` are inherited. 
     %
     % **Note**: YOU CAN PUT A NOTE HERE
     %
@@ -13,7 +13,7 @@ classdef TemplateLinOp <  LinOp
     %
     % **Example** C=...
     %
-    % See also :class:`Map` :class:`Cost`
+    % See also :class:`Map` :class:`LinOp`
   
     %%    Copyright (C) 
     %     TODO YEAR NAME EMAIL
@@ -45,8 +45,7 @@ classdef TemplateLinOp <  LinOp
     methods
         function this = TemplateLinOp() %change the name of the constructor
             this.name ='';             
-            this.isInvertible = ??;
-            this.isDifferentiable=??;
+            this.isInvertible = ??; 
             this.sizein = ??;         
             this.sizeout = ??;         
 		end
@@ -57,12 +56,27 @@ classdef TemplateLinOp <  LinOp
     % - applyAdjoint_(this,x)
 	methods (Access = protected)
         function y = apply_(this,x)   
-            % Reimplemented from parent class :class:`Cost`.
+            % Reimplemented from parent class :class:`LinOp`.
             
             % TODO : IMPLEMENT IF APPLICABLE
         end		
         function y = applyAdjoint_(this,x)            
-            % Reimplemented from parent class :class:`Cost`.
+            % Reimplemented from parent class :class:`LinOp`.
+            
+            % TODO : IMPLEMENT IF APPLICABLE
+		end
+        function y = applyHtH_(this,x)            
+            % Reimplemented from parent class :class:`LinOp`.
+            
+            % TODO : IMPLEMENT IF APPLICABLE
+		end
+        function y = applyHHt_(this,x)            
+            % Reimplemented from parent class :class:`LinOp`.
+            
+            % TODO : IMPLEMENT IF APPLICABLE
+		end
+        function y = applyInverse_(this,x)            
+            % Reimplemented from parent class :class:`LinOp`.
             
             % TODO : IMPLEMENT IF APPLICABLE
 		end

@@ -40,7 +40,7 @@ classdef OptiChambPock < Opti
     % [1] Chambolle, Antonin, and Thomas Pock. "A first-order primal-dual algorithm for convex problems with 
 	% applications to imaging." Journal of Mathematical Imaging and Vision 40.1, pp 120-145 (2011).	
     %
-    % **Example** CP=OptiChambPock(F,H,G,OutOp)
+    % **Example** CP=OptiChambPock(F,H,G)
     %
     % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
  
@@ -69,7 +69,18 @@ classdef OptiChambPock < Opti
     % Full protected properties 
     properties (SetAccess = protected,GetAccess = protected)
 		theta=1; % parameter of the algorithm (fixed to 1 but can could be set as a user defined 
-		         % parameter for future upgrades of the Library)
+                 % parameter for future upgrades of the Library)
+        % Internal variables
+        y;
+        xbar;
+        Kxbar;
+        Kxopt;
+        Kxold;
+        yold;
+        ybar;
+        KTyold;
+        KTy;
+        KTybar;
     end
     % Full public properties
     properties
@@ -81,83 +92,69 @@ classdef OptiChambPock < Opti
     
     methods
     	%% Constructor
-    	function this=OptiChambPock(F,H,G,OutOp)
+    	function this=OptiChambPock(F,H,G)
     		this.name='Opti Chambolle-Pock';
     		this.cost=F*H+G;
     		this.F=F;
     		this.G=G;
-    		this.H=H;
+            this.H=H;
             
-    		if nargin==4 && ~isempty(OutOp)
-    			this.OutOp=OutOp;
-    		end
-    		if this.H.norm>=0
-    			this.sig=1/(this.tau*this.H.norm^2)-eps;
-    		end
-    	end 
-    	%% Run the algorithm
-        function run(this,x0) 
-        	% Reimplementation from :class:`Opti`. For details see [1].
+            if this.H.norm>=0
+                this.sig=1/(this.tau*this.H.norm^2)-eps;
+            end
+        end
+        function initialize(this,x0)
+            % Reimplementation from :class:`Opti`.
             
-        	assert(~isempty(this.sig),'parameter sig is not setted');
-        	assert(~isempty(this.tau),'parameter tau is not setted');
-        	if ~isempty(x0) % To restart from current state if wanted
-				this.xopt=x0;
-			end
-			tstart=tic;
-			this.OutOp.init();
-			this.niter=1;
-			this.starting_verb();
-			y=this.H.apply(this.xopt);
-			if this.var==1
-				xbar=this.xopt;
-				Kxbar=y;
-			else
-				ybar=y;
-				KTybar=this.H.applyAdjoint(ybar);
-				KTy=KTybar;
-			end
-			Kxopt=y;
-			sig=this.sig; tau=this.tau; theta=this.theta; gam=this.gam;
-			while (this.niter<this.maxiter)
-				this.niter=this.niter+1;
-				xold=this.xopt;			
-				if this.var==1 % === using xbar
-					Kxold=Kxopt;
-					% - Algorithm iteration
-					y=this.F.applyProxFench(y+sig*Kxbar,sig);
-					this.xopt=this.G.applyProx(this.xopt-tau*this.H.applyAdjoint(y),tau);
-					Kxopt=this.H.apply(this.xopt);
-					if ~isempty(gam) % acceleration => uodate theta, tau and sig according to [1]
-						theta=1/sqrt(1+2*gam*tau);
-						tau=theta*tau;			 
-						sig=sig/theta;           
-					end
-					xbar=this.xopt+theta*(this.xopt - xold);    
-					Kxbar=Kxopt+theta*(Kxopt - Kxold);
-				else % === using ybar
-					yold=y;
-					KTyold=KTy;
-					% -- Algorithm iteration
-					this.xopt=this.G.prox(this.xopt-tau*KTybar,tau);
-					Kxopt=this.H.apply(this.xopt);
-					y=this.F.prox_fench(y+sig*Kxopt,sig);
-					KTy=this.H.adjoint(y);
-					if ~isempty(gam) % acceleration => uodate theta, tau and sig according to [1]
-						theta=1/sqrt(1+2*gam*sig); 
-						tau=tau/theta;		 
-						sig=sig*theta;        
-					end
-					ybar=(1+theta)*y - theta*yold;    
-					KTybar=(1+theta)*KTy - theta*KTyold;
-				end				
-				% - Convergence test
-				if this.test_convergence(xold), break; end
-				% - Call OutputOpti object
-				if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
-			end 
-			this.time=toc(tstart);
-			this.ending_verb();
+            initialize@Opti(this,x0);
+            if ~isempty(x0) % To restart from current state if wanted
+                assert(~isempty(this.sig),'parameter sig is not setted');
+                assert(~isempty(this.tau),'parameter tau is not setted');
+                this.y=this.H.apply(x0);
+                if this.var==1
+                    this.xbar=x0;
+                    this.Kxbar= this.y;
+                else
+                    this.ybar= this.y;
+                    this.KTybar=this.H.applyAdjoint(this.ybar);
+                    this.KTy=this.KTybar;
+                end
+                this.Kxopt=this.y;
+            end
+        end
+        function flag=doIteration(this)
+            % Reimplementation from :class:`Opti`. For details see [1].
+
+            if this.var==1 % === using xbar
+                this.Kxold=this.Kxopt;
+                % - Algorithm iteration
+                this.y=this.F.applyProxFench(this.y+this.sig*this.Kxbar,this.sig);
+                this.xopt=this.G.applyProx(this.xopt-this.tau*this.H.applyAdjoint(this.y),this.tau);
+                this.Kxopt=this.H.apply(this.xopt);
+                if ~isempty(this.gam) % acceleration => uodate theta, tau and sig according to [1]
+                    this.theta=1/sqrt(1+2*this.gam*this.tau);
+                    this.tau=this.theta*this.tau;
+                    this.sig=this.sig/this.theta;
+                end
+                this.xbar=this.xopt+this.theta*(this.xopt - this.xold);
+                this.Kxbar=this.Kxopt+this.theta*(this.Kxopt - this.Kxold);
+            else % === using ybar
+                this.yold=this.y;
+                this.KTyold=this.KTy;
+                % -- Algorithm iteration
+                this.xopt=this.G.prox(this.xopt-this.tau*this.KTybar,this.tau);
+                this.Kxopt=this.H.apply(this.xopt);
+                this.y=this.F.prox_fench(this.y+this.sig*this.Kxopt,this.sig);
+                this.KTy=this.H.adjoint(this.y);
+                if ~isempty(this.gam) % acceleration => uodate theta, tau and sig according to [1]
+                    this.theta=1/sqrt(1+2*this.gam*this.sig);
+                    this.tau=this.tau/this.theta;
+                    this.sig=this.sig*this.theta;
+                end
+                this.ybar=(1+this.theta)*this.y - this.theta*this.yold;
+                this.KTybar=(1+this.theta)*this.KTy - this.theta*this.KTyold;
+            end
+            flag=this.OPTI_NEXT_IT;
         end
 	end
 end

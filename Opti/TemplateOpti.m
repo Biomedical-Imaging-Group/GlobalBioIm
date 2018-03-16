@@ -56,34 +56,20 @@ classdef TemplateOpti < Opti
     		this.cost=????;
     		this.OutOp=?????;
     		% TODO SET NEW DEFINED PROPERTIES
-    	end 
-    	%% Run the algorithm
-        function run(this,x0) 
+        end
+        function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
             
-			if ~isempty(x0)   % To restart from current state if wanted
-				this.xopt=x0;
-				% + other initialization that should be avoided for restarting
-			end; 
-			assert(~isempty(this.xopt),'Missing starting point x0');
-			tstart=tic;
-			this.OutOp.init();
-			this.niter=1;
-			this.starting_verb();
-			while (this.niter<this.maxiter)
-				this.niter=this.niter+1;
-				xold=this.xopt;
-				% - Algorithm iteration
-				
-				% TODO IMPLEMENTS THE ALGORITHM ITERATION
-				
-				% - Convergence test
-				if this.test_convergence(xold), break; end
-				% - Call OutputOpti object
-				if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
-			end 
-			this.time=toc(tstart);
-			this.ending_verb();
+            initialize@Opti(this,x0);
         end
-	end
+        function doIteration(this)
+            % Reimplementation from :class:`Opti`.
+        end
+        function updateParams(this)
+            % Updates the parameters of the algorithm at each iteration
+            % (default: no update). This method can be overloaded to makes
+            % some parameters varying during iterations (e.g. descent step,
+            % lagrangian parameters...)
+        end
+    end
 end

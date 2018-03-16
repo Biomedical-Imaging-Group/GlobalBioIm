@@ -5,14 +5,14 @@ classdef LinOpSum <  LinOp
     %
     % :param sz: size of \\(\\mathrm{x}\\) on which the :class:`LinOpSum` applies.
     % :param index: dimensions along which the sum will be performed (inner sum over l)
-    % 
-    % All attributes of parent class :class:`LinOp` are inherited. 
+    %
+    % All attributes of parent class :class:`LinOp` are inherited.
     %
     % **Example** S=LinOpSum(sz,index)
     %
     % See also :class:`LinOp`, :class:`Map`
     
-    %%    Copyright (C) 2015 
+    %%    Copyright (C) 2015
     %     F. Soulez ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ classdef LinOpSum <  LinOp
             end
             this.name ='LinOpSum ';
             this.isInvertible=false;
-            this.isDifferentiable=true;  
+            this.isDifferentiable=true;
             this.sizein = sz;
             
             this.ndms = length(this.sizein);
@@ -67,38 +67,76 @@ classdef LinOpSum <  LinOp
             % Special case for scalar vectors as matlab thought it is 2D matrix ;-(
             switch(length(this.index))
                 case(this.ndms)
-                this.sizeout= [1 1];
+                    this.sizeout= [1 1];
                 case(this.ndms-1)
-                this.sizeout= [this.sizein(T) 1];
+                    this.sizeout= [this.sizein(T) 1];
                 otherwise
-                this.sizeout= this.sizein(T);
+                    this.sizeout= this.sizein(T);
             end
             this.kerdims = this.sizein;
             this.kerdims(T)=1;
             this.imdims = this.sizein;
             this.imdims(~T)=1;
             
-		end
+        end
     end
-	
+    
     %% Core Methods containing implementations (Protected)
-	methods (Access = protected)
+    methods (Access = protected)
         function y = apply_(this,x)
-            % Reimplemented from parent class :class:`LinOp`.           
+            % Reimplemented from parent class :class:`LinOp`.
             for n=this.index
                 x = sum(x,n);
             end
             y = squeeze(x);
-        end		
+        end
         function y = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            % $$\\mathrm{H}^* : \\mathrm{x} \\mapsto \\mathrm{y_{k,l}} =  \\mathrm{x}_{k} \\; \\forall l$$            
+            % $$\\mathrm{H}^* : \\mathrm{x} \\mapsto \\mathrm{y_{k,l}} =  \\mathrm{x}_{k} \\; \\forall l$$
             y = reshape(repmat(reshape(x,this.imdims),this.kerdims),this.sizein);
-        end		
+        end
+        
+        function M = makeAdjoint_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            M=LinOpBroadcast(this.sizein, this.index);
+        end
+        %
         function y = applyHHt_(this,x)
-            % Reimplemented from parent class :class:`LinOp`.            
+            % Reimplemented from parent class :class:`LinOp`.
             a = prod(this.kerdims);
             y = x.*a;
+        end
+        function M=makeHHt_(this)
+            % Reimplemented from parent class :class:`LinOp`.
+            M= LinOpDiag(this.sizeout,prod(this.kerdims));
+        end
+        function G = makeComposition_(this, H)
+            % Reimplemented from parent class :class:`LinOp`
+            
+            if isa(H, 'LinOpComposition')
+                if isa(H.H2,'LinOpBroadcast') && all(this.kerdims == H.H2.kerdims)
+                    if isa(H.H1, 'LinOpConv')
+                        G = LinOpConv(squeeze(sum(H.H1.mtf,this.index)),H.H1.isReal); %,this.index                
+                    elseif isa(H.H1,'LinOpDiag')
+                        if H.H1.isScaledIdentity
+                            a = prod(this.kerdims).*H.H1.diag;
+                            G = LinOpDiag(this.sizeout,H.H1.diag);
+                        else
+                            a = squeeze(sum(H.H1.diag,this.index));
+                            G = LinOpDiag(this.sizeout,a);
+                        end
+                    else
+                        G = makeComposition_@LinOp(this, H);
+                    end
+                else
+                    G = makeComposition_@LinOp(this, H);
+                end
+            elseif isa(H,'LinOpBroadcast') && all(this.kerdims == H.kerdims)
+                a = prod(this.kerdims);
+                G=LinOpDiag(this.sizeout,a);
+            else
+                G = makeComposition_@LinOp(this, H);
+            end
         end
     end
 end

@@ -11,8 +11,8 @@ Map
 
 .. autoclass:: Map
     :show-inheritance:
-    :members: apply, applyJacobianT, applyInverse, makeComposition, plus, minus, mpower,
-      mtimes, size, apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_
+    :members: apply, applyJacobianT, applyInverse, makeComposition, plus, minus, mpower, times,
+      mtimes, size, apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_, times_
 
 LinOp
 -----
@@ -21,7 +21,7 @@ LinOp
     :show-inheritance:
     :members: applyAdjoint, transpose, ctranspose, applyHtH, applyHHt, applyAdjointInverse, makeHtH, makeHHt,
       apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
-      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_
+      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, times_, makeInversion_
 
 Cost
 ----
@@ -30,14 +30,14 @@ Cost
     :show-inheritance:
     :members: applyGrad, applyProx, applyProxFench,   
       apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
-      applyGrad_, applyProx_, applyProxFench_, set_y
+      applyGrad_, applyProx_, applyProxFench_, set_y, times_
 
 Opti
 ----
 
 .. autoclass:: Opti
     :show-inheritance:
-    :members: run, starting_verb, ending_verb, test_convergence
+    :members: run, starting_verb, ending_verb, test_convergence, initialize, doIteration, updateParams
 
 
 .. automodule:: Abstract.Compositions
@@ -60,21 +60,28 @@ MapComposition
 
 .. autoclass:: MapComposition
     :show-inheritance:
-    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_, times_
 
 MapInversion
 ............
 
 .. autoclass:: MapInversion
     :show-inheritance:
-    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_, times_
 
 MapSummation
 ..............
 
 .. autoclass:: MapSummation
     :show-inheritance:
-    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_, times_
+
+MapMultiplication
+..................
+
+.. autoclass:: MapMultiplication
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_, times_
 
 LinOpAdjoint
 ............
@@ -82,7 +89,7 @@ LinOpAdjoint
 .. autoclass:: LinOpAdjoint
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
-      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_
+      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, times_
 
 
 LinOpComposition
@@ -91,7 +98,7 @@ LinOpComposition
 .. autoclass:: LinOpComposition
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
-      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_
+      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, times_
 
 
 LinOpInversion
@@ -100,7 +107,7 @@ LinOpInversion
 .. autoclass:: LinOpInversion
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
-      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_
+      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, times_
 
 LinOpSummation
 ..............
@@ -108,7 +115,7 @@ LinOpSummation
 .. autoclass:: LinOpSummation
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
-      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_
+      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, times_
 
 CostComposition
 ...............
@@ -116,7 +123,7 @@ CostComposition
 .. autoclass:: CostComposition
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
-      applyGrad_, applyProx_, applyProxFench_, set_y
+      applyGrad_, applyProx_, applyProxFench_, set_y, times_
 
 CostMultiplication
 ..................
@@ -124,7 +131,7 @@ CostMultiplication
 .. autoclass:: CostMultiplication
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
-      applyGrad_, applyProx_, applyProxFench_, set_y
+      applyGrad_, applyProx_, applyProxFench_, set_y, times_
 
 CostSummation
 .............
@@ -132,4 +139,12 @@ CostSummation
 .. autoclass:: CostSummation
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
-      applyGrad_, applyProx_, applyProxFench_, set_y
+      applyGrad_, applyProx_, applyProxFench_, set_y, times_, makePartialSummation
+
+CostPartialSummation
+....................
+    
+.. autoclass:: CostPartialSummation
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+      applyGrad_, applyProx_, applyProxFench_, set_y, setLsub

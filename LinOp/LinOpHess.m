@@ -439,7 +439,7 @@ classdef LinOpHess <  LinOp
                     case(3), fHtH(1,1,1)=30;fHtH(1,2,1)=-8;fHtH(2,1,1)=-8;fHtH(end,1,1)=-8;fHtH(1,end,1)=-8;fHtH(1,1,2)=-8;fHtH(1,1,end)=-8;
                         fHtH(1,3,1)=1;fHtH(3,1,1)=1;fHtH(2,2,1)=1;fHtH(end-1,1,1)=1;fHtH(end,2,1)=1;fHtH(2,end,1)=1;fHtH(1,end-1,1)=1;
                         fHtH(end,end,1)=1;fHtH(2,1,2)=1;fHtH(1,2,2)=1;fHtH(end,1,2)=1; fHtH(1,end,2)=1;fHtH(2,1,end)=1;fHtH(1,2,end)=1;
-                        fHtH(1,1,end-1)=1;fHtH(end,1,end)=1;fHtH(3,1)=1;fHtH(1,1,3)=1;fHtH(1,end,end)=1;
+                        fHtH(1,1,end-1)=1;fHtH(end,1,end)=1;fHtH(3,1,1)=1;fHtH(1,1,3)=1;fHtH(1,end,end)=1;
                 end
                 M=LinOpConv(fftn(fHtH));
             else

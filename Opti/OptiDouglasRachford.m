@@ -11,7 +11,7 @@ classdef OptiDouglasRachford < Opti
     %
     % All attributes of parent class :class:`Opti` are inherited. 
 	%
-    % **Example** DR=OptiDouglasRachford(F1, F2, L, gamma, lambda, OutOp)
+    % **Example** DR=OptiDouglasRachford(F1, F2, L, gamma, lambda)
     %
 	% See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`
     
@@ -37,10 +37,15 @@ classdef OptiDouglasRachford < Opti
 		F2;
 		lambda
 		gamma
-	end
-	
+        L;
+    end
+    properties (SetAccess = protected,GetAccess = protected)
+        y;
+        Ly;       
+    end
+    
 	methods
-		function this = OptiDouglasRachford(F1, F2, L, gamma, lambda, OutOp)
+		function this = OptiDouglasRachford(F1, F2, L, gamma, lambda)
 			% F1, F2
 			this.F1 = F1;
 			this.F2 = F2;
@@ -54,7 +59,8 @@ classdef OptiDouglasRachford < Opti
 				this.nu = real(mean(nu(:)));
 				if this.nu==1
 					this.useL = 2;
-				end
+                end
+                this.L=L;
 			end
 			
 			% gamma
@@ -66,49 +72,30 @@ classdef OptiDouglasRachford < Opti
 			% lambda
 			this.lambda = lambda;
 			
-			this.OutOp = OutOp;
-			
 		end
-		
-		function xopt = run(this, x0)
+        function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
             
-			y = x0;
-			this.xopt = x0;
-			
-			tstart=tic;
-			this.OutOp.init();
-			this.niter=1;
-			this.starting_verb();
-			
-			while(this.niter < this.maxiter)
-				xold=this.xopt;		
-				if this.useL
-					Ly = this.L*y;
-					if this.useL==2
-						this.xopt = L.adjoint( this.F2.prox(Ly, this.gamma(2)));
-					else
-						this.xopt = y + (1./this.nu).* L.adjoint( this.F2.prox(Ly, this.nu.*this.gamma(2)) - Ly);
-					end
-				else
-					this.xopt = this.F2.prox(y, this.gamma(2));
-				end
-				y = y + this.lambda .* ( this.F1.prox(2.*this.xopt- y,this.gamma(1)) - this.xopt);
-				
-				if this.test_convergence(xold), break; end
-				
-				if (mod(this.niter,this.ItUpOut)==0)
-					this.OutOp.update(this)
-				end
-				
-				this.niter = this.niter + 1;
-			end
-			
-			xopt = this.xopt;
-			this.time=toc(tstart);
-			this.ending_verb();
-		end
-		
-	end
-	
+            initialize@Opti(this,x0);
+            if ~isempty(x0) % To restart from current state if wanted
+                this.y = x0;
+            end
+        end
+        function flag=doIteration(this)
+            % Reimplementation from :class:`Opti`.
+
+            if this.useL
+                this.Ly = this.L*this.y;
+                if this.useL==2
+                    this.xopt = this.L.adjoint( this.F2.prox(this.Ly, this.gamma(2)));
+                else
+                    this.xopt = this.y + (1./this.nu).* this.L.adjoint( this.F2.prox(this.Ly, this.nu.*this.gamma(2)) - this.Ly);
+                end
+            else
+                this.xopt = this.F2.prox(this.y, this.gamma(2));
+            end
+            this.y = this.y + this.lambda .* ( this.F1.prox(2.*this.xopt- this.y,this.gamma(1)) - this.xopt); 
+            flag=OPTI_NEXT_IT;
+        end
+    end
 end

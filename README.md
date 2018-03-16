@@ -1,4 +1,6 @@
-# GlobalBioIm
+# GlobalBioIm 
+[![DOI](https://zenodo.org/badge/124297869.svg)](https://zenodo.org/badge/latestdoi/124297869)
+
 
 ## Description
 This Matlab toolbox provides a set of tools (operators, cost functions, optimization algorithms) for solving inverse problems.

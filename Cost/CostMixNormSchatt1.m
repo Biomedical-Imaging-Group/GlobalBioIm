@@ -138,7 +138,7 @@ classdef CostMixNormSchatt1 < Cost
                 if isGPU==1
                     error([this.name,' cannot be used with GpuArray (using mex file not supported by GpuArray. You can use CudaMat']);
                 end
-                [E,V]=svd2D_decomp(x);
+                [E,V]=svd3D_decomp(x);
             else
                 error('third dimension of x should be 3 or 6');
             end

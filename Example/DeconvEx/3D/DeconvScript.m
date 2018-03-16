@@ -23,19 +23,19 @@ help DeconvScript
 %---------------------------------------------------------------
 
 %% Parameters
-lamb=1e-5;        % Hyperparameter for initial deconvolution
+lamb=1e-3;        % Hyperparameter for initial deconvolution
 maxIt=20;         % Max iterations
 Reg=1;            % 1 for TV, 2 for Hessian-Schatten 
-DataTerm=1;       % 1 for LS, 2 for KL
+DataTerm=2;       % 1 for LS, 2 for KL
 
 %% fix the random seed (for reproductibility)
 rng(1);
 
 %% Input image and psf
 if DataTerm==1
-    [im,psf,y]=GenerateData3D('Gaussian');
+    [im,psf,y]=GenerateData3D('Gaussian',25);
 elseif DataTerm==2
-    [im,psf,y]=GenerateData3D('Poisson');
+    [im,psf,y]=GenerateData3D('Poisson',5);
 end
 Orthoviews(im,[],'Input Image (GT)');
 Orthoviews(y,[],'Convolved and noisy data');
@@ -68,15 +68,16 @@ end
 if DataTerm==1
     Fn={lamb*Freg,pos};           % Functionals F_n
     Hn={Opreg,Id};                    % Associated operators H_n
-    rho_n=[1e-1,1e-1];                % Multipliers rho_n
+    rho_n=[1e-2,1e-2];                % Multipliers rho_n
     ADMM=OptiADMM(LS,Fn,Hn,rho_n);   
 else
     Fn={KL,lamb*Freg,pos};          % Functionals F_n
     Hn={H,Opreg,Id};                    % Associated operators H_n
-    rho_n=[1e-1,1e-1,1e-1];             % Multipliers rho_n
+    rho_n=[1e-3,1e-3,1e-3];             % Multipliers rho_n
     ADMM=OptiADMM([],Fn,Hn,rho_n);
 end
 ADMM.OutOp=OutputOpti(1,im,round(maxIt/10),[1 2]);
+ADMM.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
 ADMM.ItUpOut=round(maxIt/10);
 ADMM.maxiter=maxIt;
 ADMM.run(y);

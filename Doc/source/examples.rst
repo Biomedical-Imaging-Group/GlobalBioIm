@@ -76,7 +76,9 @@ constraint. We are now ready to instanciate and run our algorithm (here ADMM) in
       Fn={LS,lamb*Freg,pos};         % Functionals F_n constituting the cost 
       Hn={H,Opreg,Id};               % Associated operators H_n
       rho_n=[1e-3,1e-3,1e-3];        % Multipliers rho_n
-      ADMM=OptiADMM([],Fn,Hn,rho_n,[],OutputOpti(1,gt,dispIt));
+      ADMM=OptiADMM([],Fn,Hn,rho_n); % Declare optimizer
+      ADMM.OutOp=OutputOpti(1,im,round(maxIt/10),[1 2]); % build the output object
+      ADMM.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4); % Set the convergence tests
       ADMM.ItUpOut=dispIt;
       ADMM.maxiter=maxIt;
       ADMM.run(xopt);

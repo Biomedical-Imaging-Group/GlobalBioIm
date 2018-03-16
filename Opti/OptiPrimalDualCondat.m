@@ -97,7 +97,7 @@ classdef OptiPrimalDualCondat < Opti
             if ~isempty(x0) % To restart from current state if wanted
                 % initialization of the dual variables y
                 for n=1:length(this.Hn)
-                    this.y{n}=this.Hn{n}.apply(x0);
+                    this.y{n}=zeros(this.Hn{n}.sizeout);
                 end
             end
             % Check parameters

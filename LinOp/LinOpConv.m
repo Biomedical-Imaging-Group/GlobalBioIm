@@ -56,8 +56,6 @@ classdef LinOpConv <  LinOp
         isReal;    % true (default) if the result of the convolution should be real
         useRFT=0;  % true if the real-to-half-complex fourier transformation is used rather than the complex-to-complex FFT
                    % Default : false
-    end
-    properties (Access = protected)
         Notindex;  % Remaining dimensions
         ndms;      % number of dimensions
     end

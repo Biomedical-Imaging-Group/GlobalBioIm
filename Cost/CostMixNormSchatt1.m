@@ -76,28 +76,11 @@ classdef CostMixNormSchatt1 < Cost
     % - apply_(this,x)
     % - applyProx_(this,x,alpha)
     methods (Access = protected)
+        
         function y=apply_(this,x)
             % Reimplemented from parent class :class:`Cost`.
             
-            global isGPU
-            dim=size(x);
-            if dim(3)==3     % 2D
-                if isGPU==1
-                    [E,V]=svd2D_decomp(gather(x));
-                    E=gpuArray(E);
-                else
-                    [E,V]=svd2D_decomp(x);
-                end
-            elseif dim(4)==6 % 3D
-                if isGPU==1
-                    [E,V]=svd3D_decomp(gather(x));
-                    E=gpuArray(E);
-                else
-                    [E,V]=svd3D_decomp(x);
-                end
-            else
-                error('third dimension of x should be 3 or 6');
-            end
+            [E,~]=this.svdDecomp(x);
             if isinf(this.p)
                 tmp=max(E,[],3);
             else
@@ -108,34 +91,11 @@ classdef CostMixNormSchatt1 < Cost
         function y=applyProx_(this,x,alpha)
             % Reimplemented from parent class :class:`Cost`.
             
-            global isGPU
             dim=size(x);
             if this.p==1
-                if dim(3)==3     % 2D
-                    if isGPU==1                       
-                        [E,V]=svd2D_decomp(gather(x));
-                        E=max(abs(E)-alpha,0).*sign(E);
-                        y=svd2D_recomp(E,V);
-                        y=gpuArray(y);
-                    else
-                        [E,V]=svd2D_decomp(x);
-                        E=max(abs(E)-alpha,0).*sign(E);
-                        y=svd2D_recomp(E,V);
-                    end
-                elseif dim(4)==6 % 3D
-                    if isGPU==1
-                        [E,V]=svd3D_decomp(gather(x));
-                        E=max(abs(E)-alpha,0).*sign(E);
-                        y=svd3D_recomp(E,V);
-                        y=gpuArray(y);
-                    else
-                        [E,V]=svd3D_decomp(x);
-                        E=max(abs(E)-alpha,0).*sign(E);
-                        y=svd3D_recomp(E,V);
-                    end
-                else
-                    error('third dimension of x should be 3 or 6');
-                end
+                [E,V]=this.svdDecomp(x);
+                E=max(abs(E)-alpha,0).*sign(E);
+                y=this.svdRecomp(E,V);
             elseif this.p==2
                 if dim(end)==3     % 2D
                     N=sqrt(x(:,:,1).^2+2*x(:,:,2).^2+x(:,:,3).^2);
@@ -148,6 +108,62 @@ classdef CostMixNormSchatt1 < Cost
                 end
             else
                 y=applyProx_@Cost(this,x,alpha);
+            end
+        end
+    end
+    
+    
+    %% Internal methods
+    methods (Access = protected)
+        function [E,V]=svdDecomp(this,x)   
+            
+            global isGPU
+            dim=size(x);      % 2D
+            if dim(3)==3
+                if isGPU==1
+                    tt=(abs(x(:,:,2))<eps);
+                    E=zeros_([dim(1:2),2]);
+                    trace=x(:,:,1)+x(:,:,3);
+                    delta=(x(:,:,1)-x(:,:,3)).^2+4*x(:,:,2).^2;
+                    E(:,:,1)=0.5*(trace+sqrt(delta));
+                    E(:,:,2)=0.5*(trace-sqrt(delta));
+                    V=zeros_([dim(1:2),2]);
+                    n=sqrt((E(:,:,1)-x(:,:,1)).^2+x(:,:,2).^2)+tt;
+                    V(:,:,1)=x(:,:,2)./n.*(1-tt) + tt;
+                    V(:,:,2)=(E(:,:,1)-x(:,:,1))./n.*(1-tt);
+                else
+                    [E,V]=svd2D_decomp(x);
+                end
+            elseif dim(4)==6 % 3D
+                if isGPU==1
+                    error([this.name,' cannot be used with GpuArray (using mex file not supported by GpuArray. You can use CudaMat']);
+                end
+                [E,V]=svd2D_decomp(x);
+            else
+                error('third dimension of x should be 3 or 6');
+            end
+        end
+        
+        function x=svdRecomp(this,E,V)  
+            
+            global isGPU
+            dim=size(E);
+            if dim(3)==2     % 2D
+                if isGPU==1
+                    x=zeros_([dim(1:2),3]);
+                    x(:,:,1)=E(:,:,1).*V(:,:,1).^2 + E(:,:,2).*V(:,:,2).^2;
+                    x(:,:,2)=V(:,:,1).*V(:,:,2).*(E(:,:,1)-E(:,:,2));
+                    x(:,:,3)=E(:,:,1).*V(:,:,2).^2+E(:,:,2).*V(:,:,1).^2;
+                else
+                    if isGPU==1
+                        error([this.name,' cannot be used with GpuArray (using mex file not supported by GpuArray). You can use CudaMat']);
+                    end
+                    x=svd2D_recomp(E,V);
+                end
+            elseif dim(4)==3 % 3D
+                x=svd3D_recomp(E,V);
+            else
+                error('third dimension of E and V should be 3 or 6');
             end
         end
     end

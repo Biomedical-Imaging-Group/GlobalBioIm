@@ -33,7 +33,7 @@ help Deconv_KL_NonNeg_NoReg
 rng(1);
 
 % -- Input image and psf
-[im,psf,y]=GenerateData('Poisson');
+[im,psf,y]=GenerateData('Poisson',100);
 imdisp(im,'Input Image (GT)',1);
 imdisp(y,'Convolved and noisy data',1);
 sz=size(y);
@@ -51,7 +51,7 @@ FBS.OutOp=OutputOpti(1,im,40);
 FBS.ItUpOut=5;   % call OutputOpti update every ItUpOut iterations
 FBS.fista=true;   % activate fista
 FBS.maxiter=200;  % max number of iterations
-FBS.gam=5e-3;     % set gamma parameter
+FBS.gam=5;     % set gamma parameter
 FBS.run(y);       % run the algorithm 
 
 % -- Richardson-Lucy KL + NonNeg (implicit)

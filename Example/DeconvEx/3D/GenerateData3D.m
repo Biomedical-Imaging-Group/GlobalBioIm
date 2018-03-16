@@ -1,18 +1,19 @@
-function [im,psf,y]=GenerateData3D(noise)
+function [im,psf,y]=GenerateData3D(noise,level)
 %----------------------------------------------
-% function [im,psh,y]=GenerateData3D(noise)
+% function [im,psh,y]=GenerateData3D(noise,level)
 %
 % Generate data for 3D deconvolution example
 %
 % Input:   noise -> type of noise
-%                    - 'Gaussian'
-%                    - 'Poisson'
+%                    - 'Gaussian'  level is PSNR
+%                    - 'Poisson'   level is average number of photons per pixel
 %
 % Outputs: im    -> ground truth (star like object)
 %          psf   -> psf 
 %          y     -> blurred and noisy data
 %
 %  Copyright (C) 2018 E. Soubies emmanuel.soubies@epfl.ch
+%                     F. Soulez ferreol.soulez@univ-lyon1.fr
 %----------------------------------------------
 
 %% Ground truth
@@ -21,7 +22,7 @@ im=StarLikeSample(3,N,6,20,5,0.7);     % Star-like object (help StarLikeSample t
 
 %% PSF 
 lamb=561;                % Illumination wavelength
-res=50;                  % Resolution (nm)
+res=60;                  % Resolution (nm)
 Na=1.4;                  % Objective numerica aperture
 fc=2*Na/lamb*res;        % cut-off frequency
 ll=linspace(-0.5,0,sz(1)/2+1);
@@ -35,14 +36,14 @@ psf=real(ifftn(OTF));
 H=LinOpConv(OTF);
 y_noNoise=H*im;
 if strcmp(noise,'Gaussian')
-    sigN=1e-2;
-    y=y_noNoise+sigN*randn(sz);
+    y = y_noNoise + max(y_noNoise(:)) .* 10^(-level/20).*random('Normal',zeros(size(y_noNoise)),ones(size(y_noNoise)));
 elseif strcmp(noise,'Poisson')
-    photBud=110;
-    y=poissrnd(round(y_noNoise*photBud))/photBud;
+    factor = level./mean(y_noNoise(:)) ;
+    y_noNoise = y_noNoise.* factor;
+    im = im.*factor;
+    y = random('Poisson',y_noNoise);
 else
     error('Wrong type of noise');
 end
-disp(['SNR data : ',num2str(20*log10(norm(y_noNoise(:))/norm(y_noNoise(:)-y(:))))]);
 
 end

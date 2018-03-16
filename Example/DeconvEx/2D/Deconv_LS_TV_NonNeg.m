@@ -38,7 +38,7 @@ useGPU(0)
 rng(1);
 
 % -- Input image and psf
-[im,psf,y]=GenerateData('Gaussian');
+[im,psf,y]=GenerateData('Gaussian',20);
 imdisp(im,'Input Image (GT)',1);
 imdisp(y,'Convolved and noisy data',1);
 sz=size(y);

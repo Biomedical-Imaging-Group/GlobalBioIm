@@ -13,6 +13,7 @@ clear; close all;
 help Deconv_LS_HessSchatt
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+%                     F. Soulez ferreol.soulez@univ-lyon1.fr
 %
 %  This program is free software: you can redistribute it and/or modify
 %  it under the terms of the GNU General Public License as published by
@@ -32,7 +33,7 @@ help Deconv_LS_HessSchatt
 rng(1);
 
 % -- Input image and psf
-[im,psf,y]=GenerateData('Gaussian');
+[im,psf,y]=GenerateData('Gaussian',20);
 imdisp(im,'Input Image (GT)',1);
 imdisp(y,'Convolved and noisy data',1);
 sz=size(y);
@@ -46,7 +47,7 @@ F=LS*H;
 F.doPrecomputation=1;
 Hess=LinOpHess(sz);                  % Hessian Operator
 R_1sch=CostMixNormSchatt1([sz,3],1); % Mixed Norm 1-Schatten (p=1)
-lamb=2e-3;                           % Hyperparameter
+lamb=5e-3;                           % Hyperparameter
 
 % -- Chambolle-Pock  LS + ShattenHess
 CP=OptiChambPock(lamb*R_1sch,Hess,F);
@@ -79,7 +80,7 @@ legend('CP','ADMM');title('Cost evolution');
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
 semilogy(CP.OutOp.iternum,CP.OutOp.evolsnr,'LineWidth',1.5); 
 semilogy(ADMM.OutOp.iternum,ADMM.OutOp.evolsnr,'LineWidth',1.5);
-legend('LS+TV (CP)','LS+TV (ADMM)');xlabel('Iterations');ylabel('SNR (dB)');
+legend('LS+TV (CP)','LS+TV (ADMM)','Location','southeast');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[CP.time],'FaceColor',orderCol(1,:),'EdgeColor','k');

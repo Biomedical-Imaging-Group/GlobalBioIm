@@ -33,7 +33,7 @@ help Deconv_KL_HessSchatt_NonNeg
 rng(1);
 
 % -- Input image and psf
-[im,psf,y]=GenerateData('Poisson');
+[im,psf,y]=GenerateData('Poisson',100);
 imdisp(im,'Input Image (GT)',1);
 imdisp(y,'Convolved and noisy data',1);
 sz=size(y);
@@ -64,8 +64,8 @@ Fn={lamb*R_1sch,F};
 Hn={Hess,H};
 PDC=OptiPrimalDualCondat([],R_POS,Fn,Hn);
 PDC.OutOp=OutputOpti(1,im,40,[2 3]);
-PDC.tau=1e-1;          % set algorithm parameters
-PDC.sig=1;            %
+PDC.tau=100;          % set algorithm parameters
+PDC.sig=1e-2;            %
 PDC.rho=1.2;          %
 PDC.ItUpOut=5;        % call OutputOpti update every ItUpOut iterations
 PDC.maxiter=200;       % max number of iterations

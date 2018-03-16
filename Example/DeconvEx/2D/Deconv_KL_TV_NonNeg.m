@@ -36,7 +36,7 @@ help Deconv_KL_TV_NonNeg
 rng(1);
 
 % -- Input image and psf
-[im,psf,y]=GenerateData('Poisson');
+[im,psf,y]=GenerateData('Poisson',100);
 imdisp(im,'Input Image (GT)',1);
 imdisp(y,'Convolved and noisy data',1);
 sz=size(y);
@@ -55,7 +55,7 @@ lamb=5e-3;                     % Hyperparameter
 % -- ADMM KL + TV + NonNeg
 Fn={CostKullLeib([],y,1e-6),lamb*R_N12,R_POS};
 Hn={H,G,LinOpDiag(sz)};
-rho_n=[1e-1,1e-1,1e-1];
+rho_n=[1e-3,1e-3,1e-3];
 ADMM=OptiADMM([],Fn,Hn,rho_n);
 ADMM.OutOp=OutputOpti(1,im,40,[1 2]);
 ADMM.ItUpOut=2;                                  % call OutputOpti update every ItUpOut iterations
@@ -67,12 +67,12 @@ Fn={lamb*R_N12,F};
 Hn={G,H};
 PDC=OptiPrimalDualCondat([],R_POS,Fn,Hn);
 PDC.OutOp=OutputOpti(1,im,40,[2 3]);
-PDC.tau=5e-2;          % set algorithm parameters
-PDC.sig=1;             %
+PDC.tau=100;          % set algorithm parameters
+PDC.sig=1e-2;         %
 PDC.rho=1.2;          %
 PDC.ItUpOut=2;        % call OutputOpti update every ItUpOut iterations
-PDC.maxiter=200;       % max number of iterations
-PDC.run(y);            % run the algorithm 
+PDC.maxiter=200;      % max number of iterations
+PDC.run(y);           % run the algorithm 
 
 % -- Richardson-Lucy-TV  KL + TV + NonNeg (implicit)
 RLTV=OptiRichLucy(F*H,1,lamb);

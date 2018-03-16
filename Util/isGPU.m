@@ -10,7 +10,7 @@ function isGPU()
 %--------------------------------------------------------------
 global isGPU
 
-if isGPU==0
+if  isempty(isGPU) || isGPU==0
     disp('Execution is made on CPU');
 elseif isGPU==1
     disp('Execution is made on GPU with Matlab parrallel Computing Toolbox');

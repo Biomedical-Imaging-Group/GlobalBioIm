@@ -17,12 +17,12 @@ function [im,psf,y]=GenerateData3D(noise,level)
 %----------------------------------------------
 
 %% Ground truth
-N=128;sz=[N N N];                       % Image size
+N=256;sz=[N N N];                       % Image size
 im=StarLikeSample(3,N,6,20,5,0.7);     % Star-like object (help StarLikeSample to see the details of parameters)
 
 %% PSF 
 lamb=561;                % Illumination wavelength
-res=60;                  % Resolution (nm)
+res=30;                  % Resolution (nm)
 Na=1.4;                  % Objective numerica aperture
 fc=2*Na/lamb*res;        % cut-off frequency
 ll=linspace(-0.5,0,sz(1)/2+1);

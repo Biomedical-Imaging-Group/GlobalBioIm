@@ -53,7 +53,7 @@ classdef CostComplexRing < CostIndicator
             else
                 if isnumeric(inner)
                     this.inner = inner;                    
-                    assert(isequal(this.sizein,size(inner)), 'inner must be equal to this.sz');
+                    assert(cmpSize(this.sizein,size(inner)), 'inner must be equal to this.sz');
                 else
                     error('inner parameter should be numeric');
                 end
@@ -64,7 +64,7 @@ classdef CostComplexRing < CostIndicator
             else
                 if isnumeric(outer)
                     this.outer = outer;
-                    assert(isequal(this.sizein,size(outer)), 'outer must be equal to H.sizeout');
+                    assert(cmpSize(this.sizein,size(outer)), 'outer must be equal to H.sizeout');
                 else
                     error('outer parameter should be numeric');
                 end

@@ -30,19 +30,17 @@ classdef LinOpSumPatches <  LinOp
     properties (SetAccess = protected,GetAccess = public)
         szPatch    % array containing the patch size in each direction
         sel;
-        nbPatch;
     end
     
     %% Constructor
     methods
         function this = LinOpSumPatches(sz,szPatch)
             this.name ='LinOpSumPatches';
-            assert(isequal(size(sz),size(szPatch)),'Parameters sz and szPatches must have the same size');
+            assert(cmpSize(size(sz),size(szPatch)),'Parameters sz and szPatches must have the same size');
             assert(~any(mod(sz,szPatch)),'Sizes in sz must be multiples of patch sizes in szPatches');  
             this.sizein=sz;
             this.szPatch=szPatch;
             this.sizeout=this.szPatch;           
-            this.nbPatch=prod(this.sizeout);
             for n=1:length(this.sizein)
                 this.sel{n}=this.szPatch(n)*ones(1,this.sizein(n)/this.szPatch(n));
             end

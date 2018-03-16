@@ -2,7 +2,7 @@ classdef LinOpSDFT <  LinOp
     % LinOpSDFT : Sliced Discrete Fourier operator
     %
     % :param sz: sizein of the operator.
-    % :param index: index along wich dimension are computed the FFT
+    % :param index: index along wich dimension are computed the FFT (default all)
     %
     % All attributes of parent class :class:`LinOp` are inherited. 
     %
@@ -39,11 +39,11 @@ classdef LinOpSDFT <  LinOp
     %% Constructor
     methods
         function this = LinOpSDFT(sz,index)
-            if (~isempty(index))
+            if nargin < 2 || (isempty(index))
+                this.index = 1:length(sz);
+            else
                 assert(issize(index),'The index should be a conformable  to sz');
                 this.index = index;
-            else
-                this.index = 1:this.ndms;
             end           
             assert(issize(sz),'The input size sz should be a conformable  to a size ');
             this.sizeout=sz;
@@ -51,11 +51,11 @@ classdef LinOpSDFT <  LinOp
 
             this.name ='LinOpSDFT';
             this.isInvertible=true;
-            this.isDifferentiable=true; 
+            this.isDifferentiable=true;
             
             this.ndms = length(this.sizein);
             % Special case for vectors as matlab thought it is matrix ;-(
-            if this.ndms==2 && (this.sizein(2) ==1 || this.sizein(1) ==1)
+            if (this.ndms==2) && (this.sizein(2) ==1 || this.sizein(1) ==1)
                 this.ndms = 1;
             end
             

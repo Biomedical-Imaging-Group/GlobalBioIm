@@ -66,7 +66,7 @@ classdef MapComposition < Map
         function x = applyJacobianT_(this, y, v)
             % Reimplemented from :class:`Map`
             if this.isDifferentiable
-                x=this.H2.applyJacobian(v,this.H1.applyJacobian(this.H2.apply(v),y));
+                x=this.H2.applyJacobianT(this.H1.applyJacobianT(y,this.H2.apply(v)),v);
             else
                 x = applyJacobianT_@Map(this,y,v);
             end

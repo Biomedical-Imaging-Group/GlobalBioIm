@@ -11,19 +11,19 @@ classdef OptiADMM < Opti
     % :param OutOpCG: :class:`OutputOpti` object for CG (when used)
     % :param ItUpOutCG: :attr:`ItUpOut` parameter for CG (when used, default 0)
     %
-    % All attributes of parent class :class:`Opti` are inherited. 
+    % All attributes of parent class :class:`Opti` are inherited.
     %
-    % **Principle** 
+    % **Principle**
     % The algorithm aims at minimizing the Lagrangian formulation of the above problem:
     % $$ \\mathcal{L}(\\mathrm{x,y_1...y_n,w_1...w_n}) = F_0(\\mathrm{x}) + \\sum_{n=1}^N \\frac12\\rho_n\\Vert \\mathrm{H_nx - y_n + w_n/\\rho_n} \\Vert^2 + F_n(\\mathrm{y_n})$$
     % using an alternating minimization scheme [1].
     %
-    % **Note** The minimization of \\(\\mathcal{L}\\) over \\(\\mathrm{x}\\), 
+    % **Note** The minimization of \\(\\mathcal{L}\\) over \\(\\mathrm{x}\\),
     % $$ F_0(\\mathrm{x}) + \\sum_{n=1}^N \\frac12\\rho_n\\Vert \\mathrm{H_nx -z_n}\\Vert^2, \\quad \\mathrm{z_n= y_n - w_n/\\rho_n} $$
     % is performed  either using the conjugate-gradient :class:`OptiConjGrad` algoriothm, a direct inversion or the given solver
     %
     %  - If \\(F_0\\) is empty or is a :class:`CostL2`, then if the :class:`LinOp` \\(\\sum_{n=0}^N \\mathrm{H_n}^*\\mathrm{H_n}\\)
-    %    is not invertible the :class:`OptiConjGrad` is used by default if no more efficient solver is provided. 
+    %    is not invertible the :class:`OptiConjGrad` is used by default if no more efficient solver is provided.
     %    Here \\(\\mathrm{H_0}\\) is the :class:`LinOp` associated to \\(F_0\\).
     %
     %  - Otherwithe the solver is required.
@@ -33,11 +33,11 @@ classdef OptiADMM < Opti
     % [1] Boyd, Stephen, et al. "Distributed optimization and statistical learning via the alternating direction
     % method of multipliers." Foundations and Trends in Machine Learning, 2011.
     %
-    % **Example** ADMM=OptiADMM(F0,Fn,Hn,rho_n,solver,OutOp)
+    % **Example** ADMM=OptiADMM(F0,Fn,Hn,rho_n,solver)
     %
     % See also :class:`Opti`, :class:`OptiConjGrad` :class:`OutputOpti`, :class:`Cost`
     
-    %%    Copyright (C) 2017 
+    %%    Copyright (C) 2017
     %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -55,33 +55,33 @@ classdef OptiADMM < Opti
     
     % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
-		F0=[];               % func F0
-		Fn;                  % Cell containing the Cost Fn
-		Hn;                  % Cell containing the LinOp Hn
-		solver=[];           % solver for the last step of the algorithm
+        F0=[];               % func F0
+        Fn;                  % Cell containing the Cost Fn
+        Hn;                  % Cell containing the LinOp Hn
+        solver=[];           % solver for the last step of the algorithm
     end
     % Full protected properties
-    properties %(SetAccess = protected,GetAccess = protected)
-		yn;    % Internal parameters
-		zn;
-		wn;
-		Hnx;
+    properties (SetAccess = protected,GetAccess = ?TestCvg)
+        yn;    % Internal parameters
+        zn;
+        wn;
+        Hnx;
         b0=[];
-		A;     % LinOp for conjugate gradient (if used)
+        A;     % LinOp for conjugate gradient (if used)
+        yold=0;  % Parameter needed for termination criterion
     end
     % Full public properties
     properties
-		rho_n;                 % vector containing the multipliers
-        CG;                    % conjugate gradient algot (Opti Object, when used)
+        rho_n;                 % vector containing the multipliers
+        CG;                    % conjugate gradient algo (Opti Object, when used)
     end
     
     methods
-    	%% Constructor
-        function this=OptiADMM(F0,Fn,Hn,rho_n,solver,OutOp)
+        %% Constructor
+        function this=OptiADMM(F0,Fn,Hn,rho_n,solver)
             this.name='Opti ADMM';
             if ~isempty(F0), this.F0=F0; end
             if nargin<=4, solver=[]; end
-            if nargin==6 && ~isempty(OutOp),this.OutOp=OutOp;end
             assert(length(Fn)==length(Hn),'Fn, Hn and rho_n must have the same length');
             assert(length(Hn)==length(rho_n),'Fn, Hn and rho_n must have the same length');
             this.Fn=Fn;
@@ -98,31 +98,37 @@ classdef OptiADMM < Opti
                 this.cost=this.cost+Fn{n}*Hn{n};
             end
             if isempty(this.solver)
-                this.A=this.rho_n(1)* (this.Hn{1})' *this.Hn{1};
+                this.A=this.rho_n(1)* ((this.Hn{1})' *this.Hn{1});
                 for n=2:length(this.Hn)
-                    this.A=this.A + this.rho_n(n)*(this.Hn{n})' * this.Hn{n};
+                    this.A=this.A + this.rho_n(n)*((this.Hn{n})' * this.Hn{n});
                 end
-                if ~isempty(this.F0) && isa(this.F0,'CostL2Composition')
-                    this.A=this.A + this.F0.H2'*this.F0.H2;
-                    this.b0=this.F0.H2'*this.F0.H1.y;
-                elseif ~isempty(this.F0) && isa(this.F0,'CostL2')
-                    this.A=this.A + LinOpDiag(this.A.sizein);
-                    this.b0=this.F0.y;
+                if ~isempty(this.F0)
+                    if isa(this.F0,'CostL2Composition')
+                        this.A=this.A + this.F0.H2'*this.F0.H2;
+                        this.b0=this.F0.H2'*this.F0.H1.y;
+                    elseif isa(this.F0,'CostL2')
+                        this.A=this.A + LinOpDiag(this.A.sizein);
+                        this.b0=this.F0.y;
+                    else
+                        error('If F0 is not a CostL2 / CostL2Composition, a solver is required in ADMM');
+                    end
                 end
                 if ~this.A.isInvertible  % If A is non invertible -> intanciate a CG
-                    this.CG=OptiConjGrad(this.A,zeros(this.A.sizeout),[],OutputOpti());
+                    this.CG=OptiConjGrad(this.A,zeros(this.A.sizeout));
+                    this.CG.verbose=0;
                     this.CG.maxiter=20;
                     this.CG.ItUpOut=0;
+                    disp('Warning : ADMM will use a Conjugate Gradient to compute the linear step');
                 end
             end
         end
-    	%% Run the algorithm
-        function run(this,x0)
-            % Reimplementation from :class:`Opti`. For details see [1].          
+        function initialize(this,x0)
+            % Reimplementation from :class:`Opti`.
+            
+            initialize@Opti(this,x0);
             if ~isempty(x0) % To restart from current state if wanted
-                this.xopt=x0;
                 for n=1:length(this.Hn)
-                    this.yn{n}=this.Hn{n}.apply(this.xopt);
+                    this.yn{n}=this.Hn{n}.apply(x0);
                     this.Hnx{n}=this.yn{n};
                     this.wn{n}=zeros(size(this.yn{n}));
                 end
@@ -136,48 +142,39 @@ classdef OptiADMM < Opti
                     this.b0=this.F0.y;
                 end
             end
-            assert(~isempty(this.xopt),'Missing starting point x0');
-            tstart=tic;
-            this.OutOp.init();
-            this.niter=1;
-            this.starting_verb();
-            while (this.niter<this.maxiter)
-                this.niter=this.niter+1;
-                xold=this.xopt;
-                % - Algorithm iteration
-                for n=1:length(this.Fn)
-                    this.yn{n}=this.Fn{n}.applyProx(this.Hnx{n} + this.wn{n}/this.rho_n(n),1/this.rho_n(n));
-                    this.zn{n}=this.yn{n}-this.wn{n}/this.rho_n(n);
-                end
-                if isempty(this.solver)                  
-                    b=this.rho_n(1)*this.Hn{1}.applyAdjoint(this.zn{1});
-                    for n=2:length(this.Hn)
-                        b=b+this.rho_n(n)*this.Hn{n}.applyAdjoint(this.zn{n});
-                    end
-                    if ~isempty(this.b0)
-                        b=b+this.b0;
-                    end
-                    if this.A.isInvertible
-                        this.xopt=this.A.applyInverse(b);
-                    else
-                        this.CG.set_b(b);
-                        this.CG.run(this.xopt);
-                        this.xopt=this.CG.xopt;
-                    end
-                else
-                    this.xopt=this.solver(this.zn,this.rho_n, this.xopt);
-                end
-                for n=1:length(this.wn)
-                    this.Hnx{n}=this.Hn{n}.apply(this.xopt);
-                    this.wn{n}=this.wn{n} + this.rho_n(n)*(this.Hnx{n}-this.yn{n});
-                end
-                % - Convergence test
-                if this.test_convergence(xold), break; end
-                % - Call OutputOpti object
-                if (mod(this.niter,this.ItUpOut)==0),this.OutOp.update(this);end
-            end
-            this.time=toc(tstart);
-            this.ending_verb();
         end
+        function flag=doIteration(this)
+            % Reimplementation from :class:`Opti`. For details see [1].
+            this.yold = this.yn;
+            for n=1:length(this.Fn)
+                this.yn{n}=this.Fn{n}.applyProx(this.Hnx{n} + this.wn{n}/this.rho_n(n),1/this.rho_n(n));
+                this.zn{n}=this.yn{n}-this.wn{n}/this.rho_n(n);
+            end
+            if isempty(this.solver)
+                b=this.rho_n(1)*this.Hn{1}.applyAdjoint(this.zn{1});
+                for n=2:length(this.Hn)
+                    b=b+this.rho_n(n)*this.Hn{n}.applyAdjoint(this.zn{n});
+                end
+                if ~isempty(this.b0)
+                    b=b+this.b0;
+                end
+                if this.A.isInvertible
+                    this.xopt=this.A.applyInverse(b);
+                else
+                    this.CG.set_b(b);
+                    this.CG.run(this.xopt);
+                    this.xopt=this.CG.xopt;
+                end
+            else
+                this.xopt=this.solver(this.zn,this.rho_n, this.xopt);
+            end
+            for n=1:length(this.wn)
+                this.Hnx{n}=this.Hn{n}.apply(this.xopt);
+                this.wn{n}=this.wn{n} + this.rho_n(n)*(this.Hnx{n}-this.yn{n});
+            end
+            flag=0;
+        end
+        
+        
     end
 end

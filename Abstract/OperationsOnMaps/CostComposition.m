@@ -78,7 +78,16 @@ classdef CostComposition < MapComposition & Cost
         end
         function M = makeComposition_(this,G)
             % Reimplemented from :class:`Cost`
-            M=CostComposition(this.H1,this.H2*G);
+            if isa(G,'LinOp')
+                T=G*G';
+                if isa(T,'LinOpDiag') && T.isScaledIdentity
+                    M=CostComposition(this,G);
+                else
+                    M=CostComposition(this.H1,this.H2*G);
+                end
+            else
+                M=CostComposition(this.H1,this.H2*G);
+            end
         end
     end
     

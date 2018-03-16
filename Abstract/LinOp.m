@@ -32,8 +32,10 @@ classdef LinOp < Map
         function this=LinOp()
             % Add new fields to memoizeOpts and memoCache
             this.memoizeOpts.applyAdjoint=false; 
+            this.memoizeOpts.applyAdjointInverse=false; 
             this.memoizeOpts.applyHtH=false;
             this.memoizeOpts.applyHHt=false;
+            this.memoCache.applyAdjointInverse=struct('in', [], 'out', []); 
             this.memoCache.applyAdjoint=struct('in', [], 'out', []); 
             this.memoCache.applyHtH=struct('in', [], 'out', []);
             this.memoCache.applyHHt=struct('in', [], 'out', []);
@@ -112,9 +114,13 @@ classdef LinOp < Map
         function L = ctranspose(this)
             % Do the same as :meth:`transpose`
             L = this.makeAdjoint_();
+        end   
+        function L = makeAdjoint(this)
+            % Do the same as :meth:`transpose`
+            L = this.makeAdjoint_();
         end
         function y= applyAdjointInverse(this,x)
-            % Computes \\(\\mathrm{y} = \\mathrm{H}^{-\star} \\mathrm{x}\\) for the given
+            % Computes \\(\\mathrm{y} = \\mathrm{H}^{-\\star} \\mathrm{x}\\) for the given
             % \\(\\mathrm{x} \\in \\mathrm{X}\\). (if applicable)
             %
             % Calls the method :meth:`applyAdjointInverse_`
@@ -128,18 +134,6 @@ classdef LinOp < Map
             if ~checkSize(y, this.sizeout)
                 warning('Output of applyAdjointInverse was size [%s], didn''t match stated sizeout: [%s].',...
                     num2str(size(y)), num2str(this.sizeout));
-            end
-            
-            % **(Abstract method)** Apply \\(\\mathrm{H}^{-*}\\) (if applicable)
-            %
-            % :param x: \\(\\in X\\)
-            % :returns y: \\(= \\mathrm{H^{-*}x}\\)
-            %
-            
-            if this.isinvertible
-                error('adjointInverse not implemented');
-            else
-                error('Operator not invertible');
             end
         end
         function M=makeHtH(this)
@@ -168,9 +162,10 @@ classdef LinOp < Map
     % - makeAdjoint_(this)
     % - makeHtH_(this)
     % - makeHHt_(this)
+    % - makeInversion_(this)
     % - makeComposition_(this, G)
     methods (Access = protected) % all the other underscore methods
-        function x = applyAdjoint_(this, y)
+        function x = applyAdjoint_(~, ~)
             % Not implemented in this Abstract class
             error('applyAdjoint_ method not implemented');
         end
@@ -187,7 +182,7 @@ classdef LinOp < Map
             % way to perform computation.
             x = this.apply(this.applyAdjoint(y));
         end
-        function y = applyAdjointInverse_(this,x)
+        function y = applyAdjointInverse_(~,~)
             % Not implemented in this Abstract class
             error('applyAdjointInverse_ method not implemented');
         end
@@ -195,36 +190,52 @@ classdef LinOp < Map
             % If \\(\\mathrm{G}\\) is a :class:`LinOp`, constructs a :class:`LinOpSummation` object to sum the
             % current :class:`LinOp` \\(\\mathrm{H}\\) with the given \\(\\mathrm{G}\\).
             % Otherwise the summation will be a :class:`MapSummation`.
+                        
             if isa(G,'LinOp')
-                M = LinOpSummation({this,G},[1,1]);
-            else
+                M=[];
+                if isa(G,'LinOpSummation')
+                    % Find elements of the same type
+                    ind=find(strcmp(this.name,cellfun(@(T) T.name,G.mapsCell,'UniformOutput',false)));
+                    if length(ind)==1
+                        % To avoid infinite loops (normally it should never goes in the else because the sum of
+                        % two LinOp of the same type can always be simplified. If not the sum_ method of the corresponding
+                        % LinOp has to be implemented properly).
+                        
+                        M=this + G.alpha(1)*G.mapsCell{ind};
+                        for ii=1:G.numMaps
+                            if ii~=ind
+                                M= M+G.alpha(ii)*G.mapsCell{ii};
+                            end
+                        end
+                    end
+                end
+                if isempty(M)
+                    M=LinOpSummation({this,G},[1,1]);
+                end
+            else 
                 M = MapSummation({this,G},[1,1]);
-            end
-        end
-        function M = minus_(this,G)
-            % If \\(\\mathrm{G}\\) is a :class:`LinOp`, constructs a :class:`LinOpSummation` object to subtract to the
-            % current :class:`LinOp` \\(\\mathrm{H}\\), the given \\(\\mathrm{G}\\).
-            % Otherwise the summation will be a :class:`MapSummation`.
-            if isa(G,'LinOp')
-                M = LinOpSummation({this,G},[1,-1]);
-            else
-                M = MapSummation({this,G},[1,-1]);
             end
         end
         function M = makeAdjoint_(this)
             % Constructs a :class:`LinOpAdjoint` from the current
-            % current :class:`LinOp` \\(\\mathrm{H}\\) 
+            % current :class:`LinOp` \\(\\mathrm{H}\\)
             M=LinOpAdjoint(this);
         end
         function M = makeHtH_(this)
-            % Constructs a :class:`LinOpComposition` corresponding to 
+            % Constructs a :class:`LinOpComposition` corresponding to
             % \\(\\mathrm{H}^{\\star}\\mathrm{H}\\)
             M=LinOpComposition(this',this);
         end
         function M = makeHHt_(this)
-            % Constructs a :class:`LinOpComposition` corresponding to 
+            % Constructs a :class:`LinOpComposition` corresponding to
             % \\(\\mathrm{H}\\mathrm{H}^{\\star}\\)
             M=LinOpComposition(this,this');
+        end
+        function M = makeInversion_(this)
+            % Constructs a :class:`LinOpInversion` corresponding to 
+            % \\(\\mathrm{H}^{-1}\\)
+            
+            M=LinOpInversion(this);
         end
         function M = makeComposition_(this, G)
             % Reimplemented from parent class :class:`Map`.
@@ -267,20 +278,12 @@ classdef LinOp < Map
                 M = makeComposition_@Map(this,G);
             end
         end
-        function M = mpower_(this,p)
-            % Reimplemented from :class:`Map`  
-            if p==-1
-                M=LinOpInversion(this);
-            else
-                M=mpower_@Map(this,p);
-            end
-        end
     end
     
     %% Methods of superclass Map that do not need to be reimplemented in derived Costs
     % - applyJacobianT_(this, y, v)
     methods (Access = protected, Sealed)
-        function x = applyJacobianT_(this, y, v)
+        function x = applyJacobianT_(this, y, ~)
             % Uses the method applyAdjoint (hence do not need to be
             % reimplemented in derived classes)
             x = this.applyAdjoint(y);

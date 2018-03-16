@@ -33,22 +33,13 @@ help Deconv_KL_HessSchatt_NonNeg
 rng(1);
 
 % -- Input image and psf
-load('StarLikeSample');    % Load image (variable im)
-load('psf');               % Load psf (variable psf)
-imdisp(im,'Input Image',1);
-
-% -- Image padding
-impad=zeros(512); idx=129:384;
-impad(idx,idx)=im;
+[im,psf,y]=GenerateData('Poisson',100);
+imdisp(im,'Input Image (GT)',1);
+imdisp(y,'Convolved and noisy data',1);
+sz=size(y);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
-
-% -- Generate data
-load('data');    % load data (variable y)
-imdisp(y(idx,idx),'Convolved and noisy data',1);
-sz=size(y);
-fftHty=conj(H.mtf).*fft2(y);
 
 % -- Functions definition
 F=CostKullLeib([],y,1e-6);           % Kullback-Leibler divergence data term
@@ -61,35 +52,35 @@ lamb=5e-3;                           % Hyperparameter
 Fn={CostKullLeib([],y,1e-6),lamb*R_1sch,R_POS};
 Hn={H,Hess,LinOpDiag(sz)};
 rho_n=[1e-2,1e-2,1e-2];
-OutADMM=MyOutputOpti(1,impad,40);
-ADMM=OptiADMM([],Fn,Hn,rho_n,[],OutADMM);
-ADMM.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
+ADMM=OptiADMM([],Fn,Hn,rho_n,[]);
+ADMM.OutOp=OutputOpti(1,im,40,[1 2]);
+ADMM.ItUpOut=5;        % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;       % max number of iterations
 ADMM.run(y);            % run the algorithm 
 
 
 % -- PrimalDual Condat KL + ShattenHess + NonNeg
-Fn={lamb*R_1sch};
-Hn={Hess};
-OutPDC=MyOutputOpti(1,impad,40);
-PDC=OptiPrimalDualCondat(F*H,R_POS,Fn,Hn,OutPDC);
-PDC.tau=1e-2;          % set algorithm parameters
-PDC.sig=10;            %
-PDC.rho=1.95;          %
-PDC.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
+Fn={lamb*R_1sch,F};
+Hn={Hess,H};
+PDC=OptiPrimalDualCondat([],R_POS,Fn,Hn);
+PDC.OutOp=OutputOpti(1,im,40,[2 3]);
+PDC.tau=100;          % set algorithm parameters
+PDC.sig=1e-2;            %
+PDC.rho=1.2;          %
+PDC.ItUpOut=5;        % call OutputOpti update every ItUpOut iterations
 PDC.maxiter=200;       % max number of iterations
 PDC.run(y);            % run the algorithm 
 
 % -- Display
-imdisp(OutADMM.evolxopt{end}(idx,idx),'KL+HESS+POS (ADMM)',1);
-imdisp(OutPDC.evolxopt{end}(idx,idx),'KL+HESS+POS (Condat)',1);
-figure; plot(OutADMM.iternum,OutADMM.evolcost,'LineWidth',1.5); grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
-hold all; plot(OutPDC.iternum,OutPDC.evolcost,'LineWidth',1.5);
+imdisp(ADMM.OutOp.evolxopt{end},'KL+HESS+POS (ADMM)',1);
+imdisp(PDC.OutOp.evolxopt{end},'KL+HESS+POS (Condat)',1);
+figure; plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5); grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+hold all; plot(PDC.OutOp.iternum,PDC.OutOp.evolcost,'LineWidth',1.5);
 legend('ADMM','Condat');title('Cost evolution');
 
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
-semilogy(OutADMM.iternum,OutADMM.evolsnr,'LineWidth',1.5); 
-semilogy(OutPDC.iternum,OutPDC.evolsnr,'LineWidth',1.5);
+semilogy(ADMM.OutOp.iternum,ADMM.OutOp.evolsnr,'LineWidth',1.5); 
+semilogy(PDC.OutOp.iternum,PDC.OutOp.evolsnr,'LineWidth',1.5);
 legend('KL+HESS+POS (ADMM)','KL+HESS+POS (Condat)');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');

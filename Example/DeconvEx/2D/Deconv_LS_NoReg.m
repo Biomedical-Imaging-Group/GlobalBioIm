@@ -11,6 +11,7 @@ clear; close all; clc;
 help Deconv_LS_NoReg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+%                     F. Soulez ferreol.soulez@univ-lyon1.fr
 %
 %  This program is free software: you can redistribute it and/or modify
 %  it under the terms of the GNU General Public License as published by
@@ -30,23 +31,16 @@ help Deconv_LS_NoReg
 rng(1);
 
 % -- Input image and psf
-load('StarLikeSample');    % Load image (variable im)
-load('psf');               % Load psf (variable psf)
-imdisp(im,'Input Image',1);
-
-% -- Image padding
-impad=zeros(512); idx=129:384;
-impad(idx,idx)=im;
+[im,psf,y]=GenerateData('Gaussian',20);
+imdisp(im,'Input Image (GT)',1);
+imdisp(y,'Convolved and noisy data',1);
+sz=size(y);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
 % If true, applyHtH method will save its result. Hence for two consecutive HtH*x with the
 % same x, no computation is done for the second call
 H.memoizeOpts.applyHtH=1;  
-
-% -- Generate data
-load('data');    % load data (variable y)
-imdisp(y(idx,idx),'Convolved and noisy data',1);
 
 % -- Function definition
 LS=CostL2([],y);  % Least-Sqaures data term
@@ -62,19 +56,19 @@ F.doPrecomputation=1;
 % apply make use of a fast HtH.
 
 % -- Gradient Descent LS
-OutOp=OutputOpti(1,impad,40);
-GD=OptiGradDsct(F,OutOp);
-GD.ItUpOut=1;     % call OutputOpti update every ItUpOut iterations
-GD.maxiter=200;   % max number of iterations
-GD.run(y);        % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
+GD=OptiGradDsct(F);
+GD.OutOp=OutputOpti(1,im,40);
+GD.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
+GD.ItUpOut=1;           % call OutputOpti update every ItUpOut iterations
+GD.maxiter=200;         % max number of iterations
+GD.run(zeros(size(y))); % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
 
 % -- Display
-[v,n]=max(OutOp.evolsnr(:));
-imdisp(OutOp.evolxopt{n}(idx,idx),'LS (GD)',1);
-figure;plot(OutOp.iternum,OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');title('Cost evolution');
+imdisp(GD.OutOp.evolxopt{end},'LS (GD)',1);
+figure;plot(GD.OutOp.iternum,GD.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');title('Cost evolution');
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
-semilogy(OutOp.iternum,OutOp.evolsnr,'LineWidth',1.5); 
-legend('LS (GD)');xlabel('Iterations');ylabel('SNR (dB)');
+semilogy(GD.OutOp.iternum,GD.OutOp.evolsnr,'LineWidth',1.5); 
+legend('LS (GD)','Location','southeast');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[GD.time],'FaceColor',orderCol(1,:),'EdgeColor','k');

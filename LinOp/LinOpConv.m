@@ -78,7 +78,7 @@ classdef LinOpConv <  LinOp
                 elseif nargin<3
                     isReal = varargin{2};
                     index =  1:ndms;
-                elseif nargin==3
+                elseif nargin>=3
                     isReal = varargin{2};
                     index = varargin{3};
                 end               
@@ -169,7 +169,7 @@ classdef LinOpConv <  LinOp
             else                
                 this.sizeout =size(mtf);
             end
-            
+
             %===== Set name, dimensions etc...
             this.name ='LinOpConv';
             this.isInvertible=false;
@@ -288,14 +288,14 @@ classdef LinOpConv <  LinOp
             % Reimplemented from parent class :class:`LinOp`.
             if isa(G,'LinOpDiag') && G.isScaledIdentity
                 if (this.useRFT)
-                    M=LinOpConv(G.diag+this.mtf,this.isReal,this.index,'useRFT');
+                    M=LinOpConv('PSF',iSrft(G.diag+this.mtf,this.Notindex),this.isReal,this.index,'useRFT');
                 else
                     M=LinOpConv(G.diag+this.mtf,this.isReal,this.index);
                 end
             elseif isa(G,'LinOpConv')
                 if this.useRFT==G.useRFT
                     if  this.useRFT
-                        M=LinOpConv(this.mtf+G.mtf,this.isReal,this.index,'useRFT');
+                        M=LinOpConv('PSF',iSrft(this.mtf+G.mtf,this.Notindex),this.isReal,this.index,'useRFT');
                     else
                         M=LinOpConv(this.mtf+G.mtf,this.isReal,this.index);
                     end
@@ -338,7 +338,7 @@ classdef LinOpConv <  LinOp
         function M = makeAdjoint_(this)
             % Reimplemented from parent class :class:`LinOp`.
             if (this.useRFT)
-                M=LinOpConv(conj(this.mtf),this.isReal,this.index,'useRFT');
+                M=LinOpConv('PSF',iSrft(conj(this.mtf),this.Notindex),this.isReal,this.index,'useRFT');
             else
                 M=LinOpConv(conj(this.mtf),this.isReal,this.index);
             end
@@ -346,7 +346,7 @@ classdef LinOpConv <  LinOp
         function M = makeHtH_(this)
             % Reimplemented from parent class :class:`LinOp`.
             if (this.useRFT)
-                M=LinOpConv(abs(this.mtf).^2,this.isReal,this.index,'useRFT');
+                M=LinOpConv('PSF',iSrft(complex(abs(this.mtf).^2),this.Notindex),this.isReal,this.index,'useRFT');
             else
                 M=LinOpConv(abs(this.mtf).^2,this.isReal,this.index);
             end
@@ -360,7 +360,7 @@ classdef LinOpConv <  LinOp
             
             if this.isInvertible
                 if (this.useRFT)
-                    M=LinOpConv(1./this.mtf,this.isReal,this.index,'useRFT');
+                    M=LinOpConv('PSF',iSrft(1./this.mtf,this.Notindex),this.isReal,this.index,'useRFT');
                 else
                     M=LinOpConv(1./this.mtf,this.isReal,this.index);
                 end
@@ -373,7 +373,7 @@ classdef LinOpConv <  LinOp
             if isa(H, 'LinOpConv')
                 if this.useRFT==H.useRFT
                     if  this.useRFT
-                        G=LinOpConv(this.mtf.*H.mtf,this.isReal,this.index,'useRFT');
+                        G=LinOpConv('PSF',iSrft(this.mtf.*H.mtf,this.Notindex),this.isReal,this.index,'useRFT');
                     else
                         G=LinOpConv(this.mtf.*H.mtf,this.isReal,this.index);
                     end
@@ -382,13 +382,13 @@ classdef LinOpConv <  LinOp
                     if this.useRFT
                         newmtf=H.mtf.*Sfft(iSrft(this.mtf,this.Notindex),this.Notindex);
                     else
-                        newmtf=this.mtf.*Sfft(iSrft(G.mtf,G.Notindex),G.Notindex);
+                        newmtf=this.mtf.*Sfft(iSrft(H.mtf,H.Notindex),H.Notindex);
                     end
                     G=LinOpConv(newmtf,this.isReal,this.index);
                 end
             elseif isa(H,'LinOpDiag') && H.isScaledIdentity
                 if  this.useRFT
-                    G = LinOpConv(this.mtf.*H.diag,this.isReal,this.index,'useRFT');
+                    G = LinOpConv('PSF',iSrft(this.mtf.*H.diag,this.Notindex),this.isReal,this.index,'useRFT');
                 else
                     G = LinOpConv(this.mtf.*H.diag,this.isReal,this.index);
                 end

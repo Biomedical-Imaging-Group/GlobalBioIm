@@ -69,16 +69,31 @@ classdef LinOpDiag <  LinOp
     %% Core Methods containing implementations (Protected)
     methods (Access = protected)
         function y = apply_(this,x)
-            % Reimplemented from parent class :class:`LinOp`.
-            y =bsxfun(@times,this.diag,x);
+            % Reimplemented from parent class :class:`LinOp`.            
+            global isGPU
+            if isGPU==2
+                y=this.diag.*x;
+            else
+                y =bsxfun(@times,this.diag,x);
+            end
         end
         function y = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            y =bsxfun(@times,conj(this.diag),x);
+            global isGPU
+            if isGPU==2
+                y=conj(this.diag).*x;
+            else
+                y =bsxfun(@times,conj(this.diag),x);
+            end
         end
         function y = applyHtH_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            y =bsxfun(@times,abs(this.diag).^2,x);
+            global isGPU
+            if isGPU==2
+                y=abs(this.diag).^2.*x;
+            else
+                y =bsxfun(@times,abs(this.diag).^2,x);
+            end
         end
         function y = applyHHt_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
@@ -86,16 +101,26 @@ classdef LinOpDiag <  LinOp
         end
         function y = applyInverse_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
+            global isGPU
             if this.isInvertible
-                y =bsxfun(@times,(1./this.diag),x);
+                if isGPU==2
+                    y =x./this.diag;
+                else
+                    y =bsxfun(@times,(1./this.diag),x);
+                end
             else
                 y = applyInverse_@LinOp(this,x);
             end
         end
         function y = applyAdjointInverse_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
+            global isGPU
             if this.isInvertible
-                y =bsxfun(@times,conj(1./this.diag),x);
+                if isGPU==2
+                    y =x./conj(this.diag);
+                else
+                    y =bsxfun(@times,conj(1./this.diag),x);
+                end
             else
                 y = applyAdjointInverse_@LinOp(this,x);
             end
@@ -162,7 +187,7 @@ classdef LinOpDiag <  LinOp
                 M=LinOpDiag(this.sizein,G.diag.*this.diag);
             elseif isa(G,'LinOpConv') && this.isScaledIdentity
                 if G.useRFT
-                    M = LinOpConv(G.mtf.*this.diag,G.isReal,G.index,'useRFT');
+                    M = LinOpConv('PSF',iSrft(G.mtf.*this.diag,G.Notindex),G.isReal,G.index,'useRFT');
                 else
                     M = LinOpConv(G.mtf.*this.diag,G.isReal,G.index);
                 end

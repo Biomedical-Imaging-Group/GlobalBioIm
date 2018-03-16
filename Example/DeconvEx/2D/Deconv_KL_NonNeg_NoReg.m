@@ -51,7 +51,7 @@ FBS.OutOp=OutputOpti(1,im,40);
 FBS.ItUpOut=5;   % call OutputOpti update every ItUpOut iterations
 FBS.fista=true;   % activate fista
 FBS.maxiter=200;  % max number of iterations
-FBS.gam=5e-3;     % set gamma parameter
+FBS.gam=5;     % set gamma parameter
 FBS.run(y);       % run the algorithm 
 
 % -- Richardson-Lucy KL + NonNeg (implicit)

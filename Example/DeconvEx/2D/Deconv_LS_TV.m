@@ -13,6 +13,7 @@ clear all; close all; clc;
 help Deconv_LS_TV
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+%                     F. Soulez ferreol.soulez@univ-lyon1.fr
 %
 %  This program is free software: you can redistribute it and/or modify
 %  it under the terms of the GNU General Public License as published by
@@ -32,17 +33,13 @@ help Deconv_LS_TV
 rng(1);
 
 % -- Input image and psf
-load('GT');                % Load ground truth (variable im)
-load('psf');               % Load psf (variable psf)
+[im,psf,y]=GenerateData('Gaussian',20);
 imdisp(im,'Input Image (GT)',1);
+imdisp(y,'Convolved and noisy data',1);
+sz=size(y);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
-
-% -- Generate data
-load('data');    % load data (variable y)
-imdisp(y,'Convolved and noisy data',1);
-sz=size(y);
 
 % -- Functions definition
 LS=CostL2([],y);            % Least-Squares data term
@@ -54,22 +51,24 @@ lamb=1e-3;                  % Hyperparameter
 
 % -- Chambolle-Pock  LS + TV
 CP=OptiChambPock(lamb*R_N12,G,F);
-CP.OutOp=OutputOpti(1,im,40);
+CP.OutOp=OutputOpti(1,im,10);
+CP.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
 CP.tau=15;                            % algorithm parameters
 CP.sig=1/(CP.tau*G.norm^2)*0.99;      %
-CP.ItUpOut=10;                        % call OutputOpti update every ItUpOut iterations
+CP.ItUpOut=1;                        % call OutputOpti update every ItUpOut iterations
 CP.maxiter=200;                       % max number of iterations
-CP.run(y);                            % run the algorithm 
+CP.run(zeros(size(y)));               % run the algorithm 
 
 % -- ADMM LS + TV
 Fn={lamb*R_N12};
 Hn={G};rho_n=[1e-1];
 % Here no solver needed in ADMM since the operator H'*H + alpha*G'*G is invertible
 ADMM=OptiADMM(F,Fn,Hn,rho_n);
-ADMM.OutOp=OutputOpti(1,im,40);
-ADMM.ItUpOut=10;       % call OutputOpti update every ItUpOut iterations
-ADMM.maxiter=200;      % max number of iterations
-ADMM.run(y);           % run the algorithm 
+ADMM.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
+ADMM.OutOp=OutputOpti(1,im,10);
+ADMM.ItUpOut=2;            % call OutputOpti update every ItUpOut iterations
+ADMM.maxiter=200;           % max number of iterations
+ADMM.run(zeros(size(y)));   % run the algorithm 
 
 % -- Display
 imdisp(CP.OutOp.evolxopt{end},'LS + TV (CP)',1);
@@ -81,7 +80,7 @@ legend('CP','ADMM');title('Cost evolution');
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
 semilogy(CP.OutOp.iternum,CP.OutOp.evolsnr,'LineWidth',1.5); 
 semilogy(ADMM.OutOp.iternum,ADMM.OutOp.evolsnr,'LineWidth',1.5);
-legend('LS+TV (CP)','LS+TV (ADMM)');xlabel('Iterations');ylabel('SNR (dB)');
+legend('LS+TV (CP)','LS+TV (ADMM)','Location','southeast');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[CP.time],'FaceColor',orderCol(1,:),'EdgeColor','k');

@@ -14,6 +14,7 @@ clear all; close all; clc;
 help Deconv_LS_HessSchatt_NonNeg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+%                     F. Soulez ferreol.soulez@univ-lyon1.fr
 %
 %  This program is free software: you can redistribute it and/or modify
 %  it under the terms of the GNU General Public License as published by
@@ -33,17 +34,13 @@ help Deconv_LS_HessSchatt_NonNeg
 rng(1);
 
 % -- Input image and psf
-load('GT');                % Load ground truth (variable im)
-load('psf');               % Load psf (variable psf)
+[im,psf,y]=GenerateData('Gaussian',20);
 imdisp(im,'Input Image (GT)',1);
+imdisp(y,'Convolved and noisy data',1);
+sz=size(y);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
-
-% -- Generate data
-load('data');    % load data (variable y)
-imdisp(y,'Convolved and noisy data',1);
-sz=size(y);
 
 % -- Functions definition
 LS=CostL2([],y);                 % Least-Sqaures data term
@@ -59,22 +56,24 @@ Fn={lamb*R_1sch,R_POS};
 Hn={Hess,LinOpIdentity(size(im))};
 rho_n=[1e-1,1e-1];
 ADMM=OptiADMM(F,Fn,Hn,rho_n);
-ADMM.OutOp=MyOutputOpti(1,im,40);
-ADMM.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
-ADMM.maxiter=200;       % max number of iterations
-ADMM.run(y);            % run the algorithm 
+ADMM.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4,[1 2]), 'StepRelative',1e-4); 
+ADMM.OutOp=OutputOpti(1,im,10,[1 2]);
+ADMM.ItUpOut=1;           % call OutputOpti update every ItUpOut iterations
+ADMM.maxiter=200;          % max number of iterations
+ADMM.run(zeros(size(y)));  % run the algorithm 
 
 % -- PrimalDual Condat LS + ShattenHess + NonNeg
 Fn={lamb*R_1sch};
 Hn={Hess};
 PDC=OptiPrimalDualCondat(F,R_POS,Fn,Hn);
-PDC.OutOp=MyOutputOpti(1,im,40);
-PDC.tau=1;             % set algorithm parameters
-PDC.sig=1e-2;          %
-PDC.rho=1.95;          %
-PDC.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
-PDC.maxiter=200;       % max number of iterations
-PDC.run(y);            % run the algorithm 
+PDC.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4,[1 3]), 'StepRelative',1e-4); 
+PDC.OutOp=OutputOpti(1,im,40,[1 3]);
+PDC.tau=1;                % set algorithm parameters
+PDC.sig=1e-2;             %
+PDC.rho=1.7;             %
+PDC.ItUpOut=1;           % call OutputOpti update every ItUpOut iterations
+PDC.maxiter=200;          % max number of iterations
+PDC.run(zeros(size(y)));  % run the algorithm 
 
 
 % -- Display
@@ -87,7 +86,7 @@ legend('ADMM','Condat');title('Cost evolution');
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
 semilogy(ADMM.OutOp.iternum,ADMM.OutOp.evolsnr,'LineWidth',1.5); 
 semilogy(PDC.OutOp.iternum,PDC.OutOp.evolsnr,'LineWidth',1.5);
-legend('LS+HESS+POS (ADMM)','LS+HESS+POS (Condat)');xlabel('Iterations');ylabel('SNR (dB)');
+legend('LS+HESS+POS (ADMM)','LS+HESS+POS (Condat)','Location','southeast');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[ADMM.time],'FaceColor',orderCol(1,:),'EdgeColor','k');

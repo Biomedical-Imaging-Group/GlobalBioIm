@@ -74,6 +74,39 @@ classdef LinOpSummation < MapSummation &  LinOp
         function M = makeComposition_(this,G)
             M=makeComposition_@MapSummation(this,G);
         end
+        function M = plus_(this,G)
+            % Reimplemented from :class:`LinOp` 
+            
+            if isa(G,'LinOp')
+                M=[];
+                if isa(G,'LinOpSummation')
+                    M=this+G.mapsCell{1};
+                    for ii=2:G.numMaps
+                        M=M+G.mapsCell{ii};
+                    end
+                else
+                    % Find elements of the same type
+                    ind=find(strcmp(G.name,cellfun(@(T) T.name,this.mapsCell,'UniformOutput',false)));
+                    if length(ind)==1
+                        % To avoid infinite loops (normally it should never goes in the else because the sum of
+                        % two LinOp of the same type can always be simplified. If not the sum_ method of the corresponding
+                        % LinOp has to be implemented properly).
+                        
+                        M=G + this.mapsCell{ind};
+                        for ii=1:this.numMaps
+                            if ii~=ind
+                                M= M+this.mapsCell{ii};
+                            end
+                        end
+                    end
+                end
+                if isempty(M)
+                    M=LinOpSummation({this,G},[1,1]);
+                end
+            else
+                M = MapSummation({this,G},[1,1]);
+            end
+        end
     end
 end
 

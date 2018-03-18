@@ -7,10 +7,11 @@
 %    - Primal-Dual Condat
 %    - ADMM 
 %    - RichardsonLucy-TV
+%    - VMLMB
 %
 % See LinOp, LinOpConv, LinOpGrad, Cost, CostKullLeib, CostNonNeg, 
 % CostMixNorm12, Opti, OptiADMM, OptiRichLucy, OutpuOpti
-% OptiPrimalDualCondat.
+% OptiPrimalDualCondat, OptiVMLMB.
 %------------------------------------------------------------
 clear all; close all; clc;
 help Deconv_KL_TV_NonNeg
@@ -35,17 +36,14 @@ help Deconv_KL_TV_NonNeg
 rng(1);
 
 % -- Input image and psf
-load('GT');                % Load ground truth (variable im)
-load('psf');               % Load psf (variable psf)
+[im,psf,y]=GenerateData('Poisson',100);
 imdisp(im,'Input Image (GT)',1);
+imdisp(y,'Convolved and noisy data',1);
+sz=size(y);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
-
-% -- Generate data
-load('data');    % load data (variable y)
-imdisp(y,'Convolved and noisy data',1);
-sz=size(y);
+H.memoizeOpts.applyHtH = true;
 
 % -- Functions definition
 F=CostKullLeib([],y,1e-6);     % Kullback-Leibler divergence data term
@@ -57,10 +55,10 @@ lamb=5e-3;                     % Hyperparameter
 % -- ADMM KL + TV + NonNeg
 Fn={CostKullLeib([],y,1e-6),lamb*R_N12,R_POS};
 Hn={H,G,LinOpDiag(sz)};
-rho_n=[1e-2,1e-2,1e-2];
+rho_n=[1e-3,1e-3,1e-3];
 ADMM=OptiADMM([],Fn,Hn,rho_n);
-ADMM.OutOp=MyOutputOpti(1,im,40);
-ADMM.ItUpOut=10;                                  % call OutputOpti update every ItUpOut iterations
+ADMM.OutOp=OutputOpti(1,im,40,[1 2]);
+ADMM.ItUpOut=2;                                  % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;                                 % max number of iterations
 ADMM.run(y);                                      % run the algorithm
 
@@ -68,43 +66,60 @@ ADMM.run(y);                                      % run the algorithm
 Fn={lamb*R_N12,F};
 Hn={G,H};
 PDC=OptiPrimalDualCondat([],R_POS,Fn,Hn);
-PDC.OutOp=MyOutputOpti(1,im,40);
-PDC.tau=5e-2;          % set algorithm parameters
-PDC.sig=1;             %
+PDC.OutOp=OutputOpti(1,im,40,[2 3]);
+PDC.tau=100;          % set algorithm parameters
+PDC.sig=1e-2;         %
 PDC.rho=1.2;          %
-PDC.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
-PDC.maxiter=200;       % max number of iterations
-PDC.run(y);            % run the algorithm 
+PDC.ItUpOut=2;        % call OutputOpti update every ItUpOut iterations
+PDC.maxiter=200;      % max number of iterations
+PDC.run(y);           % run the algorithm 
 
 % -- Richardson-Lucy-TV  KL + TV + NonNeg (implicit)
 RLTV=OptiRichLucy(F*H,1,lamb);
-RLTV.OutOp=MyOutputOpti(1,im,40);
-RLTV.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
+RLTV.OutOp=OutputOpti(1,im,40);
+RLTV.ItUpOut=2;   % call OutputOpti update every ItUpOut iterations
 RLTV.maxiter=200;  % max number of iterations
 RLTV.run(y);       % run the algorithm 
+
+%% -- VMLMB KL + hyperbolicTV + NonNeg
+hyperB = CostHyperBolic(G.sizeout,   1e-7,  3)*G;
+C = F*H+ lamb*hyperB; 
+C.memoizeOpts.apply=true;
+VMLMB=OptiVMLMB(C,0.,[]);  
+VMLMB.OutOp=OutputOpti(1,im,40);
+VMLMB.ItUpOut=2; 
+VMLMB.maxiter=200;                             % max number of iterations
+VMLMB.m=3;                                     % number of memorized step in hessian approximation
+VMLMB.run(y);                                  % run the algorithm 
+
+
 
 % -- Display
 imdisp(ADMM.OutOp.evolxopt{end},'KL+TV+POS (ADMM)',1);
 imdisp(PDC.OutOp.evolxopt{end},'KL+TV+POS (Condat)',1);
 imdisp(RLTV.OutOp.evolxopt{end},'KL+TV+POS (RL-TV)',1);
+imdisp(VMLMB.OutOp.evolxopt{end},'VMLMB+TV+POS (RL-TV)',1);
 
 figure;plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5); grid;  
 hold all;plot(PDC.OutOp.iternum,PDC.OutOp.evolcost,'LineWidth',1.5); 
-plot(RLTV.OutOp.iternum,RLTV.OutOp.evolcost,'LineWidth',1.5); 
+plot(RLTV.OutOp.iternum,RLTV.OutOp.evolcost,'LineWidth',1.5);  
+plot(VMLMB.OutOp.iternum,VMLMB.OutOp.evolcost,'LineWidth',1.5); 
 set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
-legend('ADMM','Condat','RL-TV');title('Cost evolution');
+legend('ADMM','Condat','RL-TV','VMLMB');title('Cost evolution');
 
-% -- Plot Evolution SNR and Running Time for Hess-Reg-Pos methods
+% -- Plot Evolution SNR and Running Time for TV-Reg-Pos methods
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
 semilogy(ADMM.OutOp.iternum,ADMM.OutOp.evolsnr,'LineWidth',1.5);
 semilogy(PDC.OutOp.iternum,PDC.OutOp.evolsnr,'LineWidth',1.5);
 semilogy(RLTV.OutOp.iternum,RLTV.OutOp.evolsnr,'LineWidth',1.5);
-legend('KL+TV+POS (ADMM)','KL+TV+POS (Condat)','KL+TV+POS (RL-TV)');xlabel('Iterations');ylabel('SNR (dB)');
+semilogy(VMLMB.OutOp.iternum,VMLMB.OutOp.evolsnr,'LineWidth',1.5);
+legend('KL+TV+POS (ADMM)','KL+TV+POS (Condat)','KL+TV+POS (RL-TV)','KL+TV+POS (VMLMB)','Location','southeast');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[ADMM.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
 bar(2,[PDC.time],'FaceColor',orderCol(2,:),'EdgeColor','k');
 bar(3,[RLTV.time],'FaceColor',orderCol(3,:),'EdgeColor','k');
-set(gca,'xtick',[1 2 3]);ylabel('Time (s)');
-set(gca,'xticklabels',{'KL+TV+POS (ADMM)','KL+TV+POS (Condat)','KL+TV+POS (RL-TV)'});set(gca,'XTickLabelRotation',45)
+bar(4,[VMLMB.time],'FaceColor',orderCol(4,:),'EdgeColor','k');
+set(gca,'xtick',[1 2 3 4]);ylabel('Time (s)');
+set(gca,'xticklabels',{'KL+TV+POS (ADMM)','KL+TV+POS (Condat)','KL+TV+POS (RL-TV)','KL+TV+POS (VMLMB)'});set(gca,'XTickLabelRotation',45)
 

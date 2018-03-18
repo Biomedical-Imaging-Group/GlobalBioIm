@@ -18,7 +18,7 @@ function Orthoviews(im,pos,tt,newfig)
 
 sz=size(im);im=double(im)/double(max(im(:)));
 margin=10;
-if nargin <2, pos=floor(sz/2); end;
+if nargin <2 || isempty(pos), pos=floor(sz/2); end;
 if nargin <3, tt=' '; end;
 if nargin <4, newfig=1; end;
 if newfig, figure; end

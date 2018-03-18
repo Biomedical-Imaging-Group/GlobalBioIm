@@ -59,6 +59,7 @@ classdef OptiADMM < Opti
         Fn;                  % Cell containing the Cost Fn
         Hn;                  % Cell containing the LinOp Hn
         solver=[];           % solver for the last step of the algorithm
+        A;     % LinOp for conjugate gradient (if used)
     end
     % Full protected properties
     properties (SetAccess = protected,GetAccess = ?TestCvg)
@@ -67,7 +68,6 @@ classdef OptiADMM < Opti
         wn;
         Hnx;
         b0=[];
-        A;     % LinOp for conjugate gradient (if used)
         yold=0;  % Parameter needed for termination criterion
     end
     % Full public properties

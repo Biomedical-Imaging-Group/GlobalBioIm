@@ -6,7 +6,7 @@ classdef LinOpConv <  LinOp
     % :param index: dimensions along which the convolution is performed (the MTF must have a comformable size
     % :param 'MTF': keyword to provide MTF (default)
     % :param 'PSF': keyword to provide PSF instead of MTF
-    % :param 'Centered': is the PSF is centered in the image
+    % :param 'Centered': if the PSF is centered in the image
     % :param 'Pad': is the PSF must be padded to the size SZ with the value padvalue (default 0) 
     %
     % All attributes of parent class :class:`LinOp` are inherited.
@@ -60,18 +60,18 @@ classdef LinOpConv <  LinOp
             
             if isnumeric(varargin{1})
                 mtf = varargin{1};
-                        ndms = ndims(mtf);
-                        if nargin == 1
-                            index =  1:ndms;
-                            isReal=true;                          
-                        elseif nargin<3
-                            isReal = varargin{2};
-                            index =  1:ndms;
-                        elseif nargin==3
-                            isReal = varargin{2};
-                            index = varargin{3};
-                        end
-                        
+                ndms = ndims(mtf);
+                if nargin == 1
+                    index =  1:ndms;
+                    isReal=true;
+                elseif nargin<3
+                    isReal = varargin{2};
+                    index =  1:ndms;
+                elseif nargin==3
+                    isReal = varargin{2};
+                    index = varargin{3};
+                end
+                
             else switch varargin{1}
                     case('PSF')
                         ispsf = true;
@@ -94,10 +94,14 @@ classdef LinOpConv <  LinOp
                 if nargin>3
                     isReal = varargin{3};
                     index = varargin{4};
+                    if isempty(index)
+                        index= 1:ndms;
+                    end
                 end
             end
             
-            for c=5:length(varargin)
+            c=5;
+            while c<=length(varargin)
                 switch varargin{c}
                     case('Centered')
                         centering = true;
@@ -107,25 +111,22 @@ classdef LinOpConv <  LinOp
                             sz = varargin{c+1};
                             c = c+1;
                         end
-                        if (nargin>c+1) && (varargin{c+1}~='Centered')
+                        if  isscalar(varargin{c+1})
                             padvalue = varargin{c+1};
                             c = c+1;
                         end
                     otherwise
                         error('Unknown keyword.');
                 end
+                c=c+1;
             end
-            
-           
             
             if ispsf
                 if pad
                     if ~centering
-                        if ~isempy(index)
-                            for n=1:ndims(psf)
-                                if any(index==n)
-                                    psf = fftshift(psf,n);
-                                end
+                        for n=1:ndims(psf)
+                            if any(index==n)
+                                psf = fftshift(psf,n);
                             end
                         end
                         centering=true;
@@ -135,28 +136,27 @@ classdef LinOpConv <  LinOp
                     for n=1:ndims(psf)
                         if any(index==n)
                             padsize = zeros(size(psfsize));
-                            padsize(n) = floor(padsz);
+                            padsize(n) = floor(padsz(n));
                             psf = padarray(psf,padsize,padvalue,'post');
-                            padsize(n) = ceil(padsz);
+                            padsize(n) = ceil(padsz(n));
                             psf = padarray(psf,padsize,padvalue,'pre');
                         end
                     end
                 end
                 
                 if centering
-                    if ~isempty(index)
-                        for n=1:ndims(psf)
-                            if any(index==n)
-                                psf = fftshift(psf,n);
-                            end
+                    for n=1:ndims(psf)
+                        if any(index==n)
+                            psf = fftshift(psf,n);
+                            
                         end
                     end
                 end
                 
-            this.sizeout =size(psf);
+                this.sizeout =size(psf);
             else
                 
-            this.sizeout =size(mtf);
+                this.sizeout =size(mtf);
             end
             
             this.name ='LinOpConv';
@@ -188,8 +188,8 @@ classdef LinOpConv <  LinOp
                 
                 mtf = Sfft(psf, this.Notindex);
             end
-                
-                
+            
+            
             this.mtf = mtf; %Sfft(psf, this.Notindex);
             
             if all(this.mtf)

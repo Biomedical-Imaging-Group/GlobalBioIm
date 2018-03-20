@@ -205,16 +205,18 @@ classdef LinOpGrad <  LinOp
         function M = makeHtH_(this)
             % Reimplemented from parent class :class:`LinOp`.
             if strcmp(this.bc,'circular')&&(this.ndms<=4)
-                fHtH=zeros(this.sizein);
-                switch(this.ndms)
-                    case(1), fHtH(1)=2;fHtH(2)=-1;fHtH(end)=-1;fHtH=fHtH/this.res(1)^2;
-                    case(2), fHtH(1,1)=2/this.res(1)^2+2/this.res(2)^2;fHtH(1,2)=-1/this.res(2)^2;fHtH(2,1)=-1/this.res(1)^2;fHtH(1,end)=-1/this.res(2)^2;fHtH(end,1)=-1/this.res(1)^2;
-                    case(3), fHtH(1,1,1)=2/this.res(1)^2+2/this.res(2)^2+2/this.res(3)^2;fHtH(1,2,1)=-1/this.res(2)^2;fHtH(2,1,1)=-1/this.res(1)^2;fHtH(1,end,1)=-1/this.res(2)^2;fHtH(end,1,1)=-1/this.res(1)^2;
-                        fHtH(1,1,2)=-1/this.res(3)^2;fHtH(1,1,end)=-1/this.res(3)^2;
-                    case(4), fHtH(1,1,1,1)=2/this.res(1)^2+2/this.res(2)^2+2/this.res(3)^2+2/this.res(4)^2;fHtH(1,2,1,1)=-1/this.res(2)^2;fHtH(2,1,1,1)=-1/this.res(1)^2;fHtH(1,end,1,1)=-1/this.res(2)^2;fHtH(end,1,1,1)=-1/this.res(1)^2;
-                        fHtH(1,1,2,1)=-1/this.res(3)^2;fHtH(1,1,end,1)=-1/this.res(3)^2;fHtH(1,1,1,2)=-1/this.res(4)^2;fHtH(1,1,1,end)=-1/this.res(4)^2;
+                fHtH=zeros(this.sizein)  ;
+                idxAll = repmat({1}, 1, this.ndms);
+                rep=this.sizein;
+                sel=idxAll;
+                for ii = this.index
+                    idx=idxAll;idx{ii}=':';
+                    dd=idxAll;dd{ii}=this.sizein(ii);
+                    fHtH(idx{:})=fHtH(idx{:})+reshape([2, -1, zeros(1,this.sizein(ii)-3),  -1],dd{:})/this.res(ii)^2;
+                    rep(ii)=1;sel{ii}=':';
                 end
-                M=LinOpConv(fftn(fHtH));
+                fHtH=repmat(fHtH(sel{:}) ,rep);
+                M=LinOpConv(Sfft(fHtH,setdiff(1:this.ndms,this.index)),1,this.index);
             else
                 M=makeHtH_@LinOp(this);
             end

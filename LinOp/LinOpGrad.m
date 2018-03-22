@@ -204,7 +204,7 @@ classdef LinOpGrad <  LinOp
         end
         function M = makeHtH_(this)
             % Reimplemented from parent class :class:`LinOp`.
-            if strcmp(this.bc,'circular')&&(this.ndms<=4)
+            if strcmp(this.bc,'circular')
                 fHtH=zeros(this.sizein)  ;
                 idxAll = repmat({1}, 1, this.ndms);
                 rep=this.sizein;

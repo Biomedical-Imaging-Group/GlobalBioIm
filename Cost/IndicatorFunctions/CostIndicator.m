@@ -6,6 +6,7 @@ classdef  CostIndicator < Cost
     %
     % All attributes of parent class :class:`Cost` are inherited 
     %
+    %
     % **Note** :class:`CostIndicator` is an generic class for all
     % indicator cost functions
     %
@@ -32,7 +33,7 @@ classdef  CostIndicator < Cost
         function this = CostIndicator(sz,y)   
             if nargin<2, y=0; end
             this@Cost(sz,y);
-            this.isDifferentiable=true;
+            this.isDifferentiable=false;
         end
     end
             

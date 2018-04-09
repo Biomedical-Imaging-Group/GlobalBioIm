@@ -13,6 +13,7 @@ OptiADMM
 .. autoclass:: OptiADMM
     :show-inheritance:
     :members: run, starting_verb, ending_verb, test_convergence, initialize, doIteration, updateParams
+    
 
 OptiChambPock
 -------------

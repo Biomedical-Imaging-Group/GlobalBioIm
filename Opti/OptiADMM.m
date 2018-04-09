@@ -60,9 +60,11 @@ classdef OptiADMM < Opti
         Hn;                  % Cell containing the LinOp Hn
         solver=[];           % solver for the last step of the algorithm
         A;     % LinOp for conjugate gradient (if used)
-    end
+    %end
     % Full protected properties
-    properties (SetAccess = protected,GetAccess = {?TestCvg,?OutputOpti})
+    %properties (SetAccess = protected,GetAccess = {?OutputOpti ,
+    %?TestCvg})  % This makes problems for doc compilation. For the moment
+    %I let all the attributes public
         yn;    % Internal parameters
         zn;
         wn;

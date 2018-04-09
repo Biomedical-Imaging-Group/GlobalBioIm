@@ -62,7 +62,7 @@ classdef OptiADMM < Opti
         A;     % LinOp for conjugate gradient (if used)
     end
     % Full protected properties
-    properties (SetAccess = protected,GetAccess = ?TestCvg)
+    properties (SetAccess = protected,GetAccess = {?TestCvg,?OutputOpti})
         yn;    % Internal parameters
         zn;
         wn;

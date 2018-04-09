@@ -83,7 +83,14 @@ OutputOpti
 
 .. autoclass:: OutputOpti
     :show-inheritance:
-    :members: init, update
+    :members: init, update, computeCost, computeSNR
+
+OutputOptiADMM
+--------------
+
+.. autoclass:: OutputOptiADMM
+    :show-inheritance:
+    :members: init, update, computeCost, computeSNR
 
 .. automodule:: Opti.TestCvg
 

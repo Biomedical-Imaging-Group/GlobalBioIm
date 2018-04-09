@@ -40,8 +40,6 @@ Opti
     :members: run, starting_verb, ending_verb, test_convergence, initialize, doIteration, updateParams
 
 
-.. automodule:: Abstract.Compositions
-
 .. _ref-op-on-Maps:
 
 OperationsOnMaps

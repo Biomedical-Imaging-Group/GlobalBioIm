@@ -6,7 +6,7 @@ This section contains linear operator classes which all derive from the abstract
 .. automodule:: LinOp
     
 LinOpBroadcast
---------
+--------------
 
 .. autoclass:: LinOpBroadcast
     :show-inheritance:

@@ -74,7 +74,7 @@ classdef CostMixNormSchatt1 < Cost
             if this.sizein(end)==3
                 this.reshDim=[this.sizein(1),prod(this.sizein(2:end-1)),3];
             elseif this.sizein(end)==6
-                this.reshDim=[this.sizein(1),prod(this.sizein(2:end-1)),6];
+                this.reshDim=[this.sizein(1),prod(this.sizein(2:end-1)),1,6];
             end
         end
     end
@@ -88,7 +88,7 @@ classdef CostMixNormSchatt1 < Cost
             dim=size(x);           
             if dim(end)==3     % 2D
                 [E,~]=svd2D_decomp(reshape(x,this.reshDim));
-            elseif dim(end)==6 % 3D
+            elseif dim(end)==6 % 3D              
                 [E,~]=svd3D_decomp(reshape(x,this.reshDim));
             else
                 error('third dimension of x should be 3 or 6');

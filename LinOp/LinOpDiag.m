@@ -149,10 +149,11 @@ classdef LinOpDiag <  LinOp
         function M = makeComposition_(this, G)
             % Reimplemented from parent class :class:`LinOp`.
             
+            sz=size(this.diag);
             if isa(G,'LinOpDiag')
                 M=LinOpDiag(this.sizein,G.diag.*this.diag);
-            elseif isa(G,'LinOpConv') && this.isScaledIdentity
-                M = LinOpConv(G.mtf.*this.diag,G.isReal,G.index);
+            elseif isa(G,'LinOpConv') && ( this.isScaledIdentity || (~isempty(G.index) && all(sz(G.index)==1)) )
+                M = LinOpConv(this*G.mtf,G.isReal,G.index);
             else
                 M=makeComposition_@LinOp(this,G);
             end

@@ -297,8 +297,11 @@ classdef LinOpConv <  LinOp
             % Reimplemented from parent class :class:`LinOp`
             if isa(H, 'LinOpConv')
                 G = LinOpConv(this.mtf.*H.mtf,this.isReal,this.index);
-            elseif isa(H,'LinOpDiag') && H.isScaledIdentity
-                G = LinOpConv(this.mtf.*H.diag,this.isReal,this.index);
+            elseif isa(H,'LinOpDiag') 
+                sz=size(H.diag);
+                if ( H.isScaledIdentity || (~isempty(this.index) && all(sz(this.index)==1)) )
+                    G = LinOpConv(H*this.mtf,this.isReal,this.index);
+                end
             else
                 G = makeComposition_@LinOp(this, H);
             end

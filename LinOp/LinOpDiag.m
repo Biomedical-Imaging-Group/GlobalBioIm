@@ -106,6 +106,8 @@ classdef LinOpDiag <  LinOp
                 M=LinOpDiag(this.sizein,bsxfun(@plus,G.diag,this.diag));
             elseif isa(G,'LinOpConv') && this.isScaledIdentity
                 M=LinOpConv(this.diag+G.mtf,G.isReal,G.index);
+            elseif isa(G,'LinOpMatrix') && this.isScaledIdentity
+                H=LinOpMatrix(G.M+this.diag*eye(size(G.M)),G.sizein,G.index);
             else
                 M=plus_@LinOp(this,G);
             end
@@ -153,7 +155,9 @@ classdef LinOpDiag <  LinOp
             if isa(G,'LinOpDiag')
                 M=LinOpDiag(this.sizein,G.diag.*this.diag);
             elseif isa(G,'LinOpConv') && ( this.isScaledIdentity || (~isempty(G.index) && all(sz(G.index)==1)) )
-                M = LinOpConv(this*G.mtf,G.isReal,G.index);
+                M=LinOpConv(this*G.mtf,G.isReal,G.index);
+            elseif isa(G,'LinOpBroadcastMatrix') && this.isScaledIdentity
+                M=LinOpBroadcastMatrix(G.M*this.diag,G.sizein,G.index);
             else
                 M=makeComposition_@LinOp(this,G);
             end

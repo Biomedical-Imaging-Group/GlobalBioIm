@@ -1,19 +1,22 @@
 classdef LinOpBroadcastMatrix <  LinOp
-    % LinOpBroadCastMatrix which applies a matrix along a 
+    % LinOpBroadCastMatrix which applies a matrix along a given dimension
     % 
     % Build a LinOp from a given matrix 
     %
-    % :param M: matrix
-    % :param index: 
+    % :param M: of size M x N
+    % :param sz: input size of the :class:`LinOpBroadCastMatrix`
+    % :param index: dimension along which the matrix is applied (sz(index) must be equal to N)
     %
     % All attributes of parent class :class:`LinOp` are inherited. 
     %
-    % **Example** H=LinOpBroadcastMatrix(M,index)
+    % If M is 2x3, sz=[2 3 2] and index=2, then the matrix M is applied to
+    % each x(i,:,j) leading to an output of size [2 2 2].
+    %
+    % **Example** H=LinOpBroadcastMatrix(M,sz,index)
     %
     % See also :class:`LinOp`, :class:`Map`
      
-    %%    Copyright (C) 2015 
-    %     F. Soulez  ferreol.soulez@epfl.ch
+    %%    Copyright (C) 2018 
     %     E. Soubies emmanuel.soubies@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify

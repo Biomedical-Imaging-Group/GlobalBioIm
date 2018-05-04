@@ -5,7 +5,7 @@ classdef LinOpDiag <  LinOp
     % vector containing the diagonal elements of \\(\\mathrm{H}\\).
     %
     % :param diag: elements of the diagonal (Non-singleton dimensions of diag and sz must be consistent)
-    % :param sz: size (if not the size of the given diag) to build a scaled identity operator.
+    % :param sz: size (if not the size of the given diag).
     %
     % All attributes of parent class :class:`LinOp` are inherited.
     %
@@ -151,11 +151,12 @@ classdef LinOpDiag <  LinOp
         function M = makeComposition_(this, G)
             % Reimplemented from parent class :class:`LinOp`.
             
-            sz=size(this.diag);
+            sz=ones(size(this.sizein));   % to consider singleton dimension that are at the end
+            sz(1:length(size(this.diag)))=size(this.diag);
             if isa(G,'LinOpDiag')
                 M=LinOpDiag(this.sizein,G.diag.*this.diag);
-            elseif isa(G,'LinOpConv') && ( this.isScaledIdentity || (~isempty(G.index) && all(sz(G.index)==1)) )
-                M=LinOpConv(this*G.mtf,G.isReal,G.index);
+            elseif isa(G,'LinOpConv') && ( this.isScaledIdentity || (all(sz(G.index)==1)) )
+                M = LinOpConv(this*G.mtf,G.isReal,G.index);
             elseif isa(G,'LinOpBroadcastMatrix') && this.isScaledIdentity
                 M=LinOpBroadcastMatrix(G.M*this.diag,G.sizein,G.index);
             else

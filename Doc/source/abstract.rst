@@ -1,4 +1,4 @@
-Abstract classes
+Abstract Classes
 ****************
 
 This section describes the abstract classes of the GlobalBioIm library. It provides general properties for 

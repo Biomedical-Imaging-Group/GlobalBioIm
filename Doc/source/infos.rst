@@ -1,66 +1,69 @@
-Important Informations
-**********************
+Important Information
+*********************
 
-This section contains useful informations for developers/users who want to 
-   - Implement new classes :class:`Map`, :class:`LinOp`, :class:`Cost` or :class:`Opti`, 
-   - Implement new tools in existing classes (e.g. a fast computation of the gradient of a cost),
-   - Use the library for practical problems (see also the provided :ref:`examples <ref-examples>`)
+This section contains useful information for developers/users who want to 
+
+   - Implement new classes :class:`Map`, :class:`LinOp`, :class:`Cost`, or :class:`Opti`
+   - Implement new tools in existing classes (e.g., a fast computation of the gradient of a cost)
+   - Use the library for practical problems (see also the provided :ref:`examples <ref-examples>`).
 
 General Philosophy
 ------------------
 
-The implementation and organization of the library is guided by the following principles:
-   - Low code duplication, 
-   - Implementing a new map/cost/algorithm should require to edit/create only one file,
-   - There should be a solution for implementing new needs (i.e. few hard constraints to respect in implementations),
-   - Always have the choice between fast but memory consuming / memory efficient but slower.
+The implementation and organization of the library is guided by
 
-Classes Hierarchy
------------------
+   - Low code duplication
+   - The requirement that a new map/cost/algorithm should need one to edit/create only one file
+   - The existence of a solution to new needs (i.e., few hard constraints to respect in implementations)
+   - The systematic choice between fast but memory consuming and memory efficient but slower.
 
-The Library is based on 4 abstract classes :class:`Map`,  :class:`LinOp`,  :class:`Cost` and  :class:`Opti` from which 
-inherit all the classes used in practice to solve inverse problems. Note that non-linear operators inherit directly from the 
-:class:`Map` class since they do not require new specific attributes/methods.
+Hierarchy of Classes
+--------------------
+
+The library is based on the four abstract classes :class:`Map`,  :class:`LinOp`,  :class:`Cost`, and  :class:`Opti`. All other classes
+inherit from them. Note that nonlinear operators inherit directly from the 
+:class:`Map` class since they do not require specific attributes/methods.
 
 .. figure:: ClassesHierarchy.png
    :scale: 40 %
    :alt: Classes Hierarchy diagram
    :align: center
 
-   Fig 1. Classes Hierarchy diagram of the GlobalBioIm Library.
+   Fig 1. Hierarchy of classes within the GlobalBioIm library.
 
-Interface methods and Core methods
+Interface Methods and Core Methods
 ----------------------------------
 
-Classes (except :class:`Opti` classes) contain two types of methods:
+Every class (except :class:`Opti` classes) contains two types of methods
 
-   - **Interface methods** which are methods that can be called from an instanciated object of the class. They check the size conformity of the inputs and call the corresponding core method. Morever, they
-     manage the memoize mechanism (see below). Their implementation is done at the level of abstract classes. Hence, to implement a new class, developpers do not have to deal with the memoize system as well as the checking of inputs sizes.
-   - **Core methods**  are  methods that contain implementation. Developpers only need to implement these methods.
+   - **Interface methods**  are methods that can be called from an instanciated object of the class. They check the size conformity of the input and call the corresponding core method. Morever, they
+     manage the memoize mechanism (see below). Their implementation is done at the level of abstract classes. (To implement a new class, developers do not have to deal with the memoize system as well as to check of input sizes.)
+   - **Core methods**  are  methods that contain implementation. Developers only need to implement these methods.
 
-Hence, methods always go by pairs (Interface + Core). They have the same name which is followed by an "_" symbol for core ones. 
-For instance
+Methods always go by pair (Interface + Core). They have the same name, followed by a "_" symbol for core ones. 
+For instance,
    - apply()
-   - apply_()
+   - apply_().
 
 
-**Note** There is an exception for the :meth:`mtimes` method (i.e. the overloading of the * operator) which do not have
-an associated *core* method.  This method calls either :meth:`apply` or :meth:`makeComposition` depending on the
-right hand side of the operation.
+**Exception** The :meth:`mtimes` method (i.e., the overloading of the * operator) has no associated *core* method.
+This method calls either :meth:`apply` or :meth:`makeComposition`, depending on the
+right-hand side of the operation.
 
-Memoize and Precomputation options
+Memoize and Precomputation Options
 ----------------------------------
 
-The :class:`Map` class provides two attributes which are
-    - :attr:`memoizeOpts` a structure of booleans with one field per method of the class (default all false). If, for instance,
+The :class:`Map` class provides two attributes
+
+    - :attr:`memoizeOpts` is a structure of booleans with one field per method of the class (default all false). If, for instance,
       the field *memoizeOpts.apply* is set to true, the result of the :meth:`apply` method \\(\\mathrm{y=Hx}\\) is saved.
       Then, if the next call to the :meth:`apply` method is for the same \\(\\mathrm{x}\\), the saved value \\(\\mathrm{y}\\) is directly
       returned without any computation.
-    - :attr:`doPrecomputation` a boolean (default false). When *true*, some methods of the instanciated 
+    - :attr:`doPrecomputation` is a boolean (default false). When *true*, some methods of the instanciated 
       object will be accelerated at the price of a larger memory consumption. It depends on how the implementation of 
-      the class has been done. Hence, if one wants to accelerate a method thanks to a precomputation of some quatities, this
-      has to be done **when the doPrecomputation option is activated**, and not by default. This let the possibility to
-      avoid the precomputation in case of memory limitation issues.
+      the class has been done. Hence, if one wants to accelerate a method by precomputing some quantities, this
+      has to be done **when the doPrecomputation option is activated**, and not by default. This offers the possibility to
+      bypass precomputation steps in the presence of memory limitations.
 
 Let us look at some examples. Consider a convolution oprerator :class:`LinOpConv` 
 
@@ -69,8 +72,8 @@ Let us look at some examples. Consider a convolution oprerator :class:`LinOpConv
   H=LinOpConv(fftn(psf));
   H.memoizeOpts.apply=true;  
 
-for a given PSF (\\(512\\times 512 \\times 256 \\)) and for which we activate the memoize option for the :meth:`apply` method.
-Then, let us make the following calls to :meth:`apply` method.
+for a given PSF (\\(512\\times 512 \\times 256 \\)) and for which we have activated the memoize option of the :meth:`apply` method.
+Then, let us make the following calls to the :meth:`apply` method:
 
 .. code:: matlab
 
@@ -86,7 +89,7 @@ Then, let us make the following calls to :meth:`apply` method.
   Elapsed time is 0.083087 seconds.
 
 Here, one can appreciate the effect of the *memoize* option. To observe the effect of the *precomputation* option,
-we instantiate a :class:`CostL2` object and we combine it with our convolution operator. Moreover, we activate the *precomputation* option for the resulting :class:`CostL2Composition` object.
+we instantiate a :class:`CostL2` object and combine it with our convolution operator. Moreover, we activate the *precomputation* option for the resulting :class:`CostL2Composition` object.
 
 .. code:: matlab
 
@@ -95,7 +98,7 @@ we instantiate a :class:`CostL2` object and we combine it with our convolution o
   >> F=LS*H;
   >> F.doPrecomputation=1;
 
-Let us evaluate the gradient of the cost *F* at a point x.
+Let us evaluate the gradient of the cost *F* at x.
 
 .. code:: matlab
 
@@ -111,14 +114,14 @@ For a :class:`CostL2`, when the *precomputation* option is activated, the gradie
 
 $$ \\nabla F(\\mathrm{x})= \\mathrm{H^*Hx - H^*y},$$
 
-which allows to take benefit from a fast implementation of \\( \\mathrm{H^*H}\\) (for the above example \\( \\mathrm{H^*H}\\) is also a 
+which allows us to take advantage of a fast implementation of \\( \\mathrm{H^*H}\\) (for the above example, \\( \\mathrm{H^*H}\\) is also a 
 convolution). Here, at the first call of :meth:`applyGrad`, the quantity \\(\\mathrm{H^*y}\\) is computed and stored 
-(hence 4 FFT/IFFT are performed). Then, for all the following calls to :meth:`applyGrad` the compuation is now reduced to
-the application of \\( \\mathrm{H^*H}\\) which requires only 2 FFT/IFFT in this case.
+(hence 4 FFT/IFFT are performed). Then, for all subsequentg calls to :meth:`applyGrad`, the computation is now reduced to
+the application of \\( \\mathrm{H^*H}\\) and requires only 2 FFT/IFFT.
 
-Note that in the above example we computed the gradient 3 times over the same x without activating the *memoize* option 
-for the :meth:`applyGrad` method in order to show the effect of *precomputation*. Of course, doing new calls to :meth:`applyGrad`
-with the same x after having activated the *memoize* option produces,
+In this example, we computed the gradient 3 times over the same x without activating the *memoize* option 
+of the :meth:`applyGrad` method in order to show the effect of *precomputation*. Of course, doing new calls to :meth:`applyGrad`
+with the same x after having activated the *memoize* option produces
 
 .. code:: matlab
 
@@ -133,11 +136,12 @@ with the same x after having activated the *memoize* option produces,
 Compositions
 ------------
 
-The library enjoys a nice operator algebra mechanism which allows for generic implementations. This is made possible
-thanks to the methods prefixed by *make* (i.e. :meth:`makeComposition_`, :meth:`makeAdjoint_`, :meth:`makeHtH_`, :meth:`makeHHt_`...)
-as well as the :meth:`plus_`, :meth:`minus_` and :meth:`mpower_` methods. By default these methods will instanciate  :ref:`Operations on Maps <ref-op-on-Maps>` objects which may lose some properties such as the invertibility or
-some fast implementations (due to the genericity of these classes). However, developers can reimplement these *make* methods
-in derived classes. For instance in :class:`LinOpConv`, one can find
+The library deploys an operator-algebra mechanism that allows for generic implementations. This is made possible
+by the methods prefixed by *make* (i.e., :meth:`makeComposition_`, :meth:`makeAdjoint_`, :meth:`makeHtH_`, :meth:`makeHHt_`...)
+as well as the :meth:`plus_`, :meth:`minus_`, and :meth:`mpower_` methods. By default these methods will instanciate  :ref:`Operations on Maps <ref-op-on-Maps>` objects which may lose 
+properties such as invertibility or speed of implementation (due to the genericity of these classes). 
+However, developers can reimplement these *make* methods
+in derived classes. For instance, in :class:`LinOpConv`, one can find
 
 .. code:: matlab
 
@@ -180,7 +184,7 @@ in derived classes. For instance in :class:`LinOpConv`, one can find
        end
     end
 
-which all instanciate a new :class:`LinOpConv` with the proper kernel. Hence considering a :class:`LinOpConv`,
+which all instanciate a new :class:`LinOpConv` with the proper kernel. Hence, considering a :class:`LinOpConv`,
 
 .. code:: matlab
     
@@ -254,14 +258,14 @@ and the same holds for the \\(\\mathrm{H^*H + I} \\) operator
          memoizeOpts: [1x1 struct]
     doPrecomputation: 0
 
-which is invertible in comparison to \\(\\mathrm{H}\\) and \\(\\mathrm{H^*H}\\). This nice combination mechanism allows
+which is invertible in comparison to \\(\\mathrm{H}\\) and \\(\\mathrm{H^*H}\\). This combination mechanism allows
 for  generic implementations. For instance, there is a property stating that, given the proximity
 operator of a convex function \\(f\\),  the proximity operator of \\(f(\\mathrm{H}\\cdot)\\), for \\(\\mathrm{H}\\) a
-semi-orthogonal linear operator (i.e. \\(\\mathrm{HH^*}= \\nu \\mathrm{I}\\) for \\(\\nu >0\\)), is given by
+semi-orthogonal linear operator (i.e., \\(\\mathrm{HH^*}= \\nu \\mathrm{I}\\) for \\(\\nu >0\\)), is given by
 
-$$ \\mathrm{prox}_{f(\\mathrm{H}\\cdot)}(\\mathrm{x}) = \\mathrm{x} + \\nu^{-1}\\mathrm{H^*} \\left( \\mathrm{prox}_{\\nu f}(\\mathrm{Hx}) -\\mathrm{Hx} \\right) $$
+$$ \\mathrm{prox}_{f(\\mathrm{H}\\cdot)}(\\mathrm{x}) = \\mathrm{x} + \\nu^{-1}\\mathrm{H^*} \\left( \\mathrm{prox}_{\\nu f}(\\mathrm{Hx}) -\\mathrm{Hx} \\right). $$
 
-Hence, at the level of :class:`CostComposition` one can check if \\(\\mathrm{H}\\)  is a semi-orthogonal linear operator
+Hence, at the level of :class:`CostComposition`, one can check if \\(\\mathrm{H}\\)  is a semi-orthogonal linear operator
 and implement in a generic way the above property. In the constructor,
 
 .. code:: matlab 
@@ -274,7 +278,7 @@ and implement in a generic way the above property. In the constructor,
          end
     end
 
-and in the :meth:`applyProx` implementation
+and in the :meth:`applyProx_` implementation
 
 .. code:: matlab 
 
@@ -286,19 +290,19 @@ and in the :meth:`applyProx` implementation
             end
         end
 
-As a result, in the library, combining any :class:`Cost` having an implementation of :meth:`applyProx` with a :class:`LinOp`
-which is semi-orthogonal (its :meth:`makeHHt` returns a :class:`LinOpDiag` with a constant diagonal) results in a new 
-:class:`Cost` which has an implementation of :meth:`applyProx`.
+As a result, in the library, combining any :class:`Cost` having an implementation of :meth:`applyProx_` with a :class:`LinOp`
+which is semi-orthogonal (its :meth:`makeHHt_` returns a :class:`LinOpDiag` with a constant diagonal) results in a new 
+:class:`Cost` which has an implementation of :meth:`applyProx_`.
 
-**Important** The use of this operator algebra is not recommended for implementing methods  since it creates at each call
-a new object which may slow the computation of iterative algorithms. However, it can be
-used in the constructor method or in other methods as a default implementation.
+**Important** The use of this operator algebra is not the recommended way to implement methods  since it creates at each call
+a new object and may slow iterative algorithms. However, it can be
+used freely in constructor methods or in other methods as a default implementation.
 
 
 Auxiliary Utilities
 -------------------
 
-The library contains a folder *Util/* with several function. These include viewvers or checking functions which give a
+The library contains a folder *Util/* with several functions. These include viewers or check functions that give a
 first control that an implementation is correct. For instance, the **CheckMap** function verifies some basic relations
 between the different methods implemented in the given :class:`Map`.
 
@@ -320,11 +324,11 @@ between the different methods implemented in the given :class:`Map`.
             SNR: 331 dB, OK
 
 
-Use the provided templates!
----------------------------
+Provided Templates
+------------------
 
-Templates for implementing new :class:`Map`, :class:`LinOp`, :class:`Cost` or :class:`Opti` are provided to help developers.
-They can be found under the names:
+Templates for the implementation of new :class:`Map`, :class:`LinOp`, :class:`Cost`, or :class:`Opti` are provided to help developers.
+They can be found under 
  - TemplateMap.m
  - TemplateLinOp.m
  - TemplateCost.m

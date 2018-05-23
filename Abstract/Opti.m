@@ -49,7 +49,7 @@ classdef Opti < matlab.mixin.SetGet
     properties
         verbose=true;        % if true display information (starting and ending message
         endingMessage;       % Ending message
-        OutOp=OutputOpti();  % OutputOpti object
+        OutOp=OutputOpti(false,[],1);  % OutputOpti object
         CvOp=TestCvg();      % OutputOpti object
         maxiter=50;     % maximal number of iterates
         ItUpOut=0;      % period (in number of iterations) of calling the OutputOpti object

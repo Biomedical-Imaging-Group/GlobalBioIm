@@ -71,12 +71,16 @@ classdef OutputOpti < handle
     	%% Constructor
         function this=OutputOpti(computecost,xtrue,iterVerb,costIndex) 
             if nargin>=1
-                assert(isnumeric(computecost),'Parameter computecost must be numeric');
+                if isscalar(computecost)
+                    computecost = (computecost ~= 0);
+                end
+                    
+                assert(islogical(computecost),'Parameter computecost must be logical');
                 this.computecost=computecost;
             end
             if nargin>=2, this.xtrue=xtrue;end
             if nargin>=3
-                assert(isnumeric(computecost) && iterVerb>=0,'Parameter iterVerb must be a positive integer');
+                assert(isscalar(iterVerb) && iterVerb>=0,'Parameter iterVerb must be a positive integer');
                 this.iterVerb=iterVerb;
             end
             if nargin==4, this.costIndex=costIndex;end

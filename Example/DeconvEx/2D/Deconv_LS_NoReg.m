@@ -7,7 +7,7 @@
 % See LinOp, LinOpConv, Cost, CostL2, CostL2Composition, Opti,
 % OptiGradDsct, OutpuOpti
 %------------------------------------------------------------
-clear; close all;% clc;
+%clear; close all;% clc;
 help Deconv_LS_NoReg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -72,20 +72,35 @@ VMLMB.m=1;                                     % number of memorized step in hes
 VMLMB.run(y);                                  % run the algorithm 
 
 
+%% -- ConjGrad LS 
+A = H.makeHtH();
+b = H'*y;
+CG=OptiConjGrad(A,b);  
+CG.OutOp=OutputOptiConjGrad(1,sum(y(:).*y(:)),im,10);
+CG.ItUpOut=1; 
+CG.maxiter=200;                             % max number of iterations
+CG.run(y);                                  % run the algorithm 
+
+
 %% -- Display
 imdisp(GD.OutOp.evolxopt{end},'LS (GD)',1);
 imdisp(VMLMB.OutOp.evolxopt{end},'LS (VMLMB)',1);
+imdisp(CG.OutOp.evolxopt{end},'LS (CG)',1);
 figure;plot(GD.OutOp.iternum,GD.OutOp.evolcost,'LineWidth',1.5);
-hold all; plot(VMLMB.OutOp.iternum,VMLMB.OutOp.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);
+hold all; plot(VMLMB.OutOp.iternum,VMLMB.OutOp.evolcost,'LineWidth',1.5);
+plot(CG.OutOp.iternum,CG.OutOp.evolcost,'LineWidth',1.5);
+set(gca,'FontSize',12);
 legend('GD','VMLMB');
 grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');title('Cost evolution');
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
 semilogy(GD.OutOp.iternum,GD.OutOp.evolsnr,'LineWidth',1.5); 
 semilogy(VMLMB.OutOp.iternum,VMLMB.OutOp.evolsnr,'LineWidth',1.5); 
-legend('LS (GD)','LS (VMLM)','Location','southeast');xlabel('Iterations');ylabel('SNR (dB)');
+semilogy(CG.OutOp.iternum,CG.OutOp.evolsnr,'LineWidth',1.5); 
+legend('GD','VMLM','CG','Location','southeast');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[GD.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
 bar(2,[VMLMB.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
-set(gca,'xtick',[1 2]);ylabel('Time (s)');
-set(gca,'xticklabels',{'LS (GD)','LS (VMLM)'});set(gca,'XTickLabelRotation',45)
+bar(3,[CG.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
+set(gca,'xtick',[1 2 3]);ylabel('Time (s)');
+set(gca,'xticklabels',{'GD','VMLM','CG'});set(gca,'XTickLabelRotation',45)

@@ -114,7 +114,7 @@ classdef (Abstract) Map < handle
             if this.memoizeOpts.applyJacobianT
                 x = this.memoize('applyJacobianT', @this.applyJacobianT_, {x, v});
             else
-                x= this.apply_(x,v);
+                x= this.applyJacobianT_(x,v);
             end
             % check output size
             if ~checkSize(x, this.sizein)

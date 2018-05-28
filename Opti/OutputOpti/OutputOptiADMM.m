@@ -37,8 +37,8 @@ classdef OutputOptiADMM < OutputOpti
                 cc = opti.F0*opti.xopt;
             end
             for n=1:numel(opti.Fn)
-                tmp=opti.Hn{n}*opti.xopt-opti.yn{n}+opti.wn{n}/opti.rho_n(n);
-                cc = cc+opti.Fn{n}*opti.yn{n} + 0.5*opti.rho_n(n)*norm(tmp(:),'fro')^2;
+                tmp=opti.Hn{n}*opti.xopt-opti.yn{n};
+                cc = cc+opti.Fn{n}*opti.yn{n} + tmp(:)'*opti.wn{n}(:) + 0.5*opti.rho_n(n)*norm(tmp(:),'fro')^2;
             end
         end
     end

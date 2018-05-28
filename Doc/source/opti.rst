@@ -79,17 +79,31 @@ OptiVMLMB
     :show-inheritance:
     :members: run, starting_verb, ending_verb, test_convergence, initialize, doIteration, updateParams
 
+.. automodule:: Opti.OutputOpti
+
 OutputOpti
 ----------
+
+OutputOpti (Default)
+....................
 
 .. autoclass:: OutputOpti
     :show-inheritance:
     :members: init, update, computeCost, computeSNR
 
 OutputOptiADMM
---------------
+..............
 
 .. autoclass:: OutputOptiADMM
+    :show-inheritance:
+    :members: init, update, computeCost, computeSNR
+
+
+
+OutputOptiConjGrad
+..................
+
+.. autoclass:: OutputOptiConjGrad
     :show-inheritance:
     :members: init, update, computeCost, computeSNR
 

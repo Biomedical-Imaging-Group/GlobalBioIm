@@ -68,13 +68,19 @@ classdef LinOpDiag <  LinOp
     
     %% Core Methods containing implementations (Protected)
     methods (Access = protected)
-        function y = apply_(this,x)
+        function x = apply_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            y =bsxfun(@times,this.diag,x);
+            
+            x =bsxfun(@times,this.diag,x);
+            % Since 2016b Matlab supports broadcasting (...)
+            %  we should use
+            % x = this.diag.*x;
+            %   as it is much faster than bsxfun() (too bad)
         end
-        function y = applyAdjoint_(this,x)
+        function x = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             y =bsxfun(@times,conj(this.diag),x);
+            %x = conj(this.diag).*x;
         end
         function y = applyHtH_(this,x)
             % Reimplemented from parent class :class:`LinOp`.

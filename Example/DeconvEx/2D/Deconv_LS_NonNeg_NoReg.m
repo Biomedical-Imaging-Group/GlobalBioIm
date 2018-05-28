@@ -49,7 +49,7 @@ F.doPrecomputation=1;
 % -- FISTA LS + NonNeg
 FBS=OptiFBS(F,R_POS);
 FBS.OutOp=OutputOpti(1,im,20);
-FBS.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
+%FBS.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
 FBS.ItUpOut=1;          % call OutputOpti update every ItUpOut iterations
 FBS.fista=true;         % activate fista
 FBS.maxiter=200;        % max number of iterations
@@ -58,10 +58,10 @@ FBS.run(zeros(size(y)));% run the algorithm (Note that gam is fixed automaticall
 
 %% -- VMLMB LS +  NonNeg
  
-F.memoizeOpts.apply=true;
+H.memoizeOpts.applyHtH=true;
 VMLMB=OptiVMLMB(F,0.,[]);  
 VMLMB.OutOp=OutputOpti(1,im,10);
-VMLMB.CvOp=TestCvgCombine('CostRelative',1e-4, 'StepRelative',1e-4); % identical to VMLMB.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4),TestCvgStepRelative(1e-5)); 
+%VMLMB.CvOp=TestCvgCombine('CostRelative',1e-4, 'StepRelative',1e-4); % identical to VMLMB.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4),TestCvgStepRelative(1e-5)); 
 VMLMB.ItUpOut=2; 
 VMLMB.maxiter=200;                             % max number of iterations
 VMLMB.m=3;                                     % number of memorized step in hessian approximation
@@ -71,14 +71,14 @@ VMLMB.run(y);                                  % run the algorithm
 imdisp(FBS.OutOp.evolxopt{end},'LS + NonNeg (FISTA)',1);
 imdisp(VMLMB.OutOp.evolxopt{end},'LS+POS (VMLMB)',1);
 figure;plot(FBS.OutOp.iternum,FBS.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);
-hold all;plot(VMLMB.OutOp.iternum,VMLMB.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);
+hold all;loglog(VMLMB.OutOp.iternum,VMLMB.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);
 xlabel('Iterations');ylabel('Cost');legend('LS+POS (FISTA)','LS+POS (VMLMB)');title('Cost evolution');
 
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
 semilogy(FBS.OutOp.iternum,FBS.OutOp.evolsnr,'LineWidth',1.5);
 semilogy(VMLMB.OutOp.iternum,VMLMB.OutOp.evolsnr,'LineWidth',1.5);
 xlabel('Iterations');ylabel('SNR (dB)');legend('LS+POS (FISTA)','LS+POS (VMLMB)','Location','southeast');
-subplot(1,2,2);hold on; grid; title('Runing Time');set(gca,'FontSize',12);
+subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[FBS.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
 bar(2,[VMLMB.time],'FaceColor',orderCol(1,:),'EdgeColor','k');

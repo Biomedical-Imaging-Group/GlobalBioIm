@@ -79,7 +79,7 @@ classdef LinOpDiag <  LinOp
         end
         function x = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            y =bsxfun(@times,conj(this.diag),x);
+            x =bsxfun(@times,conj(this.diag),x);
             %x = conj(this.diag).*x;
         end
         function y = applyHtH_(this,x)

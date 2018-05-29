@@ -4,9 +4,10 @@ classdef CostL2 < Cost
     %
     % All attributes of parent class :class:`Cost` are inherited. 
     %
+    % :param y: data vector  (default 0)
     % :param W: weighting :class:`LinOp` object or scalar (default 1)
     %
-    % **Example** C=CostL2(sz,y,wght)
+    % **Example** C=CostL2(sz,y,W)
     %
     % See also :class:`Map`, :class:`Cost`, :class:`LinOp`
 

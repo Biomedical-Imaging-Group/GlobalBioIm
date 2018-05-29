@@ -1,10 +1,19 @@
 classdef OutputOptiConjGrad < OutputOpti
-    % OutputOptiADMM class for OptiConjGrad displayings and savings
+    % OutputOptiConjGrad class displayings and savings dedicated to for OptiConjGrad 
     %
-    % Special :class:`OutpuOpti` for the conjugate gradient algorithm which evaluates
+    % The conjugate gradient algorithm minimizes the function
     % $$ C(\\mathrm{x})= \\frac12 \\mathrm{x^TAx - b^Tx} $$
+    % However in many cases, it is often used to minimize:
+    % $$ F(\\mathrm{x})= \\frac12 \\|H x - y\\|^2_W $$
+    % by setting:
+    % $$\\mathrm{A} = \\mathrm{H^T W H} \\quad \\text{and}\\quad \\mathrm{b = H^T W y}$$
+    % An OutputOptiConjGrad object compute the cost F instead of the cost C. 
     %
-    % See also :class:`Opti` :class:`OutputOpti`
+    % :param computecost:  boolean, if true the cost function will be computed
+    % :param xtrue: ground truth to compute the error with the solution (if provided)
+    % :param iterVerb:  message will be displayed every iterVerb iterations (must be a multiple of the :attr:`ItUpOut` parameter of classes :class:`Opti`)
+    % :param ytWy:  weighted norm of $y$ : $ \\mathrm{ytWy} = \\mathrm{ y^T\\,W\\,y}$
+    % See also :class:`OptiConjGrad` :class:`OutputOpti`
 
     %%    Copyright (C) 2018
     %     F. Soulez ferreol.soulez@epfl.ch
@@ -23,7 +32,7 @@ classdef OutputOptiConjGrad < OutputOpti
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         properties (SetAccess = protected,GetAccess = public)
-            yty;
+            ytWy;
         end
             
     methods
@@ -35,7 +44,7 @@ classdef OutputOptiConjGrad < OutputOpti
                 
                 assert(islogical(computecost),'Parameter computecost must be logical');
                 this.computecost=computecost;
-                this.yty = 0.5.*yty;
+                this.ytWy = 0.5.*yty;
             end
             if nargin>=3, this.xtrue=xtrue;end
             if nargin>=4
@@ -52,7 +61,7 @@ classdef OutputOptiConjGrad < OutputOpti
             % Evaluate the cost function at the current iterate xopt of
             % the given :class:`Opti` opti object  
             r = 0.5.* opti.A.apply(opti.xopt) - opti.b ;
-            cc = sum(opti.xopt(:).*r(:)) + this.yty;
+            cc = sum(opti.xopt(:).*r(:)) + this.ytWy;
         end
     end
 end

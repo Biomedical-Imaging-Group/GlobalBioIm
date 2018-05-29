@@ -4,9 +4,9 @@ classdef CostLinear < Cost
     %
     % All attributes of parent class :class:`Cost` are inherited. 
     %
-    % :param W: weighting :class:`LinOpDiag` object or scalar (default 1)
+    % :param y: data vector  (default 0)
     %
-    % **Example** C=CostL2(sz,y)
+    % **Example** C=CostLinear(sz,y)
     %
     % See also :class:`Map`, :class:`Cost`
     
@@ -42,16 +42,19 @@ classdef CostLinear < Cost
 	methods (Access = protected)
         function y=apply_(this,x)
         	% Reimplemented from parent class :class:`Cost`. 
+            % $$C(\\mathrm{x}) := \\mathrm{x}^T\\mathrm{y}$$
                 y=dot(conj(x(:)),this.y(:));
         end
         function g=applyGrad_(this,x)
-        	% Reimplemented from parent class :class:`Cost`. 	
+        	% Reimplemented from parent class :class:`Cost`. 
+            % Constant gradient: 
+            % $$ \\nabla C(\\mathrm{x}) = \\mathrm{y}$$
                 g=this.y;
           
         end
         function y=applyProx_(this,x,alpha)
         	% Reimplemented from parent class :class:`Cost` 
-            
+            % $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{x}) =\\mathrm{x} - \\alpha \\mathrm{y} $$           
                 y = x - alpha.*this.y;
             
         end

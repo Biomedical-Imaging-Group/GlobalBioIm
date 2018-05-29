@@ -76,7 +76,7 @@ VMLMB.run(y);                                  % run the algorithm
 A = H.makeHtH();
 b = H'*y;
 CG=OptiConjGrad(A,b);  
-CG.OutOp=OutputOptiConjGrad(1,sum(y(:).*y(:)),im,10);
+CG.OutOp=OutputOptiConjGrad(1,dot(y(:),y(:)),im,10);  
 CG.ItUpOut=1; 
 CG.maxiter=200;                             % max number of iterations
 CG.run(y);                                  % run the algorithm 

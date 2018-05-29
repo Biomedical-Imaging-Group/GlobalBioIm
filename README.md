@@ -11,36 +11,9 @@ Download or clone this repository and run the script *setMatlabPath.m* which wil
 
 A detailled documentation can be found <a href="https://biomedical-imaging-group.github.io/GlobalBioIm/" target="_blank">here</a>.
 
+## What's changed recently?
 
-## v1.0 release notes
-
-#### Major Changes and improvements
-- Remove deprecated `LinOpScaling`,
-- Improve tests with `CheckLinOp`, `CheckMap` and `TestsSummationLinOp' functions
-- implement methods `makeAdjoint` and `makeInversion` in `LinOp`
-- more simplifications in `Summation`, `Composition`, `Ìnversion` for `Map` and hence `LinOp`and `Cost`
-- New `LinOpBroadcast` linear operator
-- Add `ElementWiseOp` non linear operators: `OpEWSquareRoot`, `OpEWInverse` and `OpEWSSquaredMagnitude`.  
-- New `CostGoodRoughness` cost function
-- Introduce positivity constraint in `CostL1`
-- New  `CostTV` cost function
-- Rework `Opti` optimization class
-- Introduce several `TestCvg` classes to assess convergence of optimization according to different criteria
-- Automatic download and compilation of OptimPackLegacy for `OptiVMLMB`
-- `OptiConjGrad`no longer takes a `W` parameter
-- New ÒptiFGP` (Fast gradient proximal) optimization function
-
-
-
-#### Bug fixes and minor changes
-- Improve doc
-- Implement function `cmpSize` to compare size of vectors
-- Faster `CostHyperBolic` cost function- Automatic compilation of `C` files needed for `CostMixNormSchatt1` cost function
-- Better examples
-- Add functions `GenerateData` and `GenerateData` to generate  star phantom- More options in `LinOpConv'
-- Implement `make...` methods in LinOpDFT
-- Reworked `OutputOpti` printing class
-
+See [NEWS](https://github.com/Biomedical-Imaging-Group/GlobalBioIm/blob/release/NEWS.md).
 
 
 Contributors

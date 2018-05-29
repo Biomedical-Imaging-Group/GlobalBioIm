@@ -4,7 +4,7 @@ classdef CostL2 < Cost
     %
     % All attributes of parent class :class:`Cost` are inherited. 
     %
-    % :param W: weighting :class:`LinOpDiag` object or scalar (default 1)
+    % :param W: weighting :class:`LinOp` object or scalar (default 1)
     %
     % **Example** C=CostL2(sz,y,wght)
     %
@@ -40,7 +40,7 @@ classdef CostL2 < Cost
             this.name='CostL2';
             if nargin==3
                 if isempty(wght), wght=1; end
-                assert((isnumeric(wght) && isscalar(wght))||isa(wght,'LinOpDiag'),'weight WGHT must be scalar or Diagonal LinOp');
+                assert((isnumeric(wght) && isscalar(wght))||isa(wght,'LinOp'),'weight WGHT must be scalar or LinOp');
                 this.W=wght;
             end
             if isnumeric(this.W)
@@ -85,8 +85,10 @@ classdef CostL2 < Cost
             % where the division is component-wise.
             if  isscalar(this.W)
                 y=(x+alpha*this.W*this.y)./(1+alpha.*this.W);
-            else
+            elseif isa(this.W,'LinOpDiag')
                 y=(x+alpha*this.W*this.y)./(1+alpha.*this.W.diag);
+            else
+                y = applyProx_@LinOp(this,x,alpha);
             end
         end
         function M=makeComposition_(this,G)

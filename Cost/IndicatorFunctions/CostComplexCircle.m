@@ -6,6 +6,9 @@ classdef CostComplexCircle < CostComplexRing
     %
     % All attributes of parent class :class:`CostComplexRing` are inherited 
     %
+    % 
+    % :param radius radius of the circle (default 1)
+    % 
     % **Example** C=CostComplexCircle(radius,sz,y)
     %
     % See also :class:`Map`, :class:`Cost`, :class:`CostIndicator`, :class:`CostComplexRing`
@@ -28,14 +31,14 @@ classdef CostComplexCircle < CostComplexRing
     
     %% Constructor
     methods
-        function this = CostComplexCircle(radius,sz,y)
+        function this = CostComplexCircle(sz,radius,y)
             if nargin<3, y=0; end
             if nargin >0
                 assert(isnumeric(radius),'The radius argument should be numeric');
             else
                 radius = 1;
             end
-            this@CostComplexRing(radius,radius,sz,y);
+            this@CostComplexRing(sz,radius,radius,y);
             this.name='CostComplexCircle';
 			this.isConvex= false;    
         end

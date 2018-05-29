@@ -49,7 +49,7 @@ classdef Opti < matlab.mixin.SetGet
     properties
         verbose=true;        % if true display information (starting and ending message
         endingMessage;       % Ending message
-        OutOp=OutputOpti();  % OutputOpti object
+        OutOp=OutputOpti(false,[],1);  % OutputOpti object
         CvOp=TestCvg();      % OutputOpti object
         maxiter=50;     % maximal number of iterates
         ItUpOut=0;      % period (in number of iterations) of calling the OutputOpti object
@@ -71,13 +71,12 @@ classdef Opti < matlab.mixin.SetGet
             this.starting_verb();
             this.endingMessage= ['Maximum number of iterations reached: ', num2str(this.maxiter)];
             this.xold= x0;
-            while (this.niter<=this.maxiter)
-                
+            while (this.niter<this.maxiter)
                 % - Update parameters
                 this.updateParams();
-                % - Algorithm iteration
+                % - Algorithm iteration   
                 flag=this.doIteration();
-                
+
                 if(flag == this.OPTI_NEXT_IT)
                     this.niter=this.niter+1;
                     
@@ -85,14 +84,13 @@ classdef Opti < matlab.mixin.SetGet
                     if this.CvOp.testConvergence(this), break; end
                     
                     % - Call OutputOpti object
-                    if ((mod(this.niter,this.ItUpOut)==0)|| (this.niter==1))
+                    if this.ItUpOut>0 && (((mod(this.niter,this.ItUpOut)==0)|| (this.niter==1)))
                         this.OutOp.update(this);
                     end
                     this.xold=this.xopt;
                 elseif  flag==this.OPTI_STOP,
                     break;
                 end
-                
             end
             this.time=toc(tstart);
             this.ending_verb();

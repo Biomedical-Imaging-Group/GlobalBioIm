@@ -6,9 +6,17 @@ This section contains linear operator classes which all derive from the abstract
 .. automodule:: LinOp
     
 LinOpBroadcast
---------
+--------------
 
 .. autoclass:: LinOpBroadcast
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, makeInversion_
+
+LinOpBroadcastMatrix
+--------------------
+
+.. autoclass:: LinOpBroadcastMatrix
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
       applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, makeInversion_
@@ -20,15 +28,6 @@ LinOpConv
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
       applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, makeInversion_
-
-LinOpCpx
----------
-
-.. autoclass:: LinOpCpx
-    :show-inheritance:
-    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
-      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, makeInversion_
-
 
 LinOpDFT
 --------

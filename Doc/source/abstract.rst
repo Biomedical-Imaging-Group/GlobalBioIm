@@ -1,4 +1,4 @@
-Abstract classes
+Abstract Classes
 ****************
 
 This section describes the abstract classes of the GlobalBioIm library. It provides general properties for 
@@ -39,8 +39,6 @@ Opti
     :show-inheritance:
     :members: run, starting_verb, ending_verb, test_convergence, initialize, doIteration, updateParams
 
-
-.. automodule:: Abstract.Compositions
 
 .. _ref-op-on-Maps:
 

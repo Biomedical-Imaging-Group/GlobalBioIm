@@ -6,7 +6,9 @@ classdef CostComplexDisk < CostComplexRing
     %
     % All attributes of parent class :class:`CostComplexRing` are inherited 
     %
-    % **Example** C=CostComplexDisk(radius,sz,y)
+    % :param radius radius of the disk (default 1)
+    %
+    % **Example** C=CostComplexDisk(sz,radius, y)
     %
     % See also :class:`Map`, :class:`Cost`, :class:`CostIndicator`, :class:`CostComplexRing`
     
@@ -28,14 +30,14 @@ classdef CostComplexDisk < CostComplexRing
     
     %% Constructor
     methods
-        function this = CostComplexDisk(radius,sz,y)
+        function this = CostComplexDisk(sz,radius,y)
             if nargin<3, y=0; end
             if nargin >0
                 assert(isnumeric(radius),'C should be numeric');
             else
                 radius = 1;
             end           
-            this@CostComplexRing(0,radius,sz,y);
+            this@CostComplexRing(sz,0,radius,y);
             this.name='CostComplexDisk';
             this.isConvex= true;    
         end

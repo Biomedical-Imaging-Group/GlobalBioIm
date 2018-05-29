@@ -120,12 +120,12 @@ classdef CostL2Composition <  CostComposition
                     if ~isfield(this.precomputeCache,'fftHstardata')
                         this.precomputeCache.fftHstardata=conj(this.H2.mtf).*Sfft(this.H1.y*this.H1.W,this.H2.Notindex);
                     end
-                    y=iSfft((Sfft(x,this.H2.Notindex) + this.H1.W*alpha*this.precomputeCache.fftHstardata)./(1+this.H1.W*alpha*(abs(this.H2.mtf).^2)), this.H2.Notindex);
-                    if ~this.H2.isReal, y=real(y);end
+                    y=iSfft((Sfft(x,this.H2.Notindex) + this.H1.W*alpha*this.precomputeCache.fftHstardata)./(1+this.H1.W*alpha*(abs(this.H2.mtf).^2)), this.H2.Notindex);                  
                 else
                     fftHstardata=conj(this.H2.mtf).*Sfft(this.H1.W*this.H1.y,this.H2.Notindex);
                     y=iSfft((Sfft(x,this.H2.Notindex) + this.H1.W*alpha*fftHstardata)./(1+this.H1.W*alpha*(abs(this.H2.mtf).^2)), this.H2.Notindex);
                 end
+                if this.H2.isReal, y=real(y);end
             % If the composed operator is a composition between a LinOpDownsample and a LinOpConv    
             elseif isa(this.H2,'LinOpComposition') && isa(this.H2.H1,'LinOpDownsample') &&  isa(this.H2.H2,'LinOpConv') && isnumeric(this.H1.W) && this.H1.W==1
                  % this.H1 -> CostL2
@@ -178,16 +178,7 @@ classdef CostL2Composition <  CostComposition
             % Reimplemented from :class:`Cost`. Instantiates a new
             % :class:`CostL2Composition` with the updated composed
             % :class:`Map`.
-            if isa(G,'LinOp')
-                T=G*G';
-                if isa(T,'LinOpDiag') && T.isScaledIdentity
-                    M=CostComposition(this,G);
-                else
-                    M=CostL2Composition(this.H1,this.H2*G);
-                end
-            else
-                M=CostL2Composition(this.H1,this.H2*G);
-            end
+            M=CostL2Composition(this.H1,this.H2*G);
         end
     end
 end

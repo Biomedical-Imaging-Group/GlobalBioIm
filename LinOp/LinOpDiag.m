@@ -5,7 +5,7 @@ classdef LinOpDiag <  LinOp
     % vector containing the diagonal elements of \\(\\mathrm{H}\\).
     %
     % :param diag: elements of the diagonal (Non-singleton dimensions of diag and sz must be consistent)
-    % :param sz: size (if not the size of the given diag) to build a scaled identity operator.
+    % :param sz: size (if not the size of the given diag).
     %
     % All attributes of parent class :class:`LinOp` are inherited.
     %
@@ -68,13 +68,19 @@ classdef LinOpDiag <  LinOp
     
     %% Core Methods containing implementations (Protected)
     methods (Access = protected)
-        function y = apply_(this,x)
+        function x = apply_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            y =bsxfun(@times,this.diag,x);
+            
+            x =bsxfun(@times,this.diag,x);
+            % Since 2016b Matlab supports broadcasting (...)
+            %  we should use
+            % x = this.diag.*x;
+            %   as it is much faster than bsxfun() (too bad)
         end
-        function y = applyAdjoint_(this,x)
+        function x = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            y =bsxfun(@times,conj(this.diag),x);
+            x =bsxfun(@times,conj(this.diag),x);
+            %x = conj(this.diag).*x;
         end
         function y = applyHtH_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
@@ -106,6 +112,8 @@ classdef LinOpDiag <  LinOp
                 M=LinOpDiag(this.sizein,bsxfun(@plus,G.diag,this.diag));
             elseif isa(G,'LinOpConv') && this.isScaledIdentity
                 M=LinOpConv(this.diag+G.mtf,G.isReal,G.index);
+            elseif isa(G,'LinOpMatrix') && this.isScaledIdentity
+                H=LinOpMatrix(G.M+this.diag*eye(size(G.M)),G.sizein,G.index);
             else
                 M=plus_@LinOp(this,G);
             end
@@ -149,10 +157,14 @@ classdef LinOpDiag <  LinOp
         function M = makeComposition_(this, G)
             % Reimplemented from parent class :class:`LinOp`.
             
+            sz=ones(size(this.sizein));   % to consider singleton dimension that are at the end
+            sz(1:length(size(this.diag)))=size(this.diag);
             if isa(G,'LinOpDiag')
                 M=LinOpDiag(this.sizein,G.diag.*this.diag);
-            elseif isa(G,'LinOpConv') && this.isScaledIdentity
-                M = LinOpConv(G.mtf.*this.diag,G.isReal,G.index);
+            elseif isa(G,'LinOpConv') && ( this.isScaledIdentity || (all(sz(G.index)==1)) )
+                M = LinOpConv(this*G.mtf,G.isReal,G.index);
+            elseif isa(G,'LinOpBroadcastMatrix') && this.isScaledIdentity
+                M=LinOpBroadcastMatrix(G.M*this.diag,G.sizein,G.index);
             else
                 M=makeComposition_@LinOp(this,G);
             end

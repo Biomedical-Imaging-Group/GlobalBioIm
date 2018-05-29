@@ -9,6 +9,7 @@ classdef CostLinear < Cost
     % **Example** C=CostL2(sz,y)
     %
     % See also :class:`Map`, :class:`Cost`
+    
     %%    Copyright (C) 2018
     %     F. Soulez ferreol.soulez@epfl.ch
     %

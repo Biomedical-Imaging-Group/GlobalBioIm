@@ -89,7 +89,7 @@ classdef CostL2 < Cost
             elseif isa(this.W,'LinOpDiag')
                 y=(x+alpha*this.W*this.y)./(1+alpha.*this.W.diag);
             else
-                y = applyProx_@LinOp(this,x,alpha);
+                y = applyProx_@Cost(this,x,alpha);
             end
         end
         function M=makeComposition_(this,G)

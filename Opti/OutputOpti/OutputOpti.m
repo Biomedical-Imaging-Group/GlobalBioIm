@@ -118,7 +118,7 @@ classdef OutputOpti < handle
             end
         	this.iternum(this.count)=opti.niter;
         	this.count=this.count+1;
-        	if opti.niter~=0 && (mod(opti.niter,this.iterVerb)==0) || (opti.niter==1 && this.iterVerb~=0),
+        	if opti.verbose && (opti.niter~=0 && (mod(opti.niter,this.iterVerb)==0) || (opti.niter==1 && this.iterVerb~=0)),
         		disp(str);
         	end
         end

@@ -61,7 +61,7 @@ disp('=============================================================');
 % - Cost function 
 %   0.5 ||SHx - data||_2^2 + regTikh0/2 ||x - x0||_2^2
 % which corresponds to the prox of 0.5 ||SHx - y||_2^2 for alpha=1/regTikh0.
-x0=zeros(size(im));
+x0=zeros_(size(im));
 b=fwd'*data/regTikh0 + x0;
 cost=CostL2([],data)*fwd+regTikh0*CostL2([],x0);
 

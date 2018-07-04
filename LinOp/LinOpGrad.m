@@ -209,7 +209,7 @@ classdef LinOpGrad <  LinOp
         function M = makeHtH_(this)
             % Reimplemented from parent class :class:`LinOp`.
             if strcmp(this.bc,'circular')
-                fHtH=zeros(this.sizein)  ;
+                fHtH=zeros_(this.sizein)  ;
                 idxAll = repmat({1}, 1, this.ndms);
                 rep=this.sizein;
                 sel=idxAll;

@@ -100,7 +100,7 @@ classdef OptiFGP < Opti
                 this.xopt = x0;
             end
             if isempty(this.P)
-                this.P = zeros(this.D.sizeout);%dual variable
+                this.P = zeros_(this.D.sizeout);%dual variable
             end
             this.t = 1;
             

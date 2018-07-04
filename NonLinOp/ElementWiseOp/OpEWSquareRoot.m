@@ -42,7 +42,7 @@ classdef OpEWSquareRoot < Map
         function y = apply_(this,x)
             % Reimplemented from parent class :class:`Map`.
 
-            assert(all(x(:)>=0),'Input vector contains negative values');
+            assert(sum(x(:)<0)==0,'Input vector contains negative values');
             y=sqrt(x);
         end	
         function x = applyJacobianT_(this,y,v)

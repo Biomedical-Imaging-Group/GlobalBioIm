@@ -50,7 +50,7 @@ classdef LinOpDiag <  LinOp
             this.sizeout=sz;
             this.sizein=sz;
             this.isDifferentiable=true;
-            if all(diag)
+            if sum(diag(:)==0)==0
                 this.isInvertible=true;
             else
                 this.isInvertible=false;

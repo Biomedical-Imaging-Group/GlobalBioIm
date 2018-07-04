@@ -207,7 +207,7 @@ classdef LinOpConv <  LinOp
                 this.mtf = mtf;
             end
             
-            if all(this.mtf)
+            if sum(this.mtf(:)==0)==0
                 this.isInvertible=true;
             else
                 this.isInvertible=false;

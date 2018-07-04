@@ -6,8 +6,8 @@ classdef LinOpConv <  LinOp
     % :param index: dimensions along which the convolution is performed (the MTF/PSF must have a comformable size
     % :param 'MTF': keyword to provide MTF (default)
     % :param 'PSF': keyword to provide PSF instead of MTF
-    % :param 'Centered': is the PSF is centered in the image
-    % :param 'Pad': is the PSF must be padded to the size SZ with the value padvalue (default 0)
+    % :param 'Centered': if the PSF is centered in the image
+    % :param 'Pad': if the PSF must be padded to the size SZ with the value padvalue (default 0) 
     % :param 'useRFT': keyword to use the real-to-half-complex fourier transformation (works with a given 'PSF', not 'MTF')
     %
     % All attributes of parent class :class:`LinOp` are inherited.
@@ -78,10 +78,10 @@ classdef LinOpConv <  LinOp
                 elseif nargin<3
                     isReal = varargin{2};
                     index =  1:ndms;
-                elseif nargin>=3
+                elseif nargin==3
                     isReal = varargin{2};
                     index = varargin{3};
-                end               
+                end        
             else switch varargin{1}
                     case('PSF')
                         ispsf = true;
@@ -106,10 +106,13 @@ classdef LinOpConv <  LinOp
                 if nargin>3
                     isReal = varargin{3};
                     index = varargin{4};
+                    if isempty(index)
+                        index= 1:ndms;
+                    end
                 end
             end
-            % -- fftshift and padding if required
-            for c=5:length(varargin)
+            c=5;
+            while c<=length(varargin)
                 switch varargin{c}
                     case('Centered')
                         centering = true;
@@ -119,7 +122,7 @@ classdef LinOpConv <  LinOp
                             sz = varargin{c+1};
                             c = c+1;
                         end
-                        if (nargin>c+1) && (varargin{c+1}~='Centered')
+                        if  isscalar(varargin{c+1})
                             padvalue = varargin{c+1};
                             c = c+1;
                         end
@@ -130,15 +133,15 @@ classdef LinOpConv <  LinOp
                     otherwise
                         error('Unknown keyword.');
                 end
+                c=c+1;
             end
+
             if ispsf
                 if pad
                     if ~centering
-                        if ~isempy(index)
-                            for n=1:ndims(psf)
-                                if any(index==n)
-                                    psf = fftshift(psf,n);
-                                end
+                        for n=1:ndims(psf)
+                            if any(index==n)
+                                psf = fftshift(psf,n);
                             end
                         end
                         centering=true;
@@ -148,25 +151,25 @@ classdef LinOpConv <  LinOp
                     for n=1:ndims(psf)
                         if any(index==n)
                             padsize = zeros(size(psfsize));
-                            padsize(n) = floor(padsz);
+                            padsize(n) = floor(padsz(n));
                             psf = padarray(psf,padsize,padvalue,'post');
-                            padsize(n) = ceil(padsz);
+                            padsize(n) = ceil(padsz(n));
                             psf = padarray(psf,padsize,padvalue,'pre');
                         end
                     end
                 end
                 
                 if centering
-                    if ~isempty(index)
-                        for n=1:ndims(psf)
-                            if any(index==n)
-                                psf = fftshift(psf,n);
-                            end
+                    for n=1:ndims(psf)
+                        if any(index==n)
+                            psf = fftshift(psf,n);
+                            
                         end
                     end
-                end                
+                end
+                
                 this.sizeout =size(psf);
-            else                
+            else
                 this.sizeout =size(mtf);
             end
 
@@ -203,8 +206,8 @@ classdef LinOpConv <  LinOp
             else
                 this.mtf = mtf;
             end
-
-            if all(this.mtf(:))
+            
+            if all(this.mtf)
                 this.isInvertible=true;
             else
                 this.isInvertible=false;
@@ -386,11 +389,17 @@ classdef LinOpConv <  LinOp
                     end
                     G=LinOpConv(newmtf,this.isReal,this.index);
                 end
-            elseif isa(H,'LinOpDiag') && H.isScaledIdentity
-                if  this.useRFT
-                    G = LinOpConv('PSF',iSrft(this.mtf.*H.diag,this.Notindex),this.isReal,this.index,'useRFT');
+            elseif isa(H,'LinOpDiag')
+                sz=ones(size(H.sizein));   % to consider singleton dimension that are at the end
+                sz(1:length(size(H.diag)))=size(H.diag);
+                if ( H.isScaledIdentity || (all(sz(this.index)==1)) )
+                    if  this.useRFT
+                        G = LinOpConv('PSF',iSrft(H*this.mtf,this.Notindex),this.isReal,this.index,'useRFT');
+                    else
+                        G = LinOpConv(H*this.mtf,this.isReal,this.index);
+                    end
                 else
-                    G = LinOpConv(this.mtf.*H.diag,this.isReal,this.index);
+                    G = makeComposition_@LinOp(this, H);
                 end
             else
                 G = makeComposition_@LinOp(this, H);

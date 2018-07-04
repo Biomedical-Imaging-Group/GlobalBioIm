@@ -51,6 +51,7 @@ classdef CostMixNormSchatt1 < Cost
     % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
         p;       % order of the Shatten norm (>=1)
+        reshDim; % index for reshaping
     end
     
     %% Constructor
@@ -68,7 +69,13 @@ classdef CostMixNormSchatt1 < Cost
             this.isDifferentiable=false;
             if nargin<2 || isempty(p), p=1; end;
             assert(p>=1,'p should be >=1');
-            this.p=p;       
+            assert(this.sizein(end)==3 || this.sizein(end)==6,'last dimension should be 3 or 6');
+            this.p=p;   
+            if this.sizein(end)==3
+                this.reshDim=[this.sizein(1),prod(this.sizein(2:end-1)),3];
+            elseif this.sizein(end)==6
+                this.reshDim=[this.sizein(1),prod(this.sizein(2:end-1)),1,6];
+            end
         end
     end
     
@@ -79,7 +86,6 @@ classdef CostMixNormSchatt1 < Cost
         
         function y=apply_(this,x)
             % Reimplemented from parent class :class:`Cost`.
-            
             [E,~]=this.svdDecomp(x);
             if isinf(this.p)
                 tmp=max(E,[],3);
@@ -99,10 +105,10 @@ classdef CostMixNormSchatt1 < Cost
             elseif this.p==2
                 if dim(end)==3     % 2D
                     N=sqrt(x(:,:,1).^2+2*x(:,:,2).^2+x(:,:,3).^2);
-                    y=repmat((N-1)./N,[1,1,3]).*x;
+                    y=repmat((N-1)./N,[ones(1,length(this.sizein)-1),3]).*x;
                 elseif dim(end)==6 % 3D
                     N=sqrt(x(:,:,:,1).^2+2*x(:,:,:,2).^2+2*x(:,:,:,3).^2+x(:,:,:,4)+2*x(:,:,:,5)+x(:,:,:,6));
-                    y=repmat((N-1)./N,[1,1,6]).*x;
+                    y=repmat((N-1)./N,[ones(1,length(this.sizein)-1),6]).*x;
                 else
                     error('third dimension of x should be 3 or 6');
                 end

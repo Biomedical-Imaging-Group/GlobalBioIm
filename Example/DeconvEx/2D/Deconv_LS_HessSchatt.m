@@ -81,7 +81,7 @@ figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize'
 semilogy(CP.OutOp.iternum,CP.OutOp.evolsnr,'LineWidth',1.5); 
 semilogy(ADMM.OutOp.iternum,ADMM.OutOp.evolsnr,'LineWidth',1.5);
 legend('LS+TV (CP)','LS+TV (ADMM)','Location','southeast');xlabel('Iterations');ylabel('SNR (dB)');
-subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
+subplot(1,2,2);hold on; grid; title('Runing Time');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[CP.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
 bar(2,[ADMM.time],'FaceColor',orderCol(2,:),'EdgeColor','k');

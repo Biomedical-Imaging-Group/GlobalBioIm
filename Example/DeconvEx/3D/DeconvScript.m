@@ -26,13 +26,13 @@ help DeconvScript
 %    Note: when using Matlab Parrallel Computing Toolbox (useGPU(1)), resolution with HessianSchatten Norm 
 %          may nor be optimal because svd computations are done with a mex function (see Cost/CostUtils/HessianSchatten) 
 %          on the cpu (so lost of time in transfert CPU/GPU).
-useGPU(2)
-useRFT=1;
+useGPU(0)
+useRFT=0;
 
 %% Parameters
 lamb=1e-4;        % Hyperparameter for initial deconvolution
 maxIt=10;         % Max iterations
-Reg=2;            % 1 for TV, 2 for Hessian-Schatten 
+Reg=1;            % 1 for TV, 2 for Hessian-Schatten 
 DataTerm=1;       % 1 for LS, 2 for KL
 
 %% fix the random seed (for reproductibility)

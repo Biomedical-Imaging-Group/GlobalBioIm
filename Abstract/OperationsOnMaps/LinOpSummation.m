@@ -88,15 +88,18 @@ classdef LinOpSummation < MapSummation &  LinOp
                     % Find elements of the same type
                     ind=find(strcmp(G.name,cellfun(@(T) T.name,this.mapsCell,'UniformOutput',false)));
                     if length(ind)==1
-                        % To avoid infinite loops (normally it should never goes in the else because the sum of
-                        % two LinOp of the same type can always be simplified. If not the sum_ method of the corresponding
-                        % LinOp has to be implemented properly).
-                        
                         M=G + this.mapsCell{ind};
-                        for ii=1:this.numMaps
-                            if ii~=ind
-                                M= M+this.mapsCell{ii};
+                        if ~isa(M,'LinOpSummation')
+                            % To avoid infinite loops (normally it should never goes in the else because the sum of
+                            % two LinOp of the same type can always be simplified. If not the sum_ method of the corresponding
+                            % LinOp has to be implemented properly).
+                            for ii=1:this.numMaps
+                                if ii~=ind
+                                    M= M+this.mapsCell{ii};
+                                end
                             end
+                        else
+                            M=[];
                         end
                     end
                 end

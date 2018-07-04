@@ -42,7 +42,6 @@ H=LinOpConv(fft2(psf));
 % If true, applyHtH method will save its result. Hence for two consecutive HtH*x with the
 % same x, no computation is done for the second call
 H.memoizeOpts.applyHtH=1;  
-
 % -- Function definition
 LS=CostL2([],y);  % Least-Sqaures data term
 F=LS*H;
@@ -58,20 +57,51 @@ F.doPrecomputation=1;
 
 % -- Gradient Descent LS
 GD=OptiGradDsct(F);
-GD.OutOp=OutputOpti(1,im,40);
-GD.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
+GD.OutOp=OutputOpti(1,im,10);
+%GD.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
 GD.ItUpOut=1;           % call OutputOpti update every ItUpOut iterations
 GD.maxiter=200;         % max number of iterations
-GD.run(zeros(size(y))); % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
+GD.run(y); % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
 
-% -- Display
+%% -- VMLMB LS 
+VMLMB=OptiVMLMB(F,[],[]);  
+VMLMB.OutOp=OutputOpti(1,im,10);
+%VMLMB.CvOp=TestCvgCombine('CostRelative',1e-4, 'StepRelative',1e-4); % identical to VMLMB.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4),TestCvgStepRelative(1e-5)); 
+VMLMB.ItUpOut=1; 
+VMLMB.maxiter=200;                             % max number of iterations
+VMLMB.m=1;                                     % number of memorized step in hessian approximation (one step is enough for quadratic function)
+VMLMB.run(y);                                  % run the algorithm 
+
+
+%% -- ConjGrad LS 
+A = H.makeHtH();
+b = H'*y;
+CG=OptiConjGrad(A,b);  
+CG.OutOp=OutputOptiConjGrad(1,dot(y(:),y(:)),im,10);  
+CG.ItUpOut=1; 
+CG.maxiter=200;                             % max number of iterations
+CG.run(y);                                  % run the algorithm 
+
+
+%% -- Display
 imdisp(GD.OutOp.evolxopt{end},'LS (GD)',1);
-figure;plot(GD.OutOp.iternum,GD.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');title('Cost evolution');
+imdisp(VMLMB.OutOp.evolxopt{end},'LS (VMLMB)',1);
+imdisp(CG.OutOp.evolxopt{end},'LS (CG)',1);
+figure;plot(GD.OutOp.iternum,GD.OutOp.evolcost,'LineWidth',1.5);
+hold all; plot(VMLMB.OutOp.iternum,VMLMB.OutOp.evolcost,'LineWidth',1.5);
+plot(CG.OutOp.iternum,CG.OutOp.evolcost,'LineWidth',1.5);
+set(gca,'FontSize',12);
+legend('GD','VMLMB');
+grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');title('Cost evolution');
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
 semilogy(GD.OutOp.iternum,GD.OutOp.evolsnr,'LineWidth',1.5); 
-legend('LS (GD)','Location','southeast');xlabel('Iterations');ylabel('SNR (dB)');
+semilogy(VMLMB.OutOp.iternum,VMLMB.OutOp.evolsnr,'LineWidth',1.5); 
+semilogy(CG.OutOp.iternum,CG.OutOp.evolsnr,'LineWidth',1.5); 
+legend('GD','VMLM','CG','Location','southeast');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[GD.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
-set(gca,'xtick',[1]);ylabel('Time (s)');
-set(gca,'xticklabels',{'LS (GD)'});set(gca,'XTickLabelRotation',45)
+bar(2,[VMLMB.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
+bar(3,[CG.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
+set(gca,'xtick',[1 2 3]);ylabel('Time (s)');
+set(gca,'xticklabels',{'GD','VMLM','CG'});set(gca,'XTickLabelRotation',45)

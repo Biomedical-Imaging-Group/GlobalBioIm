@@ -1,6 +1,6 @@
-# GlobalBioIm
+# GlobalBioIm 
+[![DOI](https://zenodo.org/badge/124297869.svg)](https://zenodo.org/badge/latestdoi/124297869)
 
-## Description
 This Matlab toolbox provides a set of tools (operators, cost functions, optimization algorithms) for solving inverse problems.
 
 ## Getting started 
@@ -10,6 +10,15 @@ Download or clone this repository and run the script *setMatlabPath.m* which wil
 ## Documentation
 
 A detailled documentation can be found <a href="https://biomedical-imaging-group.github.io/GlobalBioIm/" target="_blank">here</a>.
+
+## What's changed recently?
+
+See [NEWS](https://github.com/Biomedical-Imaging-Group/GlobalBioIm/blob/release/NEWS.md).
+
+
+Contributors
+-----------------
+Mike Mc Cann, Thomas Debarre, Thanh-an Pham, Emmanuel Soubies and Ferréol Soulez
 
 ## Reference
 

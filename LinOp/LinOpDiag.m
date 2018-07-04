@@ -5,7 +5,7 @@ classdef LinOpDiag <  LinOp
     % vector containing the diagonal elements of \\(\\mathrm{H}\\).
     %
     % :param diag: elements of the diagonal (Non-singleton dimensions of diag and sz must be consistent)
-    % :param sz: size (if not the size of the given diag) to build a scaled identity operator.
+    % :param sz: size (if not the size of the given diag).
     %
     % All attributes of parent class :class:`LinOp` are inherited.
     %
@@ -70,29 +70,26 @@ classdef LinOpDiag <  LinOp
     methods (Access = protected)
         function y = apply_(this,x)
             % Reimplemented from parent class :class:`LinOp`.            
-            global isGPU
-            if isGPU==2
-                y=this.diag.*x;
-            else
-                y =bsxfun(@times,this.diag,x);
-            end
+                if  verLessThan('matlab', '9.1')
+                    y =bsxfun(@times,this.diag,x);
+                else
+                    y=this.diag.*x;
+                end
         end
-        function y = applyAdjoint_(this,x)
+        function x = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            global isGPU
-            if isGPU==2
-                y=conj(this.diag).*x;
-            else
-                y =bsxfun(@times,conj(this.diag),x);
-            end
+             if  verLessThan('matlab', '9.1')
+                 y =bsxfun(@times,conj(this.diag),x);
+             else
+                 y=conj(this.diag).*x;
+             end
         end
         function y = applyHtH_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            global isGPU
-            if isGPU==2
-                y=abs(this.diag).^2.*x;
-            else
+            if verLessThan('matlab', '9.1')
                 y =bsxfun(@times,abs(this.diag).^2,x);
+            else
+                y=abs(this.diag).^2.*x;                
             end
         end
         function y = applyHHt_(this,x)
@@ -101,12 +98,11 @@ classdef LinOpDiag <  LinOp
         end
         function y = applyInverse_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            global isGPU
             if this.isInvertible
-                if isGPU==2
-                    y =x./this.diag;
+                if verLessThan('matlab', '9.1') 
+                    y =bsxfun(@times,(1./this.diag),x);                    
                 else
-                    y =bsxfun(@times,(1./this.diag),x);
+                    y =x./this.diag;                   
                 end
             else
                 y = applyInverse_@LinOp(this,x);
@@ -114,12 +110,11 @@ classdef LinOpDiag <  LinOp
         end
         function y = applyAdjointInverse_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            global isGPU
             if this.isInvertible
-                if isGPU==2
-                    y =x./conj(this.diag);
+                if verLessThan('matlab', '9.1')
+                    y =bsxfun(@times,(1./conj(this.diag)),x);
                 else
-                    y =bsxfun(@times,conj(1./this.diag),x);
+                    y =x./conj(this.diag);
                 end
             else
                 y = applyAdjointInverse_@LinOp(this,x);
@@ -135,6 +130,8 @@ classdef LinOpDiag <  LinOp
                 else
                     M=LinOpConv(this.diag+G.mtf,G.isReal,G.index);
                 end
+            elseif isa(G,'LinOpMatrix') && this.isScaledIdentity
+                M=LinOpMatrix(G.M+this.diag*eye(size(G.M)),G.sizein,G.index);
             else
                 M=plus_@LinOp(this,G);
             end
@@ -183,14 +180,18 @@ classdef LinOpDiag <  LinOp
         function M = makeComposition_(this, G)
             % Reimplemented from parent class :class:`LinOp`.
             
+            sz=ones(size(this.sizein));   % to consider singleton dimension that are at the end
+            sz(1:length(size(this.diag)))=size(this.diag);
             if isa(G,'LinOpDiag')
                 M=LinOpDiag(this.sizein,G.diag.*this.diag);
-            elseif isa(G,'LinOpConv') && this.isScaledIdentity
+            elseif isa(G,'LinOpConv') && ( this.isScaledIdentity || (all(sz(G.index)==1)) )
                 if G.useRFT
-                    M = LinOpConv('PSF',iSrft(G.mtf.*this.diag,G.Notindex),G.isReal,G.index,'useRFT');
+                    M = LinOpConv('PSF',iSrft(this*G.mtf,G.Notindex),G.isReal,G.index,'useRFT');
                 else
-                    M = LinOpConv(G.mtf.*this.diag,G.isReal,G.index);
-                end
+                    M = LinOpConv(this*G.mtf,G.isReal,G.index);
+                end           
+            elseif isa(G,'LinOpBroadcastMatrix') && this.isScaledIdentity
+                M=LinOpBroadcastMatrix(G.M*this.diag,G.sizein,G.index);
             else
                 M=makeComposition_@LinOp(this,G);
             end

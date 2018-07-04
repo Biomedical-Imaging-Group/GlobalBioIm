@@ -101,9 +101,10 @@ VMLMB.run(y);                                  % run the algorithm
 imdisp(ADMM.OutOp.evolxopt{end},'LS+TV+POS (ADMM)',1);
 imdisp(PDC.OutOp.evolxopt{end},'LS+TV+POS (Condat)',1);
 imdisp(VMLMB.OutOp.evolxopt{end},'LS+TV+POS (VMLMB)',1);
-figure; plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
-hold all;plot(PDC.OutOp.iternum,PDC.OutOp.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
-plot(VMLMB.OutOp.iternum,VMLMB.OutOp.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+figure; plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);
+hold all;plot(PDC.OutOp.iternum,PDC.OutOp.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);
+plot(VMLMB.OutOp.iternum,VMLMB.OutOp.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);
+xlabel('Iterations');ylabel('Cost');
 legend('ADMM','Condat','VMLMB');title('Cost evolution');
 
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
@@ -111,11 +112,13 @@ semilogy(ADMM.OutOp.iternum,ADMM.OutOp.evolsnr,'LineWidth',1.5);
 semilogy(PDC.OutOp.iternum,PDC.OutOp.evolsnr,'LineWidth',1.5);
 semilogy(VMLMB.OutOp.iternum,VMLMB.OutOp.evolsnr,'LineWidth',1.5);
 legend('LS+TV+POS (ADMM)','LS+TV+POS (Condat)','LS+TV+POS (VMLMB)','Location','southeast');xlabel('Iterations');ylabel('SNR (dB)');
-subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
+subplot(1,2,2);hold on; grid; title('Runing Time ');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[ADMM.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
+%text( [1],[ADMM.time],[num2str(ADMM.OutOp.iternum(end)), ' iter'],'vert','bottom','horiz','center','FontSize',12);
 bar(2,[PDC.time],'FaceColor',orderCol(2,:),'EdgeColor','k');
 bar(3,[VMLMB.time],'FaceColor',orderCol(3,:),'EdgeColor','k');
+
 set(gca,'xtick',[1 2 3]);ylabel('Time (s)');
 set(gca,'xticklabels',{'LS+TV+POS (ADMM)','LS+TV+POS (Condat)','LS+TV+POS (VMLMB)'});set(gca,'XTickLabelRotation',45)
 

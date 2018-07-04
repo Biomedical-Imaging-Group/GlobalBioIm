@@ -114,11 +114,33 @@ classdef OptiVMLMB<Opti
             this.nbeval=0;
             this.xopt = x0;
             this.xopt(1)= x0(1); %Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
+            
+            % apply bound constraints
+            % op_bounds_apply(n, x, xmin, xmax);
+            if(bitand(this.bounds,1))
+                test = (this.xopt<this.xmin);
+                if any(test(:)), this.xopt(test) = this.xmin(test); end
+            end
+            if (bitand(this.bounds,2))
+                test = (this.xopt>this.xmax);
+                if any(test(:)), this.xopt(test) = this.xmax(test); end
+            end
+            
+            
+            this.cc = this.cost.apply(this.xopt);
+            this.grad = this.cost.applyGrad(this.xopt);
+            
+            this.nbeval=this.nbeval+1;
+            
         end
         
         function flag=doIteration(this)
             % Reimplementation from :class:`Opti`. For details see [1].
             
+            % Computes next step:
+            this.xopt(1) = this.xopt(1); %Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
+            this.task = m_opl_vmlmb_iterate(this.ws,this.xopt,this.cc,this.grad,this.active);
+
             flag=this.OPTI_REDO_IT;
             if (this.task == this.OPL_TASK_FG)
                 % apply bound constraints
@@ -137,7 +159,6 @@ classdef OptiVMLMB<Opti
                 this.grad = this.cost.applyGrad(this.xopt);
                 
                 
-                
                 this.nbeval=this.nbeval+1;
                 if this.gtol>0
                     normg= sum(this.grad(:).^2);
@@ -148,6 +169,7 @@ classdef OptiVMLMB<Opti
                 end
             elseif (this.task == this.OPL_TASK_NEWX)
                 flag=this.OPTI_NEXT_IT;
+                
             elseif (this.task == this.OPL_TASK_FREEVARS)
                 % Computes set of active parameters :
                 % op_bounds_active(n, active, x, g, xmin, xmax);
@@ -169,12 +191,8 @@ classdef OptiVMLMB<Opti
                 this.task = m_opl_vmlmb_restore(this.ws,this.xopt,this.cc,this.grad);
                 
                 return;
-            end          
-            % Computes next step:
-            this.task = m_opl_vmlmb_iterate(this.ws,this.xopt,this.cc,this.grad,this.active);
-             
+            end
         end
-        
     end
     
 end

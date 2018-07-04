@@ -76,5 +76,27 @@ classdef LinOpDownsample < LinOpSelector
             w=zeros_(this.sizein);w(this.sel{:})=1;
             M=LinOpDiag([],w);
         end
+        function G = makeComposition_(this, H)
+            % Reimplemented from parent class :class:`LinOp`
+            
+            G=[];
+            if isa(H, 'LinOpComposition')
+                if isa(H.H2,'LinOpAdjoint') && isequal(H.H2.TLinOp,this)
+                    if isa(H.H1, 'LinOpConv')
+                        P=LinOpSumPatches(this.sizein,this.sizein./this.df);
+                        G = LinOpConv(P*H.H1.mtf/prod(this.df),H.H1.isReal); 
+                    elseif isa(H.H1,'LinOpDiag')
+                        if H.H1.isScaledIdentity
+                            G = LinOpDiag(this.sizeout,H.H1.diag);
+                        else
+                            G = LinOpDiag(this.sizeout,this.apply(H.H1.diag));
+                        end
+                    end
+                end
+            end
+            if isempty(G)
+                G = makeComposition_@LinOp(this, H);
+            end
+        end
     end
 end

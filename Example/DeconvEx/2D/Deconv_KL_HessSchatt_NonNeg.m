@@ -74,8 +74,9 @@ PDC.run(y);            % run the algorithm
 % -- Display
 imdisp(ADMM.OutOp.evolxopt{end},'KL+HESS+POS (ADMM)',1);
 imdisp(PDC.OutOp.evolxopt{end},'KL+HESS+POS (Condat)',1);
-figure; plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5); grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+figure; plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5);
 hold all; plot(PDC.OutOp.iternum,PDC.OutOp.evolcost,'LineWidth',1.5);
+ grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 legend('ADMM','Condat');title('Cost evolution');
 
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);

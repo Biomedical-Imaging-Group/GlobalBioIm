@@ -174,7 +174,7 @@ classdef Cost < Map
             % If \\(\\mathrm{G}\\) is a :class:`Cost`, constructs a :class:`CostSummation` object to subtract to the
             % current :class:`Cost` \\(C\\), the given \\(G\\).
             % Otherwise the summation will be a :class:`MapSummation`.
-            if isa(G,'LinOp')
+            if isa(G,'Cost')
                 M = CostSummation({this,G},[1,-1]);
             else
                 M = minus_@MapSummation({this,G},[1,-1]);

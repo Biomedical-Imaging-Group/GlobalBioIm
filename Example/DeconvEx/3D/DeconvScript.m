@@ -26,12 +26,12 @@ help DeconvScript
 %    Note: when using Matlab Parrallel Computing Toolbox (useGPU(1)), resolution with HessianSchatten Norm 
 %          may nor be optimal because svd computations are done with a mex function (see Cost/CostUtils/HessianSchatten) 
 %          on the cpu (so lost of time in transfert CPU/GPU).
-useGPU(0)
+useGPU(1)
 useRFT=0;
 
 %% Parameters
 lamb=1e-4;        % Hyperparameter for initial deconvolution
-maxIt=10;         % Max iterations
+maxIt=100;         % Max iterations
 Reg=1;            % 1 for TV, 2 for Hessian-Schatten 
 DataTerm=1;       % 1 for LS, 2 for KL
 
@@ -85,12 +85,12 @@ Opreg.useRFT=useRFT;
 if DataTerm==1
     Fn={lamb*Freg,pos};           % Functionals F_n
     Hn={Opreg,Id};                    % Associated operators H_n
-    rho_n=[1e-1,1e-1];                % Multipliers rho_n
+    rho_n=[1e-2,1e-2];                % Multipliers rho_n
     ADMM=OptiADMM(LS,Fn,Hn,rho_n);   
 else
     Fn={KL,lamb*Freg,pos};          % Functionals F_n
     Hn={H,Opreg,Id};                    % Associated operators H_n
-    rho_n=[1e-2,1e-2,1e-2];             % Multipliers rho_n
+    rho_n=[1e-3,1e-3,1e-3];             % Multipliers rho_n
     ADMM=OptiADMM([],Fn,Hn,rho_n);
 end
 ADMM.OutOp=OutputOpti(1,im,round(maxIt/10),[1 2]);

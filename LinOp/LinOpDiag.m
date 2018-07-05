@@ -68,56 +68,56 @@ classdef LinOpDiag <  LinOp
     
     %% Core Methods containing implementations (Protected)
     methods (Access = protected)
-        function y = apply_(this,x)
+        function x = apply_(this,x)
             % Reimplemented from parent class :class:`LinOp`.            
                 if  verLessThan('matlab', '9.1')
-                    y =bsxfun(@times,this.diag,x);
+                    x =bsxfun(@times,this.diag,x);
                 else
-                    y=this.diag.*x;
+                    x=this.diag.*x;
                 end
         end
         function x = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
              if  verLessThan('matlab', '9.1')
-                 y =bsxfun(@times,conj(this.diag),x);
+                 x =bsxfun(@times,conj(this.diag),x);
              else
-                 y=conj(this.diag).*x;
+                 x=conj(this.diag).*x;
              end
         end
-        function y = applyHtH_(this,x)
+        function x = applyHtH_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             if verLessThan('matlab', '9.1')
-                y =bsxfun(@times,abs(this.diag).^2,x);
+                x =bsxfun(@times,abs(this.diag).^2,x);
             else
-                y=abs(this.diag).^2.*x;                
+                x=abs(this.diag).^2.*x;                
             end
         end
-        function y = applyHHt_(this,x)
+        function x = applyHHt_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            y=this.applyHtH(x);
+            x=this.applyHtH(x);
         end
-        function y = applyInverse_(this,x)
+        function x = applyInverse_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             if this.isInvertible
                 if verLessThan('matlab', '9.1') 
-                    y =bsxfun(@times,(1./this.diag),x);                    
+                    x =bsxfun(@times,(1./this.diag),x);                    
                 else
-                    y =x./this.diag;                   
+                    x =x./this.diag;                   
                 end
             else
-                y = applyInverse_@LinOp(this,x);
+                x = applyInverse_@LinOp(this,x);
             end
         end
-        function y = applyAdjointInverse_(this,x)
+        function x = applyAdjointInverse_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             if this.isInvertible
                 if verLessThan('matlab', '9.1')
-                    y =bsxfun(@times,(1./conj(this.diag)),x);
+                    x =bsxfun(@times,(1./conj(this.diag)),x);
                 else
-                    y =x./conj(this.diag);
+                    x =x./conj(this.diag);
                 end
             else
-                y = applyAdjointInverse_@LinOp(this,x);
+                x = applyAdjointInverse_@LinOp(this,x);
             end
         end
         function M = plus_(this,G)

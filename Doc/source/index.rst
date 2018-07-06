@@ -61,6 +61,7 @@ Contents
    opti
    methodssummary
    propertiessummary
+   gpu
 
 .. toctree::
    :maxdepth: 1

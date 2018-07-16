@@ -32,6 +32,7 @@ classdef CostLinear < Cost
             this@Cost(sz,y);
             this.isConvex=false;
             this.isDifferentiable=true;
+            this.isSeparable=true;
         end        
     end
     

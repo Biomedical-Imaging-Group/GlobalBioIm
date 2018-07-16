@@ -50,6 +50,7 @@ classdef CostL2 < Cost
                 this.lip=this.W.norm;
             end
             this.isConvex=true;
+            this.isSeparable=true;
             this.isDifferentiable=true;
         end        
     end

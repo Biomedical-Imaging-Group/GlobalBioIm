@@ -43,7 +43,8 @@ classdef CostKullLeib < Cost
             this@Cost(sz,y);
             this.name='CostKullLeib';        
             if nargin==3, this.bet=bet;end
-            this.isConvex=true;            
+            this.isConvex=true;  
+            this.isSeparable=true;
             % -- Compute Lipschitz constant of the gradient
             if (this.bet>0)
                 this.lip=max(this.y(:))./this.bet^2;

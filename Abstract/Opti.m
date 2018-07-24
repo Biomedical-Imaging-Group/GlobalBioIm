@@ -62,9 +62,11 @@ classdef Opti < matlab.mixin.SetGet
             % :param x0: initial point in \\(\\in X\\), if x0=[] restarts from the current value :attr:`xopt`.
             %
             % **note**: this method does not return anything, the result being stored in public attribute :attr:`xopt`.
-            
-            this.initialize(x0);
+            if(nargin==1)
             assert(~isempty(this.xopt),'Missing starting point x0');
+            x0 = this.xopt;
+            end
+            this.initialize(x0);
             tstart=tic;
             this.OutOp.init();
             this.niter=0;

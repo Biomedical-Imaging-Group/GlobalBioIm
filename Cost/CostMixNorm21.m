@@ -29,18 +29,34 @@ classdef CostMixNorm21 < Cost
     % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
         index;    % dimensions along which the l2-norm will be applied
+        nonneg = false;
+        kerdims
+        imdims
     end
     
     %% Constructor
     methods
-        function this = CostMixNorm21(sz,index,y)
+        function this = CostMixNorm21(sz,index,y,nonneg)
             if nargin<3, y=0; end
+            if nargin<4
+                nonneg=false;
+            else
+                nonneg = nonneg;
+            end
             this@Cost(sz,y);
             this.name='CostMixNorm21';
             assert(isnumeric(index)&&isvector(index),'The index should be a vector of integers');
             this.index=index;
             this.isConvex=true;
             this.isDifferentiable=false;
+            this.nonneg = nonneg;
+            
+            
+            ndms = length(this.sizein);
+            T = true(ndms,1);
+            T(this.index)=false;
+            this.kerdims = this.sizein; this.kerdims(T)=1;
+            this.imdims = this.sizein; this.imdims(~T)=1;
         end
     end
     
@@ -74,17 +90,20 @@ classdef CostMixNorm21 < Cost
             % 0 & \\; \\mathrm{otherwise},
             % \\end{array}\\right. \\; \\forall \\, k $$
             % where the division is component-wise.
-            sz = size(x);
-            ndms = length(sz);
-            T = true(ndms,1);
-            T(this.index)=false;
-            kerdims = sz; kerdims(T)=1;
-            imdims = sz; imdims(~T)=1;
+            
             % Computes the l2-norm along the dimensions given by index
-            if(isscalar(this.y)&&(this.y==0))
-                sx = abs(x).^2;
+            if this.nonneg
+                if(isscalar(this.y)&&(this.y==0))
+                    sx = max(x,0.).^2;
+                else
+                    sx = max(x-this.y,0).^2;
+                end
             else
-                sx = abs(x-this.y).^2;
+                if(isscalar(this.y)&&(this.y==0))
+                    sx = abs(x).^2;
+                else
+                    sx = abs(x-this.y).^2;
+                end
             end
             for n=1:length(this.index)
                 sx = sum(sx,this.index(n));
@@ -97,9 +116,9 @@ classdef CostMixNorm21 < Cost
             
             b(t) = 1-alpha./sx(t);
             if(isscalar(this.y)&&(this.y==0))
-                z = reshape(repmat(reshape(b ,imdims),kerdims),sz).*x;
+                z = reshape(repmat(reshape(b ,this.imdims),this.kerdims),this.sizein).*x;
             else
-                z = reshape(repmat(reshape(b ,imdims),kerdims),sz).*x+this.y;
+                z = reshape(repmat(reshape(b ,this.imdims),this.kerdims),this.sizein).*x+this.y;
             end
             % result:
             % x(||x|| <= alpha) = 0
@@ -109,7 +128,7 @@ classdef CostMixNorm21 < Cost
         function M=makeComposition_(this,G)
             % Reimplemented from parent class :class:`Cost`. Instantiates a
             % :class:`CostL2Composition`.
-            if isa(G,'LinOpGrad')
+            if ~this.nonneg && isa(G,'LinOpGrad')
                 M = CostTV(this,G);
             else
                 M = makeComposition_@Cost(this,G);

@@ -108,7 +108,7 @@ classdef OptiADMM < Opti
                 end
                 if ~isempty(this.F0)
                     if isa(this.F0,'CostL2Composition')
-                        this.A=this.A + this.F0.H2'*this.F0.H2;
+                        this.A=this.A + this.F0.H2'*(this.F0.H1.W*this.F0.H2);
                         this.b0=this.F0.H2'*this.F0.H1.y;
                     elseif isa(this.F0,'CostL2')
                         this.A=this.A + LinOpDiag(this.A.sizein);

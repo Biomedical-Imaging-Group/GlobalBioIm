@@ -25,7 +25,8 @@ automatically from comments within M-files.
 News
 ----
 
-  - **May 2018**: New release (`v 1.0.1 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm>`_).
+  - **July 2018**: New release (`v 1.1 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm>`_). *Speed up your codes using the library with GPU* (:ref:`read more <ref-gpu>`).
+  - **May 2018**: New release (`v 1.0.1 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.0.1>`_).
   - **March 2018**: New release (`v 1.0 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.0>`_).
   - **November 2017**: New release (`v 0.2 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v0.2>`_).
     *New tools, more flexibility, improved composition*.
@@ -45,7 +46,7 @@ Contents
    :maxdepth: 1
    :caption: General
 
-   Download or Clone (v 1.0) <https://github.com/Biomedical-Imaging-Group/GlobalBioIm>
+   Download or Clone (v 1.1) <https://github.com/Biomedical-Imaging-Group/GlobalBioIm>
    infos
    examples   
    conditionsuse

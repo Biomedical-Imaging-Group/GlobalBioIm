@@ -1,3 +1,21 @@
+## v1.1 release notes
+The v1.1 release contains a new functionality for GPU computation plus incremental improvements and bug fixes. 
+
+#### GPU functionality
+- add thze functions ones_, zeros_, useGPU, isGPU, gpuCpuConverter
+- replace occurences of all() by sum( test)==0 
+- replace occurences of ones() and zeros() by  ones_() and zeros_()
+- update the 3D deconvolution example with GPU
+- add a page in the documentation dedicated to GPU
+
+#### Other changes
+- set saveXopt=false by default in OutputOpti
+- add flag isSeparable for Cost classes. Generic implementation of applyProx_ for the sum of a separable cost with an indicator cost.
+- add a direct prox compuattion for the composition of a CostL2 with a Downsampled Convolution
+- add positivity and move dimensions computation in the constructor to CostMixNorm21
+- ADMM can now take a Sum of CostL2Composition in the F0 argument
+- remove OutputOptiADMM
+
 
 ## v1.0.1 release notes
 The v1.0.1 release does not contain any major changes but mainly incremental improvements and bug fixes. 
@@ -35,7 +53,7 @@ The v1.0.1 release does not contain any major changes but mainly incremental imp
 - Remove deprecated `LinOpScaling`,
 - Improve tests with `CheckLinOp`, `CheckMap` and `TestsSummationLinOp' functions
 - implement methods `makeAdjoint` and `makeInversion` in `LinOp`
-- more simplifications in `Summation`, `Composition`, `Ìnversion` for `Map` and hence `LinOp`and `Cost`
+- more simplifications in `Summation`, `Composition`, `??nversion` for `Map` and hence `LinOp`and `Cost`
 - New `LinOpBroadcast` linear operator
 - Add `ElementWiseOp` non linear operators: `OpEWSquareRoot`, `OpEWInverse` and `OpEWSSquaredMagnitude`.  
 - New `CostGoodRoughness` cost function

@@ -1,3 +1,5 @@
+.. _ref-gpu:
+
 Speedup with GPU
 ****************
 
@@ -12,7 +14,9 @@ To that end, one only needs two simple functions:
 The function :meth:`useGPU` takes one single argument which can be
    - 0 : computation is done on CPU (default)
    - 1 : computation is done on GPU using the `Matlab Parrallel Computing Toolbox <https://ch.mathworks.com/help/distcomp/>`_ 
-   - 2 : computation is done on GPU using `CudaMat <http://www.nanoimaging.de/CudaMat/>`_ 
+   - 2 : computation is done on GPU using CudaMat (`GitHub <https://github.com/RainerHeintzmann/CudaMat>`_, `Documentation <http://www.nanoimaging.de/CudaMat/>`_) 
+
+
 
 The function :meth:`gpuCpuConverter` allows to convert numeric variables to the correct type according to the option selected with 
 :meth:`useGPU` (respectively, double, gpuarray or cuda). For instance, if x is a :class:`double` and :attr:`useGPU` is set to 0, then :attr:`x=gpuCpuConverter(x)` will not change x. 

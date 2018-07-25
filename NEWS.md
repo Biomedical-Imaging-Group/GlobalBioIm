@@ -11,8 +11,8 @@ The v1.1 release contains a new functionality for GPU computation plus increment
 #### Other changes
 - set saveXopt=false by default in OutputOpti
 - add flag isSeparable for Cost classes. Generic implementation of applyProx_ for the sum of a separable cost with an indicator cost.
-- add a direct prox compuattion for the composition of a CostL2 with a Downsampled Convolution
-- add positivity and move dimensions computation in the constructor to CostMixNorm21
+- add a direct prox computation for the composition of a CostL2 with a Downsampled Convolution
+- add CostMixNorm21 a non negativity constrained version of CostMixNorm21
 - ADMM can now take a Sum of CostL2Composition in the F0 argument
 - remove OutputOptiADMM
 

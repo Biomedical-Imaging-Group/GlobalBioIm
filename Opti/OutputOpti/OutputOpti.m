@@ -64,7 +64,7 @@ classdef OutputOpti < handle
         computecost=false; % Boolean, if true the cost function will be computed
         iterVerb=0;        % message will be displayed every iterVerb iterations
         costIndex=0;       % index of the cost function
-        saveXopt=1;        % save evolution of the optimized variable
+        saveXopt=false;        % save evolution of the optimized variable
     end
     
     methods
@@ -94,8 +94,8 @@ classdef OutputOpti < handle
         function init(this)
             % Initialize the arrays and counters.
         	this.count=1;
-        	this.evolcost=[];
-        	this.evolsnr=[];
+        	this.evolcost=zeros_(1);
+        	this.evolsnr=zeros_(1);
 			this.iternum = [];
 			this.evolxopt = {};
         end
@@ -118,7 +118,7 @@ classdef OutputOpti < handle
             end
         	this.iternum(this.count)=opti.niter;
         	this.count=this.count+1;
-        	if opti.niter~=0 && (mod(opti.niter,this.iterVerb)==0) || (opti.niter==1 && this.iterVerb~=0),
+        	if opti.verbose && (opti.niter~=0 && (mod(opti.niter,this.iterVerb)==0) || (opti.niter==1 && this.iterVerb~=0)),
         		disp(str);
         	end
         end

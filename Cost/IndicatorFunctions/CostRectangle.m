@@ -52,7 +52,8 @@ classdef CostRectangle < CostIndicator
             end
             this.xmin = xmin;
             this.xmax = xmax;
-            this.isConvex=true;          
+            this.isConvex=true;  
+            this.isSeparable=true;
         end
     end
     

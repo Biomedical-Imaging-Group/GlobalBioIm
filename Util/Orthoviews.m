@@ -24,7 +24,7 @@ if nargin <4, newfig=1; end;
 if newfig, figure; end
 assert(length(sz)==3,'Wrong length of pos vector');
 assert(all(pos>0) && all(pos<=sz),'Given position out of image range');
-imm=ones(sz(1)+sz(3)+margin,sz(2)+sz(3)+margin)*0.93;
+imm=ones_(sz(1)+sz(3)+margin,sz(2)+sz(3)+margin)*0.93;
 imm(1:sz(1),1:sz(2))=im(:,:,pos(3));
 imm(sz(1)+margin+1:end,1:sz(2))=transpose(squeeze(im(pos(1),:,:)));
 imm(1:sz(1),sz(2)+margin+1:end)=squeeze(im(:,pos(2),:));

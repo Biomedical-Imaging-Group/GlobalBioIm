@@ -50,8 +50,8 @@ classdef LinOpSumPatches <  LinOp
     %% Core Methods containing implementations (Protected)
 	methods (Access = protected)
         function y = apply_(this,x)
-            % Reimplemented from parent class :class:`LinOp`.   
-            y=zeros(this.szPatch);
+            % Reimplemented from parent class :class:`LinOp`.  
+            y=zeros_(this.szPatch);
             tmp=mat2cell(x,this.sel{:});
             for n=1:numel(tmp)
                 y=y+tmp{n};

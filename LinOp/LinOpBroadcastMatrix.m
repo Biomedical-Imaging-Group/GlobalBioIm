@@ -71,11 +71,11 @@ classdef LinOpBroadcastMatrix <  LinOp
     
     %% Core Methods containing implementations (Protected)
     methods (Access = protected)
-        function y=apply_(this,x)
+        function x=apply_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             
-            tmp=reshape(permute(x,this.permIdxIn),[this.sizein(this.index),prod(this.sizein(this.indexdiff))]);
-            y=permute(reshape(this.M*tmp,[this.sizeout(this.index),this.sizeout(this.indexdiff)]),this.permIdxOut);
+            x=reshape(permute(x,this.permIdxIn),[this.sizein(this.index),prod(this.sizein(this.indexdiff))]);
+            x=permute(reshape(this.M*x,[this.sizeout(this.index),this.sizeout(this.indexdiff)]),this.permIdxOut);
         end       
         function y=applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.

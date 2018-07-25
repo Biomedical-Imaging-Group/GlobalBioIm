@@ -29,6 +29,8 @@ classdef CostMixNorm21 < Cost
     % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
         index;    % dimensions along which the l2-norm will be applied
+        kerdims
+        imdims
     end
     
     %% Constructor
@@ -41,6 +43,13 @@ classdef CostMixNorm21 < Cost
             this.index=index;
             this.isConvex=true;
             this.isDifferentiable=false;
+            
+            
+            ndms = length(this.sizein);
+            T = true(ndms,1);
+            T(this.index)=false;
+            this.kerdims = this.sizein; this.kerdims(T)=1;
+            this.imdims = this.sizein; this.imdims(~T)=1;
         end
     end
     
@@ -64,23 +73,19 @@ classdef CostMixNorm21 < Cost
         end
         function z=applyProx_(this,x,alpha)
             % Reimplemented from parent class :class:`Cost`
-            % $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{x}) = \\left\\lbrace
+            % $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{x}_{k\\cdot} ) = \\left\\lbrace
             % \\begin{array}{ll}
-            % \\mathrm{x}_{k\\cdot}
+            % \\left( \\mathrm{x}_{k\\cdot} - y_{k\\cdot} \\right)
             % \\left(1-\\frac{\\alpha}{\\Vert(\\mathrm{x}-y)_{k\\cdot}\\Vert_2}
-            % \\right) & \\; \\mathrm{if } \\;
+            % \\right) + y_{k\\cdot}  & \\; \\mathrm{if } \\;
             % \\Vert (\\mathrm{x-y})_{k\\cdot}\\Vert_2 > \\alpha,
             % \\newline
             % 0 & \\; \\mathrm{otherwise},
             % \\end{array}\\right. \\; \\forall \\, k $$
             % where the division is component-wise.
-            sz = size(x);
-            ndms = length(sz);
-            T = true(ndms,1);
-            T(this.index)=false;
-            kerdims = sz; kerdims(T)=1;
-            imdims = sz; imdims(~T)=1;
+            
             % Computes the l2-norm along the dimensions given by index
+            
             if(isscalar(this.y)&&(this.y==0))
                 sx = abs(x).^2;
             else
@@ -93,13 +98,13 @@ classdef CostMixNorm21 < Cost
             
             % Computes the prox
             t = sx > alpha;
-            b = zeros(size(sx));
+            b = zeros_(size(sx));
             
             b(t) = 1-alpha./sx(t);
             if(isscalar(this.y)&&(this.y==0))
-                z = reshape(repmat(reshape(b ,imdims),kerdims),sz).*x;
+                z = reshape(repmat(reshape(b ,this.imdims),this.kerdims),this.sizein).*x;
             else
-                z = reshape(repmat(reshape(b ,imdims),kerdims),sz).*x+this.y;
+                z = reshape(repmat(reshape(b ,this.imdims),this.kerdims),this.sizein).*x+this.y;
             end
             % result:
             % x(||x|| <= alpha) = 0
@@ -109,7 +114,7 @@ classdef CostMixNorm21 < Cost
         function M=makeComposition_(this,G)
             % Reimplemented from parent class :class:`Cost`. Instantiates a
             % :class:`CostL2Composition`.
-            if isa(G,'LinOpGrad')
+            if  isa(G,'LinOpGrad')
                 M = CostTV(this,G);
             else
                 M = makeComposition_@Cost(this,G);

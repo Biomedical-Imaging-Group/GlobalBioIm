@@ -13,7 +13,7 @@
 % CostMixNorm12, Opti, OptiADMM, OptiRichLucy, OutpuOpti
 % OptiPrimalDualCondat, OptiVMLMB.
 %------------------------------------------------------------
-clear all; close all; clc;
+clear; close all; 
 help Deconv_KL_TV_NonNeg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -95,10 +95,10 @@ VMLMB.run(y);                                  % run the algorithm
 
 
 % -- Display
-imdisp(ADMM.OutOp.evolxopt{end},'KL+TV+POS (ADMM)',1);
-imdisp(PDC.OutOp.evolxopt{end},'KL+TV+POS (Condat)',1);
-imdisp(RLTV.OutOp.evolxopt{end},'KL+TV+POS (RL-TV)',1);
-imdisp(VMLMB.OutOp.evolxopt{end},'VMLMB+TV+POS (RL-TV)',1);
+imdisp(ADMM.xopt,'KL+TV+POS (ADMM)',1);
+imdisp(PDC.xopt,'KL+TV+POS (Condat)',1);
+imdisp(RLTV.xopt,'KL+TV+POS (RL-TV)',1);
+imdisp(VMLMB.xopt,'VMLMB+TV+POS (RL-TV)',1);
 
 figure;plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5); grid;  
 hold all;plot(PDC.OutOp.iternum,PDC.OutOp.evolcost,'LineWidth',1.5); 

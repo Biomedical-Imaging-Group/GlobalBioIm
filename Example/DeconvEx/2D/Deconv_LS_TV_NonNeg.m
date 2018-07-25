@@ -12,7 +12,7 @@
 % CostMixNorm12, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
 % CostHyperBolic, OptiVMLMB
 %------------------------------------------------------------
-clear all; close all; clc;
+clear; close all; 
 help Deconv_LS_TV_NonNeg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -30,6 +30,9 @@ help Deconv_LS_TV_NonNeg
 %  You should have received a copy of the GNU General Public License
 %  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %---------------------------------------------------------------
+
+% -- To run on GPU (0: CPU / 1: Matlab Parrallel Computing Toolbox / 2: CudaMat) 
+useGPU(0)
 
 % -- fix the random seed (for reproductibility)
 rng(1);
@@ -95,9 +98,9 @@ VMLMB.run(y);                                  % run the algorithm
 
 
 %% -- Display
-imdisp(ADMM.OutOp.evolxopt{end},'LS+TV+POS (ADMM)',1);
-imdisp(PDC.OutOp.evolxopt{end},'LS+TV+POS (Condat)',1);
-imdisp(VMLMB.OutOp.evolxopt{end},'LS+TV+POS (VMLMB)',1);
+imdisp(ADMM.xopt,'LS+TV+POS (ADMM)',1);
+imdisp(PDC.xopt,'LS+TV+POS (Condat)',1);
+imdisp(VMLMB.xopt,'LS+TV+POS (VMLMB)',1);
 figure; plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);
 hold all;plot(PDC.OutOp.iternum,PDC.OutOp.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);
 plot(VMLMB.OutOp.iternum,VMLMB.OutOp.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);

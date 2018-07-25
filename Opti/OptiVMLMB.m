@@ -102,10 +102,10 @@ classdef OptiVMLMB<Opti
             initialize@Opti(this,x0);
             this.nparam =numel(x0);
             if isscalar(this.xmin)
-                this.xmin=ones(size(x0))*this.xmin;
+                this.xmin=ones_(size(x0))*this.xmin;
             end
             if isscalar(this.xmax)
-                this.xmax=ones(size(x0))*this.xmax;
+                this.xmax=ones_(size(x0))*this.xmax;
             end
             this.ws = m_opl_vmlmb_create(this.nparam, this.m, this.fatol, this.frtol,...
                 this.sftol, this.sgtol, this.sxtol, this.epsilon, this.delta);
@@ -182,20 +182,16 @@ classdef OptiVMLMB<Opti
                         this.active = int32( (this.grad>0) + (this.xopt<this.xmax) );
                     case 3
                         this.active = int32( ( (this.xopt>this.xmin) + (this.grad<0) ).*( (this.xopt<this.xmax) + (this.grad>0) ) );
-                end
-                
+                end               
             else
                 % Convergence, or error, or warning
-                this.endingMessage = ['Convergence, or error, or warning : ',this.task,m_opl_vmlmb_get_reason(this.ws)];
+                this.endingMessage = ['Convergence, or error, or warning : ',this.task,m_opl_vmlmb_get_reason(this.ws)];         
                 
                 flag=this.OPTI_STOP;
                 this.task = m_opl_vmlmb_restore(this.ws,this.xopt,this.cc,this.grad);
                 
                 return;
             end
-            
-            
-            
         end
     end
     

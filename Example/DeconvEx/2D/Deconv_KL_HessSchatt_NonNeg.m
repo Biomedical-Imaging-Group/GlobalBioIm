@@ -10,7 +10,7 @@
 % See LinOp, LinOpConv, LinOpHess, Cost, CostKullLeib, CostNonNeg,  
 % CostMixNorm1Schatt, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;
+clear; close all; 
 help Deconv_KL_HessSchatt_NonNeg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -72,8 +72,8 @@ PDC.maxiter=200;       % max number of iterations
 PDC.run(y);            % run the algorithm 
 
 % -- Display
-imdisp(ADMM.OutOp.evolxopt{end},'KL+HESS+POS (ADMM)',1);
-imdisp(PDC.OutOp.evolxopt{end},'KL+HESS+POS (Condat)',1);
+imdisp(ADMM.xopt,'KL+HESS+POS (ADMM)',1);
+imdisp(PDC.xopt,'KL+HESS+POS (Condat)',1);
 figure; plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5);
 hold all; plot(PDC.OutOp.iternum,PDC.OutOp.evolcost,'LineWidth',1.5);
  grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');

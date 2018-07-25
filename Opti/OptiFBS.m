@@ -102,7 +102,6 @@ classdef OptiFBS < Opti
             end
 
             flag=this.OPTI_NEXT_IT;
-        end   
-        
+        end          
     end
 end

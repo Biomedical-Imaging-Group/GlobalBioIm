@@ -50,6 +50,7 @@ classdef CostL2 < Cost
                 this.lip=this.W.norm;
             end
             this.isConvex=true;
+            this.isSeparable=true;
             this.isDifferentiable=true;
         end        
     end
@@ -84,12 +85,12 @@ classdef CostL2 < Cost
         	% Reimplemented from parent class :class:`Cost`   
             % $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{x}) = \\frac{\\mathrm{x} + \\alpha \\mathrm{Wy}}{1 + \\alpha \\mathrm{W}} $$
             % where the division is component-wise.
-            if  isscalar(this.W)
+            if  isnumeric(this.W)&&isscalar(this.W)
                 y=(x+alpha*this.W*this.y)./(1+alpha.*this.W);
             elseif isa(this.W,'LinOpDiag')
                 y=(x+alpha*this.W*this.y)./(1+alpha.*this.W.diag);
             else
-                y = applyProx_@LinOp(this,x,alpha);
+                y = applyProx_@Cost(this,x,alpha);
             end
         end
         function M=makeComposition_(this,G)

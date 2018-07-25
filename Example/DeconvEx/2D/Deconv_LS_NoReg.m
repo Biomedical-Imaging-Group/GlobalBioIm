@@ -2,12 +2,12 @@
 % Deconv_LS_NoReg script: Deconvolution by minimizing the
 % Least-Squares function without any regularizer:
 %     0.5 ||Hx - y||^2
-% using Gradient Descent
+% using Gradient Descent, VMLMB and Conjugate Gradient
 %
 % See LinOp, LinOpConv, Cost, CostL2, CostL2Composition, Opti,
-% OptiGradDsct, OutpuOpti
+% OptiGradDsct, OptiConjGrad, OptiVMLMB, OutpuOpti
 %------------------------------------------------------------
-clear; close all; clc;
+clear; close all;
 help Deconv_LS_NoReg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -35,6 +35,7 @@ rng(1);
 imdisp(im,'Input Image (GT)',1);
 imdisp(y,'Convolved and noisy data',1);
 sz=size(y);
+
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
@@ -83,9 +84,9 @@ CG.run(y);                                  % run the algorithm
 
 
 %% -- Display
-imdisp(GD.OutOp.evolxopt{end},'LS (GD)',1);
-imdisp(VMLMB.OutOp.evolxopt{end},'LS (VMLMB)',1);
-imdisp(CG.OutOp.evolxopt{end},'LS (CG)',1);
+imdisp(GD.xopt,'LS (GD)',1);
+imdisp(VMLMB.xopt,'LS (VMLMB)',1);
+imdisp(CG.xopt,'LS (CG)',1);
 figure;plot(GD.OutOp.iternum,GD.OutOp.evolcost,'LineWidth',1.5);
 hold all; plot(VMLMB.OutOp.iternum,VMLMB.OutOp.evolcost,'LineWidth',1.5);
 plot(CG.OutOp.iternum,CG.OutOp.evolcost,'LineWidth',1.5);

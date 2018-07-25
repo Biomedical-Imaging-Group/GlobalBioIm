@@ -56,7 +56,7 @@ classdef CostHyperBolic < Cost
             if index~=0
                 this.sumOp = LinOpSum(sz,index);
             else
-                this.sumOp = LinOpDiag(this.H.sizeout);
+                this.sumOp = LinOpDiag(sz);
             end
             
             this.memoizeOpts.computeF=true;

@@ -42,13 +42,13 @@ classdef OpEWInverse < Map
         function y = apply_(this,x)
             % Reimplemented from parent class :class:`Map`.
             
-            assert(all(x(:)),'Input vector contains zeros');
+            assert(sum(x(:)==0)==0,'Input vector contains zeros');
             y=1./x;
         end	
         function x = applyJacobianT_(this,y,v)
             % Reimplemented from parent class :class:`Map`.
 
-            assert(all(v(:)),'Input vector contains zeros');
+            assert(sum(v(:)==0)==0,'Input vector contains zeros');
             x=-1./v.^2.*y;
         end	
     end

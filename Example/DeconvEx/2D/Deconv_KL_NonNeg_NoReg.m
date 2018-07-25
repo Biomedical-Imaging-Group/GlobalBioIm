@@ -10,7 +10,7 @@
 % See LinOp, LinOpConv, Cost, CostKullLeib, CostNonNeg, Opti, 
 % OptiFBS, OptiRichLucy, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;
+clear; close all; 
 help Deconv_KL_NonNeg_NoReg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -62,8 +62,8 @@ RL.maxiter=200;  % max number of iterations
 RL.run(y);       % run the algorithm 
 
 % -- Display
-imdisp(FBS.OutOp.evolxopt{end},'KL + NonNeg (FISTA)',1);
-imdisp(RL.OutOp.evolxopt{end},'KL + NonNeg (RL)',1);
+imdisp(FBS.xopt,'KL + NonNeg (FISTA)',1);
+imdisp(RL.xopt,'KL + NonNeg (RL)',1);
 figure;plot(FBS.OutOp.iternum,FBS.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 hold all; plot(RL.OutOp.iternum,RL.OutOp.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');title('Cost evolution');
 legend('FISTA','RL');

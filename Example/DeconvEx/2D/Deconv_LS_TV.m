@@ -9,7 +9,7 @@
 % See LinOp, LinOpConv, LinOpGrad, Cost, CostL2,   
 % CostMixNorm12, Opti, OptiChambPock, OptiADMM, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;
+clear; close all;
 help Deconv_LS_TV
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -71,8 +71,8 @@ ADMM.maxiter=200;           % max number of iterations
 ADMM.run(zeros(size(y)));   % run the algorithm 
 
 % -- Display
-imdisp(CP.OutOp.evolxopt{end},'LS + TV (CP)',1);
-imdisp(ADMM.OutOp.evolxopt{end},'LS + TV (ADMM)',1);
+imdisp(CP.xopt,'LS + TV (CP)',1);
+imdisp(ADMM.xopt,'LS + TV (ADMM)',1);
 figure;plot(CP.OutOp.iternum,CP.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 hold all;plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 legend('CP','ADMM');title('Cost evolution');

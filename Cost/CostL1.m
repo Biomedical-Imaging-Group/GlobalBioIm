@@ -41,11 +41,13 @@ classdef CostL1 < Cost
                     nonneg=false;
                 else
                     nonneg = nonneg;
+                    warning('nonneg parameter will be removed in future releases. Use the sum of a CostL1 and a CostNonNeg instead.');
                 end
             end
             this@Cost(sz,y);
             this.name='CostL1';
             this.isConvex=true;
+            this.isSeparable=true;
             this.isDifferentiable=false;
             this.nonneg = nonneg;
         end
@@ -76,15 +78,21 @@ classdef CostL1 < Cost
         end
         function y=apply_(this,x)
             % Reimplemented from parent class :class:`Cost`.
-              if this.nonneg && any(x(:)<0)
-              y = + inf;
-              else
+            
             if(isscalar(this.y)&&(this.y==0))
-                y=sum(abs(x(:)));
+                if this.nonneg && any(x(:)<0)
+                    y = + inf;
+                else
+                    y=sum(abs(x(:)));
+                end
             else
-                y=sum(abs(x(:)-this.y(:)));
+                tmp = x(:)-this.y(:);
+                if this.nonneg && any(tmp(:)<0)
+                    y = + inf;
+                else
+                    y=sum(abs(tmp));
+                end
             end
-              end
         end
     end
 end

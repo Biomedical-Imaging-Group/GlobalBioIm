@@ -1,6 +1,8 @@
-classdef CostMixNorm21 < Cost
-    % CostMixNorm21: Mixed norm 2-1 cost function
-    % $$C(\\mathrm{x}) := \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{x}-y)_{k,l}^2}= \\sum_{k=1}^K \\Vert (\\mathrm{x-y})_{k\\cdot} \\Vert_2$$
+classdef CostMixNorm21NonNeg < Cost
+    % CostMixNorm21: Mixed norm 2-1 with non negativity constraints cost function
+    % $$C(\\mathrm{x}) :=  \\left\\lbrace \\begin{array}[ll]
+    % \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{x}-y)_{k,l}^2} & \\text{ if } \\mathrm{x-y} \\geq 0 \\newline
+    % + \\infty & \\text{ otherwise.} \\end{array} \\right. $$
     %
     % :param index: dimensions along which the l2-norm will be applied (inner sum over l)
     %
@@ -35,10 +37,10 @@ classdef CostMixNorm21 < Cost
     
     %% Constructor
     methods
-        function this = CostMixNorm21(sz,index,y)
+        function this = CostMixNorm21NonNeg(sz,index,y)
             if nargin<3, y=0; end
             this@Cost(sz,y);
-            this.name='CostMixNorm21';
+            this.name='CostMixNorm21NonNeg';
             assert(isnumeric(index)&&isvector(index),'The index should be a vector of integers');
             this.index=index;
             this.isConvex=true;
@@ -60,9 +62,20 @@ classdef CostMixNorm21 < Cost
         function y=apply_(this,x)
             % Reimplemented from parent class :class:`Cost`.
             if(isscalar(this.y)&&(this.y==0))
-                u=abs(x).^2;
+                if any(x(:)<0)
+                    y = + inf;
+                    return
+                else
+                    u=abs(x).^2;
+                end
             else
-                u=abs(x-this.y).^2;
+                tmp = x(:)-this.y(:);
+                if   any(tmp(:)<0)
+                    y = + inf;
+                    return
+                else
+                    u=abs(tmp).^2;
+                end
             end
             % Computes the l2-norm along the dimensions given by index
             for n=1:length(this.index)
@@ -85,11 +98,10 @@ classdef CostMixNorm21 < Cost
             % where the division is component-wise.
             
             % Computes the l2-norm along the dimensions given by index
-            
             if(isscalar(this.y)&&(this.y==0))
-                sx = abs(x).^2;
+                sx = max(x,0.).^2;
             else
-                sx = abs(x-this.y).^2;
+                sx = max(x-this.y,0).^2;
             end
             for n=1:length(this.index)
                 sx = sum(sx,this.index(n));
@@ -110,15 +122,6 @@ classdef CostMixNorm21 < Cost
             % x(||x|| <= alpha) = 0
             % x(||x|| > alpha) = x(||x|| > alpha) - ...
             %      x(||x|| > alpha) / ||x|| * alpha
-        end
-        function M=makeComposition_(this,G)
-            % Reimplemented from parent class :class:`Cost`. Instantiates a
-            % :class:`CostL2Composition`.
-            if  isa(G,'LinOpGrad')
-                M = CostTV(this,G);
-            else
-                M = makeComposition_@Cost(this,G);
-            end
         end
         
     end

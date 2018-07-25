@@ -2,13 +2,14 @@
 The v1.1 release contains a new functionality for GPU computation plus incremental improvements and bug fixes. 
 
 #### GPU functionality
-- add thze functions ones_, zeros_, useGPU, isGPU, gpuCpuConverter
+- add the functions ones_, zeros_, useGPU, isGPU, gpuCpuConverter
 - replace occurences of all() by sum( test)==0 
 - replace occurences of ones() and zeros() by  ones_() and zeros_()
 - update the 3D deconvolution example with GPU
 - add a page in the documentation dedicated to GPU
 
 #### Other changes
+- fix a bug in OptiVMLMB compilation (you should recompile it by running installOptimPack.m)
 - set saveXopt=false by default in OutputOpti
 - add flag isSeparable for Cost classes. Generic implementation of applyProx_ for the sum of a separable cost with an indicator cost.
 - add a direct prox computation for the composition of a CostL2 with a Downsampled Convolution

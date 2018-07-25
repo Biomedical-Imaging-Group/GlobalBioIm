@@ -1,7 +1,6 @@
 classdef CostMixNorm21NonNeg < Cost
     % CostMixNorm21: Mixed norm 2-1 with non negativity constraints cost function
-    % $$C(\\mathrm{x}) :=  \\left\\lbrace \\begin{array}[ll]
-    % \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{x}-y)_{k,l}^2} & \\text{ if } \\mathrm{x-y} \\geq 0 \\newline
+    % $$C(\\mathrm{x}) :=  \\left\\lbrace \\begin{array}{ll} \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{x}-y)_{k,l}^2} & \\text{ if } \\mathrm{x-y} \\geq 0 \\newline
     % + \\infty & \\text{ otherwise.} \\end{array} \\right. $$
     %
     % :param index: dimensions along which the l2-norm will be applied (inner sum over l)
@@ -86,11 +85,11 @@ classdef CostMixNorm21NonNeg < Cost
         end
         function z=applyProx_(this,x,alpha)
             % Reimplemented from parent class :class:`Cost`
-            % $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{x}) = \\left\\lbrace
+            % $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{x}_{k\\cdot} ) = \\left\\lbrace
             % \\begin{array}{ll}
-            % \\mathrm{x}_{k\\cdot}
+            % \\max(\\mathrm{x}_{k\\cdot} - y_{k\\cdot} ,0)
             % \\left(1-\\frac{\\alpha}{\\Vert(\\mathrm{x}-y)_{k\\cdot}\\Vert_2}
-            % \\right) & \\; \\mathrm{if } \\;
+            % \\right) +y_{k\\cdot} cd .. & \\; \\mathrm{if } \\;
             % \\Vert (\\mathrm{x-y})_{k\\cdot}\\Vert_2 > \\alpha,
             % \\newline
             % 0 & \\; \\mathrm{otherwise},

@@ -73,11 +73,11 @@ classdef CostMixNorm21 < Cost
         end
         function z=applyProx_(this,x,alpha)
             % Reimplemented from parent class :class:`Cost`
-            % $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{x}) = \\left\\lbrace
+            % $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{x}_{k\\cdot} ) = \\left\\lbrace
             % \\begin{array}{ll}
-            % \\mathrm{x}_{k\\cdot}
+            % \\left( \\mathrm{x}_{k\\cdot} - y_{k\\cdot} \\right)
             % \\left(1-\\frac{\\alpha}{\\Vert(\\mathrm{x}-y)_{k\\cdot}\\Vert_2}
-            % \\right) & \\; \\mathrm{if } \\;
+            % \\right) + y_{k\\cdot}  & \\; \\mathrm{if } \\;
             % \\Vert (\\mathrm{x-y})_{k\\cdot}\\Vert_2 > \\alpha,
             % \\newline
             % 0 & \\; \\mathrm{otherwise},

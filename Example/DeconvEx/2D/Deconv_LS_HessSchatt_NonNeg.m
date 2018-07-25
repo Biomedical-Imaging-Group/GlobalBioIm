@@ -77,8 +77,8 @@ PDC.run(zeros(size(y)));  % run the algorithm
 
 
 % -- Display
-imdisp(ADMM.OutOp.evolxopt{end},'LS+HESS+POS (ADMM)',1);
-imdisp(PDC.OutOp.evolxopt{end},'LS+HESS+POS (Condat)',1);
+imdisp(ADMM.xopt,'LS+HESS+POS (ADMM)',1);
+imdisp(PDC.xopt,'LS+HESS+POS (Condat)',1);
 figure; plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5); grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 hold all;plot(PDC.OutOp.iternum,PDC.OutOp.evolcost,'LineWidth',1.5); grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 legend('ADMM','Condat');title('Cost evolution');

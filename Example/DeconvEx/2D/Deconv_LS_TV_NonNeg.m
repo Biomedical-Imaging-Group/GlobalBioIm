@@ -98,9 +98,9 @@ VMLMB.run(y);                                  % run the algorithm
 
 
 %% -- Display
-imdisp(ADMM.OutOp.evolxopt{end},'LS+TV+POS (ADMM)',1);
-imdisp(PDC.OutOp.evolxopt{end},'LS+TV+POS (Condat)',1);
-imdisp(VMLMB.OutOp.evolxopt{end},'LS+TV+POS (VMLMB)',1);
+imdisp(ADMM.xopt,'LS+TV+POS (ADMM)',1);
+imdisp(PDC.xopt,'LS+TV+POS (Condat)',1);
+imdisp(VMLMB.xopt,'LS+TV+POS (VMLMB)',1);
 figure; plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);
 hold all;plot(PDC.OutOp.iternum,PDC.OutOp.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);
 plot(VMLMB.OutOp.iternum,VMLMB.OutOp.evolcost,'LineWidth',1.5);set(gca,'FontSize',12);

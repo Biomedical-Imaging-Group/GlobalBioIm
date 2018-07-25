@@ -3,10 +3,10 @@
 % the Least-Squares function plus the NonNegativity constraint 
 % without any regularizer:
 %     0.5 ||Hx - y||^2  + i_{>0}(x)
-% using FISTA
+% using FISTA and VMLMB
 %
 % See LinOp, LinOpConv, Cost, CostL2, CostNonNeg, Opti, 
-% OptiFBS, OutpuOpti
+% OptiFBS, OptiVMLMB, OutpuOpti
 %------------------------------------------------------------
 clear; close all; 
 help Deconv_Ls_NonNeg_NoReg
@@ -68,8 +68,8 @@ VMLMB.m=3;                                     % number of memorized step in hes
 VMLMB.run(y);                                  % run the algorithm 
 
 %% -- Display
-imdisp(FBS.OutOp.evolxopt{end},'LS + NonNeg (FISTA)',1);
-imdisp(VMLMB.OutOp.evolxopt{end},'LS+POS (VMLMB)',1);
+imdisp(FBS.xopt,'LS + NonNeg (FISTA)',1);
+imdisp(VMLMB.xopt,'LS+POS (VMLMB)',1);
 figure;plot(FBS.OutOp.iternum,FBS.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);
 hold all;loglog(VMLMB.OutOp.iternum,VMLMB.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);
 xlabel('Iterations');ylabel('Cost');legend('LS+POS (FISTA)','LS+POS (VMLMB)');title('Cost evolution');

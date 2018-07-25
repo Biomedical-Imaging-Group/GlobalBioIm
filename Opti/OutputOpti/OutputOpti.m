@@ -64,7 +64,7 @@ classdef OutputOpti < handle
         computecost=false; % Boolean, if true the cost function will be computed
         iterVerb=0;        % message will be displayed every iterVerb iterations
         costIndex=0;       % index of the cost function
-        saveXopt=1;        % save evolution of the optimized variable
+        saveXopt=false;        % save evolution of the optimized variable
     end
     
     methods

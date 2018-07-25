@@ -78,13 +78,19 @@ classdef CostL1 < Cost
         end
         function y=apply_(this,x)
             % Reimplemented from parent class :class:`Cost`.
-            if this.nonneg && any(x(:)<0)
-                y = + inf;
-            else
-                if(isscalar(this.y)&&(this.y==0))
-                    y=sum(abs(x(:)));
+            
+            if(isscalar(this.y)&&(this.y==0))
+                if this.nonneg && any(x(:)<0)
+                    y = + inf;
                 else
-                    y=sum(abs(x(:)-this.y(:)));
+                    y=sum(abs(x(:)));
+                end
+            else
+                tmp = x(:)-this.y(:);
+                if this.nonneg && any(tmp(:)<0)
+                    y = + inf;
+                else
+                    y=sum(abs(tmp));
                 end
             end
         end

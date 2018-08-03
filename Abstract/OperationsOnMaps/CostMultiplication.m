@@ -7,11 +7,13 @@ classdef CostMultiplication <  Cost
     %
     % **Example** F = MulCost(Cost1,Cost2)
     %
+    % See also :class:`Map`, :class:`Cost`
+    
     % TODO: Write a MapMultiplication (pointwise) from which CostMultiplication will
     % derive. Also overload the .* operation in Map to perform such a
     % MapMultiplication.
     %
-    % See also :class:`Map`, :class:`Cost`
+    
 	
     %%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch

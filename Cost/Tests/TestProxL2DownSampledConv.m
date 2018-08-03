@@ -12,7 +12,7 @@
 % [2] Emmanuel Soubies and Michael Unser. "Computational Super-Sectioning for Single-Slice
 %     Structured-Illumination Microscopy" (2018)
 %------------------------------------------------------------------------
-clear; close all; clc;
+close all;
 help TestProxL2DownSampledConv
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -90,7 +90,7 @@ disp(['Error between prox and direct computation : ',num2str(norm(xTikh0(:)-xTik
 AA=fwd'*fwd+regTikh0*In;
 CG=OptiConjGrad(AA,b*regTikh0);
 CG.CvOp=TestCvgStepRelative(1e-6);
-CG.verbose=true;CG.OutOp.iterVerb=20;
+CG.verbose=true;CG.OutOp.iterVerb=20;CG.OutOp.saveXopt=1;
 CG.maxiter=100;
 CG.ItUpOut=1;
 CG.run(x0);
@@ -110,3 +110,20 @@ subplot(1,3,1);imagesc(xTikh0_prox); axis image; title(['Direct : ',num2str(t),'
 subplot(1,3,2);imagesc(CG.xopt); axis image; title(['CG : ',num2str(t2),' s'])
 subplot(1,3,3);imagesc(abs(xTikh0_prox-CG.xopt)); axis image; colorbar; title('Diff');
 colormap gray;
+
+%% For Unitary Tests
+global generateDataUnitTests stateTest
+if ~isempty(generateDataUnitTests)
+    if generateDataUnitTests
+        valxTikh0=xTikh0;save('Util/UnitTest/Data/TestProxL2DownSampledConv_xTikh0','valxTikh0');
+        valxTikh0_bis=xTikh0_bis;save('Util/UnitTest/Data/TestProxL2DownSampledConv_xTikh0_bis','valxTikh0_bis');
+        valxTikh0_prox=xTikh0_prox;save('Util/UnitTest/Data/TestProxL2DownSampledConv_xTikh0_prox','valxTikh0_prox');
+        xopt=CG.xopt;save('Util/UnitTest/Data/TestProxL2DownSampledConv_xopt','xopt');
+    else
+        load('Util/UnitTest/Data/TestProxL2DownSampledConv_xTikh0');
+        load('Util/UnitTest/Data/TestProxL2DownSampledConv_xTikh0_bis');
+        load('Util/UnitTest/Data/TestProxL2DownSampledConv_xTikh0_prox');
+        load('Util/UnitTest/Data/TestProxL2DownSampledConv_xopt');
+        stateTest=isequal(xopt,CG.xopt) &&  isequal(valxTikh0,xTikh0) &&  isequal(valxTikh0_bis,xTikh0_bis) &&  isequal(valxTikh0_prox,xTikh0_prox);
+    end
+end

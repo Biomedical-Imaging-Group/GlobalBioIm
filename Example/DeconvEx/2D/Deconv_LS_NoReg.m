@@ -7,7 +7,7 @@
 % See LinOp, LinOpConv, Cost, CostL2, CostL2Composition, Opti,
 % OptiGradDsct, OptiConjGrad, OptiVMLMB, OutpuOpti
 %------------------------------------------------------------
-clear; close all;
+close all;
 help Deconv_LS_NoReg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -57,19 +57,17 @@ F.doPrecomputation=1;
 
 % -- Gradient Descent LS
 GD=OptiGradDsct(F);
-GD.OutOp=OutputOpti(1,im,10);
-%GD.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
-GD.ItUpOut=1;           % call OutputOpti update every ItUpOut iterations
+GD.OutOp=OutputOpti(1,im,40);
+GD.ItUpOut=2;           % call OutputOpti update every ItUpOut iterations
 GD.maxiter=200;         % max number of iterations
 GD.run(y); % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
 
 %% -- VMLMB LS 
 VMLMB=OptiVMLMB(F,[],[]);  
-VMLMB.OutOp=OutputOpti(1,im,10);
-%VMLMB.CvOp=TestCvgCombine('CostRelative',1e-4, 'StepRelative',1e-4); % identical to VMLMB.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4),TestCvgStepRelative(1e-5)); 
-VMLMB.ItUpOut=1; 
+VMLMB.OutOp=OutputOpti(1,im,40);
+VMLMB.ItUpOut=2; 
 VMLMB.maxiter=200;                             % max number of iterations
-VMLMB.m=1;                                     % number of memorized step in hessian approximation (one step is enough for quadratic function)
+VMLMB.m=2;                                     % number of memorized step in hessian approximation (one step is enough for quadratic function)
 VMLMB.run(y);                                  % run the algorithm 
 
 
@@ -77,8 +75,8 @@ VMLMB.run(y);                                  % run the algorithm
 A = H.makeHtH();
 b = H'*y;
 CG=OptiConjGrad(A,b);  
-CG.OutOp=OutputOptiConjGrad(1,dot(y(:),y(:)),im,10);  
-CG.ItUpOut=1; 
+CG.OutOp=OutputOptiConjGrad(1,dot(y(:),y(:)),im,40);  
+CG.ItUpOut=2; 
 CG.maxiter=200;                             % max number of iterations
 CG.run(y);                                  % run the algorithm 
 
@@ -105,3 +103,18 @@ bar(2,[VMLMB.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
 bar(3,[CG.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
 set(gca,'xtick',[1 2 3]);ylabel('Time (s)');
 set(gca,'xticklabels',{'GD','VMLM','CG'});set(gca,'XTickLabelRotation',45)
+
+%% For Unitary Tests
+global generateDataUnitTests stateTest
+if ~isempty(generateDataUnitTests)
+    if generateDataUnitTests
+        valGD=GD.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_NoReg_GD','valGD');
+        valVMLMB=VMLMB.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_NoReg_VMLMB','valVMLMB');
+        valCG=CG.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_NoReg_CG','valCG');
+    else
+        load('Util/UnitTest/Data/Deconv_LS_NoReg_GD');
+        load('Util/UnitTest/Data/Deconv_LS_NoReg_VMLMB');
+        load('Util/UnitTest/Data/Deconv_LS_NoReg_CG');
+        stateTest=isequal(valGD,GD.OutOp.evolcost) &&  isequal(valVMLMB,VMLMB.OutOp.evolcost) &&  isequal(valCG,CG.OutOp.evolcost);
+    end
+end

@@ -140,7 +140,7 @@ classdef OptiVMLMB<Opti
             % Computes next step:
             this.xopt(1) = this.xopt(1); %Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
             this.task = m_opl_vmlmb_iterate(this.ws,this.xopt,this.cc,this.grad,this.active);
-
+            
             flag=this.OPTI_REDO_IT;
             if (this.task == this.OPL_TASK_FG)
                 % apply bound constraints
@@ -160,12 +160,14 @@ classdef OptiVMLMB<Opti
                 
                 
                 this.nbeval=this.nbeval+1;
+                
                 if this.gtol>0
                     normg= sum(this.grad(:).^2);
                     if (normg< this.gtol)
-                        this.message = ['Convergence: normg < gtol ',this.niter,this.nbeval,this.cc,normg,this.task];
+                        this.endMessage = ['Convergence: normg < gtol ',this.niter,this.nbeval,this.cc,normg,this.task];
                         flag=this.OPTI_STOP;
                     end
+                    
                 end
             elseif (this.task == this.OPL_TASK_NEWX)
                 flag=this.OPTI_NEXT_IT;
@@ -182,10 +184,10 @@ classdef OptiVMLMB<Opti
                         this.active = int32( (this.grad>0) + (this.xopt<this.xmax) );
                     case 3
                         this.active = int32( ( (this.xopt>this.xmin) + (this.grad<0) ).*( (this.xopt<this.xmax) + (this.grad>0) ) );
-                end               
+                end
             else
                 % Convergence, or error, or warning
-                this.endingMessage = ['Convergence, or error, or warning : ',this.task,m_opl_vmlmb_get_reason(this.ws)];         
+                this.endingMessage = ['Convergence, or error, or warning : ',this.task,m_opl_vmlmb_get_reason(this.ws)];
                 
                 flag=this.OPTI_STOP;
                 this.task = m_opl_vmlmb_restore(this.ws,this.xopt,this.cc,this.grad);

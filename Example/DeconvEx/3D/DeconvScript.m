@@ -3,7 +3,7 @@
 %    - Data-term: Least-Squares or Kullback-Leibler
 %    - regul: TV or Hessian-Schatten norm
 %--------------------------------------------------------------
-clear;close all;%clc;
+close all;
 help DeconvScript
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -31,7 +31,7 @@ useRFT=0;
 
 %% Parameters
 lamb=1e-4;        % Hyperparameter for initial deconvolution
-maxIt=100;         % Max iterations
+maxIt=30;         % Max iterations
 Reg=1;            % 1 for TV, 2 for Hessian-Schatten 
 DataTerm=1;       % 1 for LS, 2 for KL
 

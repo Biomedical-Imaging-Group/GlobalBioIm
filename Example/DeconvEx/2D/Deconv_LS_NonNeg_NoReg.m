@@ -8,7 +8,7 @@
 % See LinOp, LinOpConv, Cost, CostL2, CostNonNeg, Opti, 
 % OptiFBS, OptiVMLMB, OutpuOpti
 %------------------------------------------------------------
-clear; close all; 
+close all; 
 help Deconv_Ls_NonNeg_NoReg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -48,9 +48,9 @@ F.doPrecomputation=1;
 
 % -- FISTA LS + NonNeg
 FBS=OptiFBS(F,R_POS);
-FBS.OutOp=OutputOpti(1,im,20);
-%FBS.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
-FBS.ItUpOut=1;          % call OutputOpti update every ItUpOut iterations
+FBS.OutOp=OutputOpti(1,im,10);
+FBS.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
+FBS.ItUpOut=2;          % call OutputOpti update every ItUpOut iterations
 FBS.fista=true;         % activate fista
 FBS.maxiter=200;        % max number of iterations
 FBS.run(zeros(size(y)));% run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
@@ -61,7 +61,7 @@ FBS.run(zeros(size(y)));% run the algorithm (Note that gam is fixed automaticall
 H.memoizeOpts.applyHtH=true;
 VMLMB=OptiVMLMB(F,0.,[]);  
 VMLMB.OutOp=OutputOpti(1,im,10);
-%VMLMB.CvOp=TestCvgCombine('CostRelative',1e-4, 'StepRelative',1e-4); % identical to VMLMB.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4),TestCvgStepRelative(1e-5)); 
+VMLMB.CvOp=TestCvgCombine('CostRelative',1e-4, 'StepRelative',1e-4); % identical to VMLMB.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4),TestCvgStepRelative(1e-5)); 
 VMLMB.ItUpOut=2; 
 VMLMB.maxiter=200;                             % max number of iterations
 VMLMB.m=3;                                     % number of memorized step in hessian approximation
@@ -84,3 +84,16 @@ bar(1,[FBS.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
 bar(2,[VMLMB.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
 set(gca,'xtick',[1 2]);ylabel('Time (s)');
 set(gca,'xticklabels',{'LS+POS (FISTA)','LS+POS (VMLMB)'});set(gca,'XTickLabelRotation',45)
+
+%% For Unitary Tests
+global generateDataUnitTests stateTest
+if ~isempty(generateDataUnitTests)
+    if generateDataUnitTests
+        valFBS=FBS.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_NonNeg_NoReg_FBS','valFBS');
+        valVMLMB=VMLMB.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_NonNeg_NoReg_VMLMB','valVMLMB');
+    else
+        load('Util/UnitTest/Data/Deconv_LS_NonNeg_NoReg_FBS');
+        load('Util/UnitTest/Data/Deconv_LS_NonNeg_NoReg_VMLMB');
+        stateTest=isequal(valFBS,FBS.OutOp.evolcost) &&  isequal(valVMLMB,VMLMB.OutOp.evolcost);
+    end
+end

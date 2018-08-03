@@ -10,7 +10,7 @@
 % See LinOp, LinOpConv, LinOpHess, Cost, CostKullLeib, CostNonNeg,  
 % CostMixNorm1Schatt, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
 %------------------------------------------------------------
-clear; close all; 
+close all; 
 help Deconv_KL_HessSchatt_NonNeg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -90,3 +90,15 @@ bar(2,[PDC.time],'FaceColor',orderCol(2,:),'EdgeColor','k');
 set(gca,'xtick',[1 2]);ylabel('Time (s)');
 set(gca,'xticklabels',{'KL+HESS+POS (ADMM)','KL+HESS+POS (Condat)'});set(gca,'XTickLabelRotation',45)
 
+%% For Unitary Tests
+global generateDataUnitTests stateTest
+if ~isempty(generateDataUnitTests)
+    if generateDataUnitTests
+        valADMM=ADMM.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_KL_HessSchatt_NonNeg_ADMM','valADMM');
+        valPDC=PDC.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_KL_HessSchatt_NonNeg_PDC','valPDC');
+    else
+        load('Util/UnitTest/Data/Deconv_KL_HessSchatt_NonNeg_PDC');
+        load('Util/UnitTest/Data/Deconv_KL_HessSchatt_NonNeg_ADMM');
+        stateTest=isequal(valADMM,ADMM.OutOp.evolcost) &&  isequal(valPDC,PDC.OutOp.evolcost);
+    end
+end

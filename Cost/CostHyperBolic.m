@@ -29,13 +29,17 @@ classdef CostHyperBolic < Cost
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     %% Properties
-    properties
+    % - Public
+    properties (SetObservable, AbortSet)
         epsilon;
         index;
+    end
+    % - Private
+    properties (SetAccess = protected,GetAccess = protected)
         sumOp;
     end
     
-    %% Constructor
+    %% Constructor and handlePropEvents method
     methods
         function this = CostHyperBolic(sz,epsilon,index,y)
             if nargin<4, y=0; end
@@ -43,7 +47,6 @@ classdef CostHyperBolic < Cost
             this.name='CostHyperBolic';
             this.isConvex=true;
             this.isDifferentiable=true;
-           
             if nargin<3|| isempty(index) %no sum
                 index=0;
             end
@@ -51,16 +54,26 @@ classdef CostHyperBolic < Cost
                 epsilon=1e-3;
             end
             this.epsilon = epsilon;
-            this.index = index;
-            
-            if index~=0
-                this.sumOp = LinOpSum(sz,index);
-            else
-                this.sumOp = LinOpDiag(sz);
-            end
-            
+            this.index = index;          
             this.memoizeOpts.computeF=true;
             this.memoCache.computeF= struct('in',[],'out', []);
+            % Listeners to PostSet events
+            addlistener(this,'index','PostSet',@this.handlePropEvents);
+            addlistener(this,'epsilon','PostSet',@this.handlePropEvents);
+        end
+        function handlePropEvents(this,src,~)
+            % Reimplemented from parent class :class:`Cost`
+            switch src.Name
+                case 'index'
+                    if this.index~=0
+                        this.sumOp = LinOpSum(this.sizein,this.index);
+                    else
+                        this.sumOp = LinOpDiag(this.sizein);
+                    end
+            end
+            % Call mother classes at this end (important to ensure the
+            % right execution order)
+            handlePropEvents@Cost(this,src);
         end
     end
     

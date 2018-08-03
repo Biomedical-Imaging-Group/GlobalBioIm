@@ -34,20 +34,25 @@ classdef CostGoodRoughness < Cost
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-
-    properties 
-        bet; % smoothing parameter
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
+        bet;      % smoothing parameter
         G;        % gradient operators
     end
-    % Protected Set and protected Read properties
-    properties (SetAccess = protected,GetAccess = public)
+    % - Private
+    properties (SetAccess = protected,GetAccess = protected)
         sumOp;
     end
 
-    %% Constructor
+    %% Constructor and handlePropEvents method
     methods
         function this = CostGoodRoughness(G,bet)
-            this@Cost(G.sizein);            
+            this@Cost(G.sizein);
+            % Listeners to PostSet events
+            addlistener(this,'bet','PostSet',@this.handlePropEvents);
+            addlistener(this,'G','PostSet',@this.handlePropEvents);
+            % Set properties
             this.name='CostGoodRoughness';
             if nargin<2|| isempty(bet)
                 bet=1e-1;
@@ -57,7 +62,12 @@ classdef CostGoodRoughness < Cost
             this.isDifferentiable=true;
             this.G=G;
             this.sumOp=LinOpSum(G.sizeout,this.G.ndms+1);
-        end        
+            % Listeners to modified events (for properties which are classes)
+            addlistener(this.G,'modified',@this.handleModifiedG);
+        end
+        function handleModifiedG(this,~,~) % Necessary for properties which are objects of the Library
+            sourc.Name='G'; handlePropEvents(this,sourc);
+        end
     end
     
     %% Core Methods containing implementations (Protected)

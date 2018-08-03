@@ -142,7 +142,7 @@ classdef OptiVMLMB<Opti
                 
                 this.nbeval=this.nbeval+1;
                 if (normg< this.gtol)
-                    this.message = ['Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d \n',this.niter,this.nbeval,this.cc,normg,this.task];
+                    this.endingMessage = ['Convergence: normg < gtol \n %d\t%d\t%7.2e\t%6.2g\t\t%d \n',this.niter,this.nbeval,this.cc,normg,this.task];
                     %this.time=toc(tstart);
                     %this.ending_verb();
                     flag=this.OPTI_STOP;
@@ -165,7 +165,7 @@ classdef OptiVMLMB<Opti
                 
             else
                 % Convergence, or error, or warning
-                this.message = ['Convergence, or error, or warning : %d  , %s\n',this.task,m_opl_vmlmb_get_reason(this.ws)];
+                this.endingMessage = ['Convergence, or error, or warning : %d  , %s\n',this.task,m_opl_vmlmb_get_reason(this.ws)];
                 
                 flag=this.OPTI_STOP;
                 this.task = m_opl_vmlmb_restore(this.ws,this.xopt,this.cc,this.grad);

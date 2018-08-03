@@ -27,32 +27,52 @@ classdef CostComposition < MapComposition & Cost
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
+    %% Properties
+    % - Private 
     properties  (SetAccess = protected,GetAccess = protected)
         isH2LinOp=false;
         isH2SemiOrtho=false;
         nu=0;
     end
     
-    %% Constructor
+    %% Constructor and handlePropEvents method
     methods
         function this = CostComposition(H1,H2)
-            this@MapComposition(H1,H2);   
-            assert(isa(H1,'Cost'),'First argument should be a Cost');
-            if isa(H2,'LinOp') && H1.isConvex
-                this.isConvex=true;
-            end 
-            if isa(H2,'LinOp')
-                this.isH2LinOp=true;
-                T=this.H2*this.H2';
-                if isa(T,'LinOpDiag') && T.isScaledIdentity
-                    if T.diag>0
-                        this.isH2SemiOrtho=true;
-                        this.nu=T.diag;
+            this@MapComposition(H1,H2);                       
+        end
+        function handlePropEvents(this,src,~)
+            % Reimplemented from parent classes :class:`Map` :class:`MapComposition`
+            % Computes properly properties isSeparable, isConvex and check
+            % if H2 is semi orthogonal
+            if strcmp(src.Name,'H1')  || strcmp(src.Name,'H2')
+                if ~isempty(this.H1) &&  ~isempty(this.H2)
+                    this.name=sprintf('CostComposition( %s ; %s )',this.H1.name,this.H2.name);
+                    this.isSeparable=(this.H1.isSeparable && (isa(this.H2,'LinOpDiag') || isa(this.H2,'LinOpSelector')));
+                    this.isConvex=this.H1.isConvex && isa(this.H2,'LinOp');
+                end
+            end
+            if strcmp(src.Name,'H1')
+                assert(isa(this.H1,'Cost'),'First argument should be a Cost');  
+            end
+            if strcmp(src.Name,'H2')
+                this.isH2SemiOrtho=false;
+                this.nu=0;
+                this.isH2LinOp=false;
+                if isa(this.H2,'LinOp')
+                    this.isH2LinOp=true;
+                    T=this.H2*this.H2';
+                    if isa(T,'LinOpDiag') && T.isScaledIdentity
+                        if T.diag>0
+                            this.isH2SemiOrtho=true;
+                            this.nu=T.diag;
+                        end
                     end
                 end
-                this.isSeparable=(H1.isSeparable && (isa(H2,'LinOpDiag') || isa(H2,'LinOpSelector')));
             end
-            this.name=sprintf('CostComposition( %s ; %s )',H1.name,H2.name);  
+            % Call mother classes at this end (important to ensure the
+            % right execution order)
+            handlePropEvents@Cost(this,src);
+            handlePropEvents@MapComposition(this,src);
         end
     end
     

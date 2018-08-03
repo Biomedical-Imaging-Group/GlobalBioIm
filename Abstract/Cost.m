@@ -33,27 +33,33 @@ classdef Cost < Map
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    %% Public properties
-    properties 
-        isConvex=false;           % true if the Cost is convex
-        isSeparable=false;        % true is the Cost is separable (R^n basis)
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
         lip=-1;                   % Lipschitz constant of the gradient
         y=0;				      % data y
-    end    
-    
+    end
+    % - Readable 
+    properties (SetAccess = protected)
+        isConvex=false;           % true if the Cost is convex
+        isSeparable=false;        % true is the Cost is separable (R^n basis)
+    end   
+    % - Private 
     properties (SetAccess = protected,GetAccess = protected)
         recProxProxFench=0;      % boolean to control infinite recursion between Prox and ProxFench when not implemented in subclasses
     end
     
-    %% Constructor
+    %% Constructor and handlePropEvents method
     methods
         function this=Cost(sz,y)
-            % set data y
+            % Listeners to PostSet events
+            addlistener(this,'y','PostSet',@this.handlePropEvents);
+            % Basic properties
             if nargin <2, y=0; end
             if nargin<1 || isempty(sz), sz=size(y); end;
             assert(issize(sz),'First argument must be conformable to a size');
             this.sizein=sz;
-            this.set_y(y);
+            this.y=y;
             % Add new fields to memoizeOpts and memoCache
             this.memoizeOpts.applyGrad=false;
             this.memoizeOpts.applyProx=false;
@@ -62,8 +68,20 @@ classdef Cost < Map
             this.memoCache.applyProx=struct('in', [], 'out', []);
             this.memoCache.applyProxFench=struct('in', [], 'out', []);
             % Properties fixed for costs
-            this.sizeout=1;                % dimension of the left hand side vector space
+            this.sizeout=[1 1];            % dimension of the left hand side vector space
             this.norm=-1;                  % norm of the operator
+        end
+        function handlePropEvents(this,src,~)
+            % Reimplemented from parent class :class:`Map`
+            % Check size conformity if property 'y' is modified
+            switch src.Name
+                case 'y'                   
+                	assert(isnumeric(this.y),['y must be a numeric']);
+                    assert(isscalar(this.y) || checkSize(this.y,this.sizein),['In size of y must be a scalar or be equal to sizein']);
+            end
+            % Call mother classes at this end (important to ensure the
+            % right execution order)
+            handlePropEvents@Map(this,src);
         end
     end
      
@@ -205,13 +223,9 @@ classdef Cost < Map
     % - set_y(this,y)
     methods
         function set_y(this,y)
-            % Set the attribute \\(\\mathrm{y}\\)
-            %
-            %  - has to be conformable with the :attr:`sizein` of the cost
-            %  - can be a scalar.
-            assert(isnumeric(y),'y must be a numeric');
-            assert(isscalar(y) || checkSize(y,this.sizein),'size y must be a scalar or equal to this.sizein');
+            % Deprecated after v1.1
             this.y=y;
+            warning('Method set_y() is deprecated after (v1.1). It will be removed in future releases. Instead use MyCost.y= ney_y;');           
         end
     end
 end

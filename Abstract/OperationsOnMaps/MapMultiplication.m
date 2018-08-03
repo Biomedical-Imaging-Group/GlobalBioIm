@@ -25,23 +25,50 @@ classdef MapMultiplication < Map
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties
+    %% Properties
+    % - Public 
+    properties (SetObservable, AbortSet)
         M1;
         M2;
     end
-    %% Constructor
+    
+    %% Constructor and handlePropEvents method
     methods
         function this = MapMultiplication(Map1,Map2)
-            this.name ='MapMultiplication';	
-            assert((isa(Map1,'Map') && isa(Map2,'Map')),'Arguments should be Map objects');
+            % Listeners to PostSet events
+            addlistener(this,'M1','PostSet',@this.handlePropEvents);
+            addlistener(this,'M2','PostSet',@this.handlePropEvents);
+            % Basic properties
             this.M1=Map1;
             this.M2=Map2;
-            this.isDifferentiable= Map1.isDifferentiable*Map2.isDifferentiable;
             this.isInvertible=false;
             this.sizein = this.M1.sizein;
             this.sizeout = this.M2.sizeout;
-            assert(cmpSize(this.sizein,this.M2.sizein),'Given Maps do not have consistent  sizein') ;
-            assert(cmpSize(this.sizeout,this.M2.sizeout),'Given Maps do not have the consistent sizeout ');
+            % Listeners to modified events (for properties which are classes) 
+            addlistener(this.M1,'modified',@this.handleModifiedM1);
+            addlistener(this.M2,'modified',@this.handleModifiedM2);
+        end
+        function handleModifiedM1(this,~,~) % Necessary for properties which are objects of the Library
+            sourc.Name='M1'; handlePropEvents(this,sourc);
+        end
+        function handleModifiedM2(this,~,~) % Necessary for properties which are objects of the Library
+            sourc.Name='M2'; handlePropEvents(this,sourc);
+        end
+        function handlePropEvents(this,src,~)
+            % Reimplemented from parent class :class:`Map`
+            switch src.Name
+                case {'M1','M2'}
+                    if ~isempty(this.M1) &&  ~isempty(this.M2)  % Because in the constructor they are set one after the other.
+                        assert((isa(this.M1,'Map') && isa(this.M2,'Map')),'Properties M1 and M2 should be Map objects');
+                        this.isDifferentiable= this.M1.isDifferentiable*this.M2.isDifferentiable;
+                        assert(cmpSize(this.M1.sizein,this.M2.sizein),'Properties M1 and M2 should have consistent  sizein') ;
+                        assert(cmpSize(this.M1.sizeout,this.M2.sizeout),'Properties M1 and M2 should have consistent sizeout');
+                        this.name=sprintf('MapMultiplication( %s ; %s )',this.M1.name,this.M2.name);
+                    end
+            end
+            % Call mother classes at this end (important to ensure the
+            % right execution order)
+            handlePropEvents@Map(this,src);
         end
     end
     

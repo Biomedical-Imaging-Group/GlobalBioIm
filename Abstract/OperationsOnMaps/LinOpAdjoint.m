@@ -23,6 +23,8 @@ classdef LinOpAdjoint < LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
+    %% Properties
+    % - Readable
     properties (SetAccess = protected,GetAccess = public)
         TLinOp     % linop
     end
@@ -31,15 +33,13 @@ classdef LinOpAdjoint < LinOp
     methods 
         function this = LinOpAdjoint(TLinOp)
             this.name =sprintf('%s Adjoint', TLinOp.name);           
-            assert(isa(TLinOp,'LinOp'),'Input should be a  LinOp');
-          
+            assert(isa(TLinOp,'LinOp'),'Input should be a  LinOp');        
             this.TLinOp = TLinOp;
             this.isDifferentiable= this.TLinOp.isDifferentiable;
             this.isInvertible=this.TLinOp.isInvertible;
             this.sizein =  this.TLinOp.sizeout;
             this.sizeout =  this.TLinOp.sizein;			
-			this.norm = this.TLinOp.norm;  
-             
+			this.norm = this.TLinOp.norm;            
         end       
     end
 	

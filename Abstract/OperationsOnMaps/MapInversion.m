@@ -23,6 +23,8 @@ classdef MapInversion < Map
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
+    %% Properties
+    % - Readable
     properties (SetAccess = protected,GetAccess = public)
         M;     % Map
     end
@@ -30,7 +32,7 @@ classdef MapInversion < Map
     %% Constructor
     methods 
         function this = MapInversion(M)
-            this.name ='MapInversion';                    
+            this.name =sprintf('%s Inverse', M.name);                    
             assert(isa(M,'Map'),'Input should be a Map');
             assert(M.isInvertible,'Input should be invertible');
             this.M = M;

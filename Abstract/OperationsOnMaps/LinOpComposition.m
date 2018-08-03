@@ -25,24 +25,35 @@ classdef LinOpComposition < MapComposition & LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (SetAccess = protected,GetAccess = public)
+    %% Properties
+    % - Private
+    properties (SetAccess = protected,GetAccess = protected)
 		isHTH = 0;
 		isHHt = 0;
     end
     
-    %% Constructor
+    %% Constructor and handlePropEvents method
     methods
         function this = LinOpComposition(H1,H2)
             this@MapComposition(H1,H2);               
-            assert(isa(H2,'LinOp') && isa(H1,'LinOp'),'H1 and H2 have to be a LinOps');
-            % strcmp is different than isa because it doesn't check all
-            % superclasses as well
-            if strcmp(class(H1), 'LinOpAdjoint') && isequal(H1.TLinOp,H2)
-                this.isHTH = true;
-            elseif strcmp(class(H2), 'LinOpAdjoint') && isequal(H2.TLinOp,H1)
-                this.isHHt = true;
+        end
+        function handlePropEvents(this,src,~)
+            % Reimplemented from parent classes :class:`Map` :class:`MapComposition`
+            % Computes properly properties isSeparable, isConvex and check
+            % if H2 is semi orthogonal
+            if strcmp(src.Name,'H1')  || strcmp(src.Name,'H2')
+                if ~isempty(this.H1) &&  ~isempty(this.H2)
+                    % strcmp is different than isa because it doesn't check all
+                    % superclasses as well
+                    assert(isa(this.H2,'LinOp') && isa(this.H1,'LinOp'),'H1 and H2 have to be a LinOps');
+                    if strcmp(class(this.H1), 'LinOpAdjoint') && isequal(this.H1.TLinOp,this.H2)
+                        this.isHTH = true;
+                    elseif strcmp(class(this.H2), 'LinOpAdjoint') && isequal(this.H2.TLinOp,this.H1)
+                        this.isHHt = true;
+                    end
+                    this.name=sprintf('LinOpComposition( %s ; %s )',H1.name,H2.name);
+                end
             end
-            this.name=sprintf('LinOpComposition( %s ; %s )',H1.name,H2.name);      
         end
     end
         

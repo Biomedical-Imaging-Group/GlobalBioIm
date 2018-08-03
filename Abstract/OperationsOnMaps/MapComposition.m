@@ -26,31 +26,59 @@ classdef MapComposition < Map
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties
+    %% Properties
+    % - Public 
+    properties (SetObservable, AbortSet)
         H1;           % Left hand side Map
         H2;           % Right hand side Map
     end
-    %% Constructor
+    
+    %% Constructor and handlePropEvents method
     methods
-        function this = MapComposition(H1,H2)
-            assert(isa(H1,'Map') && isa(H2,'Map'),'H1 and H2 have to be a Map');
+        function this = MapComposition(H1,H2)            
+            % Listeners to PostSet events
+            addlistener(this,'H1','PostSet',@this.handlePropEvents);
+            addlistener(this,'H2','PostSet',@this.handlePropEvents);
+            % Basic properties          
             this.H1 = H1;
             this.H2 = H2;
-            % Set Properties
-            % norm
-            if this.H1.norm ~= -1 && this.H2.norm ~= -1
-                this.norm = this.H1.norm * this.H2.norm;
-            else
-                this.norm=-1;
-            end
-            % isInvertible
-            if this.H1.isInvertible && this.H2.isInvertible, this.isInvertible=true;end
-            % isDifferentiable
-            if this.H1.isDifferentiable && this.H2.isDifferentiable, this.isDifferentiable=true; end
-            % sizein/out
             this.sizein=H2.sizein;
             this.sizeout=H1.sizeout;
-            this.name=sprintf('MapComposition( %s ; %s )',H1.name,H2.name);      
+            % Listeners to modified events (for properties which are classes) 
+            addlistener(this.H1,'modified',@this.handleModifiedH1);
+            addlistener(this.H2,'modified',@this.handleModifiedH2);
+        end
+        function handleModifiedH1(this,~,~) % Necessary for properties which are objects of the Library
+            sourc.Name='H1'; handlePropEvents(this,sourc);
+        end
+        function handleModifiedH2(this,~,~) % Necessary for properties which are objects of the Library
+            sourc.Name='H2'; handlePropEvents(this,sourc);
+        end
+        function handlePropEvents(this,src,~)
+            % Reimplemented from parent class :class:`Map`
+            % Computes properly properties norm, isInvertible and
+            % isDifferentiable when changing H1 or H2.
+            switch src.Name
+                case {'H1','H2'}
+                    if ~isempty(this.H1) &&  ~isempty(this.H2)  % Because in the constructor they are set one after the other.
+                        assert(isa(this.H1,'Map') && isa(this.H2,'Map'),'H1 and H2 have to be a Map');
+                        % Update norm
+                        if this.H1.norm ~= -1 && this.H2.norm ~= -1
+                            this.norm = this.H1.norm * this.H2.norm;
+                        else
+                            this.norm=-1;
+                        end
+                        % Update isInvertible
+                        if this.H1.isInvertible && this.H2.isInvertible, this.isInvertible=true;end
+                        % Update isDifferentiable
+                        if this.H1.isDifferentiable && this.H2.isDifferentiable, this.isDifferentiable=true; end
+                        this.name=sprintf('MapComposition( %s ; %s )',this.H1.name,this.H2.name);
+                        assert(cmpSize(this.H1.sizein,this.H2.sizeout),'H1.sizein should be equal to H2.sizeout');
+                    end
+            end
+            % Call mother classes at this end (important to ensure the
+            % right execution order)
+            handlePropEvents@Map(this,src);
         end
     end
     

@@ -28,31 +28,50 @@ classdef CostL2 < Cost
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    % Protected Set and public Read properties
-    properties (SetAccess = protected,GetAccess = public)
-        W=1;    % weight matrix      
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
+        W    % weight matrix      
     end
 
-    %% Constructor
+    %% Constructor and handlePropEvents method
     methods
-        function this = CostL2(sz,y,wght)
+        function this = CostL2(sz,y,wght)                 
             if nargin<2, y=0; end
             this@Cost(sz,y);
+            % Listeners to PostSet events
+            addlistener(this,'W','PostSet',@this.handlePropEvents);
+            % Basic properties
             this.name='CostL2';
-            if nargin==3
-                if isempty(wght), wght=1; end
-                assert((isnumeric(wght) && isscalar(wght))||isa(wght,'LinOp'),'weight WGHT must be scalar or LinOp');
-                this.W=wght;
+            if (nargin==3 && isempty(wght)) || nargin<3
+                wght=1;
             end
-            if isnumeric(this.W)
-                this.lip=this.W;
-            else
-                this.lip=this.W.norm;
-            end
+            this.W=wght;
             this.isConvex=true;
             this.isSeparable=true;
             this.isDifferentiable=true;
+            % Listeners to modified events (for properties which are classes) 
+            addlistener(this.W,'modified',@this.handleModifiedW);
         end        
+        function handleModifiedW(this,~,~) % Necessary for properties which are objects of the Library
+            sourc.Name='W'; handlePropEvents(this,sourc);
+        end
+        function handlePropEvents(this,src,~)
+            % Reimplemented from parent classes :class:`Map` :class:`MapComposition`
+            switch src.Name
+                case 'W'  
+                    assert((isnumeric(this.W) && isscalar(this.W))||isa(this.W,'LinOp'),'weight W must be scalar or LinOp');
+                    if isnumeric(this.W) && isscalar(this.W)
+                        this.lip=this.W;
+                        this.W=this.W*LinOpIdentity(this.sizein);
+                    else
+                        this.lip=this.W.norm;
+                    end
+            end
+            % Call mother classes at this end (important to ensure the
+            % right execution order)
+            handlePropEvents@Cost(this,src);
+        end
     end
     
     %% Core Methods containing implementations (Protected)

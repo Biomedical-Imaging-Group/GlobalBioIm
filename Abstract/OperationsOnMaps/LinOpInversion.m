@@ -27,8 +27,7 @@ classdef LinOpInversion < MapInversion & LinOp
     %% Constructor
     methods 
         function this = LinOpInversion(M)
-            this@MapInversion(M); 
-            this.name ='LinOpInversion'; 
+            this@MapInversion(M);    
             assert(isa(M,'LinOp'),'Input should be a  LinOp');            
           end
     end

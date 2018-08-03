@@ -30,7 +30,9 @@ classdef CostL2Composition <  CostComposition
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (Access=public)
+    %% Properties 
+    % - Private 
+    properties (SetAccess = protected,GetAccess = protected)
         OpSumP;       % Operator used to compute the prox when H2 is the combination of a LinOpDownsample with a LinOpConv
         Lamb;         % Operator used to compute the prox when H2 is the combination of a LinOpSum with a LinOpConv
         H2H2t;        % operator used for prox computation
@@ -40,35 +42,54 @@ classdef CostL2Composition <  CostComposition
         doDownConv=0; % to correctly switch in the prox
     end
     
-    %% Constructor
+    %% Constructor and handlePropEvents method
     methods
         function this = CostL2Composition(H1,H2)
-            assert(isa(H1,'CostL2'),'First argument must be a CostL2 object');
             this@CostComposition(H1,H2);
-            if this.H2.norm>=0
-                this.lip=this.H1.lip*this.H2.norm^2;
+        end
+        function handlePropEvents(this,src,~)
+            % Reimplemented from parent classes :class:`Map` :class:`MapComposition`
+            % Computes properly property lip and do some precomputation for
+            % fast prox if any.            
+            if (strcmp(src.Name,'H1')  || strcmp(src.Name,'H2'))  && (~isempty(this.H1) &&  ~isempty(this.H2))    
+                if this.H2.norm>=0, this.lip=this.H1.lip*this.H2.norm^2; end
             end
-            this.name=sprintf('CostL2Composition ( %s )',H2.name);
-            % If H2 is a composition between a LinOpDownsample and a LinOpConv    
-            if isa(this.H2,'LinOpComposition') && isa(this.H2.H1,'LinOpDownsample') &&  isa(this.H2.H2,'LinOpConv') && isnumeric(this.H1.W) && this.H1.W==1
-                this.OpSumP=LinOpSumPatches(this.H2.H1.sizein,this.H2.H1.sizein./this.H2.H1.df);
-                this.H2H2t=this.OpSumP*(abs(this.H2.H2.mtf).^2);      
-                this.doDownConv=1;
-            % If H2 is a composition between a LinOpSum and a LinOpConv
-            % applied in the other dimensions than the Sum
-            elseif isa(this.H2,'LinOpComposition') && isa(this.H2.H1,'LinOpSum') &&  isa(this.H2.H2,'LinOpConv') && isnumeric(this.H1.W) && this.H1.W==1
-               % this.H2H2t=LinOpDiag([],sum(abs(this.H2.H2.mtf).^2,this.H2.H1.index));
-                this.H2H2t=sum(abs(this.H2.H2.mtf).^2,this.H2.H1.index);
-                this.doSumConv=1;
-            % If H2*H2' +Id is invertible --> use Woodbury formulae
-            elseif isa(this.H2,'LinOpComposition') && isnumeric(this.H1.W) && this.H1.W==1
-                T=this.H2*this.H2'+ LinOpIdentity(this.H2.sizeout);
-                if T.isInvertible
-                    this.H2H2t=this.H2*this.H2';
-                    this.Id=LinOpIdentity(this.H2.sizeout);
-                    this.doWoodbury=1;
-                end
+            switch src.Name
+                case 'H1'
+                    assert(isa(this.H1,'CostL2'),'Property H1 must be a CostL2 object');
+                    if ~isnumeric(this.H1.W) || this.H1.W~=1
+                        this.doDownConv=0;this.doSumConv=0;this.doWoodbury=0;
+                        this.H2H2t=[];this.OpSumP=[];this.Id=[];
+                    end
+                case 'H2'   
+                    this.doDownConv=0;this.doSumConv=0;this.doWoodbury=0;
+                    this.H2H2t=[];this.OpSumP=[];this.Id=[];
+                    % If H2 is a composition between a LinOpDownsample and a LinOpConv
+                    if isa(this.H2,'LinOpComposition') && isa(this.H2.H1,'LinOpDownsample') &&  isa(this.H2.H2,'LinOpConv') && isnumeric(this.H1.W) && this.H1.W==1
+                        this.OpSumP=LinOpSumPatches(this.H2.H1.sizein,this.H2.H1.sizein./this.H2.H1.df);
+                        this.H2H2t=this.OpSumP*(abs(this.H2.H2.mtf).^2);
+                        this.doDownConv=1;
+                    % If H2 is a composition between a LinOpSum and a LinOpConv
+                    % applied in the other dimensions than the Sum
+                    elseif isa(this.H2,'LinOpComposition') && isa(this.H2.H1,'LinOpSum') &&  isa(this.H2.H2,'LinOpConv') && isnumeric(this.H1.W) && this.H1.W==1
+                        if isempty(setdiff(1:this.H2.H2.ndms,[this.H2.H1.index,this.H2.H2.index])) && isempty(intersect(this.H2.H1.index,this.H2.H2.index))
+                            this.H2H2t=sum(abs(this.H2.H2.mtf).^2,this.H2.H1.index);
+                            this.doSumConv=1;
+                        end
+                    % If H2*H2' +Id is invertible --> use Woodbury formulae
+                    elseif isa(this.H2,'LinOpComposition') && isnumeric(this.H1.W) && this.H1.W==1
+                        T=this.H2*this.H2'+ LinOpIdentity(this.H2.sizeout);
+                        if T.isInvertible
+                            this.H2H2t=this.H2*this.H2';
+                            this.Id=LinOpIdentity(this.H2.sizeout);
+                            this.doWoodbury=1;
+                        end
+                    end
+                    this.name=sprintf('CostL2Composition ( %s )',this.H2.name);
             end
+            % Call mother classes at this end (important to ensure the
+            % right execution order)
+            handlePropEvents@CostComposition(this,src);
         end
     end
     

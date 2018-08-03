@@ -36,26 +36,63 @@ classdef (Abstract) Map < handle
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    %% Public properties
-    properties
-        name = 'none'             % name of the linear operator
-        isInvertible = false;     % true if H.applyInverse(  ) will work
-        isDifferentiable = false; % true if H.applyJacobianT(   ) will work
-        sizein;                   % dimension of the right hand side vector space
-        sizeout;                  % dimension of the left hand side vector space
+    %% Properties
+    % - Public 
+    properties (SetObservable, AbortSet)
         norm=-1;                  % norm of the operator
         memoizeOpts = struct('apply', false, ...
             'applyJacobianT', false, ...
             'applyInverse', false);
         doPrecomputation = false;
-    end
-    
-    %% Private properties
-    properties (SetAccess = protected,GetAccess = protected)
+    end   
+    % - Readable 
+    properties (SetAccess = protected)
+        name = 'none'             % name of the linear operator
+        isInvertible = false;     % true if H.applyInverse(  ) will work
+        isDifferentiable = false; % true if H.applyJacobianT(   ) will work
+        sizein;                   % dimension of the right hand side vector space
+        sizeout;                  % dimension of the left hand side vector space
+    end   
+    % - Private 
+    properties (SetAccess = protected,GetAccess = public)
         memoCache = struct('apply', struct('in', [], 'out', []),...
             'applyJacobianT', struct('in', [], 'out', []), ...
             'applyInverse', struct('in', [], 'out', []));
         precomputeCache = struct();
+    end
+    
+    %% Events
+    events
+      modified % to propagate the modification of a property into compositions
+    end
+    
+    %% Constructor and handlePropEvents method
+    methods
+        function this=Map()
+            % Listeners to PostSet events
+            addlistener(this,'memoizeOpts','PostSet',@this.handlePropEvents);
+            addlistener(this,'doPrecomputation','PostSet',@this.handlePropEvents);
+        end
+        function handlePropEvents(this,src,~)
+            % This function is called when an observable property is
+            % modified to perform a predefined action. At the level of
+            % :class:`Map`, it allows reinitializing memoize and
+            % precomputation caches.
+            switch src.Name
+                case 'memoizeOpts'
+                    fnames = fieldnames(this.memoizeOpts); % clean the memoize cache
+                    for i = 1:length(fnames)
+                        if ~this.memoizeOpts.(fnames{i})
+                            this.memoCache.(fnames{i})=struct('in', [], 'out', []);
+                        end
+                    end
+                case 'doPrecomputation'
+                    this.precomputeCache = struct();  % clean the precompute cache
+                otherwise
+                    this.clearCaches();
+            end
+            notify(this,'modified'); % to propagate the modification of a property into compositions
+        end
     end
     
     %% Interface Methods (cannot be overloaded in derived classes: Sealed)
@@ -312,6 +349,7 @@ classdef (Abstract) Map < handle
     
     %% Utility methods
     % - memoize(this, fieldName, fcn, xs)
+    % - clearCaches
     methods (Access = protected)
         function x = memoize(this, fieldName, fcn, x)
             if ~iscell(x) % handle single input case
@@ -324,6 +362,16 @@ classdef (Abstract) Map < handle
             else
                 x = this.memoCache.(fieldName).out;
             end
-        end
+        end      
     end
+     methods 
+         function clearCaches(this)
+             % Clear precomputation and memoize caches
+             this.precomputeCache = struct();       % clean the precompute cache
+             fnames = fieldnames(this.memoizeOpts); % clean the memoize cache
+             for i = 1:length(fnames)
+                 this.memoCache.(fnames{i})=struct('in', [], 'out', []);
+             end
+         end
+     end
 end

@@ -30,13 +30,19 @@ classdef Opti < matlab.mixin.SetGet
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    properties (Constant)
-        OPTI_NEXT_IT = 0;   % new iteration
-        OPTI_REDO_IT = 1; %
-        OPTI_STOP    = 2;    % stop iteration
+ 
+   
+    %% Properties
+    % - Public 
+    properties (SetObservable, AbortSet)
+        verbose=true;        % if true display information (starting and ending message
+        endingMessage;       % Ending message
+        OutOp=OutputOpti(false,[],1);  % OutputOpti object
+        CvOp=TestCvg();      % OutputOpti object
+        maxiter=50;          % maximal number of iterates
+        ItUpOut=0;           % period (in number of iterations) of calling the OutputOpti object
     end
-    % Protected Set and public Read properties
+    % - Readable 
     properties (SetAccess = protected,GetAccess = public)
         name = 'none'        % name of the optimization algorithm
         cost;                % minimized cost
@@ -45,16 +51,14 @@ classdef Opti < matlab.mixin.SetGet
         xopt=[];             % optimization variable
         xold;
     end
-    % Full public properties
-    properties
-        verbose=true;        % if true display information (starting and ending message
-        endingMessage;       % Ending message
-        OutOp=OutputOpti(false,[],1);  % OutputOpti object
-        CvOp=TestCvg();      % OutputOpti object
-        maxiter=50;     % maximal number of iterates
-        ItUpOut=0;      % period (in number of iterations) of calling the OutputOpti object
+    % - Constant 
+    properties (Constant)
+        OPTI_NEXT_IT = 0;   % new iteration
+        OPTI_REDO_IT = 1; %
+        OPTI_STOP    = 2;    % stop iteration
     end
-    
+
+    %% Constructor 
     methods
         function run(this,x0)
             % Run the algorithm.

@@ -48,25 +48,33 @@ classdef CostGoodRoughness < Cost
     %% Constructor and handlePropEvents method
     methods
         function this = CostGoodRoughness(G,bet)
+            % Default values
+            if nargin<2|| isempty(bet), bet=1e-1; end
+            % Call superclass constructor
             this@Cost(G.sizein);
             % Listeners to PostSet events
             addlistener(this,'bet','PostSet',@this.handlePropEvents);
             addlistener(this,'G','PostSet',@this.handlePropEvents);
             % Set properties
             this.name='CostGoodRoughness';
-            if nargin<2|| isempty(bet)
-                bet=1e-1;
-            end
             this.bet=bet;
+            this.G=G;
             this.isConvex=false;
             this.isDifferentiable=true;
-            this.G=G;
-            this.sumOp=LinOpSum(G.sizeout,this.G.ndms+1);
             % Listeners to modified events (for properties which are classes)
             addlistener(this.G,'modified',@this.handleModifiedG);
         end
         function handleModifiedG(this,~,~) % Necessary for properties which are objects of the Library
             sourc.Name='G'; handlePropEvents(this,sourc);
+        end
+        function handlePropEvents(this,src,~)
+            % Reimplemented from superclass :class:`Cost`
+            switch src.Name
+                case 'G'
+                    this.sumOp=LinOpSum(this.G.sizeout,this.G.ndms+1);
+            end
+            % Call superclass method (important to ensure the right execution order)
+            handlePropEvents@Cost(this,src);
         end
     end
     

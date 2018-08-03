@@ -29,8 +29,10 @@ classdef CostLinear < Cost
     %% Constructor
     methods
         function this = CostLinear(sz,y)
+            % Call superclass constructor
             this@Cost(sz,y);
-            this.isConvex=false;
+            % Set properties
+            this.isConvex=true;
             this.isDifferentiable=true;
             this.isSeparable=true;
         end        

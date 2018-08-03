@@ -42,27 +42,26 @@ classdef CostHyperBolic < Cost
     %% Constructor and handlePropEvents method
     methods
         function this = CostHyperBolic(sz,epsilon,index,y)
+            % Default values
             if nargin<4, y=0; end
+            if nargin<3|| isempty(index), index=0; end
+            if nargin<2|| isempty(epsilon), epsilon=1e-3; end
+            % Call superclass constructor
             this@Cost(sz,y);
+            % Listeners to PostSet events
+            addlistener(this,'index','PostSet',@this.handlePropEvents);
+            addlistener(this,'epsilon','PostSet',@this.handlePropEvents);
+            % Set properties
             this.name='CostHyperBolic';
             this.isConvex=true;
             this.isDifferentiable=true;
-            if nargin<3|| isempty(index) %no sum
-                index=0;
-            end
-            if nargin<2|| isempty(epsilon)
-                epsilon=1e-3;
-            end
             this.epsilon = epsilon;
             this.index = index;          
             this.memoizeOpts.computeF=true;
             this.memoCache.computeF= struct('in',[],'out', []);
-            % Listeners to PostSet events
-            addlistener(this,'index','PostSet',@this.handlePropEvents);
-            addlistener(this,'epsilon','PostSet',@this.handlePropEvents);
         end
         function handlePropEvents(this,src,~)
-            % Reimplemented from parent class :class:`Cost`
+            % Reimplemented from superclass :class:`Cost`
             switch src.Name
                 case 'index'
                     if this.index~=0
@@ -71,8 +70,7 @@ classdef CostHyperBolic < Cost
                         this.sumOp = LinOpDiag(this.sizein);
                     end
             end
-            % Call mother classes at this end (important to ensure the
-            % right execution order)
+            % Call superclass method (important to ensure the right execution order)
             handlePropEvents@Cost(this,src);
         end
     end

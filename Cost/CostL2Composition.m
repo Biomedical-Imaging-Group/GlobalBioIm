@@ -45,10 +45,11 @@ classdef CostL2Composition <  CostComposition
     %% Constructor and handlePropEvents method
     methods
         function this = CostL2Composition(H1,H2)
+            % Call superclass constructor
             this@CostComposition(H1,H2);
         end
         function handlePropEvents(this,src,~)
-            % Reimplemented from parent classes :class:`Map` :class:`MapComposition`
+            % Reimplemented from superclasses :class:`Map` and :class:`MapComposition`
             % Computes properly property lip and do some precomputation for
             % fast prox if any.            
             if (strcmp(src.Name,'H1')  || strcmp(src.Name,'H2'))  && (~isempty(this.H1) &&  ~isempty(this.H2))    
@@ -57,7 +58,7 @@ classdef CostL2Composition <  CostComposition
             switch src.Name
                 case 'H1'
                     assert(isa(this.H1,'CostL2'),'Property H1 must be a CostL2 object');
-                    if ~isnumeric(this.H1.W) || this.H1.W~=1
+                    if ~isa(this.H1.W,'LinOpDiag') || ~this.H1.W.isScaledIdentity || this.H1.W~=1
                         this.doDownConv=0;this.doSumConv=0;this.doWoodbury=0;
                         this.H2H2t=[];this.OpSumP=[];this.Id=[];
                     end
@@ -65,19 +66,20 @@ classdef CostL2Composition <  CostComposition
                     this.doDownConv=0;this.doSumConv=0;this.doWoodbury=0;
                     this.H2H2t=[];this.OpSumP=[];this.Id=[];
                     % If H2 is a composition between a LinOpDownsample and a LinOpConv
-                    if isa(this.H2,'LinOpComposition') && isa(this.H2.H1,'LinOpDownsample') &&  isa(this.H2.H2,'LinOpConv') && isnumeric(this.H1.W) && this.H1.W==1
+                    testW=isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity && this.H1.W==1;
+                    if isa(this.H2,'LinOpComposition') && isa(this.H2.H1,'LinOpDownsample') &&  isa(this.H2.H2,'LinOpConv') &&  testW
                         this.OpSumP=LinOpSumPatches(this.H2.H1.sizein,this.H2.H1.sizein./this.H2.H1.df);
                         this.H2H2t=this.OpSumP*(abs(this.H2.H2.mtf).^2);
                         this.doDownConv=1;
                     % If H2 is a composition between a LinOpSum and a LinOpConv
                     % applied in the other dimensions than the Sum
-                    elseif isa(this.H2,'LinOpComposition') && isa(this.H2.H1,'LinOpSum') &&  isa(this.H2.H2,'LinOpConv') && isnumeric(this.H1.W) && this.H1.W==1
+                    elseif isa(this.H2,'LinOpComposition') && isa(this.H2.H1,'LinOpSum') &&  isa(this.H2.H2,'LinOpConv') && testW
                         if isempty(setdiff(1:this.H2.H2.ndms,[this.H2.H1.index,this.H2.H2.index])) && isempty(intersect(this.H2.H1.index,this.H2.H2.index))
                             this.H2H2t=sum(abs(this.H2.H2.mtf).^2,this.H2.H1.index);
                             this.doSumConv=1;
                         end
                     % If H2*H2' +Id is invertible --> use Woodbury formulae
-                    elseif isa(this.H2,'LinOpComposition') && isnumeric(this.H1.W) && this.H1.W==1
+                    elseif isa(this.H2,'LinOpComposition') && testW
                         T=this.H2*this.H2'+ LinOpIdentity(this.H2.sizeout);
                         if T.isInvertible
                             this.H2H2t=this.H2*this.H2';
@@ -87,8 +89,7 @@ classdef CostL2Composition <  CostComposition
                     end
                     this.name=sprintf('CostL2Composition ( %s )',this.H2.name);
             end
-            % Call mother classes at this end (important to ensure the
-            % right execution order)
+            % Call superclass method (important to ensure the right execution order)
             handlePropEvents@CostComposition(this,src);
         end
     end
@@ -109,7 +110,7 @@ classdef CostL2Composition <  CostComposition
 			% precomputed and  \\(C(\\mathrm{x}) \\) is evaluated using the
 			% :meth:`applyHtH` method, i.e.
             % $$ C(\\mathrm{x}) = \\frac12 \\langle \\mathrm{W H^{\\star}Hx,x} \\rangle - \\langle \\mathrm{x}, \\mathrm{H^* Wy}  \\rangle  + \\frac12\\| \\mathrm{y} \\|^2_{\\mathrm{W}}$$
-			if this.isH2LinOp && (isnumeric(this.H1.W) || isa(this.H1.W,'LinOpScaledIdentity')) && this.doPrecomputation
+			if this.isH2LinOp && (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity) && this.doPrecomputation
 				if ~isfield(this.precomputeCache,'WHty')
 					this.precomputeCache.WHty=this.H1.W*this.H2.applyAdjoint(this.H1.y);
 				end
@@ -131,7 +132,7 @@ classdef CostL2Composition <  CostComposition
             % is evaluated using the :meth:`applyHtH` method, i.e.
             % $$ \\nabla C(\\mathrm{x}) = \\mathrm{W H^{\\star}Hx} -  \\mathrm{H^* Wy}  $$
 			
-            if this.isH2LinOp && (isnumeric(this.H1.W) || isa(this.H1.W,'LinOpScaledIdentity')) && this.doPrecomputation
+            if this.isH2LinOp && (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity) && this.doPrecomputation
                 if ~isfield(this.precomputeCache,'WHty')
                     this.precomputeCache.WHty=this.H1.W*this.H2.applyAdjoint(this.H1.y);
                 end
@@ -162,16 +163,16 @@ classdef CostL2Composition <  CostComposition
             % [2] Emmanuel Soubies and Michael Unser. "Computational Super-Sectioning for Single-Slice
             %     Structured-Illumination Microscopy" (2018)
             
-            if isa(this.H2,'LinOpConv') && (isnumeric(this.H1.W) || (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity))
+            if isa(this.H2,'LinOpConv') && (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity)
             % If the composed operator is a LinOpConv
                 if this.doPrecomputation
                     if ~isfield(this.precomputeCache,'fftHstardata')
-                        this.precomputeCache.fftHstardata=conj(this.H2.mtf).*Sfft(this.H1.y*this.H1.W,this.H2.Notindex);
+                        this.precomputeCache.fftHstardata=conj(this.H2.mtf).*Sfft(this.H1.W*this.H1.y,this.H2.Notindex);
                     end
-                    y=iSfft((Sfft(x,this.H2.Notindex) + this.H1.W*alpha*this.precomputeCache.fftHstardata)./(1+this.H1.W*alpha*(abs(this.H2.mtf).^2)), this.H2.Notindex);
+                    y=iSfft((Sfft(x,this.H2.Notindex) + alpha*this.H1.W*this.precomputeCache.fftHstardata)./(1+alpha*this.H1.W*(abs(this.H2.mtf).^2)), this.H2.Notindex);
                 else
                     fftHstardata=conj(this.H2.mtf).*Sfft(this.H1.W*this.H1.y,this.H2.Notindex);
-                    y=iSfft((Sfft(x,this.H2.Notindex) + this.H1.W*alpha*fftHstardata)./(1+this.H1.W*alpha*(abs(this.H2.mtf).^2)), this.H2.Notindex);
+                    y=iSfft((Sfft(x,this.H2.Notindex) + alpha*this.H1.W*fftHstardata)./(1+alpha*this.H1.W*(abs(this.H2.mtf).^2)), this.H2.Notindex);
                 end
                 if this.H2.isReal, y=real(y);end
             % If the composed operator is a composition between a LinOpDownsample and a LinOpConv    

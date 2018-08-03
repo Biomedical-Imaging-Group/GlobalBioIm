@@ -1,4 +1,4 @@
-classdef CostMixNorm21NonNeg < Cost
+classdef CostMixNorm21NonNeg < CostMixNorm21
     % CostMixNorm21: Mixed norm 2-1 with non negativity constraints cost function
     % $$C(\\mathrm{x}) :=  \\left\\lbrace \\begin{array}{ll} \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{x}-y)_{k,l}^2} & \\text{ if } \\mathrm{x-y} \\geq 0 \\newline
     % + \\infty & \\text{ otherwise.} \\end{array} \\right. $$
@@ -9,7 +9,7 @@ classdef CostMixNorm21NonNeg < Cost
     %
     % **Example** C=CostMixNorm21(sz,index,y)
     %
-    % See also :class:`Map` :class:`Cost`, :class:`LinOp`
+    % See also :class:`Map` :class:`Cost`, :class:`CostMixNorm21`
     
     %%    Copyright (C) 2017
     %     E. Soubies emmanuel.soubies@epfl.ch
@@ -27,30 +27,15 @@ classdef CostMixNorm21NonNeg < Cost
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    % Protected Set and public Read properties
-    properties (SetAccess = protected,GetAccess = public)
-        index;    % dimensions along which the l2-norm will be applied
-        kerdims
-        imdims
-    end
     
     %% Constructor
     methods
         function this = CostMixNorm21NonNeg(sz,index,y)
+            % Default values
             if nargin<3, y=0; end
-            this@Cost(sz,y);
+            % Call superclass constructor
+            this@CostMixNorm21(sz,index,y);
             this.name='CostMixNorm21NonNeg';
-            assert(isnumeric(index)&&isvector(index),'The index should be a vector of integers');
-            this.index=index;
-            this.isConvex=true;
-            this.isDifferentiable=false;
-            
-            
-            ndms = length(this.sizein);
-            T = true(ndms,1);
-            T(this.index)=false;
-            this.kerdims = this.sizein; this.kerdims(T)=1;
-            this.imdims = this.sizein; this.imdims(~T)=1;
         end
     end
     
@@ -89,7 +74,7 @@ classdef CostMixNorm21NonNeg < Cost
             % \\begin{array}{ll}
             % \\max(\\mathrm{x}_{k\\cdot} - y_{k\\cdot} ,0)
             % \\left(1-\\frac{\\alpha}{\\Vert(\\mathrm{x}-y)_{k\\cdot}\\Vert_2}
-            % \\right) +y_{k\\cdot} cd .. & \\; \\mathrm{if } \\;
+            % \\right) +y_{k\\cdot} & \\; \\mathrm{if } \\;
             % \\Vert (\\mathrm{x-y})_{k\\cdot}\\Vert_2 > \\alpha,
             % \\newline
             % 0 & \\; \\mathrm{otherwise},

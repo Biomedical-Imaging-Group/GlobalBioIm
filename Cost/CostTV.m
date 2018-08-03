@@ -30,15 +30,23 @@ classdef CostTV < CostComposition
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties
-        optim;
-        bounds = [-inf,inf];% Bounds for set constraint
-        maxiter = 20;
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
+        bounds   % Bounds for set constraint
+        maxiter
+        xtol
     end
+    % - Private
+    properties (SetAccess = protected,GetAccess = protected)
+        optim;
+    end
+    % Emmanuel : We should put optim public and remove the other properties
     
-    %% Constructor
+    %% Constructor and handlePropEvents method
     methods
         function this = CostTV(varargin)
+            % Default values
             if nargin==1
                 assert(issize(varargin{1}),'argument must be conformable to a size');
                 H2=LinOpGrad(varargin{1});
@@ -48,36 +56,63 @@ classdef CostTV < CostComposition
                 assert(isa(varargin{2},'LinOpGrad'),'Second argument must be a LinOpGrad object');
                 H1=varargin{1};H2=varargin{2};
             end    
+            % Call superclass constructor
             this@CostComposition(H1,H2);
+            % Listeners to PostSet events
+            addlistener(this,'maxiter','PostSet',@this.handlePropEvents);
+            addlistener(this,'xtol','PostSet',@this.handlePropEvents);
+            addlistener(this,'bounds','PostSet',@this.handlePropEvents);
+            % Set properties
             this.name='CostTV';
-            LS = CostL2(this.sizein);
-            %lambda is always 1 here. It can be set differently by multiplying this cost with a scalar
-            this.optim = OptiFGP(LS,this,this.bounds);
-            this.optim.maxiter = this.maxiter;
-            this.optim.ItUpOut = 0;
-            this.optim.verbose = 0;
+            this.bounds = [-inf,inf];% Bounds for set constraint
+            this.maxiter = 20;
+            this.xtol=1e-5;
+        end
+        function handlePropEvents(this,src,~)
+            % Reimplemented from superclass :class:`Cost`
+            switch src.Name
+                case 'maxiter'
+                    this.optim.maxiter = this.maxiter;
+                case 'xtol'
+                    this.optim.CvOp = TestCvgStepRelative(this.xtol);
+                case 'bounds'
+                    LS = CostL2(this.sizein);
+                    this.optim = OptiFGP(LS,this,this.bounds);
+                    this.optim.ItUpOut = 0;
+                    this.optim.verbose = 0;
+                    this.optim.OutOp=OutputOpti(0);
+            end
+            % Call superclass method (important to ensure the right execution order)
+            handlePropEvents@CostComposition(this,src);
         end
         
         function setProxAlgo(this,bounds,maxiter,xtol,Outop)
             % Set the parameters of :class:`OptiFGP` used to compute the proximity
             % operator. 
             
-            if nargin<=1 || isempty(bounds),bounds = this.bounds;end
-            if nargin<=2 || isempty(maxiter),maxiter = this.maxiter;end
-            if nargin<=3 || isempty(xtol),xtol = [];end
-            if nargin<=4 || isempty(Outop),Outop = OutputOpti(0);end
-            
             this.bounds = bounds;
             this.maxiter = maxiter;
-      
-            LS = CostL2(this.sizein);
-            %lambda is always 1 here. It can be set differently by multiplying this cost with a scalar
-            this.optim = OptiFGP(LS,this,this.bounds);
+            this.xtol=xtol;
             this.optim.OutOp=Outop;
-            this.optim.maxiter = this.maxiter;
-            this.optim.ItUpOut = 0;
-            this.optim.CvOp = TestCvgStepRelative(xtol);
-            this.optim.verbose = 0;
+            warning('setProxAlgo will be removed in future releases. Instead set directly this.myParam=new_value');
+
+%             OLD VERSION
+%             if nargin<=1 || isempty(bounds),bounds = this.bounds;end
+%             if nargin<=2 || isempty(maxiter),maxiter = this.maxiter;end
+%             if nargin<=3 || isempty(xtol),xtol = [];end
+%             if nargin<=4 || isempty(Outop),Outop = OutputOpti(0);end
+%             
+%             this.bounds = bounds;
+%             this.maxiter = maxiter;
+%       
+%             LS = CostL2(this.sizein);
+%             %lambda is always 1 here. It can be set differently by multiplying this cost with a scalar
+%             this.optim = OptiFGP(LS,this,this.bounds);
+%             this.optim.OutOp=Outop;
+%             this.optim.maxiter = this.maxiter;
+%             this.optim.ItUpOut = 0;
+%             this.optim.CvOp = TestCvgStepRelative(xtol);
+%             this.optim.verbose = 0;
         end       
     end
     
@@ -90,10 +125,7 @@ classdef CostTV < CostComposition
             
             % If y==0
             if this.y==0                
-                %for k = 1:length(this.optim.Fn)
-                %    this.optim.Fn{k} = alpha*this.optim.Fn{k};%what is that
-                %end
-                this.optim.F0.set_y(x);
+                this.optim.F0.y=x;
                 if isa(this.optim.TV,'CostTV')
                     this.optim.TV = alpha*this.optim.TV;
                 else

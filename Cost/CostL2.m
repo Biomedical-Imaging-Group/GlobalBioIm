@@ -36,16 +36,16 @@ classdef CostL2 < Cost
 
     %% Constructor and handlePropEvents method
     methods
-        function this = CostL2(sz,y,wght)                 
+        function this = CostL2(sz,y,wght) 
+            % Default values
             if nargin<2, y=0; end
+            if nargin<3 || isempty(wght), wght=1; end
+            % Call superclass constructor
             this@Cost(sz,y);
             % Listeners to PostSet events
             addlistener(this,'W','PostSet',@this.handlePropEvents);
-            % Basic properties
+            % Set properties
             this.name='CostL2';
-            if (nargin==3 && isempty(wght)) || nargin<3
-                wght=1;
-            end
             this.W=wght;
             this.isConvex=true;
             this.isSeparable=true;
@@ -57,7 +57,7 @@ classdef CostL2 < Cost
             sourc.Name='W'; handlePropEvents(this,sourc);
         end
         function handlePropEvents(this,src,~)
-            % Reimplemented from parent classes :class:`Map` :class:`MapComposition`
+            % Reimplemented from superclasses :class:`Map` and :class:`MapComposition`
             switch src.Name
                 case 'W'  
                     assert((isnumeric(this.W) && isscalar(this.W))||isa(this.W,'LinOp'),'weight W must be scalar or LinOp');
@@ -68,8 +68,7 @@ classdef CostL2 < Cost
                         this.lip=this.W.norm;
                     end
             end
-            % Call mother classes at this end (important to ensure the
-            % right execution order)
+            % Call superclass method (important to ensure the right execution order)
             handlePropEvents@Cost(this,src);
         end
     end

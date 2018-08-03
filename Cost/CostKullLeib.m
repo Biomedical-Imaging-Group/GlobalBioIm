@@ -31,25 +31,42 @@ classdef CostKullLeib < Cost
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    % Protected Set and public Read properties
-    properties (SetAccess = protected,GetAccess = public)
-        bet= 0;     % smoothing parameter, if bet=0 then the unsmoothed version is used
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
+        bet;     % smoothing parameter, if bet=0 then the unsmoothed version is used
     end
     
-    %% Constructor
+    %% Constructor and handlePropEvents method
     methods       
         function this = CostKullLeib(sz,y,bet)
+            % Default values
             if nargin<2 || isempty(y), y=0; end
+            if nargin<3, bet=0; end
+            % Call superclass constructor
             this@Cost(sz,y);
-            this.name='CostKullLeib';        
-            if nargin==3, this.bet=bet;end
-            this.isConvex=true;  
+            % Listeners to PostSet events
+            addlistener(this,'bet','PostSet',@this.handlePropEvents);
+            % Set properties
+            this.name='CostKullLeib';
+            this.bet=bet;
+            this.isConvex=true;
             this.isSeparable=true;
-            % -- Compute Lipschitz constant of the gradient
-            if (this.bet>0)
-                this.lip=max(this.y(:))./this.bet^2;
-                this.isDifferentiable=true;
+        end
+        function handlePropEvents(this,src,~)
+            % Reimplemented from superclass :class:`Cost`
+            switch src.Name
+                case {'bet','y'}
+                    % Compute Lipschitz constant of the gradient
+                    if (this.bet>0)
+                        this.lip=max(this.y(:))./this.bet^2;
+                        this.isDifferentiable=true;
+                    else
+                        this.isDifferentiable=false;
+                    end
             end
+            % Call superclass method (important to ensure the right execution order)
+            handlePropEvents@Cost(this,src);
         end
     end
     

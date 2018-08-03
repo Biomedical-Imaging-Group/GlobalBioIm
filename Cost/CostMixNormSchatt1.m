@@ -48,34 +48,50 @@ classdef CostMixNormSchatt1 < Cost
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    % Protected Set and public Read properties
-    properties (SetAccess = protected,GetAccess = public)
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
         p;       % order of the Shatten norm (>=1)
+    end
+    % - Private
+    properties (SetAccess = protected,GetAccess = protected)
         reshDim; % index for reshaping
     end
     
-    %% Constructor
+    %% Constructor and handlePropEvents method
     methods        
         function this = CostMixNormSchatt1(sz,p,y)
             % Verify if the mexgl files exist
             if (exist('svd2D_decomp')~=3)||(exist('svd2D_recomp')~=3)||(exist('svd3D_decomp')~=3)||(exist('svd3D_recomp')~=3)
                 buildHessianSchatten();
             end
-            
+            % Default values
             if nargin<3, y=0; end
+            if nargin<2 || isempty(p), p=1; end;
+            % Call superclass constructor
             this@Cost(sz,y);
+            % Listeners to PostSet events
+            addlistener(this,'p','PostSet',@this.handlePropEvents);
+            % Set properties
             this.name='CostMixNormSchatt1';
             this.isConvex=true;
             this.isDifferentiable=false;
-            if nargin<2 || isempty(p), p=1; end;
-            assert(p>=1,'p should be >=1');
-            assert(this.sizein(end)==3 || this.sizein(end)==6,'last dimension should be 3 or 6');
-            this.p=p;   
+            this.p=p; 
+            assert(this.sizein(end)==3 || this.sizein(end)==6,'Last dimension should be 3 or 6');              
             if this.sizein(end)==3
                 this.reshDim=[this.sizein(1),prod(this.sizein(2:end-1)),3];
             elseif this.sizein(end)==6
                 this.reshDim=[this.sizein(1),prod(this.sizein(2:end-1)),1,6];
             end
+        end
+        function handlePropEvents(this,src,~)
+            % Reimplemented from superclass :class:`Cost`
+            switch src.Name
+                case 'p'
+                    assert(this.p>=1,'p should be >=1');
+            end
+            % Call superclass method (important to ensure the right execution order)
+            handlePropEvents@Cost(this,src);
         end
     end
     

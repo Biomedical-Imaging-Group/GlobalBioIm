@@ -32,28 +32,65 @@ classdef TemplateCost < Cost
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
-    % Protected Set and public Read properties     
-    properties (SetAccess = protected,GetAccess = public)
-		% TODO SET HERE NEW PROTECTED SET AND PUBLIC READ PROPERTIES IF NEEDED.
+
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
+        myVar
+        % TODO : Set here new public properties
     end
-    % Full protected properties 
+    % - Readable
     properties (SetAccess = protected,GetAccess = protected)
-		% TODO SET HERE NEW FULLY PROTECTED PROPERTIES 
-		% (E.G. INTERNAL VARIABLE USED TO AVOID MULTIPLE COMPUTATION)
+        % TODO : Set here new readable properties (read only)
+    end
+    % - Private
+    properties (SetAccess = protected,GetAccess = protected)
+        % TODO : Set here new private properties
     end
     
-    %% Constructor
+    %% Constructor and handlePropEvents method
     methods     	
         function this = TemplateCost(sz,y)
-        	% TODO SET THE INHERITED PROPERTIES (IF APPLICABLE)
-            if nargin<2, y=0; end 
+        	% Default values
+            if nargin<2, y=0; end
+                % TODO : add others default values
+            % Call superclass constructor
             this@Cost(sz,y);
+            % Listeners to PostSet events
+            addlistener(this,'myVar','PostSet',@this.handlePropEvents);
+                % TODO : add a 'PostSet' listener for all public properties
+            % Set properties
             this.name='CostNAME';
             this.isConvex= ???;
             this.isDifferentiable=???;
-            this.lip= ???;          
-			% TODO SET NEW DEFINED PROPERTIES
+            this.isSeparable=???;
+                % TODO : set new defined properties 
+            % Listeners to modified events (for properties which are classes) 
+            addlistener(this.myVar,'modified',@this.handleModifiedmyVar);
+                % TODO : add a 'modified' listener for all public
+                % properties which are classes of the library (LinOp, Cost,
+                % Opti, Map)
+
+            % IMPORTANT : No computations in the constructor, only
+            % affectations. Computations should be done in the method
+            % handlePropEvents (see below) in order to ensure a proper update 
+            % when public properties are modified.
         end
+        function handleModifiedmyVar(this,~,~) % Necessary for properties which are objects of the Library
+            sourc.Name='myVar'; handlePropEvents(this,sourc);
+        end
+        % TODO : add one method like that for each 'modified' listener
+        function handlePropEvents(this,src,~)
+            % Reimplemented from superclasses :class:`Map` and :class:`MapComposition`
+            switch src.Name
+                case 'myVar'
+                    % TODO : code which has to be executed at each
+                    % modification of myVar
+                    % e.g. recomputation of the lipschitz constant
+                    this.lip= ???; 
+                % TODO : other public properties
+            end
+        end               
     end
     
     %% Core Methods containing implementations (Protected)

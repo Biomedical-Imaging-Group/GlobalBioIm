@@ -28,23 +28,23 @@ classdef CostL1 < Cost
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    %% Constructor
-    properties
-        nonneg = false;
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
+        nonneg;
     end
+    
+    %% Constructor and handlePropEvents method
     methods
         function this = CostL1(sz,y,nonneg)
-            if nargin<2
-                y=0;
-                nonneg=false;
-            else if nargin<3
-                    nonneg=false;
-                else
-                    nonneg = nonneg;
-                    warning('nonneg parameter will be removed in future releases. Use the sum of a CostL1 and a CostNonNeg instead.');
-                end
-            end
+            % Default values
+            if nargin<2, y=0; end
+            if nargin<3, nonneg=false; end
+            % Call superclass constructor
             this@Cost(sz,y);
+            % Listeners to PostSet events
+            addlistener(this,'nonneg','PostSet',@this.handlePropEvents);
+            % Set properties
             this.name='CostL1';
             this.isConvex=true;
             this.isSeparable=true;

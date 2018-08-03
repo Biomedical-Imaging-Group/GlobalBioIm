@@ -63,7 +63,6 @@ classdef CostMultiplication <  Cost
         end
         function handlePropEvents(this,src,~)
             % Reimplemented from parent class :class:`Map`
-            disp('hello')
             if strcmp(src.Name,'cost1') && isnumeric(this.cost1)  && isscalar(this.cost1)
                 this.cost1=LinOpDiag(this.sizeout,this.cost1);
                 this.isnum =1;
@@ -106,7 +105,7 @@ classdef CostMultiplication <  Cost
             % Reimplemented from :class:`Cost`
             if this.isDifferentiable
                 if this.isnum
-                    g=this.cost1*this.cost2.applyGrad(x);
+                    g=this.cost1.diag*this.cost2.applyGrad(x);
                 else
                     g=this.cost1.apply(x)*this.cost2.applyGrad(x) + this.cost1.applyGrad(x)*this.cost2.apply(x);
                 end
@@ -125,7 +124,7 @@ classdef CostMultiplication <  Cost
         function M=makeComposition_(this,G)
             % Reimplemented from :class:`Cost`
             if this.isnum
-                M=CostMultiplication(this.cost1,this.cost2*G);
+                M=CostMultiplication(this.cost1.diag,this.cost2*G);
             else
                 M=makeComposition_@Cost(this,G);
             end

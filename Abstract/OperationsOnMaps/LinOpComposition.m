@@ -51,7 +51,7 @@ classdef LinOpComposition < MapComposition & LinOp
                     elseif strcmp(class(this.H2), 'LinOpAdjoint') && isequal(this.H2.TLinOp,this.H1)
                         this.isHHt = true;
                     end
-                    this.name=sprintf('LinOpComposition( %s ; %s )',H1.name,H2.name);
+                    this.name=sprintf('LinOpComposition( %s ; %s )',this.H1.name,this.H2.name);
                 end
             end
         end

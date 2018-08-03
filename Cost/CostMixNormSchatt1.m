@@ -51,6 +51,7 @@ classdef CostMixNormSchatt1 < Cost
     % Protected Set and public Read properties
     properties (SetAccess = protected,GetAccess = public)
         p;       % order of the Shatten norm (>=1)
+        reshDim; % index for reshaping
     end
     
     %% Constructor
@@ -68,7 +69,13 @@ classdef CostMixNormSchatt1 < Cost
             this.isDifferentiable=false;
             if nargin<2 || isempty(p), p=1; end;
             assert(p>=1,'p should be >=1');
-            this.p=p;       
+            assert(this.sizein(end)==3 || this.sizein(end)==6,'last dimension should be 3 or 6');
+            this.p=p;   
+            if this.sizein(end)==3
+                this.reshDim=[this.sizein(1),prod(this.sizein(2:end-1)),3];
+            elseif this.sizein(end)==6
+                this.reshDim=[this.sizein(1),prod(this.sizein(2:end-1)),1,6];
+            end
         end
     end
     
@@ -76,16 +83,10 @@ classdef CostMixNormSchatt1 < Cost
     % - apply_(this,x)
     % - applyProx_(this,x,alpha)
     methods (Access = protected)
+        
         function y=apply_(this,x)
             % Reimplemented from parent class :class:`Cost`.
-            dim=size(x);
-            if dim(end)==3     % 2D
-                [E,V]=svd2D_decomp(x);
-            elseif dim(end)==6 % 3D
-                [E,V]=svd3D_decomp(x);
-            else
-                error('third dimension of x should be 3 or 6');
-            end
+            [E,~]=this.svdDecomp(x);
             if isinf(this.p)
                 tmp=max(E,[],3);
             else
@@ -95,31 +96,86 @@ classdef CostMixNormSchatt1 < Cost
         end
         function y=applyProx_(this,x,alpha)
             % Reimplemented from parent class :class:`Cost`.
+            
             dim=size(x);
             if this.p==1
-                if dim(end)==3     % 2D
-                    [E,V]=svd2D_decomp(x);
-                    E=max(abs(E)-alpha,0).*sign(E);
-                    y=svd2D_recomp(E,V);
-                elseif dim(end)==6 % 3D
-                    [E,V]=svd3D_decomp(x);
-                    E=max(abs(E)-alpha,0).*sign(E);
-                    y=svd3D_recomp(E,V);
-                else
-                    error('third dimension of x should be 3 or 6');
-                end
+                [E,V]=this.svdDecomp(x);
+                E=max(abs(E)-alpha,0).*sign(E);
+                y=reshape(this.svdRecomp(E,V),this.sizein);
+               % y=this.svdRecomp(E,V);
             elseif this.p==2
+                % Emmanuel (05/07/2018): this part should also be updated
+                % in order to use the last dimension (not :,:,k or :,:,:,k,
+                % but more general
                 if dim(end)==3     % 2D
                     N=sqrt(x(:,:,1).^2+2*x(:,:,2).^2+x(:,:,3).^2);
-                    y=repmat((N-1)./N,[1,1,3]).*x;
+                    y=repmat((N-1)./N,[ones(1,length(this.sizein)-1),3]).*x;
                 elseif dim(end)==6 % 3D
                     N=sqrt(x(:,:,:,1).^2+2*x(:,:,:,2).^2+2*x(:,:,:,3).^2+x(:,:,:,4)+2*x(:,:,:,5)+x(:,:,:,6));
-                    y=repmat((N-1)./N,[1,1,6]).*x;
+                    y=repmat((N-1)./N,[ones(1,length(this.sizein)-1),6]).*x;
                 else
-                    error('third dimension of x should be 3 or 6');
+                    error('last dimension of x should be 3 or 6');
                 end
             else
                 y=applyProx_@Cost(this,x,alpha);
+            end
+        end
+    end
+    
+    
+    %% Internal methods
+    methods (Access = protected)
+        function [E,V]=svdDecomp(this,x)   
+            
+            global isGPU
+            dim=size(x);      % 2D
+            if dim(end)==3
+                if isGPU==1
+                    tt=(abs(x(:,:,2))<eps);
+                    E=zeros_([dim(1:2),2]);
+                    trace=x(:,:,1)+x(:,:,3);
+                    delta=(x(:,:,1)-x(:,:,3)).^2+4*x(:,:,2).^2;
+                    E(:,:,1)=0.5*(trace+sqrt(delta));
+                    E(:,:,2)=0.5*(trace-sqrt(delta));
+                    V=zeros_([dim(1:2),2]);
+                    n=sqrt((E(:,:,1)-x(:,:,1)).^2+x(:,:,2).^2)+tt;
+                    V(:,:,1)=x(:,:,2)./n.*(1-tt) + tt;
+                    V(:,:,2)=(E(:,:,1)-x(:,:,1))./n.*(1-tt);
+                else
+                    [E,V]=svd2D_decomp(reshape(x,this.reshDim));
+                    %[E,V]=svd2D_decomp(x);
+                end
+            elseif dim(end)==6 % 3D
+                if isGPU==1
+                    error([this.name,' cannot be used with GpuArray (used mex files are not supported by GpuArray). Instead, you can use CudaMat']);
+                end
+                [E,V]=svd3D_decomp(reshape(x,this.reshDim));
+              %  [E,V]=svd3D_decomp(x);
+            else
+                error('last dimension of x should be 3 or 6');
+            end
+        end
+        
+        function x=svdRecomp(this,E,V)  
+            
+            global isGPU
+            dim=size(E);
+            if dim(end)==2     % 2D
+                if isGPU==1
+                    x=zeros_([dim(1:2),3]);
+                    x(:,:,1)=E(:,:,1).*V(:,:,1).^2 + E(:,:,2).*V(:,:,2).^2;
+                    x(:,:,2)=V(:,:,1).*V(:,:,2).*(E(:,:,1)-E(:,:,2));
+                    x(:,:,3)=E(:,:,1).*V(:,:,2).^2+E(:,:,2).*V(:,:,1).^2;
+                else
+                    x=svd2D_recomp(E,V);
+                end
+            elseif dim(end)==3 % 3D
+                if isGPU==1
+                    error([this.name,' cannot be used with GpuArray (used mex files are not supported by GpuArray). Instead, you can use CudaMat']);
+                end
+                x=svd3D_recomp(E,V);
+            else
+                error('third dimension of E and V should be 3 or 6');
             end
         end
     end

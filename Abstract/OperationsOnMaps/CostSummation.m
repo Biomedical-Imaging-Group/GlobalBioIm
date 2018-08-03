@@ -33,9 +33,11 @@ classdef CostSummation <  MapSummation & Cost
             allcosts = all( cellfun(@(x)(isa(x, 'Cost')), costs) );
             assert(iscell(costs) && allcosts, 'First input should be a cell array Cost');
             this.isConvex=costs{1}.isConvex;
+            this.isSeparable=costs{1}.isSeparable;
             this.lip=costs{1}.lip;
             for n =2:length(costs)
                 this.isConvex = this.isConvex & costs{n}.isConvex;
+                this.isSeparable = this.isSeparable & costs{n}.isSeparable;
                 if costs{n}.lip~=-1
                     this.lip = this.lip + costs{n}.lip;
                 else
@@ -60,6 +62,28 @@ classdef CostSummation <  MapSummation & Cost
             g=this.alpha(1)*this.mapsCell{1}.applyGrad(x);
             for n=2:this.numMaps
                 g=g+this.alpha(n)*this.mapsCell{n}.applyGrad(x);
+            end
+        end
+        function x=applyProx_(this,z,alpha)
+            % Reimplemented from :class:`Cost` in the case of the sum
+            % between a :class:`CostRectangle` \\(i_C \\) and a
+            % :class:`Cost` \\(f \\) which is separable [1]
+            % $$ \\mathrm{prox}_{\\alpha(i_C +f)}(z) = \\mathrm{prox}_{i_c} \\circ \\mathrm{prox}_{\\alpha f}(z) $$
+            %
+            % **Reference**
+            %
+            % [1] "A Douglas?Rachford splitting approach to nonsmooth convex variational signal recovery"
+            % P. L. Combettes, and J.C. Pesquet, Journal of Selected Topics in Signal Processing, 1(4), 564-574, 2007
+            if this.numMaps==2
+                if (isa(this.mapsCell{1},'CostRectangle') && this.mapsCell{2}.isSeparable)
+                    x=this.mapsCell{1}.applyProx_(this.mapsCell{2}.applyProx_(z,alpha),1);
+                elseif (isa(this.mapsCell{2},'CostRectangle') && this.mapsCell{1}.isSeparable)
+                    x=this.mapsCell{2}.applyProx_(this.mapsCell{1}.applyProx_(z,alpha),1);
+                else
+                    x=applyProx_@Cost(this,z,alpha);
+                end             
+            else
+                x=applyProx_@Cost(this,z,alpha);
             end
         end
         % the function reimplementations below is needed because of

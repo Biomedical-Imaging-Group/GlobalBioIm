@@ -1,11 +1,10 @@
 classdef TestCvgCostAbsolute  < TestCvg
     % TestCvgCostAbsolute stops the optimization when the cost function is below the value COSTABSOLUTETOL
     %
-    % :param verbose: if true will display a message before stopping the algorithm.
     % :param costAbsoluteTol:  absolute tolerance on cost function
     % :param costIndex: select a specific cost function among a sum in the case where the optimized cost function is a sum of cost functions
     %
-    % **Example** CvOpti=TestCvgCostAbsolute(verbose,costAbsoluteTol, costIndex )
+    % **Example** CvOpti=TestCvgCostAbsolute(costAbsoluteTol, costIndex )
     %
     % See also :class:`TestCvg`
     
@@ -36,8 +35,8 @@ classdef TestCvgCostAbsolute  < TestCvg
 
             assert(isscalar(costAbsoluteTol),'costAbsoluteTol must be scalar');
             this.costAbsoluteTol =costAbsoluteTol;
-            if(nargin==3)
-                assert(isscalar(costIndex) && isinteger(costIndex),'costIndex must be a scalar integer');
+            if(nargin==2)
+                assert(isscalar(costIndex),'costIndex must be a scalar integer');
                 this.costIndex = costIndex;
             end
         end
@@ -45,21 +44,22 @@ classdef TestCvgCostAbsolute  < TestCvg
         function stop = testConvergence(this,opti)            
             % Tests algorithm convergence 
             %
-            % :returns stop: boolean true if Cost <costAbsoluteTol
+            % :return: boolean true if \\( C(\\mathrm{x^k}) < \\mathrm{costAbsoluteTol}\\)
+            
             stop = false;
-            if (this.costIndex && isa(opti.cost,'CostSummation') && this.costIndex<= opti.cost.numMaps)
-                f = opti.cost.mapsCell{this.costIndex}*opti.xopt;
+            if ( isa(opti.cost,'CostSummation')&& all(this.costIndex>0) &&all(this.costIndex<=opti.cost.numMaps) )
+                f = 0;
+                for n=1:numel(this.costIndex)
+                    f = f+opti.cost.mapsCell{this.costIndex(n)}*opti.xopt;
+                end
             else
                 f = opti.cost*opti.xopt;
             end
 
             if( f < this.costAbsoluteTol)
                 stop  =true;
-                message = [this.name,': Cost below the absolute tolerance : ',num2str(f),' < ',num2str(this.costAbsoluteTol)];
-                opti.message = message;
-                if this.verbose
-                    disp(message);
-                end
+                endingMessage = [this.name,': Cost below the absolute tolerance : ',num2str(f),' < ',num2str(this.costAbsoluteTol)];
+                opti.endingMessage = endingMessage;
             end
         end
     end

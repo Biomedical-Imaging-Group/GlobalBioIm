@@ -17,9 +17,15 @@ OpEWSquareRoot
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
 
+OpEWSquaredMagnitude
+....................
+
 .. autoclass:: OpEWSquaredMagnitude
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+
+OpEWInverse
+...........
 
 .. autoclass:: OpEWInverse
     :show-inheritance:

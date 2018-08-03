@@ -44,21 +44,21 @@ classdef LinOpSummation < MapSummation &  LinOp
     methods (Access = protected)      		
         function x = applyAdjoint_(this,y) 
             % Reimplemented from :class:`LinOp` 
-            x =  zeros(this.sizein);
+            x =  zeros_(this.sizein);
             for n = 1:this.numMaps
                 x = x + this.alpha(n) .* this.mapsCell{n}(1).applyAdjoint(y);
             end
         end	
 		function y = applyHtH_(this,x) 
             % Reimplemented from :class:`LinOp` 
-			y =  zeros(this.sizein);
+			y =  zeros_(this.sizein);
 			for n = 1:this.numMaps
 				y = y + this.alpha(n) .* this.mapsCell{n}.applyHtH(x);
 			end
         end		
 		function x = applyHHt_(this,y) 
             % Reimplemented from :class:`LinOp` 
-            x =  zeros(this.sizeout);
+            x =  zeros_(this.sizeout);
             for n = 1:this.numMaps
                 x = x + this.alpha(n) .* this.mapsCell{n}.applyHHt(y);
             end
@@ -73,6 +73,42 @@ classdef LinOpSummation < MapSummation &  LinOp
         % parent classes
         function M = makeComposition_(this,G)
             M=makeComposition_@MapSummation(this,G);
+        end
+        function M = plus_(this,G)
+            % Reimplemented from :class:`LinOp` 
+            
+            if isa(G,'LinOp')
+                M=[];
+                if isa(G,'LinOpSummation')
+                    M=this+G.mapsCell{1};
+                    for ii=2:G.numMaps
+                        M=M+G.mapsCell{ii};
+                    end
+                else
+                    % Find elements of the same type
+                    ind=find(strcmp(G.name,cellfun(@(T) T.name,this.mapsCell,'UniformOutput',false)));
+                    if length(ind)==1
+                        M=G + this.mapsCell{ind};
+                        if ~isa(M,'LinOpSummation')
+                            % To avoid infinite loops (normally it should never goes in the else because the sum of
+                            % two LinOp of the same type can always be simplified. If not the sum_ method of the corresponding
+                            % LinOp has to be implemented properly).
+                            for ii=1:this.numMaps
+                                if ii~=ind
+                                    M= M+this.mapsCell{ii};
+                                end
+                            end
+                        else
+                            M=[];
+                        end
+                    end
+                end
+                if isempty(M)
+                    M=LinOpSummation({this,G},[1,1]);
+                end
+            else
+                M = MapSummation({this,G},[1,1]);
+            end
         end
     end
 end

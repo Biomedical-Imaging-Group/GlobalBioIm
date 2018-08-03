@@ -9,6 +9,7 @@ classdef Cost < Map
     % :param name: name of the cost function
     % :param lip: Lipschitz constant of the gradient (when applicable and known, otherwise -1)
     % :param isConvex: true if the cost is convex 
+    % :param isSeparable: true if the cost is separable (R^n basis) 
     %
     % All attributes of parent class :class:`Map` are inherited and
     % :attr:`norm` is fixed to -1, :attr:`sizeout` is fixed to   for all :class:`Cost`
@@ -35,6 +36,7 @@ classdef Cost < Map
     %% Public properties
     properties 
         isConvex=false;           % true if the Cost is convex
+        isSeparable=false;        % true is the Cost is separable (R^n basis)
         lip=-1;                   % Lipschitz constant of the gradient
         y=0;				      % data y
     end    
@@ -174,7 +176,7 @@ classdef Cost < Map
             % If \\(\\mathrm{G}\\) is a :class:`Cost`, constructs a :class:`CostSummation` object to subtract to the
             % current :class:`Cost` \\(C\\), the given \\(G\\).
             % Otherwise the summation will be a :class:`MapSummation`.
-            if isa(G,'LinOp')
+            if isa(G,'Cost')
                 M = CostSummation({this,G},[1,-1]);
             else
                 M = minus_@MapSummation({this,G},[1,-1]);

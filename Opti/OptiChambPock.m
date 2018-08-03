@@ -29,7 +29,7 @@ classdef OptiChambPock < Opti
     %   - To ensure convergence (see [1]), parameters sig and tau have to verify 
     %     $$ \\sigma \\times \\tau \\times \\Vert \\mathrm{H} \\Vert^2 < 1 $$ 
     %     where \\(\\Vert \\mathrm{H}\\Vert\\) denotes the norm of the linear operator H.
-    %f
+    %
 	%   - When the accelerated version is used (i.e. parameter gam is non-empty), 
     %     sig and tau will be updated at each iteration and the initial 
     %     ones (given by user)  have to verify
@@ -40,7 +40,7 @@ classdef OptiChambPock < Opti
     % [1] Chambolle, Antonin, and Thomas Pock. "A first-order primal-dual algorithm for convex problems with 
 	% applications to imaging." Journal of Mathematical Imaging and Vision 40.1, pp 120-145 (2011).	
     %
-    % **Example** CP=OptiChambPock(F,H,G,OutOp)
+    % **Example** CP=OptiChambPock(F,H,G)
     %
     % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
  
@@ -67,7 +67,7 @@ classdef OptiChambPock < Opti
 		H;  % LinOp H
     end
     % Full protected properties 
-    properties (SetAccess = protected,GetAccess = protected)
+    properties (SetAccess = protected,GetAccess = public)
 		theta=1; % parameter of the algorithm (fixed to 1 but can could be set as a user defined 
                  % parameter for future upgrades of the Library)
         % Internal variables
@@ -92,16 +92,13 @@ classdef OptiChambPock < Opti
     
     methods
     	%% Constructor
-    	function this=OptiChambPock(F,H,G,OutOp)
+    	function this=OptiChambPock(F,H,G)
     		this.name='Opti Chambolle-Pock';
     		this.cost=F*H+G;
     		this.F=F;
     		this.G=G;
             this.H=H;
             
-            if nargin==4 && ~isempty(OutOp)
-                this.OutOp=OutOp;
-            end
             if this.H.norm>=0
                 this.sig=1/(this.tau*this.H.norm^2)-eps;
             end

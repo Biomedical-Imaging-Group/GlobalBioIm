@@ -65,8 +65,8 @@ classdef StackLinOp < LinOp
             this.sizein =  this.ALinOp{1}(1).sizein;
             this.sizeout =  [this.ALinOp{1}(1).sizeout this.numLinOp];
             for n =2:this.numLinOp
-                assert(isempty(this.ALinOp{n}(1).sizein)  || isequal(this.sizein,this.ALinOp{n}(1).sizein),'%d-th input does not have the right hand side size ', n) ;
-                assert(isempty(this.ALinOp{n}(1).sizeout) ||isequal(this.ALinOp{1}(1).sizeout,this.ALinOp{n}(1).sizeout),'%d-th input does not have the left hand side size ', n);
+                assert(isempty(this.ALinOp{n}(1).sizein)  || cmpSize(this.sizein,this.ALinOp{n}(1).sizein),'%d-th input does not have the right hand side size ', n) ;
+                assert(isempty(this.ALinOp{n}(1).sizeout) ||cmpSize(this.ALinOp{1}(1).sizeout,this.ALinOp{n}(1).sizeout),'%d-th input does not have the left hand side size ', n);
                 this.isComplex= this.ALinOp{n}(1).isComplex || this.isComplex ;
             end
             
@@ -90,7 +90,7 @@ classdef StackLinOp < LinOp
         function y = apply_(this,x) % apply the operator
             assert(checkSize(x, this.sizein));
             
-            y = zeros(prod(this.ALinOp{1}.sizeout),this.numLinOp);
+            y = zeros_(prod(this.ALinOp{1}.sizeout),this.numLinOp);
             for n = 1:this.numLinOp
                 tmp =this.ALinOp{n}(1).apply(x);
                 y(:,n) =  this.alpha(n) .* tmp(:);
@@ -105,14 +105,14 @@ classdef StackLinOp < LinOp
         end
         function y = adjoint_(this,x) % apply the adjoint
             assert(checkSize(x, this.sizeout));
-            y =  zeros(this.sizein);
+            y =  zeros_(this.sizein);
             
             if ~this.usecomplex
                 x = permute(x,this.prmtIndex);
             end
             x = reshape(x, prod(this.ALinOp{1}.sizeout),this.numLinOp);
             for n = 1:this.numLinOp
-                xtmp = zeros(this.ALinOp{1}.sizeout);
+                xtmp = zeros_(this.ALinOp{1}.sizeout);
                 xtmp(:) = x(:,n);
                 y = y + this.alpha(n) .* this.ALinOp{n}(1).applyAdjoint(xtmp);
             end

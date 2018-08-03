@@ -46,6 +46,7 @@ classdef CostMultiplication < Cost
             if isnumeric(C1)
                 this.isnum =1;
                 this.isConvex=this.cost2.isConvex;
+                this.isSeparable=this.cost2.isSeparable;
                 this.isDifferentiable=this.cost2.isDifferentiable;
                 if this.cost2.lip~=-1
                     this.lip=this.cost2.lip*this.cost1;

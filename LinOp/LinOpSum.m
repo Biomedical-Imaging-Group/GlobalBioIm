@@ -116,7 +116,23 @@ classdef LinOpSum <  LinOp
             if isa(H, 'LinOpComposition')
                 if isa(H.H2,'LinOpBroadcast') && all(this.kerdims == H.H2.kerdims)
                     if isa(H.H1, 'LinOpConv')
-                        G = LinOpConv(squeeze(sum(H.H1.mtf,this.index)),H.H1.isReal); %,this.index                
+                        idxDiff1=setdiff(this.index,H.H1.Notindex);
+                        idxDiff2=setdiff(H.H1.index,this.index);
+                        idxUnion=union(this.index,H.H1.Notindex);
+                        if isempty(idxDiff2)
+                            dd=iSfft(H.H1.mtf,H.H1.Notindex);
+                            for n=this.index
+                                dd=sum(dd,n);
+                            end
+                            G=LinOpDiag(H.H2.sizein,squeeze(dd)*prod(this.sizein(idxDiff1)));
+                        else
+                            newMtf=Sfft(iSfft(H.H1.mtf,H.H1.Notindex),idxUnion);
+                            for n=this.index
+                                newMtf=sum(newMtf,n);
+                            end
+                            newMtf=squeeze(newMtf)*prod(this.sizein(idxDiff1));
+                            G = LinOpConv(newMtf,H.H1.isReal,idxDiff2);
+                        end
                     elseif isa(H.H1,'LinOpDiag')
                         if H.H1.isScaledIdentity
                             a = prod(this.kerdims).*H.H1.diag;

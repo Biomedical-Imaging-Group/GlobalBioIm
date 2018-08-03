@@ -4,42 +4,39 @@
    contain the root `toctree` directive.
 
    
-Welcome to the GlobalBioIm Library webpage!
-*******************************************
+Welcome to the GlobalBioIm Library Webpage
+******************************************
 
-Objectives
-----------
-
-When being confronted with a new imaging problem, the common experience is that one has to reimplement 
-(if not reinvent) the wheel (=forward model + optimization algorithm), which is very time consuming and 
-also acts as a deterrent for engaging in new developments. This Matlab library aims at simplifying this 
-process by decomposing the workflow onto smaller modules, including many reusable ones since several aspects
-such as regularization and the injection of prior knowledge are rather generic. It also capitalizes on the
-strong commonalities between the various image formation models that can be exploited to obtain fast, 
-streamlined implementations.
+This is a free Matlab library. It contains generic modules that facilitate the implementation of forward models and optimization
+algorithms. It also capitalizes on the
+strong commonalities between the various image-formation models that can be exploited to build a fast, 
+streamlined code.
 
 .. figure:: button.png
    :scale: 40 %
    :align: center
-   :target: https://c4science.ch/diffusion/2843/
+   :target: https://github.com/Biomedical-Imaging-Group/GlobalBioIm
 
 
-This page contains detailled documentation of each function/class of the Library. The documentation is generated 
-automatically from comments within M-files. It thus constitues the most up-to date documentation of the Library. 
+This page contains the detailed documentation of each function/class of the library. The documentation is generated 
+automatically from comments within M-files. 
 
 
 News
 ----
 
-  - **November 2017**: New release of the library (v 0.2) !
-    *New tools, more flexibility, and improved composition rules*.
-  - **June 2017**: First public release of the library (v 0.1) !
+  - **July 2018**: New release (`v 1.1 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm>`_). *Speed up your codes using the library with GPU* (:ref:`read more <ref-gpu>`).
+  - **May 2018**: New release (`v 1.0.1 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.0.1>`_).
+  - **March 2018**: New release (`v 1.0 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.0>`_).
+  - **November 2017**: New release (`v 0.2 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v0.2>`_).
+    *New tools, more flexibility, improved composition*.
+  - **June 2017**: First public release of the library (v 0.1).
 
 Reference
 ---------
 
   - M. Unser, E. Soubies, F. Soulez, M. McCann, L. Donati, 
-    `GlobalBioIm: A Unifying Computational Framework for Solving Inverse Problems <http://bigwww.epfl.ch/publications/unser1701.html>`_ 
+    `GlobalBioIm: A Unifying Computational Framework for Solving Inverse Problems <http://bigwww.epfl.ch/publications/unser1701.html>`_,
     Proceedings of the OSA Imaging and Applied Optics Congress on Computational Optical Sensing and Imaging (COSI'17), San Francisco CA, USA, June 26-29, 2017, paper no. CTu1B.
 
 Contents
@@ -49,7 +46,7 @@ Contents
    :maxdepth: 1
    :caption: General
 
-   Download/Clone (v 0.2) <https://c4science.ch/diffusion/2843/>
+   Download or Clone (v 1.1) <https://github.com/Biomedical-Imaging-Group/GlobalBioIm>
    infos
    examples   
    conditionsuse
@@ -65,6 +62,7 @@ Contents
    opti
    methodssummary
    propertiessummary
+   gpu
 
 .. toctree::
    :maxdepth: 1

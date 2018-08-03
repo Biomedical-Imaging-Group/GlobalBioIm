@@ -13,6 +13,7 @@ OptiADMM
 .. autoclass:: OptiADMM
     :show-inheritance:
     :members: run, starting_verb, ending_verb, test_convergence, initialize, doIteration, updateParams
+    
 
 OptiChambPock
 -------------
@@ -78,18 +79,84 @@ OptiVMLMB
     :show-inheritance:
     :members: run, starting_verb, ending_verb, test_convergence, initialize, doIteration, updateParams
 
+.. automodule:: Opti.OutputOpti
+
 OutputOpti
 ----------
 
+OutputOpti (Default)
+....................
+
 .. autoclass:: OutputOpti
     :show-inheritance:
-    :members: init, update
+    :members: init, update, computeCost, computeSNR
+
+OutputOptiADMM
+..............
+
+.. autoclass:: OutputOptiADMM
+    :show-inheritance:
+    :members: init, update, computeCost, computeSNR
+
+
+
+OutputOptiConjGrad
+..................
+
+.. autoclass:: OutputOptiConjGrad
+    :show-inheritance:
+    :members: init, update, computeCost, computeSNR
 
 .. automodule:: Opti.TestCvg
 
 TestCvg
 -------
 
+TestCvg (Default)
+..................
+
 .. autoclass:: TestCvg 
     :show-inheritance:   
-    :members: init, update
+    :members: testConvergence
+
+TestCvgCombine
+..............
+
+.. autoclass:: TestCvgCombine 
+    :show-inheritance:   
+    :members: testConvergence
+
+TestCvgCostAbsolute
+...................
+
+.. autoclass:: TestCvgCostAbsolute 
+    :show-inheritance:   
+    :members: testConvergence
+
+TestCvgCostRelative
+...................
+
+.. autoclass:: TestCvgCostRelative 
+    :show-inheritance:   
+    :members: testConvergence
+
+TestCvgStepRelative
+...................
+
+.. autoclass:: TestCvgStepRelative 
+    :show-inheritance:   
+    :members: testConvergence
+
+TestCvgMaxSnr
+.............
+
+.. autoclass:: TestCvgMaxSnr 
+    :show-inheritance:   
+    :members: testConvergence
+
+TestCvgADMM
+...........
+
+.. autoclass:: TestCvgADMM 
+    :show-inheritance:   
+    :members: testConvergence

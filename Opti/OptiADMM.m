@@ -33,7 +33,7 @@ classdef OptiADMM < Opti
     % [1] Boyd, Stephen, et al. "Distributed optimization and statistical learning via the alternating direction
     % method of multipliers." Foundations and Trends in Machine Learning, 2011.
     %
-    % **Example** ADMM=OptiADMM(F0,Fn,Hn,rho_n,solver,OutOp)
+    % **Example** ADMM=OptiADMM(F0,Fn,Hn,rho_n,solver)
     %
     % See also :class:`Opti`, :class:`OptiConjGrad` :class:`OutputOpti`, :class:`Cost`
     
@@ -59,15 +59,17 @@ classdef OptiADMM < Opti
         Fn;                  % Cell containing the Cost Fn
         Hn;                  % Cell containing the LinOp Hn
         solver=[];           % solver for the last step of the algorithm
-    end
+        A;     % LinOp for conjugate gradient (if used)
+    %end
     % Full protected properties
-    properties (SetAccess = protected,GetAccess = protected)
+    %properties (SetAccess = protected,GetAccess = {?OutputOpti ,
+    %?TestCvg})  % This makes problems for doc compilation. For the moment
+    %I let all the attributes public
         yn;    % Internal parameters
         zn;
         wn;
         Hnx;
-        b0=[];
-        A;     % LinOp for conjugate gradient (if used)
+        b0=0;
         yold=0;  % Parameter needed for termination criterion
     end
     % Full public properties
@@ -78,18 +80,19 @@ classdef OptiADMM < Opti
     
     methods
         %% Constructor
-        function this=OptiADMM(F0,Fn,Hn,rho_n,solver,OutOp)
+        function this=OptiADMM(F0,Fn,Hn,rho_n,solver)
             this.name='Opti ADMM';
             if ~isempty(F0), this.F0=F0; end
             if nargin<=4, solver=[]; end
-            if nargin==6 && ~isempty(OutOp),this.OutOp=OutOp;end
             assert(length(Fn)==length(Hn),'Fn, Hn and rho_n must have the same length');
             assert(length(Hn)==length(rho_n),'Fn, Hn and rho_n must have the same length');
             this.Fn=Fn;
             this.Hn=Hn;
             this.rho_n=rho_n;
             if ~isempty(F0)
-                assert(~isempty(solver) || isa(F0,'CostL2') || isa(F0,'CostL2Composition'),'when F0 is nonempty and is not CostL2 a solver must be given (see help)');
+                assert(~isempty(solver) || isa(F0,'CostL2') || isa(F0,'CostL2Composition') || ... 
+                    ( isa(F0,'CostSummation')  && all(cellfun(@(x) (isa(x,'CostL2Composition') || isa(x,'CostL2')), F0.mapsCell))), ...
+                    'when F0 is nonempty and is not CostL2 or CostL2Composition (or a sum of them), a solver must be given (see help)');
                 this.cost=F0 +Fn{1}*Hn{1};
             else
                 this.cost=Fn{1}*Hn{1};
@@ -105,17 +108,28 @@ classdef OptiADMM < Opti
                 end
                 if ~isempty(this.F0)
                     if isa(this.F0,'CostL2Composition')
-                        this.A=this.A + this.F0.H2'*this.F0.H2;
+                        this.A=this.A + this.F0.H2'*(this.F0.H1.W*this.F0.H2);
                         this.b0=this.F0.H2'*this.F0.H1.y;
                     elseif isa(this.F0,'CostL2')
                         this.A=this.A + LinOpDiag(this.A.sizein);
                         this.b0=this.F0.y;
+                    elseif isa(this.F0,'CostSummation')
+                        for n=1:length(this.F0.mapsCell)
+                            if isa(this.F0.mapsCell{n},'CostL2Composition')
+                                this.A=this.A   + this.F0.alpha(n)*this.F0.mapsCell{n}.H2'*this.F0.mapsCell{n}.H2;
+                                this.b0=this.b0 + this.F0.alpha(n)*this.F0.mapsCell{n}.H2'*this.F0.mapsCell{n}.H1.y;
+                            else
+                                this.A=this.A + this.F0.alpha(n)*LinOpDiag(this.A.sizein);
+                                this.b0=this.b0 + this.F0.alpha(n)*this.F0.mapsCell{n}.y;
+                            end
+                        end                      
                     else
-                        error('If F0 is not a CostL2 / CostL2Composition, a solver is required in ADMM');
+                        error('If F0 is not a CostL2 / CostL2Composition / CostSummation of them, a solver is required in ADMM');
                     end
                 end
                 if ~this.A.isInvertible  % If A is non invertible -> intanciate a CG
-                    this.CG=OptiConjGrad(this.A,zeros(this.A.sizeout),OutputOpti());
+                    this.CG=OptiConjGrad(this.A,zeros_(this.A.sizeout));
+                    this.CG.verbose=0;
                     this.CG.maxiter=20;
                     this.CG.ItUpOut=0;
                     disp('Warning : ADMM will use a Conjugate Gradient to compute the linear step');
@@ -130,7 +144,7 @@ classdef OptiADMM < Opti
                 for n=1:length(this.Hn)
                     this.yn{n}=this.Hn{n}.apply(x0);
                     this.Hnx{n}=this.yn{n};
-                    this.wn{n}=zeros(size(this.yn{n}));
+                    this.wn{n}=zeros_(size(this.yn{n}));
                 end
             end
             % This is done here in case one change the y in F0 between two
@@ -147,8 +161,8 @@ classdef OptiADMM < Opti
             % Reimplementation from :class:`Opti`. For details see [1].
             this.yold = this.yn;
             for n=1:length(this.Fn)
-                this.yn{n}=this.Fn{n}.applyProx(this.Hnx{n} + this.wn{n}/this.rho_n(n),1/this.rho_n(n));
-                this.zn{n}=this.yn{n}-this.wn{n}/this.rho_n(n);
+                this.yn{n}=this.Fn{n}.applyProx(this.Hnx{n} - this.wn{n},1/this.rho_n(n));
+                this.zn{n}=this.yn{n}+this.wn{n};
             end
             if isempty(this.solver)
                 b=this.rho_n(1)*this.Hn{1}.applyAdjoint(this.zn{1});
@@ -170,7 +184,7 @@ classdef OptiADMM < Opti
             end
             for n=1:length(this.wn)
                 this.Hnx{n}=this.Hn{n}.apply(this.xopt);
-                this.wn{n}=this.wn{n} + this.rho_n(n)*(this.Hnx{n}-this.yn{n});
+                this.wn{n}=this.wn{n} - (this.Hnx{n}-this.yn{n});
             end
             flag=0;
         end

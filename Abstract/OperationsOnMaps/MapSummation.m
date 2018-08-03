@@ -55,7 +55,7 @@ classdef MapSummation < Map
 			for i = 1:length(Maps)
 				if isa(Maps{i}, 'MapSummation') && ~isa(Maps{i},'CostPartialSummation')
 					eMaps = [eMaps Maps{i}.mapsCell];
-					newAlphas = [newAlphas  Maps{i}.alpha];
+					newAlphas = [newAlphas  Maps{i}.alpha*this.alpha(i)];
 				else
 					eMaps = [eMaps Maps(i)];
 					newAlphas = [newAlphas this.alpha(i)];
@@ -70,8 +70,8 @@ classdef MapSummation < Map
             this.sizein = this.mapsCell{1}.sizein;
             this.sizeout = this.mapsCell{1}.sizeout;
             for n =2:this.numMaps
-                assert(isequal(this.sizein,this.mapsCell{n}.sizein),'%d-th input does not have consistent  sizein', n) ;
-                assert(isequal(this.sizeout,this.mapsCell{n}.sizeout),'%d-th input does not have the consistent sizeout ', n);
+                assert(cmpSize(this.sizein,this.mapsCell{n}.sizein),'%d-th input does not have consistent  sizein', n) ;
+                assert(cmpSize(this.sizeout,this.mapsCell{n}.sizeout),'%d-th input does not have the consistent sizeout ', n);
                 this.isDifferentiable= this.mapsCell{n}.isDifferentiable && this.isDifferentiable;
             end      
         end
@@ -84,14 +84,14 @@ classdef MapSummation < Map
     methods (Access = protected)
         function y = apply_(this,x) 
             % Reimplemented from :class:`Map`   
-            y = zeros(this.sizeout);
+            y = zeros_(this.sizeout);
             for n = 1:this.numMaps
                 y = y + this.alpha(n) .* this.mapsCell{n}.apply(x);
             end
         end  
         function x = applyJacobianT_(this, y, v)
             % Reimplemented from :class:`Map`   
-            x = zeros(this.sizeout);
+            x = zeros_(this.sizeout);
             for n = 1:this.numMaps
                 x = x + this.alpha(n) .* this.mapsCell{n}.applyJacobianT(y,v);
             end

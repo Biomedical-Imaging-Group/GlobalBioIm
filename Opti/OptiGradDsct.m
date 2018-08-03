@@ -15,7 +15,7 @@ classdef OptiGradDsct < Opti
     %
     % [1] Nesterov, Yurii. "Introductory lectures on convex programming." Lecture Notes (1998): 119-120.
     %
-    % **Example** GD=OptiGradDsct(F,OutOp)
+    % **Example** GD=OptiGradDsct(F)
     %
     % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
     
@@ -42,15 +42,12 @@ classdef OptiGradDsct < Opti
     
     methods
     	%% Constructor
-    	function this=OptiGradDsct(F,OutOp)
+    	function this=OptiGradDsct(F)
     		this.name='Opti Gradient Descent';
     		this.cost=F;
     		if F.lip>0
     			this.gam=1/F.lip;
-    		end
-    		if nargin==2 && ~isempty(OutOp)
-    			this.OutOp=OutOp;
-    		end
+            end
     	end 
         %% Run the algorithm
         function initialize(this,x0)

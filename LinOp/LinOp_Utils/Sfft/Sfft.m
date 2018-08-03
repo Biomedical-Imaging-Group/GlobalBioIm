@@ -29,7 +29,7 @@ function y = Sfft(x, Notindex)
 
 
 if numel(Notindex)~=0
-    y = complex(zeros(size(x)));
+    y = complex(zeros_(size(x)));
     switch Notindex(1)
         case(1)
             for n=1:size(x,1)

@@ -52,7 +52,7 @@ classdef CostTV < CostComposition
             this.name='CostTV';
             LS = CostL2(this.sizein);
             %lambda is always 1 here. It can be set differently by multiplying this cost with a scalar
-            this.optim = OptiFGP(LS,this,this.bounds,OutputOpti(0));
+            this.optim = OptiFGP(LS,this,this.bounds);
             this.optim.maxiter = this.maxiter;
             this.optim.ItUpOut = 0;
             this.optim.verbose = 0;
@@ -72,7 +72,8 @@ classdef CostTV < CostComposition
       
             LS = CostL2(this.sizein);
             %lambda is always 1 here. It can be set differently by multiplying this cost with a scalar
-            this.optim = OptiFGP(LS,this,this.bounds,Outop);
+            this.optim = OptiFGP(LS,this,this.bounds);
+            this.optim.OutOp=Outop;
             this.optim.maxiter = this.maxiter;
             this.optim.ItUpOut = 0;
             this.optim.CvOp = TestCvgStepRelative(xtol);

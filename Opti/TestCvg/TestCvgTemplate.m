@@ -1,16 +1,7 @@
 classdef TestCvgTemplate < TestCvg
     % TEMPLATE for the creation of a TestCvg to monitor convergence
     %
-    %
-    % At each iterations of an optimization algorithm (see :class:`Opti` generic class),
-    % the update method of an :class:`TestCvg` object will be executed in order to acheive user
-    % defined computations, e.g.,
-    %
     % **Example** CvOpti=TestCvgTemplate()
-    %
-    % **Important** The update method should have an unique imput that is the :class:`Opti` object in order to
-    % be generic for all Optimization routines. Hence the update method has access (in reading mode)
-    % to all the properties of :class:`Opti` objects.
     %
     % See also :class:`TestCvg`
     
@@ -42,6 +33,8 @@ classdef TestCvgTemplate < TestCvg
         end
         %% Update method
         function stop = testConvergence(this,opti)      
+            % Reimplemented from parent class :class:`TestCvg`.
+            
             stop = false;
             
             if condition

@@ -10,10 +10,11 @@
 % See LinOp, LinOpConv, LinOpHess, Cost, CostL2, CostNonNeg,  
 % CostMixNorm1Schatt, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;
+clear; close all;
 help Deconv_LS_HessSchatt_NonNeg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+%                     F. Soulez ferreol.soulez@univ-lyon1.fr
 %
 %  This program is free software: you can redistribute it and/or modify
 %  it under the terms of the GNU General Public License as published by
@@ -33,21 +34,13 @@ help Deconv_LS_HessSchatt_NonNeg
 rng(1);
 
 % -- Input image and psf
-load('StarLikeSample');    % Load image (variable im)
-load('psf');               % Load psf (variable psf)
-imdisp(im,'Input Image',1);
-
-% -- Image padding
-impad=zeros(512); idx=129:384;
-impad(idx,idx)=im;
+[im,psf,y]=GenerateData('Gaussian',20);
+imdisp(im,'Input Image (GT)',1);
+imdisp(y,'Convolved and noisy data',1);
+sz=size(y);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
-
-% -- Generate data
-load('data');    % load data (variable y)
-imdisp(y(idx,idx),'Convolved and noisy data',1);
-sz=size(y);
 
 % -- Functions definition
 LS=CostL2([],y);                 % Least-Sqaures data term
@@ -56,42 +49,44 @@ F.doPrecomputation=1;
 Hess=LinOpHess(sz);                  % Hessian Operator
 R_1sch=CostMixNormSchatt1([sz,3],1); % Mixed Norm 1-Schatten (p=1)
 R_POS=CostNonNeg(sz);                % Non-Negativity
-lamb=1e-3;                           % Hyperparameter
+lamb=5e-3;                           % Hyperparameter
 
 % -- ADMM LS + ShattenHess + NonNeg
 Fn={lamb*R_1sch,R_POS};
-Hn={Hess,LinOpIdentity(size(impad))};
+Hn={Hess,LinOpIdentity(size(im))};
 rho_n=[1e-1,1e-1];
-OutADMM=MyOutputOpti(1,impad,40);
-ADMM=OptiADMM(F,Fn,Hn,rho_n,[],OutADMM);
-ADMM.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
-ADMM.maxiter=200;       % max number of iterations
-ADMM.run(y);            % run the algorithm 
+ADMM=OptiADMM(F,Fn,Hn,rho_n);
+ADMM.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4,[1 2]), 'StepRelative',1e-4); 
+ADMM.OutOp=OutputOpti(1,im,10,[1 2]);
+ADMM.ItUpOut=1;           % call OutputOpti update every ItUpOut iterations
+ADMM.maxiter=200;          % max number of iterations
+ADMM.run(zeros(size(y)));  % run the algorithm 
 
 % -- PrimalDual Condat LS + ShattenHess + NonNeg
 Fn={lamb*R_1sch};
 Hn={Hess};
-OutPDC=MyOutputOpti(1,impad,40);
-PDC=OptiPrimalDualCondat(F,R_POS,Fn,Hn,OutPDC);
-PDC.tau=1;             % set algorithm parameters
-PDC.sig=1e-2;          %
-PDC.rho=1.95;          %
-PDC.ItUpOut=10;        % call OutputOpti update every ItUpOut iterations
-PDC.maxiter=200;       % max number of iterations
-PDC.run(y);            % run the algorithm 
+PDC=OptiPrimalDualCondat(F,R_POS,Fn,Hn);
+PDC.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4,[1 3]), 'StepRelative',1e-4); 
+PDC.OutOp=OutputOpti(1,im,40,[1 3]);
+PDC.tau=1;                % set algorithm parameters
+PDC.sig=1e-2;             %
+PDC.rho=1.7;             %
+PDC.ItUpOut=1;           % call OutputOpti update every ItUpOut iterations
+PDC.maxiter=200;          % max number of iterations
+PDC.run(zeros(size(y)));  % run the algorithm 
 
 
 % -- Display
-imdisp(OutADMM.evolxopt{end}(idx,idx),'LS+HESS+POS (ADMM)',1);
-imdisp(OutPDC.evolxopt{end}(idx,idx),'LS+HESS+POS (Condat)',1);
-figure; plot(OutADMM.iternum,OutADMM.evolcost,'LineWidth',1.5); grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
-hold all;plot(OutPDC.iternum,OutPDC.evolcost,'LineWidth',1.5); grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+imdisp(ADMM.xopt,'LS+HESS+POS (ADMM)',1);
+imdisp(PDC.xopt,'LS+HESS+POS (Condat)',1);
+figure; plot(ADMM.OutOp.iternum,ADMM.OutOp.evolcost,'LineWidth',1.5); grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+hold all;plot(PDC.OutOp.iternum,PDC.OutOp.evolcost,'LineWidth',1.5); grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
 legend('ADMM','Condat');title('Cost evolution');
 
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
-semilogy(OutADMM.iternum,OutADMM.evolsnr,'LineWidth',1.5); 
-semilogy(OutPDC.iternum,OutPDC.evolsnr,'LineWidth',1.5);
-legend('LS+HESS+POS (ADMM)','LS+HESS+POS (Condat)');xlabel('Iterations');ylabel('SNR (dB)');
+semilogy(ADMM.OutOp.iternum,ADMM.OutOp.evolsnr,'LineWidth',1.5); 
+semilogy(PDC.OutOp.iternum,PDC.OutOp.evolsnr,'LineWidth',1.5);
+legend('LS+HESS+POS (ADMM)','LS+HESS+POS (Condat)','Location','southeast');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[ADMM.time],'FaceColor',orderCol(1,:),'EdgeColor','k');

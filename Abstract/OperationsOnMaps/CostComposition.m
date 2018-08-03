@@ -50,6 +50,7 @@ classdef CostComposition < MapComposition & Cost
                         this.nu=T.diag;
                     end
                 end
+                this.isSeparable=(H1.isSeparable && (isa(H2,'LinOpDiag') || isa(H2,'LinOpSelector')));
             end
             this.name=sprintf('CostComposition( %s ; %s )',H1.name,H2.name);  
         end

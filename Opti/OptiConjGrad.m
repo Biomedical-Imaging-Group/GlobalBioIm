@@ -8,9 +8,6 @@ classdef OptiConjGrad < Opti
     %
     % All attributes of parent class :class:`Opti` are inherited.
     %
-    % **Note**: In this algorithm the parameter cost is not fixed to the above functional
-    % but to the squared resildual \\( 0.5\\Vert \\mathrm{Ax - b}\\Vert^2 \\)
-    %
     % **Example** CG=OptiConjGrad(A,b,OutOp)
     %
     % See also :class:`Opti`, :class:`OutputOpti` :class:`Cost`
@@ -45,20 +42,19 @@ classdef OptiConjGrad < Opti
     
     methods
         %% Constructor
-        function this=OptiConjGrad(A,b,OutOp)
+        function this=OptiConjGrad(A,b)
             this.name='Opti Conjugate Gradient';
-            if nargin==3 && ~isempty(OutOp),this.OutOp=OutOp;end
             this.A=A;
-            this.cost=CostL2Composition(CostL2([],b),this.A);
-            assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
+            assert(checkSize(b,this.A.sizeout),'A sizeout and size of b must be equal');
             this.b=b;
+            this.cost=CostL2(this.A.sizeout,0., this.A) - CostLinear(this.A.sizeout, this.b);
         end
         %% Set data b
         function set_b(this,b)
             % Set the right-hand side \\(\\mathrm{b}\\)
-            assert(isequal(this.A.sizeout,size(b)),'A sizeout and size of b must be equal');
+            assert(checkSize(b,this.A.sizeout),'A sizeout and size of b must be equal');
             this.b=b;
-            this.cost.H1.y=b;
+            this.cost.y=b;
         end
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.

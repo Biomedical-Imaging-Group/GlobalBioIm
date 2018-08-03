@@ -151,7 +151,7 @@ if isa(H, 'LinOp')
             s.makeHtHOK = false;
         end
         
-        if s.makeHtHOK &&  s.applyHtHOK
+        if s.makeHtHOK 
             lhs = HTHx;
             rhs = H.applyHtH(x);
             curSNR = snr(lhs, lhs-rhs);

@@ -25,7 +25,7 @@ classdef OptiRichLucy < Opti
     % [3] N. Dey et al. "Richardson-Lucy Algorithm With Total Variation Regularization for 3D Confocal Microscope 
     % Deconvolution." Microscopy research and technique (2006).
     %
-    % **Example** RL=OptiRichLucy(F,TV,lamb,OutOp)
+    % **Example** RL=OptiRichLucy(F,TV,lamb)
     %
     % See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`,
     % :class:`CostKullLeib`
@@ -67,7 +67,7 @@ classdef OptiRichLucy < Opti
    
     methods
     	%% Constructor
-    	function this=OptiRichLucy(F,TV,lamb,OutOp)
+    	function this=OptiRichLucy(F,TV,lamb)
     		this.name='Opti Richardson-Lucy';
     		assert((isa(F,'CostComposition') && isa(F.H1,'CostKullLeib') && isa(F.H2,'LinOp') ) || ...
                 isa(F,'CostKullLeib'), 'The minimized functional should be the FuncKullLeib or a CostComposition between a CostKullLeib and a LinOp');
@@ -75,9 +75,6 @@ classdef OptiRichLucy < Opti
                 this.F=F*LinOpDiag(F.sizein);
             else
                 this.F=F;
-            end
-            if nargin==4 && ~isempty(OutOp)
-                this.OutOp=OutOp;
             end
             if nargin>=2 && ~isempty(TV), this.TV=TV; end
             this.cost=this.F;
@@ -96,7 +93,7 @@ classdef OptiRichLucy < Opti
             
             initialize@Opti(this,x0);
             this.data=this.F.H1.y;
-            this.He1=this.F.H2.applyAdjoint(ones(this.F.sizein));
+            this.He1=this.F.H2.applyAdjoint(ones_(this.F.sizein));
             this.bet=this.F.H1.bet;
             if this.bet==0, error('Smoothing parameter beta has to be different from 0 (see constructor of CostKullLeib)'); end;
         end

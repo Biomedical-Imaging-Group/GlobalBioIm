@@ -37,7 +37,7 @@ classdef CostComplexRing < CostIndicator
     
     %% Constructor
     methods
-        function this = CostComplexRing(inner, outer, sz,y)
+        function this = CostComplexRing(sz,inner, outer,y)
             if nargin<4, y=0; end
             this@CostIndicator(sz,y);
             this.name='CostComplexRing';
@@ -53,7 +53,7 @@ classdef CostComplexRing < CostIndicator
             else
                 if isnumeric(inner)
                     this.inner = inner;                    
-                    assert(isequal(this.sizein,size(inner)), 'inner must be equal to this.sz');
+                    assert(cmpSize(this.sizein,size(inner)), 'inner must be equal to this.sz');
                 else
                     error('inner parameter should be numeric');
                 end
@@ -64,7 +64,7 @@ classdef CostComplexRing < CostIndicator
             else
                 if isnumeric(outer)
                     this.outer = outer;
-                    assert(isequal(this.sizein,size(outer)), 'outer must be equal to H.sizeout');
+                    assert(cmpSize(this.sizein,size(outer)), 'outer must be equal to H.sizeout');
                 else
                     error('outer parameter should be numeric');
                 end
@@ -76,7 +76,7 @@ classdef CostComplexRing < CostIndicator
     % - apply_(this,x)
     % - applyProx_(this,z,alpha)
     methods (Access = protected)
-        function y = applyProx_(this,x,alpha) % apply the operator
+        function y = applyProx_(this,x,~) % apply the operator
             % Reimplemented from parent class :class:`Cost`. 
                 if(isscalar(this.y)&&(this.y==0))
                     y = max(min(this.outer,abs(x)),this.inner) .* exp(1i .* angle(x));

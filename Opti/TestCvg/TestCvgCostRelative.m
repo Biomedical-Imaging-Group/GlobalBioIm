@@ -29,7 +29,7 @@ classdef TestCvgCostRelative  < TestCvg
         costIndex=0;              % index of the cost function
     end
     properties (SetAccess = protected,GetAccess = protected)
-        oldCost=[];    
+        oldCost=[];
     end
     methods
         %% Constructor
@@ -38,20 +38,24 @@ classdef TestCvgCostRelative  < TestCvg
             assert(isscalar(costRelativeTol),'costRelativeTol must be scalar');
             this.costRelativeTol =costRelativeTol;
             if(nargin==2)
-                assert(isscalar(costIndex) ,'costIndex must be a scalar integer');
+                %                assert(isscalar(costIndex) ,'costIndex must be a scalar integer');
                 this.costIndex = costIndex;
             end
         end
         %% Update method
         function stop = testConvergence(this,opti)
             % Tests algorithm convergence from the relative difference between two successive value of the cost function
-            % :returns stop: boolean true if
-            % $$ \\frac{\\| \\mathrm{f}^{k} - \\mathrm{f}^{k-1}\\|}{\\|\\mathrm{f}^{k-1}\\|} < \\text{costRelativeTol}.$$
+            %
+            % :return: boolean true if
+            % $$ \\frac{\\left| C(\\mathrm{x}^{k}) - C(\\mathrm{x}^{k-1})\\right|}{\\left|C(\\mathrm{x}^{k-1})\\right|} < \\mathrm{costRelativeTol}$$
             
-          
+            
             stop = false;
-            if (this.costIndex && isa(opti.cost,'CostSummation') && this.costIndex<= opti.cost.numMaps)
-                f = opti.cost.mapsCell{this.costIndex}*opti.xopt;
+            if ( isa(opti.cost,'CostSummation')&& all(this.costIndex>0) &&all(this.costIndex<=opti.cost.numMaps) )
+                f = 0;
+                for n=1:numel(this.costIndex)
+                    f = f+opti.cost.mapsCell{this.costIndex(n)}*opti.xopt;
+                end
             else
                 f = opti.cost*opti.xopt;
             end

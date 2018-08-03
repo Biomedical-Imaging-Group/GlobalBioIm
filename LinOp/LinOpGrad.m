@@ -5,6 +5,7 @@ classdef LinOpGrad <  LinOp
     % :param index: dimension along which the gradient is computed (all by default)
     % :param bc: boundary condition: 'circular' (default), 'zeros', 'mirror'
     % :param res: vector containing the resolution along each dimension (default all 1)
+    % :param useRFT: use RFT when defining the :class:`LinOpConv` associated to \\(\\mathrm{H^TH}\\) 
     %
     % All attributes of parent class :class:`LinOp` are inherited. 
     % 
@@ -41,13 +42,16 @@ classdef LinOpGrad <  LinOp
         bc;        % boundary condition (default mirror);
         res;       % resolution, vector of lenght ndms
     end
+    properties
+        useRFT=0;  % use RFT when defining the LinOpConv associated to HtH
+    end
     
     %% Constructor
     methods
         function this = LinOpGrad(sz,index,bc,res)
             if nargin == 1, index = [];end
             if nargin<=2 || isempty(bc), bc='circular';end
-            if nargin<=3 || isempty(res), res=ones(size(sz));end
+            if nargin<=3 || isempty(res), res=ones_(size(sz));end
             this.name ='LinOpGrad';
             this.isInvertible=false;
             this.isDifferentiable=true;
@@ -93,7 +97,7 @@ classdef LinOpGrad <  LinOp
     methods (Access = protected)
         function y = apply_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            y = zeros(this.sizeout);
+            y = zeros_(this.sizeout);
             allElements = repmat({':'}, 1, this.ndms);
             for diffDimInd = 1:length(this.index)
                 diffDim = this.index(diffDimInd);
@@ -122,7 +126,7 @@ classdef LinOpGrad <  LinOp
         end
         function y = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            y = zeros(this.sizein);
+            y = zeros_(this.sizein);
             allElements = repmat({':'}, 1, this.ndms);
             for diffDimInd = 1:length(this.index)
                 diffDim = this.index(diffDimInd);
@@ -160,7 +164,7 @@ classdef LinOpGrad <  LinOp
         end
         function y = applyHtH_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
-            y = zeros(this.sizein);
+            y = zeros_(this.sizein);
             allElements = repmat({':'}, 1, this.ndms);
             for diffDimInd = 1:length(this.index)
                 diffDim = this.index(diffDimInd);
@@ -204,17 +208,23 @@ classdef LinOpGrad <  LinOp
         end
         function M = makeHtH_(this)
             % Reimplemented from parent class :class:`LinOp`.
-            if strcmp(this.bc,'circular')&&(this.ndms<=4)
-                fHtH=zeros(this.sizein);
-                switch(this.ndms)
-                    case(1), fHtH(1)=2;fHtH(2)=-1;fHtH(end)=-1;fHtH=fHtH/this.res(1)^2;
-                    case(2), fHtH(1,1)=2/this.res(1)^2+2/this.res(2)^2;fHtH(1,2)=-1/this.res(2)^2;fHtH(2,1)=-1/this.res(1)^2;fHtH(1,end)=-1/this.res(2)^2;fHtH(end,1)=-1/this.res(1)^2;
-                    case(3), fHtH(1,1,1)=2/this.res(1)^2+2/this.res(2)^2+2/this.res(3)^2;fHtH(1,2,1)=-1/this.res(2)^2;fHtH(2,1,1)=-1/this.res(1)^2;fHtH(1,end,1)=-1/this.res(2)^2;fHtH(end,1,1)=-1/this.res(1)^2;
-                        fHtH(1,1,2)=-1/this.res(3)^2;fHtH(1,1,end)=-1/this.res(3)^2;
-                    case(4), fHtH(1,1,1,1)=2/this.res(1)^2+2/this.res(2)^2+2/this.res(3)^2+2/this.res(4)^2;fHtH(1,2,1,1)=-1/this.res(2)^2;fHtH(2,1,1,1)=-1/this.res(1)^2;fHtH(1,end,1,1)=-1/this.res(2)^2;fHtH(end,1,1,1)=-1/this.res(1)^2;
-                        fHtH(1,1,2,1)=-1/this.res(3)^2;fHtH(1,1,end,1)=-1/this.res(3)^2;fHtH(1,1,1,2)=-1/this.res(4)^2;fHtH(1,1,1,end)=-1/this.res(4)^2;
+            if strcmp(this.bc,'circular')
+                fHtH=zeros_(this.sizein)  ;
+                idxAll = repmat({1}, 1, this.ndms);
+                rep=this.sizein;
+                sel=idxAll;
+                for ii = this.index
+                    idx=idxAll;idx{ii}=':';
+                    dd=idxAll;dd{ii}=this.sizein(ii);
+                    fHtH(idx{:})=fHtH(idx{:})+reshape([2, -1, zeros(1,this.sizein(ii)-3),  -1],dd{:})/this.res(ii)^2;
+                    rep(ii)=1;sel{ii}=':';
                 end
-                M=LinOpConv(fftn(fHtH));
+                fHtH=repmat(fHtH(sel{:}) ,rep);           
+                if this.useRFT
+                    M=LinOpConv('PSF',fHtH,1,this.index,'useRFT');
+                else
+                    M=LinOpConv('PSF',fHtH,1,this.index);
+                end
             else
                 M=makeHtH_@LinOp(this);
             end

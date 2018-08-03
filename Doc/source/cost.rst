@@ -31,6 +31,13 @@ CostKullLeib
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
       applyGrad_, applyProx_, applyProxFench_, set_y
 
+CostLinear
+----------
+.. autoclass:: CostLinear
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+      applyGrad_, applyProx_, applyProxFench_, set_y
+
 CostL1
 ------
 .. autoclass:: CostL1
@@ -56,6 +63,14 @@ CostMixNorm21
 -------------
     
 .. autoclass:: CostMixNorm21
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+      applyGrad_, applyProx_, applyProxFench_, set_y
+
+CostMixNorm21NonNeg
+-------------
+    
+.. autoclass:: CostMixNorm21NonNeg
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
       applyGrad_, applyProx_, applyProxFench_, set_y

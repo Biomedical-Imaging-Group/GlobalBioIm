@@ -30,7 +30,7 @@ classdef OptiPrimalDualCondat < Opti
     % [1] Laurent Condat, "A Primal-Dual Splitting Method for Convex Optimization Involving Lipchitzian, Proximable and Linear
     % Composite Terms", Journal of Optimization Theory and Applications, vol 158, no 2, pp 460-479 (2013).
     %
-    % **Example** A=OptiPrimalDualCondat(F0,G,Fn,Hn,OutOp)
+    % **Example** A=OptiPrimalDualCondat(F0,G,Fn,Hn)
     %
     % See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`
     
@@ -70,9 +70,8 @@ classdef OptiPrimalDualCondat < Opti
     
     methods
         %% Constructor
-        function this=OptiPrimalDualCondat(F0,G,Fn,Hn,OutOp)
+        function this=OptiPrimalDualCondat(F0,G,Fn,Hn)
             this.name='Opti Primal-Dual Condat';
-            if nargin==5 && ~isempty(OutOp), this.OutOp=OutOp; end
             assert(length(Fn)==length(Hn),'Fn, Hn and rho_n must have the same length');
             this.Fn=Fn;
             this.Hn=Hn;
@@ -98,7 +97,7 @@ classdef OptiPrimalDualCondat < Opti
             if ~isempty(x0) % To restart from current state if wanted
                 % initialization of the dual variables y
                 for n=1:length(this.Hn)
-                    this.y{n}=this.Hn{n}.apply(x0);
+                    this.y{n}=zeros_(this.Hn{n}.sizeout);
                 end
             end
             % Check parameters

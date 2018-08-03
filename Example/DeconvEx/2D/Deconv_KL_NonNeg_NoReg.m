@@ -10,7 +10,7 @@
 % See LinOp, LinOpConv, Cost, CostKullLeib, CostNonNeg, Opti, 
 % OptiFBS, OptiRichLucy, OutpuOpti
 %------------------------------------------------------------
-clear all; close all; clc;
+clear; close all; 
 help Deconv_KL_NonNeg_NoReg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -33,55 +33,44 @@ help Deconv_KL_NonNeg_NoReg
 rng(1);
 
 % -- Input image and psf
-load('StarLikeSample');    % Load image (variable im)
-load('psf');               % Load psf (variable psf)
-imdisp(im,'Input Image',1);
-
-% -- Image padding
-impad=zeros(512); idx=129:384;
-impad(idx,idx)=im;
+[im,psf,y]=GenerateData('Poisson',100);
+imdisp(im,'Input Image (GT)',1);
+imdisp(y,'Convolved and noisy data',1);
+sz=size(y);
 
 % -- Convolution Operator definition
 H=LinOpConv(fft2(psf));
-
-% -- Generate data
-load('data');    % load data (variable y)
-imdisp(y(idx,idx),'Convolved and noisy data',1);
-sz=size(y);
 
 % -- Functions definition
 KL=CostKullLeib([],y,1e-6);     % Kullback-Leibler divergence data term
 R_POS=CostNonNeg(sz);              % Non-Negativity
 
 % -- FISTA KL + NonNeg
-OutFista=OutputOpti(1,impad,40);
-FBS=OptiFBS(KL*H,R_POS,OutFista);
-FBS.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
+FBS=OptiFBS(KL*H,R_POS);
+FBS.OutOp=OutputOpti(1,im,40);
+FBS.ItUpOut=5;   % call OutputOpti update every ItUpOut iterations
 FBS.fista=true;   % activate fista
 FBS.maxiter=200;  % max number of iterations
-FBS.gam=1e-2;     % set gamma parameter
+FBS.gam=5;     % set gamma parameter
 FBS.run(y);       % run the algorithm 
 
 % -- Richardson-Lucy KL + NonNeg (implicit)
-OutRL=OutputOpti(1,impad,40);
-RL=OptiRichLucy(KL*H,[],[],OutRL);
-RL.ItUpOut=10;   % call OutputOpti update every ItUpOut iterations
+RL=OptiRichLucy(KL*H);
+RL.OutOp=OutputOpti(1,im,40);
+RL.ItUpOut=5;   % call OutputOpti update every ItUpOut iterations
 RL.maxiter=200;  % max number of iterations
 RL.run(y);       % run the algorithm 
 
 % -- Display
-[v,n]=max(OutFista.evolsnr(:));
-imdisp(OutFista.evolxopt{n}(idx,idx),'KL + NonNeg (FISTA)',1);
-[v,n]=max(OutRL.evolsnr(:));
-imdisp(OutRL.evolxopt{n}(idx,idx),'KL + NonNeg (RL)',1);
-
-figure;plot(OutFista.iternum,OutFista.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
-hold all; plot(OutRL.iternum,OutRL.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');title('Cost evolution');
+imdisp(FBS.xopt,'KL + NonNeg (FISTA)',1);
+imdisp(RL.xopt,'KL + NonNeg (RL)',1);
+figure;plot(FBS.OutOp.iternum,FBS.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');
+hold all; plot(RL.OutOp.iternum,RL.OutOp.evolcost,'LineWidth',1.5); set(gca,'FontSize',12);xlabel('Iterations');ylabel('Cost');title('Cost evolution');
 legend('FISTA','RL');
 
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
-semilogy(OutFista.iternum,OutFista.evolsnr,'LineWidth',1.5); 
-semilogy(OutRL.iternum,OutRL.evolsnr,'LineWidth',1.5); 
+semilogy(FBS.OutOp.iternum,FBS.OutOp.evolsnr,'LineWidth',1.5); 
+semilogy(RL.OutOp.iternum,RL.OutOp.evolsnr,'LineWidth',1.5); 
 legend('KL+POS (FBS)','KL+POS (RL)');xlabel('Iterations');ylabel('SNR (dB)');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');

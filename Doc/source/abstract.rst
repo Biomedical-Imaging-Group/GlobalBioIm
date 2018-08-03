@@ -1,4 +1,4 @@
-Abstract classes
+Abstract Classes
 ****************
 
 This section describes the abstract classes of the GlobalBioIm library. It provides general properties for 
@@ -21,7 +21,7 @@ LinOp
     :show-inheritance:
     :members: applyAdjoint, transpose, ctranspose, applyHtH, applyHHt, applyAdjointInverse, makeHtH, makeHHt,
       apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
-      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, times_
+      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, times_, makeInversion_
 
 Cost
 ----
@@ -39,8 +39,6 @@ Opti
     :show-inheritance:
     :members: run, starting_verb, ending_verb, test_convergence, initialize, doIteration, updateParams
 
-
-.. automodule:: Abstract.Compositions
 
 .. _ref-op-on-Maps:
 

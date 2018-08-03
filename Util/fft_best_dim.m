@@ -4,7 +4,7 @@ function outdim = fft_best_dim(input)
 %%  fft_best_dim(len);
 %     Return the smallest integer which is greater or equal INPUT and which is
 %     a multiple of powers of 2, 3 and/or 5
-outdim= zeros(size(input));
+outdim= zeros_(size(input));
 for t = 1:numel(input)
 outdim(t)= fft_best_dim1d(input(t)); 
 end

@@ -26,7 +26,7 @@ classdef OptiFBS < Opti
     % [3] Amir Beck and Marc Teboulle, "A Fast Iterative Shrinkage-Thresholding Algorithm for Linear inverse Problems",
     % SIAM Journal on Imaging Science, vol 2, no. 1, pp 182-202 (2009)
     %
-    % **Example** FBS=OptiFBS(F,G,OutOp)
+    % **Example** FBS=OptiFBS(F,G)
     %
     % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
     
@@ -68,16 +68,13 @@ classdef OptiFBS < Opti
     
     methods
         
-        function this=OptiFBS(F,G,OutOp)
+        function this=OptiFBS(F,G)
             this.name='Opti FBS';
             this.cost=F+G;
             this.F=F;
             this.G=G;
             if F.lip~=-1
                 this.gam=1/F.lip;
-            end
-            if nargin==3 && ~isempty(OutOp)
-                this.OutOp=OutOp;
             end
         end
         function initialize(this,x0)
@@ -105,7 +102,6 @@ classdef OptiFBS < Opti
             end
 
             flag=this.OPTI_NEXT_IT;
-        end   
-        
+        end          
     end
 end

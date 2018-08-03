@@ -4,9 +4,10 @@ classdef Opti < matlab.mixin.SetGet
     % :param name: name of the algorithm
     % :param cost: minimized :class:`Cost`
     % :param maxiter: maximal number of iterations (default 50)
-    % :param xtol: tolerance on the relative difference between two iterates (default 1e-5)
+    % :param verbose: bollean (default true) to activate verbose mode
     % :param OutOp: :class:`OutputOpti` object
     % :param ItUpOut: number of iterations between two calls to the update method of the  :class:`OutputOpti` object :attr:`OutOp` (default 0)
+    % :param CvOp: :class:`TestCvg` object
     % :param time: execution time of the algorithm
     % :param niter: iteration counter
     % :param xopt: optimization variable
@@ -31,8 +32,8 @@ classdef Opti < matlab.mixin.SetGet
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     properties (Constant)
-        OPTI_NEXT_IT  = 0;   % new iteration
-        OPTI_REDO_IT    = 1; %
+        OPTI_NEXT_IT = 0;   % new iteration
+        OPTI_REDO_IT = 1; %
         OPTI_STOP    = 2;    % stop iteration
     end
     % Protected Set and public Read properties
@@ -46,9 +47,9 @@ classdef Opti < matlab.mixin.SetGet
     end
     % Full public properties
     properties
-        verbose=true;       % if true display information (starting and ending message
-        endingMessage;             % Ending message
-        OutOp=OutputOpti();  % OutputOpti object
+        verbose=true;        % if true display information (starting and ending message
+        endingMessage;       % Ending message
+        OutOp=OutputOpti(false,[],1);  % OutputOpti object
         CvOp=TestCvg();      % OutputOpti object
         maxiter=50;     % maximal number of iterates
         ItUpOut=0;      % period (in number of iterations) of calling the OutputOpti object
@@ -61,22 +62,23 @@ classdef Opti < matlab.mixin.SetGet
             % :param x0: initial point in \\(\\in X\\), if x0=[] restarts from the current value :attr:`xopt`.
             %
             % **note**: this method does not return anything, the result being stored in public attribute :attr:`xopt`.
-            
-            this.initialize(x0);
+            if(nargin==1)
             assert(~isempty(this.xopt),'Missing starting point x0');
+            x0 = this.xopt;
+            end
+            this.initialize(x0);
             tstart=tic;
             this.OutOp.init();
             this.niter=0;
             this.starting_verb();
             this.endingMessage= ['Maximum number of iterations reached: ', num2str(this.maxiter)];
             this.xold= x0;
-            while (this.niter<=this.maxiter)
-                
+            while (this.niter<this.maxiter)
                 % - Update parameters
                 this.updateParams();
-                % - Algorithm iteration
+                % - Algorithm iteration   
                 flag=this.doIteration();
-                
+
                 if(flag == this.OPTI_NEXT_IT)
                     this.niter=this.niter+1;
                     
@@ -84,13 +86,13 @@ classdef Opti < matlab.mixin.SetGet
                     if this.CvOp.testConvergence(this), break; end
                     
                     % - Call OutputOpti object
-                    if this.verbose &&((mod(this.niter,this.ItUpOut)==0)|| (this.niter==1))
+                    if this.ItUpOut>0 && (((mod(this.niter,this.ItUpOut)==0)|| (this.niter==1)))
                         this.OutOp.update(this);
                     end
                     this.xold=this.xopt;
-                elseif  flag==this.OPTI_STOP, break;
+                elseif  flag==this.OPTI_STOP,
+                    break;
                 end
-                
             end
             this.time=toc(tstart);
             this.ending_verb();
@@ -107,10 +109,11 @@ classdef Opti < matlab.mixin.SetGet
         function flag=doIteration(this)
             % Implements algorithm iteration
             %
-            % flag:
-            %         OPTI_NEXT_IT  = 0;   % new iteration
-            %         OPTI_REDO_IT    = 1; %
-            %         OPTI_STOP    = 2;    % stop iteration
+            % :return: flag with values
+            %
+            %    - OPTI_NEXT_IT (= 0) to go to the next iteration
+            %    - OPTI_REDO_IT (= 1) to redo the iteration
+            %    - OPTI_STOP    (= 2) to stop algorithm
             
             error(['In ',this.name,': doIteration method is not implemented']);
         end

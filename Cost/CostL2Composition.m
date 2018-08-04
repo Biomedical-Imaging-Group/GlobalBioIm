@@ -32,7 +32,7 @@ classdef CostL2Composition <  CostComposition
     
     %% Properties 
     % - Private 
-    properties (SetAccess = protected,GetAccess = protected)
+    properties (SetAccess = protected,GetAccess = public)
         OpSumP;       % Operator used to compute the prox when H2 is the combination of a LinOpDownsample with a LinOpConv
         Lamb;         % Operator used to compute the prox when H2 is the combination of a LinOpSum with a LinOpConv
         H2H2t;        % operator used for prox computation
@@ -66,7 +66,7 @@ classdef CostL2Composition <  CostComposition
                     this.doDownConv=0;this.doSumConv=0;this.doWoodbury=0;
                     this.H2H2t=[];this.OpSumP=[];this.Id=[];
                     % If H2 is a composition between a LinOpDownsample and a LinOpConv
-                    testW=isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity && this.H1.W==1;
+                    testW=isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity && this.H1.W.diag==1;
                     if isa(this.H2,'LinOpComposition') && isa(this.H2.H1,'LinOpDownsample') &&  isa(this.H2.H2,'LinOpConv') &&  testW
                         this.OpSumP=LinOpSumPatches(this.H2.H1.sizein,this.H2.H1.sizein./this.H2.H1.df);
                         this.H2H2t=this.OpSumP*(abs(this.H2.H2.mtf).^2);
@@ -221,8 +221,8 @@ classdef CostL2Composition <  CostComposition
                 % TODO : reimplement similarly to the above Woodbury
                 % Formula case
                 if ~this.doPrecomputation || (this.doPrecomputation && (~isfield(this.precomputeCache,'HtHplusId')  || (alpha~=this.precomputeCache.alpha)))
-                    if isnumeric(this.H1.W) || (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity)
-                        HtHplusId=alpha*this.H1.W*(this.H2'*this.H2) + LinOpDiag(this.H2.sizein,1);
+                    if isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity
+                        HtHplusId=alpha*this.H1.W.diag*(this.H2'*this.H2) + LinOpDiag(this.H2.sizein,1);
                     else
                         HtHplusId=alpha*this.H2'*this.H1.W*this.H2 + LinOpDiag(this.H2.sizein,1);
                     end

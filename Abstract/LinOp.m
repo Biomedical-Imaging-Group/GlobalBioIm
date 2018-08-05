@@ -213,7 +213,7 @@ classdef LinOp < Map
                         % two LinOp of the same type can always be simplified. If not the sum_ method of the corresponding
                         % LinOp has to be implemented properly).
                         
-                        M=this + G.alpha(1)*G.mapsCell{ind};
+                        M=this + G.alpha(ind)*G.mapsCell{ind};
                         for ii=1:G.numMaps
                             if ii~=ind
                                 M= M+G.alpha(ii)*G.mapsCell{ii};

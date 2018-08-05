@@ -215,6 +215,10 @@ classdef LinOpConv <  LinOp
             
             % -- Norm of the operator
             this.norm=max(abs(this.mtf(:)));
+            
+            
+            % Initialize listeners
+            this.initialize('LinOpConv');
         end
     end
     

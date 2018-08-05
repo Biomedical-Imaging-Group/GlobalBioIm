@@ -30,53 +30,68 @@ classdef MapSummation < Map
     properties (SetObservable, AbortSet)
         mapsCell;    % Cell of summed Maps
         alpha;       % Correcponding coefficients
+    end
+    % - Readable
+    properties (SetAccess = protected,GetAccess = public)
         numMaps;     % Number of Maps
     end
     
     %% Constructor
     methods
         function this = MapSummation(Maps,alpha)
+            % Default values
+            if nargin == 1, alpha = 1; end
+            % Set properties
             this.name ='MapSummation';
-            if nargin == 1
-				alpha = 1;
-            end			
-			this.numMaps = numel(Maps);
-            % Check coefs alpha
-			assert(isnumeric(alpha)&& ( isscalar(alpha) || ( isvector(alpha) && (numel(alpha)== this.numMaps))),...
-                'second input should be a scalar or an array of scalars of the same size as the first input');
-			if  isscalar(alpha)
-				this.alpha = repmat(alpha, 1, this.numMaps) ;
-			else
-				this.alpha = alpha;
-			end
-			% Check type Maps
-			allMaps = all( cellfun(@(x)(isa(x, 'Map')), Maps) );
-			assert(iscell(Maps) && allMaps, 'First input should be a cell array Map');		
-			% If any of the inputs is itself a sum, expand it
-			eMaps = []; % expanded LinOp list
-			newAlphas = [];
-			for i = 1:length(Maps)
-				if isa(Maps{i}, 'MapSummation') && ~isa(Maps{i},'CostPartialSummation')
-					eMaps = [eMaps Maps{i}.mapsCell];
-					newAlphas = [newAlphas  Maps{i}.alpha*this.alpha(i)];
-				else
-					eMaps = [eMaps Maps(i)];
-					newAlphas = [newAlphas this.alpha(i)];
-				end
-			end
-			this.alpha = newAlphas;
-			this.mapsCell = eMaps;
-			this.numMaps = length(this.mapsCell);
-			% Set some properties
-            this.isDifferentiable= this.mapsCell{1}.isDifferentiable;
+            this.sizein = Maps{1}.sizein;
+            this.sizeout = Maps{1}.sizeout;
+            this.alpha = alpha;
+            this.mapsCell = Maps;
             this.isInvertible=false;
-            this.sizein = this.mapsCell{1}.sizein;
-            this.sizeout = this.mapsCell{1}.sizeout;
-            for n =2:this.numMaps
-                assert(cmpSize(this.sizein,this.mapsCell{n}.sizein),'%d-th input does not have consistent  sizein', n) ;
-                assert(cmpSize(this.sizeout,this.mapsCell{n}.sizeout),'%d-th input does not have the consistent sizeout ', n);
-                this.isDifferentiable= this.mapsCell{n}.isDifferentiable && this.isDifferentiable;
-            end      
+            % Initialize
+            this.initialize('MapSummation');
+        end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Map`
+            
+            % Call superclass method
+            updateProp@Map(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'mapsCell') ||  strcmp(prop,'all')
+                allMaps = all( cellfun(@(x)(isa(x, 'Map')), this.mapsCell) );
+                assert(iscell(this.mapsCell) && allMaps, 'Property mapsCell should be a cell array Map');
+                % If any of the inputs is itself a sum, expand it
+                eMaps = []; % expanded LinOp list
+                newAlphas = [];
+                for i = 1:length(this.mapsCell)
+                    if isa(this.mapsCell{i}, 'MapSummation') && ~isa(this.mapsCell{i},'CostPartialSummation')
+                        eMaps = [eMaps this.mapsCell{i}.mapsCell];
+                        newAlphas = [newAlphas  this.mapsCell{i}.alpha*this.alpha(i)];
+                    else
+                        eMaps = [eMaps this.mapsCell(i)];
+                        newAlphas = [newAlphas this.alpha(i)];
+                    end
+                end
+                this.alpha = newAlphas;
+                this.mapsCell = eMaps;
+                this.numMaps = length(this.mapsCell);
+                this.isDifferentiable= this.mapsCell{1}.isDifferentiable;
+                for n =2:this.numMaps
+                    assert(cmpSize(this.sizein,this.mapsCell{n}.sizein),'In property mapsCell %d-th input does not have consistent  sizein', n) ;
+                    assert(cmpSize(this.sizeout,this.mapsCell{n}.sizeout),'%In property mapsCell d-th input does not have the consistent sizeout ', n);
+                    this.isDifferentiable= this.mapsCell{n}.isDifferentiable && this.isDifferentiable;
+                end
+            end
+            if strcmp(prop,'alpha') ||  strcmp(prop,'all')
+                assert(isnumeric(this.alpha) && (isscalar(this.alpha) || (isvector(this.alpha) && (isempty(this.numMaps) || numel(this.alpha)== this.numMaps))),...
+                    'second input should be a scalar or an array of scalars of the same size as the first input');
+                if  isscalar(this.alpha)
+                    this.alpha = repmat(this.alpha, 1, this.numMaps) ;
+                end
+            end
         end
     end
     

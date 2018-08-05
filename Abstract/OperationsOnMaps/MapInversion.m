@@ -32,6 +32,7 @@ classdef MapInversion < Map
     %% Constructor
     methods 
         function this = MapInversion(M)
+            % Set properties 
             this.name =sprintf('%s Inverse', M.name);                    
             assert(isa(M,'Map'),'Input should be a Map');
             assert(M.isInvertible,'Input should be invertible');
@@ -39,8 +40,10 @@ classdef MapInversion < Map
             this.isDifferentiable= this.M.isDifferentiable;
             this.isInvertible=this.M.isInvertible;
             this.sizein =this.M.sizeout;
-            this.sizeout =this.M.sizein;   
-            this.norm = 1/this.M.norm; 
+            this.sizeout =this.M.sizein;
+            this.norm = 1/this.M.norm;
+            % Initialize
+            this.initialize('MapInversion');
           end
     end
     

@@ -30,15 +30,11 @@ classdef LinOp < Map
     %% Constructor
     methods
         function this=LinOp()
-            % Add new fields to memoizeOpts and memoCache
+            % Set properties
             this.memoizeOpts.applyAdjoint=false;
             this.memoizeOpts.applyAdjointInverse=false;
             this.memoizeOpts.applyHtH=false;
             this.memoizeOpts.applyHHt=false;
-            this.memoCache.applyAdjointInverse=struct('in', [], 'out', []);
-            this.memoCache.applyAdjoint=struct('in', [], 'out', []);
-            this.memoCache.applyHtH=struct('in', [], 'out', []);
-            this.memoCache.applyHHt=struct('in', [], 'out', []);
             this.isDifferentiable=true;
         end
     end

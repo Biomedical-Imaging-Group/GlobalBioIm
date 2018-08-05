@@ -27,8 +27,11 @@ classdef LinOpInversion < MapInversion & LinOp
     %% Constructor
     methods 
         function this = LinOpInversion(M)
+            % Call superclass constructor
             this@MapInversion(M);    
-            assert(isa(M,'LinOp'),'Input should be a  LinOp');            
+            assert(isa(M,'LinOp'),'Input should be a  LinOp');      
+            % Initialize
+            this.initialize('LinOpInversion');
           end
     end
     

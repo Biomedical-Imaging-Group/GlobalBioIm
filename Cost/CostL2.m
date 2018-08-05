@@ -31,45 +31,43 @@ classdef CostL2 < Cost
     %% Properties
     % - Public
     properties (SetObservable, AbortSet)
-        W    % weight matrix      
+        W    % weight matrix
     end
-
-    %% Constructor and handlePropEvents method
+    
+    %% Constructor
     methods
-        function this = CostL2(sz,y,wght) 
+        function this = CostL2(sz,y,wght)
             % Default values
             if nargin<2, y=0; end
             if nargin<3 || isempty(wght), wght=1; end
             % Call superclass constructor
             this@Cost(sz,y);
-            % Listeners to PostSet events
-            addlistener(this,'W','PostSet',@this.handlePropEvents);
             % Set properties
             this.name='CostL2';
             this.W=wght;
             this.isConvex=true;
             this.isSeparable=true;
             this.isDifferentiable=true;
-            % Listeners to modified events (for properties which are classes) 
-            addlistener(this.W,'modified',@this.handleModifiedW);
-        end        
-        function handleModifiedW(this,~,~) % Necessary for properties which are objects of the Library
-            sourc.Name='W'; handlePropEvents(this,sourc);
+            % Initialize
+            this.initialize('CostL2');
         end
-        function handlePropEvents(this,src,~)
-            % Reimplemented from superclasses :class:`Map` and :class:`MapComposition`
-            switch src.Name
-                case 'W'  
-                    assert((isnumeric(this.W) && isscalar(this.W))||isa(this.W,'LinOp'),'weight W must be scalar or LinOp');
-                    if isnumeric(this.W) && isscalar(this.W)
-                        this.lip=this.W;
-                        this.W=this.W*LinOpIdentity(this.sizein);
-                    else
-                        this.lip=this.W.norm;
-                    end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Map`
+            
+            % Call superclass method
+            updateProp@Cost(this,prop);
+            if strcmp(prop,'W') ||  strcmp(prop,'all')
+                assert((isnumeric(this.W) && isscalar(this.W))||isa(this.W,'LinOp'),'weight W must be scalar or LinOp');
+                if isnumeric(this.W) && isscalar(this.W)
+                    this.lip=this.W;
+                    this.W=this.W*LinOpIdentity(this.sizein);
+                else
+                    this.lip=this.W.norm;
+                end
             end
-            % Call superclass method (important to ensure the right execution order)
-            handlePropEvents@Cost(this,src);
         end
     end
     

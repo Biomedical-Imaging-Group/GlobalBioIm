@@ -32,43 +32,34 @@ classdef MapMultiplication < Map
         M2;
     end
     
-    %% Constructor and handlePropEvents method
+    %% Constructor
     methods
         function this = MapMultiplication(Map1,Map2)
-            % Listeners to PostSet events
-            addlistener(this,'M1','PostSet',@this.handlePropEvents);
-            addlistener(this,'M2','PostSet',@this.handlePropEvents);
-            % Basic properties
+            % Set properties 
             this.M1=Map1;
             this.M2=Map2;
             this.isInvertible=false;
             this.sizein = this.M1.sizein;
             this.sizeout = this.M2.sizeout;
-            % Listeners to modified events (for properties which are classes) 
-            addlistener(this.M1,'modified',@this.handleModifiedM1);
-            addlistener(this.M2,'modified',@this.handleModifiedM2);
+            % Initialize
+            this.initialize('MapMultiplication');
         end
-        function handleModifiedM1(this,~,~) % Necessary for properties which are objects of the Library
-            sourc.Name='M1'; handlePropEvents(this,sourc);
-        end
-        function handleModifiedM2(this,~,~) % Necessary for properties which are objects of the Library
-            sourc.Name='M2'; handlePropEvents(this,sourc);
-        end
-        function handlePropEvents(this,src,~)
-            % Reimplemented from parent class :class:`Map`
-            switch src.Name
-                case {'M1','M2'}
-                    if ~isempty(this.M1) &&  ~isempty(this.M2)  % Because in the constructor they are set one after the other.
-                        assert((isa(this.M1,'Map') && isa(this.M2,'Map')),'Properties M1 and M2 should be Map objects');
-                        this.isDifferentiable= this.M1.isDifferentiable*this.M2.isDifferentiable;
-                        assert(cmpSize(this.M1.sizein,this.M2.sizein),'Properties M1 and M2 should have consistent  sizein') ;
-                        assert(cmpSize(this.M1.sizeout,this.M2.sizeout),'Properties M1 and M2 should have consistent sizeout');
-                        this.name=sprintf('MapMultiplication( %s ; %s )',this.M1.name,this.M2.name);
-                    end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Map`
+            
+            % Call superclass method
+            updateProp@Map(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'M1')  || strcmp(prop,'M2') ||  strcmp(prop,'all')
+                assert((isa(this.M1,'Map') && isa(this.M2,'Map')),'Properties M1 and M2 should be Map objects');
+                this.isDifferentiable= this.M1.isDifferentiable*this.M2.isDifferentiable;
+                assert(cmpSize(this.M1.sizein,this.M2.sizein),'Properties M1 and M2 should have consistent  sizein') ;
+                assert(cmpSize(this.M1.sizeout,this.M2.sizeout),'Properties M1 and M2 should have consistent sizeout');
+                this.name=sprintf('MapMultiplication( %s ; %s )',this.M1.name,this.M2.name);
             end
-            % Call mother classes at this end (important to ensure the
-            % right execution order)
-            handlePropEvents@Map(this,src);
         end
     end
     

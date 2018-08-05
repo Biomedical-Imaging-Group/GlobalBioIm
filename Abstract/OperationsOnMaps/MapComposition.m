@@ -33,52 +33,41 @@ classdef MapComposition < Map
         H2;           % Right hand side Map
     end
     
-    %% Constructor and handlePropEvents method
+    %% Constructor
     methods
         function this = MapComposition(H1,H2)            
-            % Listeners to PostSet events
-            addlistener(this,'H1','PostSet',@this.handlePropEvents);
-            addlistener(this,'H2','PostSet',@this.handlePropEvents);
-            % Basic properties          
+            % Set properties        
             this.H1 = H1;
             this.H2 = H2;
             this.sizein=H2.sizein;
             this.sizeout=H1.sizeout;
-            % Listeners to modified events (for properties which are classes) 
-            addlistener(this.H1,'modified',@this.handleModifiedH1);
-            addlistener(this.H2,'modified',@this.handleModifiedH2);
+            % Initialize
+            this.initialize('MapComposition');
         end
-        function handleModifiedH1(this,~,~) % Necessary for properties which are objects of the Library
-            sourc.Name='H1'; handlePropEvents(this,sourc);
-        end
-        function handleModifiedH2(this,~,~) % Necessary for properties which are objects of the Library
-            sourc.Name='H2'; handlePropEvents(this,sourc);
-        end
-        function handlePropEvents(this,src,~)
-            % Reimplemented from parent class :class:`Map`
-            % Computes properly properties norm, isInvertible and
-            % isDifferentiable when changing H1 or H2.
-            switch src.Name
-                case {'H1','H2'}
-                    if ~isempty(this.H1) &&  ~isempty(this.H2)  % Because in the constructor they are set one after the other.
-                        assert(isa(this.H1,'Map') && isa(this.H2,'Map'),'H1 and H2 have to be a Map');
-                        % Update norm
-                        if this.H1.norm ~= -1 && this.H2.norm ~= -1
-                            this.norm = this.H1.norm * this.H2.norm;
-                        else
-                            this.norm=-1;
-                        end
-                        % Update isInvertible
-                        if this.H1.isInvertible && this.H2.isInvertible, this.isInvertible=true;end
-                        % Update isDifferentiable
-                        if this.H1.isDifferentiable && this.H2.isDifferentiable, this.isDifferentiable=true; end
-                        this.name=sprintf('MapComposition( %s ; %s )',this.H1.name,this.H2.name);
-                        assert(cmpSize(this.H1.sizein,this.H2.sizeout),'H1.sizein should be equal to H2.sizeout');
-                    end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Map`
+
+            % Call superclass method
+            updateProp@Map(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'H1') ||   strcmp(prop,'H2') ||  strcmp(prop,'all')
+                assert(isa(this.H1,'Map') && isa(this.H2,'Map'),'H1 and H2 have to be a Map');
+                % Update norm
+                if this.H1.norm ~= -1 && this.H2.norm ~= -1
+                    this.norm = this.H1.norm * this.H2.norm;
+                else
+                    this.norm=-1;
+                end
+                % Update isInvertible
+                if this.H1.isInvertible && this.H2.isInvertible, this.isInvertible=true;end
+                % Update isDifferentiable
+                if this.H1.isDifferentiable && this.H2.isDifferentiable, this.isDifferentiable=true; end
+                this.name=sprintf('MapComposition( %s ; %s )',this.H1.name,this.H2.name);
+                assert(cmpSize(this.H1.sizein,this.H2.sizeout),'H1.sizein should be equal to H2.sizeout');
             end
-            % Call mother classes at this end (important to ensure the
-            % right execution order)
-            handlePropEvents@Map(this,src);
         end
     end
     

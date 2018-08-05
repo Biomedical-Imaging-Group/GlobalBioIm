@@ -32,7 +32,7 @@ classdef CostL2Composition <  CostComposition
     
     %% Properties 
     % - Private 
-    properties (SetAccess = protected,GetAccess = public)
+    properties (SetAccess = protected,GetAccess = protected)
         OpSumP;       % Operator used to compute the prox when H2 is the combination of a LinOpDownsample with a LinOpConv
         Lamb;         % Operator used to compute the prox when H2 is the combination of a LinOpSum with a LinOpConv
         H2H2t;        % operator used for prox computation
@@ -63,6 +63,7 @@ classdef CostL2Composition <  CostComposition
                         this.H2H2t=[];this.OpSumP=[];this.Id=[];
                     end
                 case 'H2'   
+                    disp('H2 changed');
                     this.doDownConv=0;this.doSumConv=0;this.doWoodbury=0;
                     this.H2H2t=[];this.OpSumP=[];this.Id=[];
                     % If H2 is a composition between a LinOpDownsample and a LinOpConv

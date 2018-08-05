@@ -15,6 +15,7 @@ classdef CostPartialSummation <  CostSummation
     
     %%    Copyright (C) 2017
     %     T. Pham thanh-an.pham@epfl.ch
+    %     E. Soubies esoubies@gmail.com
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -28,45 +29,52 @@ classdef CostPartialSummation <  CostSummation
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+    %% Properties
+    % - Public
+    properties
+        partialGrad; % activate partial gradient option, 0 : no; 1 : stochastic; 2 : equally spaced;
+        Lsub;        % Number of costs used in partial gradient
+    end
+    % - Readable
     properties (SetAccess = protected,GetAccess = public)
         counter=0; % counter for subset update
         subset; % current subset of angles used to compute F grad
-        Lsub;   % Number of costs used in partial gradient
     end
-    properties
-        partialGrad=1; % activate partial gradient option, 0 : no; 1 : stochastic; 2 : equally spaced;
-    end
-    
+   
     %% Constructor
     methods
         function this = CostPartialSummation(costs,alpha,Lsub)
+            % Call superclass constructor
             this@CostSummation(costs,alpha);
+            % Set properties 
             this.name='CostPartialSummation';
-            this.setLsub(Lsub);
-            
+            this.partialGrad=1;  % default value
+            this.Lsub=Lsub;
+            % Initialize
+            this.initialize('CostPartialSummation');
         end
         function setLsub(this,Lsub)
             % Set Lsub parameter
             this.Lsub = Lsub;
-            this.counter = 0;
-            this.updateSubset();
+            warning('Method setLsub() is deprecated after (v1.1). It will be removed in future releases. Instead use MyCost.Lsub= ney_Lsub;');
         end
-        
     end
+    %% updateProp method (Private)
     methods (Access = protected)
-        function updateSubset(this)
-            switch this.partialGrad
-                case 1
-                    this.subset = sort(randi(this.numMaps,this.Lsub,1));
-                case 2
-                    this.subset = sort(1 + mod(round(this.counter...
-                        + (1:this.numMaps/this.Lsub:this.numMaps)),this.numMaps));
-                    this.counter = this.counter + 1;
-                otherwise
-                    error('Non existing partialGrad');
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`MapSummation` and :class:`Cost`
+            
+            % Call superclass methods
+            updateProp@CostSummation(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'Lsub') ||  strcmp(prop,'all')
+                this.counter = 0;
+                this.updateSubset();
             end
         end
     end
+
     
     %% Core Methods containing implementations (Protected)
     methods (Access = protected)
@@ -95,6 +103,22 @@ classdef CostPartialSummation <  CostSummation
                 this.updateSubset();%because of hierarchical ADMM, I need it after
             else
                 g = applyGrad_@CostSummation(this,x);
+            end
+        end
+    end
+    
+    %% Internal method
+    methods (Access = protected)
+        function updateSubset(this)
+            switch this.partialGrad
+                case 1
+                    this.subset = sort(randi(this.numMaps,this.Lsub,1));
+                case 2
+                    this.subset = sort(1 + mod(round(this.counter...
+                        + (1:this.numMaps/this.Lsub:this.numMaps)),this.numMaps));
+                    this.counter = this.counter + 1;
+                otherwise
+                    error('Non existing partialGrad');
             end
         end
     end

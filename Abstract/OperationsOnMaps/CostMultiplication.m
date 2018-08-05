@@ -42,50 +42,44 @@ classdef CostMultiplication <  Cost
         isnum;
     end
     
-    %% Constructor and handlePropEvents method
+    %% Constructor 
     methods
         function this = CostMultiplication(C1,C2)
+            % Call superclass constructor
             this@Cost(C2.sizein);
-            % Listeners to PostSet events
-            addlistener(this,'cost1','PostSet',@this.handlePropEvents);
-            addlistener(this,'cost2','PostSet',@this.handlePropEvents);
             % Basic properties
             this.name='CostMultiplications';
             this.cost1 = C1;
             this.cost2 = C2;
-            % Listeners to modified events (for properties which are classes)
-            addlistener(this.cost1,'modified',@this.handleModifiedCost1);
-            addlistener(this.cost2,'modified',@this.handleModifiedCost2);
+            % Initialize
+            this.initialize('CostMultiplication');
         end
-        function handleModifiedCost1(this,~,~) % Necessary for properties which are objects of the Library
-            sourc.Name='cost1'; handlePropEvents(this,sourc);
-        end
-        function handleModifiedCost2(this,~,~) % Necessary for properties which are objects of the Library
-            sourc.Name='cost2'; handlePropEvents(this,sourc);
-        end
-        function handlePropEvents(this,src,~)
-            % Reimplemented from parent class :class:`Map`
-            if strcmp(src.Name,'cost1') && isnumeric(this.cost1)  && isscalar(this.cost1)
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Cost`
+            
+            % Call superclass method
+            updateProp@Cost(this,prop);
+            % Update current-class specific properties
+            if (strcmp(prop,'cost1') ||  strcmp(prop,'all')) && isnumeric(this.cost1)  && isscalar(this.cost1)
                 this.cost1=LinOpDiag(this.sizeout,this.cost1);
                 this.isnum =1;
+                if this.cost2.lip~=-1, this.lip=this.cost1*this.cost2.lip; end
             end
-            if strcmp(src.Name,'cost2')
+            if strcmp(prop,'cost2') ||  strcmp(prop,'all')
                 if this.isnum
                     this.isConvex=this.cost2.isConvex;
                     this.isSeparable=this.cost2.isSeparable;
                     this.isDifferentiable=this.cost2.isDifferentiable;
-                    if this.cost2.lip~=-1
-                        this.lip=this.cost1*this.cost2.lip;
-                    end
+                    if this.cost2.lip~=-1, this.lip=this.cost1*this.cost2.lip; end
                 else
                     this.isConvex=0;  % It can be but we cannot conclude in a generic way ...
                     this.isDifferentiable=this.cost1.isDifferentiable && this.cost2.isDifferentiable;
                     % TODO: set the lip parameter properly ?
                 end
             end
-            % Call mother classes at this end (important to ensure the
-            % right execution order)
-            handlePropEvents@Cost(this,src);
         end
     end
     

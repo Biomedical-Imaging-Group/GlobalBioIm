@@ -29,10 +29,27 @@ classdef LinOpSummation < MapSummation &  LinOp
     %% Constructor
     methods
         function this = LinOpSummation(LinOps,alpha)
+            % Call superclass constructor
             this@MapSummation(LinOps,alpha); 
+            % Set properties 
             this.name ='LinOpSummation';			
-			allLinOps = all( cellfun(@(x)(isa(x, 'LinOp')), LinOps) );
-			assert(iscell(LinOps) && allLinOps, 'First input should be a cell array LinOp'); 
+            % Initialize
+            this.initialize('LinOpSummation');
+        end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`MapSummation` and :class:`LinOp`
+            
+            % Call superclass methods
+            updateProp@MapSummation(this,prop);
+            updateProp@LinOp(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'mapsCell') ||  strcmp(prop,'all')
+                allLinOps = all( cellfun(@(x)(isa(x, 'LinOp')),  this.mapsCell) );
+                assert(iscell(this.mapsCell) && allLinOps, 'Property mapsCell should be a cell array LinOp');
+            end
         end
     end
     

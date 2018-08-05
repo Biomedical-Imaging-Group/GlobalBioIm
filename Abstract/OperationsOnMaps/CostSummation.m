@@ -28,23 +28,12 @@ classdef CostSummation <  MapSummation & Cost
     %% Constructor
     methods
         function this = CostSummation(costs,alpha)
+            % Call superclass constructor
             this@MapSummation(costs,alpha);
-            this.name='CostSummation';
-            allcosts = all( cellfun(@(x)(isa(x, 'Cost')), costs) );
-            assert(iscell(costs) && allcosts, 'First input should be a cell array Cost');
-            this.isConvex=costs{1}.isConvex;
-            this.isSeparable=costs{1}.isSeparable;
-            this.lip=costs{1}.lip;
-            for n =2:length(costs)
-                this.isConvex = this.isConvex & costs{n}.isConvex;
-                this.isSeparable = this.isSeparable & costs{n}.isSeparable;
-                if costs{n}.lip~=-1
-                    this.lip = this.lip + costs{n}.lip;
-                else
-                    this.lip=-1;
-                    break;
-                end
-            end
+            % Set properties 
+            this.name='CostSummation';            
+            % Initialize
+            this.initialize('CostSummation');
         end
         function M = makePartialSummation(this,Lsub)
             % Instanciation of :class:`CostPartialSummation`.
@@ -52,6 +41,34 @@ classdef CostSummation <  MapSummation & Cost
             % :param Lsub: number of :class:`Cost` used for computation
 
             M = CostPartialSummation(this.mapsCell,this.alpha,Lsub);
+        end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`MapSummation` and :class:`Cost`
+            
+            % Call superclass methods
+            updateProp@MapSummation(this,prop);
+            updateProp@Cost(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'mapsCell') ||  strcmp(prop,'all')
+                allcosts = all( cellfun(@(x)(isa(x, 'Cost')), this.mapsCell) );
+                assert(iscell(this.mapsCell) && allcosts, 'Property mapsCell should be a cell array Cost');
+                this.isConvex=this.mapsCell{1}.isConvex;
+                this.isSeparable=this.mapsCell{1}.isSeparable;
+                this.lip=this.mapsCell{1}.lip;
+                for n =2:length(this.mapsCell)
+                    this.isConvex = this.isConvex & this.mapsCell{n}.isConvex;
+                    this.isSeparable = this.isSeparable & this.mapsCell{n}.isSeparable;
+                    if this.mapsCell{n}.lip~=-1
+                        this.mapsCell.lip = this.mapsCell.lip + this.mapsCell{n}.lip;
+                    else
+                        this.lip=-1;
+                        break;
+                    end
+                end
+            end
         end
     end
     

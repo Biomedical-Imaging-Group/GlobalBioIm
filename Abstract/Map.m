@@ -39,7 +39,6 @@ classdef (Abstract) Map < handle
     %% Properties
     % - Public 
     properties (SetObservable, AbortSet)
-        norm=-1;                  % norm of the operator
         memoizeOpts = struct('apply', false, ...
             'applyJacobianT', false, ...
             'applyInverse', false);
@@ -52,9 +51,10 @@ classdef (Abstract) Map < handle
         isDifferentiable = false; % true if H.applyJacobianT(   ) will work
         sizein;                   % dimension of the right hand side vector space
         sizeout;                  % dimension of the left hand side vector space
-    end   
-    % - Private 
-    properties (SetAccess = protected,GetAccess = public)
+        norm=-1;                  % norm of the operator
+    end
+    % - Private
+    properties (SetAccess = protected,GetAccess = protected)
         memoCache = struct('apply', struct('in', [], 'out', []),...
             'applyJacobianT', struct('in', [], 'out', []), ...
             'applyInverse', struct('in', [], 'out', []));
@@ -66,32 +66,80 @@ classdef (Abstract) Map < handle
       modified % to propagate the modification of a property into compositions
     end
     
-    %% Constructor and handlePropEvents method
-    methods
-        function this=Map()
-            % Listeners to PostSet events
-            addlistener(this,'memoizeOpts','PostSet',@this.handlePropEvents);
-            addlistener(this,'doPrecomputation','PostSet',@this.handlePropEvents);
+    %% Initialize and methods related to listeners (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Implements initializing actions for a given property (prop)
+            if strcmp(prop,'memoizeOpts') 
+                fnames = fieldnames(this.memoizeOpts); % clean the memoize cache
+                for i = 1:length(fnames)
+                    if ~this.memoizeOpts.(fnames{i})
+                        this.memoCache.(fnames{i})=struct('in', [], 'out', []);
+                    end
+                end
+            end
+            if strcmp(prop,'doPrecomputation')
+                this.precomputeCache = struct();  % clean the precompute cache
+            end
+            if strcmp(prop,'all') || (~strcmp(prop,'memoizeOpts') && ~strcmp(prop,'doPrecomputation'))
+                this.clearCaches();
+            end
         end
-        function handlePropEvents(this,src,~)
-            % This function is called when an observable property is
-            % modified to perform a predefined action. At the level of
-            % :class:`Map`, it allows reinitializing memoize and
-            % precomputation caches.
-            switch src.Name
-                case 'memoizeOpts'
-                    fnames = fieldnames(this.memoizeOpts); % clean the memoize cache
-                    for i = 1:length(fnames)
-                        if ~this.memoizeOpts.(fnames{i})
-                            this.memoCache.(fnames{i})=struct('in', [], 'out', []);
+        function initialize(this,hrch)
+            % Run the updateProp method with parameter 'all' and
+            % initialize the listeners if this method is executed from the
+            % hierarchy level hrch corresponding to class(this).
+            if strcmp(class(this),hrch)
+                this.updateProp('all');
+                prop=properties(this);
+                for i=1:length(prop)
+                    % If public property, add a PostSet listener
+                    pp=findprop(this,prop{i});
+                    if strcmp(pp.SetAccess,'public')
+                        addlistener(this,prop{i},'PostSet',@this.handlePostSetEvents);
+                        % If property is a Map, add a modified listener
+                        if isa(this.(prop{i}),'Map')
+                            addlistener(this.(prop{i}),'modified',@this.handleModifiedEvents);
+                        elseif isa(this.(prop{i}),'cell') && isa(this.(prop{i}){1},'Map')
+                            for j=1:length(this.(prop{i}))
+                                addlistener(this.(prop{i}){j},'modified',@this.handleModifiedEvents);
+                            end
                         end
                     end
-                case 'doPrecomputation'
-                    this.precomputeCache = struct();  % clean the precompute cache
-                otherwise
-                    this.clearCaches();
+                end
             end
-            notify(this,'modified'); % to propagate the modification of a property into compositions
+        end
+        function handlePostSetEvents(this,src,evnt)
+            % This function is called when an observable property is
+            % set to another value in order to update properly some
+            % (precomputed) properties (re-initialize)
+            disp(['In ',this.name,' property ',src.Name,' has been updated']);
+            this.updateProp(src.Name);
+            % Because the listeners for modified events are lost when a new
+            % object is set to the property -> define a new one
+            if strcmp(evnt.EventName,'PostSet')
+                if isa(this.(src.Name),'Map')
+                    addlistener(this.(src.Name),'modified',@this.handleModifiedEvents);
+                elseif isa(this.(src.Name),'cell') && isa(this.(src.Name){1},'Map')
+                    for i=1:length(this.(src.Name))
+                        addlistener(this.(src.Name){i},'modified',@this.handleModifiedEvents);
+                    end
+                end
+            end
+            % To propagate the modification within Map properties
+            notify(this,'modified');
+        end
+        function handleModifiedEvents(this,src,evnt) % Necessary for properties which are objects of the Library (i.e. Maps)
+            % This function is called when an observable property has been
+            % modified in order to update properly some (precomputed)
+            % properties (re-initialize)
+            prop=properties(this);
+            idx=cell2mat(cellfun(@(x) (isa(this.(x),'Map')  && this.(x)==src) || ...
+                                      (isa(this.(x),'cell') && any(cell2mat(cellfun(@(y) isa(y,'Map') && y==src,this.(x),'UniformOutput',false))))...
+                                     ,prop,'UniformOutput',false));
+            sourc.Name=prop{idx};
+            disp(['In ',this.name,' property ',sourc.Name,' has been modified']);
+            handlePostSetEvents(this,sourc,evnt);
         end
     end
     

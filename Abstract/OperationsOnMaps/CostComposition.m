@@ -35,26 +35,33 @@ classdef CostComposition < MapComposition & Cost
         nu=0;
     end
     
-    %% Constructor and handlePropEvents method
+    %% Constructor
     methods
         function this = CostComposition(H1,H2)
-            this@MapComposition(H1,H2);                       
+            % Call superclass constructor
+            this@MapComposition(H1,H2);  
+            % Initialize
+            this.initialize('CostComposition');
         end
-        function handlePropEvents(this,src,~)
-            % Reimplemented from parent classes :class:`Map` :class:`MapComposition`
-            % Computes properly properties isSeparable, isConvex and check
-            % if H2 is semi orthogonal
-            if strcmp(src.Name,'H1')  || strcmp(src.Name,'H2')
-                if ~isempty(this.H1) &&  ~isempty(this.H2)
-                    this.name=sprintf('CostComposition( %s ; %s )',this.H1.name,this.H2.name);
-                    this.isSeparable=(this.H1.isSeparable && (isa(this.H2,'LinOpDiag') || isa(this.H2,'LinOpSelector')));
-                    this.isConvex=this.H1.isConvex && isa(this.H2,'LinOp');
-                end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclasses :class:`MapComposition` and :class:`Cost`
+
+            % Call superclass method
+            updateProp@Cost(this,prop);
+            updateProp@MapComposition(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'H1')  || strcmp(prop,'H2') ||  strcmp(prop,'all')
+                this.name=sprintf('CostComposition( %s ; %s )',this.H1.name,this.H2.name);
+                this.isSeparable=(this.H1.isSeparable && (isa(this.H2,'LinOpDiag') || isa(this.H2,'LinOpSelector')));
+                this.isConvex=this.H1.isConvex && isa(this.H2,'LinOp');
             end
-            if strcmp(src.Name,'H1')
-                assert(isa(this.H1,'Cost'),'First argument should be a Cost');  
+            if strcmp(prop,'H1') ||  strcmp(prop,'all')
+                assert(isa(this.H1,'Cost'),'First argument should be a Cost');
             end
-            if strcmp(src.Name,'H2')
+            if strcmp(prop,'H2') ||  strcmp(prop,'all')
                 this.isH2SemiOrtho=false;
                 this.nu=0;
                 this.isH2LinOp=false;
@@ -69,10 +76,6 @@ classdef CostComposition < MapComposition & Cost
                     end
                 end
             end
-            % Call mother classes at this end (important to ensure the
-            % right execution order)
-            handlePropEvents@Cost(this,src);
-            handlePropEvents@MapComposition(this,src);
         end
     end
     

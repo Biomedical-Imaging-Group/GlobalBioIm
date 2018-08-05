@@ -36,52 +36,48 @@ classdef Cost < Map
     %% Properties
     % - Public
     properties (SetObservable, AbortSet)
-        lip=-1;                   % Lipschitz constant of the gradient
         y=0;				      % data y
     end
     % - Readable 
     properties (SetAccess = protected)
         isConvex=false;           % true if the Cost is convex
         isSeparable=false;        % true is the Cost is separable (R^n basis)
-    end   
-    % - Private 
+        lip=-1;                   % Lipschitz constant of the gradient
+    end
+    % - Private
     properties (SetAccess = protected,GetAccess = protected)
         recProxProxFench=0;      % boolean to control infinite recursion between Prox and ProxFench when not implemented in subclasses
     end
     
-    %% Constructor and handlePropEvents method
+    %% Constructor
     methods
         function this=Cost(sz,y)
-            % Listeners to PostSet events
-            addlistener(this,'y','PostSet',@this.handlePropEvents);
-            % Basic properties
+            % Default values
             if nargin <2, y=0; end
             if nargin<1 || isempty(sz), sz=size(y); end;
+            % Set properties       
             assert(issize(sz),'First argument must be conformable to a size');
             this.sizein=sz;
             this.y=y;
-            % Add new fields to memoizeOpts and memoCache
             this.memoizeOpts.applyGrad=false;
             this.memoizeOpts.applyProx=false;
             this.memoizeOpts.applyProxFench=false;
-            this.memoCache.applyGrad=struct('in', [], 'out', []);
-            this.memoCache.applyProx=struct('in', [], 'out', []);
-            this.memoCache.applyProxFench=struct('in', [], 'out', []);
-            % Properties fixed for costs
-            this.sizeout=[1 1];            % dimension of the left hand side vector space
-            this.norm=-1;                  % norm of the operator
+            this.sizeout=[1 1];            % dimension of the left hand side vector space (fixed for costs)
+            this.norm=-1;                  % norm of the operator (fixed for costs)
         end
-        function handlePropEvents(this,src,~)
-            % Reimplemented from parent class :class:`Map`
-            % Check size conformity if property 'y' is modified
-            switch src.Name
-                case 'y'                   
-                	assert(isnumeric(this.y),['y must be a numeric']);
-                    assert(isscalar(this.y) || checkSize(this.y,this.sizein),['In size of y must be a scalar or be equal to sizein']);
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Map`
+            
+            % Call superclass method
+            updateProp@Map(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'y') || strcmp(prop,'all')
+                assert(isnumeric(this.y),'y must be a numeric');
+                assert(isscalar(this.y) || checkSize(this.y,this.sizein),'size of y must be a scalar or be equal to sizein');
             end
-            % Call mother classes at this end (important to ensure the
-            % right execution order)
-            handlePropEvents@Map(this,src);
         end
     end
      

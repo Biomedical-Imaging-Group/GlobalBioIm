@@ -32,6 +32,7 @@ classdef LinOpAdjoint < LinOp
     %% Constructor
     methods 
         function this = LinOpAdjoint(TLinOp)
+            % Set properties 
             this.name =sprintf('%s Adjoint', TLinOp.name);           
             assert(isa(TLinOp,'LinOp'),'Input should be a  LinOp');        
             this.TLinOp = TLinOp;
@@ -39,7 +40,9 @@ classdef LinOpAdjoint < LinOp
             this.isInvertible=this.TLinOp.isInvertible;
             this.sizein =  this.TLinOp.sizeout;
             this.sizeout =  this.TLinOp.sizein;			
-			this.norm = this.TLinOp.norm;            
+            this.norm = this.TLinOp.norm;
+            % Initialize
+            this.initialize('LinOpAdjoint');
         end       
     end
 	

@@ -32,27 +32,34 @@ classdef LinOpComposition < MapComposition & LinOp
 		isHHt = 0;
     end
     
-    %% Constructor and handlePropEvents method
+    %% Constructor 
     methods
         function this = LinOpComposition(H1,H2)
-            this@MapComposition(H1,H2);               
+            % Call superclass constructor
+            this@MapComposition(H1,H2);      
+            % Initialize
+            this.initialize('LinOpComposition');
         end
-        function handlePropEvents(this,src,~)
-            % Reimplemented from parent classes :class:`Map` :class:`MapComposition`
-            % Computes properly properties isSeparable, isConvex and check
-            % if H2 is semi orthogonal
-            if strcmp(src.Name,'H1')  || strcmp(src.Name,'H2')
-                if ~isempty(this.H1) &&  ~isempty(this.H2)
-                    % strcmp is different than isa because it doesn't check all
-                    % superclasses as well
-                    assert(isa(this.H2,'LinOp') && isa(this.H1,'LinOp'),'H1 and H2 have to be a LinOps');
-                    if strcmp(class(this.H1), 'LinOpAdjoint') && isequal(this.H1.TLinOp,this.H2)
-                        this.isHTH = true;
-                    elseif strcmp(class(this.H2), 'LinOpAdjoint') && isequal(this.H2.TLinOp,this.H1)
-                        this.isHHt = true;
-                    end
-                    this.name=sprintf('LinOpComposition( %s ; %s )',this.H1.name,this.H2.name);
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclasses :class:`MapComposition` and :class:`LinOp`
+            
+            % Call superclass method 
+            updateProp@MapComposition(this,prop);
+            updateProp@LinOp(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'H1')  || strcmp(prop,'H2') ||  strcmp(prop,'all')
+                % strcmp is different than isa because it doesn't check all
+                % superclasses as well
+                assert(isa(this.H2,'LinOp') && isa(this.H1,'LinOp'),'H1 and H2 have to be a LinOps');
+                if strcmp(class(this.H1), 'LinOpAdjoint') && isequal(this.H1.TLinOp,this.H2)
+                    this.isHTH = true;
+                elseif strcmp(class(this.H2), 'LinOpAdjoint') && isequal(this.H2.TLinOp,this.H1)
+                    this.isHHt = true;
                 end
+                this.name=sprintf('LinOpComposition( %s ; %s )',this.H1.name,this.H2.name);
             end
         end
     end

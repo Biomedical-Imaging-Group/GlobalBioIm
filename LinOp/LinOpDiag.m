@@ -63,6 +63,9 @@ classdef LinOpDiag <  LinOp
             end
             % -- Norm of the operator
             this.norm=max(abs(diag(:)));
+            
+            % Initialize listeners
+            this.initialize('LinOpDiag');
         end
     end
     

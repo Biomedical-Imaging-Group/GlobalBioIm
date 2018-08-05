@@ -81,7 +81,7 @@ classdef TemplateCost < Cost
         end
         % TODO : add one method like that for each 'modified' listener
         function handlePropEvents(this,src,~)
-            % Reimplemented from superclasses :class:`Map` and :class:`MapComposition`
+            % Reimplemented from superclasses :class:`Cost` 
             switch src.Name
                 case 'myVar'
                     % TODO : code which has to be executed at each
@@ -90,7 +90,9 @@ classdef TemplateCost < Cost
                     this.lip= ???; 
                 % TODO : other public properties
             end
-        end               
+            % Call superclass method (important to ensure the right execution order)
+            handlePropEvents@Cost(this,src);
+        end
     end
     
     %% Core Methods containing implementations (Protected)

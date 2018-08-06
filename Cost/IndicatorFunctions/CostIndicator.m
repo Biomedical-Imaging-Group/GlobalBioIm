@@ -30,10 +30,15 @@ classdef  CostIndicator < Cost
     
     %% Constructor
     methods
-        function this = CostIndicator(sz,y)   
+        function this = CostIndicator(sz,y)  
+            % Default values
             if nargin<2, y=0; end
+            % Call superclass constructor
             this@Cost(sz,y);
+            % Set properties
             this.isDifferentiable=false;
+            % Initialize
+            this.initialize('CostIndicator');
         end
     end
             

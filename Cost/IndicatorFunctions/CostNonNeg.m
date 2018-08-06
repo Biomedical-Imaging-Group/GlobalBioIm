@@ -30,9 +30,14 @@ classdef CostNonNeg < CostReals
     methods 
     	%% Constructor
         function this = CostNonNeg(sz,y) 
+            % Default values
             if nargin<2, y=0; end
+            % Call superclass constructor
             this@CostReals(sz,0,[],y);
+            % Set properties
             this.name='CostNonNeg';
+            % Initialize
+            this.initialize('CostNonNeg');
         end
     end
 end

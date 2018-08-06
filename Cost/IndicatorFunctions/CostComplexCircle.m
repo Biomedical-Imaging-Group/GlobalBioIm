@@ -32,15 +32,20 @@ classdef CostComplexCircle < CostComplexRing
     %% Constructor
     methods
         function this = CostComplexCircle(sz,radius,y)
+            % Default values
             if nargin<3, y=0; end
             if nargin >0
                 assert(isnumeric(radius),'The radius argument should be numeric');
             else
                 radius = 1;
             end
+            % Call superclass constructor
             this@CostComplexRing(sz,radius,radius,y);
+            % Set properties
             this.name='CostComplexCircle';
 			this.isConvex= false;    
+            % Initialize
+            this.initialize('CostComplexCircle');
         end
     end
 end

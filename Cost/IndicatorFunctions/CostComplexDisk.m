@@ -31,15 +31,20 @@ classdef CostComplexDisk < CostComplexRing
     %% Constructor
     methods
         function this = CostComplexDisk(sz,radius,y)
+            % Default values
             if nargin<3, y=0; end
             if nargin >0
                 assert(isnumeric(radius),'C should be numeric');
             else
                 radius = 1;
-            end           
+            end
+            % Call superclass constructor
             this@CostComplexRing(sz,0,radius,y);
+            % Set properties
             this.name='CostComplexDisk';
-            this.isConvex= true;    
+            this.isConvex= true;
+            % Initialize
+            this.initialize('CostComplexDisk');
         end
     end
 end

@@ -32,10 +32,27 @@ classdef CostReals < CostRectangle
     %% Constructor
     methods
         function this = CostReals(sz,xmin,xmax,y)
+            % Default values
             if nargin<4, y=0; end
-            assert(all(isreal(xmin))&&all(isreal(xmax)),'In CostReal bounds xmin and xmax must be real');
+            % Call superclass constructor
             this@CostRectangle(sz,y);
-            this.name='CostReals';   
+            % Set properties
+            this.name='CostReals';  
+            % Initialize
+            this.initialize('CostReals');
+        end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`CostRectangle`
+            
+            % Call superclass method
+            updateProp@CostRectangle(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'xmin') || strcmp(prop,'xmin') || strcmp(prop,'all')
+                assert(all(isreal(this.xmin))&&all(isreal(this.xmax)),'In CostReal bounds xmin and xmax must be real');
+            end
         end
     end
 end

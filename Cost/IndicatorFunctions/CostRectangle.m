@@ -29,11 +29,14 @@ classdef CostRectangle < CostIndicator
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    properties (SetAccess = protected,GetAccess = public)
+  
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
         xmin=-inf;          % lower bound (default -inf + 0i)
         xmax=+inf;          % higher bound  (default +inf + 0i)         
     end
+    % - Protected
     properties (Access = protected)
         isComplex = false;  % complex number flag      
     end
@@ -41,19 +44,36 @@ classdef CostRectangle < CostIndicator
     %% Constructor
     methods
         function this = CostRectangle(sz,xmin,xmax,y)   
+            % Default values
             if nargin<4, y=0; end
-            this@CostIndicator(sz,y);
-            this.name='CostRectangle';                      
             if nargin<3, xmax=[]; end
-            if nargin<2, xmin =-inf; end            
-            if isempty(xmax), xmax = +inf; end           
-            if((~isreal(xmin))||(~isreal(xmax)))
-                this.isComplex = true;
-            end
+            if nargin<2, xmin =-inf; end
+            if isempty(xmax), xmax = +inf; end  
+            % Call superclass constructor
+            this@CostIndicator(sz,y);
+            % Set properties
+            this.name='CostRectangle';                                                  
             this.xmin = xmin;
             this.xmax = xmax;
-            this.isConvex=true;  
+            this.isConvex=true;
             this.isSeparable=true;
+            % Initialize
+            this.initialize('CostRectangle');
+        end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`CostIndicator`
+            
+            % Call superclass method
+            updateProp@CostIndicator(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'xmin') || strcmp(prop,'xmin') || strcmp(prop,'all')
+                if((~isreal(this.xmin))||(~isreal(this.xmax)))
+                    this.isComplex = true;
+                end
+            end
         end
     end
     

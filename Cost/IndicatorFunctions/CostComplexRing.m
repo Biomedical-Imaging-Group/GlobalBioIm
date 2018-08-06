@@ -30,7 +30,9 @@ classdef CostComplexRing < CostIndicator
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (SetAccess = protected,GetAccess = public)
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
         inner=0;
         outer = 1;
     end
@@ -38,35 +40,45 @@ classdef CostComplexRing < CostIndicator
     %% Constructor
     methods
         function this = CostComplexRing(sz,inner, outer,y)
+            % Default values
             if nargin<4, y=0; end
+            if nargin<2, inner=0; end
+            if nargin==0, outer =1; end
+            % Call superclass constructor
             this@CostIndicator(sz,y);
+            % Set properties
             this.name='CostComplexRing';
-            if nargin<2
-                inner=0;
-            end
-            if nargin==0
-                outer =1;
-            end
-            this.isConvex= false;    
-            if isscalar(inner)
-                this.inner = inner;
-            else
-                if isnumeric(inner)
-                    this.inner = inner;                    
-                    assert(cmpSize(this.sizein,size(inner)), 'inner must be equal to this.sz');
-                else
-                    error('inner parameter should be numeric');
+            this.isConvex= false;   
+            this.inner=inner;
+            this.outer = outer;
+            % Initialize
+            this.initialize('CostComplexRing');         
+        end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`CostIndicator`
+            
+            % Call superclass method
+            updateProp@CostIndicator(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'inner') || strcmp(prop,'all')
+                if ~isscalar(this.inner)
+                    if isnumeric(this.inner)
+                        assert(cmpSize(this.sizein,size(this.inner)), 'inner must be equal to this.sz');
+                    else
+                        error('inner parameter should be numeric');
+                    end
                 end
             end
-            
-            if isscalar(outer)
-                this.outer = outer;
-            else
-                if isnumeric(outer)
-                    this.outer = outer;
-                    assert(cmpSize(this.sizein,size(outer)), 'outer must be equal to H.sizeout');
-                else
-                    error('outer parameter should be numeric');
+            if strcmp(prop,'outer') || strcmp(prop,'all')
+                if ~isscalar(this.outer)
+                    if isnumeric(this.outer)
+                        assert(cmpSize(this.sizein,size(this.outer)), 'outer must be equal to H.sizeout');
+                    else
+                        error('outer parameter should be numeric');
+                    end
                 end
             end
         end

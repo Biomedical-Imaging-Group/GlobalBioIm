@@ -35,7 +35,7 @@ classdef CostReals < CostRectangle
             % Default values
             if nargin<4, y=0; end
             % Call superclass constructor
-            this@CostRectangle(sz,y);
+            this@CostRectangle(sz,xmin,xmax,y);
             % Set properties
             this.name='CostReals';  
             % Initialize

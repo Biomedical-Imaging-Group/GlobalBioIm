@@ -40,41 +40,39 @@ classdef CostGoodRoughness < Cost
         bet;      % smoothing parameter
         G;        % gradient operators
     end
-    % - Private
+    % - Protected
     properties (SetAccess = protected,GetAccess = protected)
         sumOp;
     end
 
-    %% Constructor and handlePropEvents method
+    %% Constructor
     methods
         function this = CostGoodRoughness(G,bet)
             % Default values
             if nargin<2|| isempty(bet), bet=1e-1; end
             % Call superclass constructor
             this@Cost(G.sizein);
-            % Listeners to PostSet events
-            addlistener(this,'bet','PostSet',@this.handlePropEvents);
-            addlistener(this,'G','PostSet',@this.handlePropEvents);
             % Set properties
             this.name='CostGoodRoughness';
             this.bet=bet;
             this.G=G;
             this.isConvex=false;
             this.isDifferentiable=true;
-            % Listeners to modified events (for properties which are classes)
-            addlistener(this.G,'modified',@this.handleModifiedG);
+            % Initialize
+            this.initialize('CostGoodRoughness');
         end
-        function handleModifiedG(this,~,~) % Necessary for properties which are objects of the Library
-            sourc.Name='G'; handlePropEvents(this,sourc);
-        end
-        function handlePropEvents(this,src,~)
-            % Reimplemented from superclass :class:`Cost`
-            switch src.Name
-                case 'G'
-                    this.sumOp=LinOpSum(this.G.sizeout,this.G.ndms+1);
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Cost`
+            
+            % Call superclass method
+            updateProp@Cost(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'G') || strcmp(prop,'all')
+                this.sumOp=LinOpSum(this.G.sizeout,this.G.ndms+1);
             end
-            % Call superclass method (important to ensure the right execution order)
-            handlePropEvents@Cost(this,src);
         end
     end
     

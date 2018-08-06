@@ -35,7 +35,10 @@ classdef CostMixNorm21NonNeg < CostMixNorm21
             if nargin<3, y=0; end
             % Call superclass constructor
             this@CostMixNorm21(sz,index,y);
+            % Set properties
             this.name='CostMixNorm21NonNeg';
+            % Initialize
+            this.initialize('CostMixNorm21NonNeg');
         end
     end
     

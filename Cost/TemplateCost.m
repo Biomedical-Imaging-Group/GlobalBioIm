@@ -43,12 +43,12 @@ classdef TemplateCost < Cost
     properties (SetAccess = protected,GetAccess = protected)
         % TODO : Set here new readable properties (read only)
     end
-    % - Private
+    % - Protected
     properties (SetAccess = protected,GetAccess = protected)
-        % TODO : Set here new private properties
+        % TODO : Set here new protected properties
     end
     
-    %% Constructor and handlePropEvents method
+    %% Constructor
     methods     	
         function this = TemplateCost(sz,y)
         	% Default values
@@ -56,44 +56,43 @@ classdef TemplateCost < Cost
                 % TODO : add others default values
             % Call superclass constructor
             this@Cost(sz,y);
-            % Listeners to PostSet events
-            addlistener(this,'myVar','PostSet',@this.handlePropEvents);
-                % TODO : add a 'PostSet' listener for all public properties
             % Set properties
-            this.name='CostNAME';
+            this.name='TemplateCost';
             this.isConvex= ???;
             this.isDifferentiable=???;
             this.isSeparable=???;
                 % TODO : set new defined properties 
-            % Listeners to modified events (for properties which are classes) 
-            addlistener(this.myVar,'modified',@this.handleModifiedmyVar);
-                % TODO : add a 'modified' listener for all public
-                % properties which are classes of the library (LinOp, Cost,
-                % Opti, Map)
+            % Initialize
+            this.initialize('TemplateCost'); % Call the method initialize with class name as attribute (du NOT put this.name BUT 'TemplateCost')
 
             % IMPORTANT : No computations in the constructor, only
             % affectations. Computations should be done in the method
-            % handlePropEvents (see below) in order to ensure a proper update 
+            % updateProp (see below) in order to ensure a proper update 
             % when public properties are modified.
         end
-        function handleModifiedmyVar(this,~,~) % Necessary for properties which are objects of the Library
-            sourc.Name='myVar'; handlePropEvents(this,sourc);
-        end
-        % TODO : add one method like that for each 'modified' listener
-        function handlePropEvents(this,src,~)
-            % Reimplemented from superclasses :class:`Cost` 
-            switch src.Name
-                case 'myVar'
-                    % TODO : code which has to be executed at each
-                    % modification of myVar
-                    % e.g. recomputation of the lipschitz constant
-                    this.lip= ???; 
-                % TODO : other public properties
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Cost`
+            
+            % Call superclass method
+            updateProp@Cost(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'myVar') ||  strcmp(prop,'all')
+                % TODO : code which has to be executed at each
+                % modification of myVar
+                % e.g. recomputation of the lipschitz constant
+                this.lip= ???;
             end
-            % Call superclass method (important to ensure the right execution order)
-            handlePropEvents@Cost(this,src);
+            % TODO : other public properties
+            
+            % IMPORTANT : for each if statement ADD " || strcmp(prop,'all') "
+            % in order to ensure that all computation are done at object
+            % construction.
         end
     end
+    
     
     %% Core Methods containing implementations (Protected)
     % - apply_(this,x)

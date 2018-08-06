@@ -34,7 +34,7 @@ classdef CostL1 < Cost
         nonneg;
     end
     
-    %% Constructor and handlePropEvents method
+    %% Constructor
     methods
         function this = CostL1(sz,y,nonneg)
             % Default values
@@ -42,14 +42,14 @@ classdef CostL1 < Cost
             if nargin<3, nonneg=false; end
             % Call superclass constructor
             this@Cost(sz,y);
-            % Listeners to PostSet events
-            addlistener(this,'nonneg','PostSet',@this.handlePropEvents);
             % Set properties
             this.name='CostL1';
             this.isConvex=true;
             this.isSeparable=true;
             this.isDifferentiable=false;
             this.nonneg = nonneg;
+            % Initialize
+            this.initialize('CostL1');
         end
     end
     

@@ -31,41 +31,45 @@ classdef CostMixNorm21 < Cost
     properties (SetObservable, AbortSet)
         index;    % dimensions along which the l2-norm will be applied
     end
-    % - Private
+    % - Protected
     properties (SetAccess = protected,GetAccess = protected)
         kerdims
         imdims
     end
     
-    %% Constructor and handlePropEvents method
+    %% Constructor
     methods
         function this = CostMixNorm21(sz,index,y)
             % Default values
             if nargin<3, y=0; end
             % Call superclass constructor
             this@Cost(sz,y);
-            % Listeners to PostSet events
-            addlistener(this,'index','PostSet',@this.handlePropEvents);
             % Set properties
             this.name='CostMixNorm21';           
             this.index=index;
             this.isConvex=true;
-            this.isDifferentiable=false;    
+            this.isDifferentiable=false;
             this.isSeparable=false;
+            % Initialize
+            this.initialize('CostMixNorm21');
         end
-        function handlePropEvents(this,src,~)
-            % Reimplemented from superclass :class:`Cost`
-            switch src.Name
-                case 'index'
-                    assert(isnumeric(this.index)&&isvector(this.index),'The index should be a vector of integers');
-                    ndms = length(this.sizein);
-                    T = true(ndms,1);
-                    T(this.index)=false;
-                    this.kerdims = this.sizein; this.kerdims(T)=1;
-                    this.imdims = this.sizein; this.imdims(~T)=1;
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Cost`
+            
+            % Call superclass method
+            updateProp@Cost(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'index') ||  strcmp(prop,'all')
+                assert(isnumeric(this.index)&&isvector(this.index),'The index should be a vector of integers');
+                ndms = length(this.sizein);
+                T = true(ndms,1);
+                T(this.index)=false;
+                this.kerdims = this.sizein; this.kerdims(T)=1;
+                this.imdims = this.sizein; this.imdims(~T)=1;
             end
-            % Call superclass method (important to ensure the right execution order)
-            handlePropEvents@Cost(this,src);
         end
     end
     

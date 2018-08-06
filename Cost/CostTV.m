@@ -37,13 +37,13 @@ classdef CostTV < CostComposition
         maxiter
         xtol
     end
-    % - Private
+    % - Protected
     properties (SetAccess = protected,GetAccess = protected)
         optim;
     end
     % Emmanuel : We should put optim public and remove the other properties
     
-    %% Constructor and handlePropEvents method
+    %% Constructor 
     methods
         function this = CostTV(varargin)
             % Default values
@@ -58,34 +58,14 @@ classdef CostTV < CostComposition
             end    
             % Call superclass constructor
             this@CostComposition(H1,H2);
-            % Listeners to PostSet events
-            addlistener(this,'maxiter','PostSet',@this.handlePropEvents);
-            addlistener(this,'xtol','PostSet',@this.handlePropEvents);
-            addlistener(this,'bounds','PostSet',@this.handlePropEvents);
             % Set properties
             this.name='CostTV';
             this.bounds = [-inf,inf];% Bounds for set constraint
             this.maxiter = 20;
             this.xtol=1e-5;
+            % Initialize
+            this.initialize('CostTV');
         end
-        function handlePropEvents(this,src,~)
-            % Reimplemented from superclass :class:`Cost`
-            switch src.Name
-                case 'maxiter'
-                    this.optim.maxiter = this.maxiter;
-                case 'xtol'
-                    this.optim.CvOp = TestCvgStepRelative(this.xtol);
-                case 'bounds'
-                    LS = CostL2(this.sizein);
-                    this.optim = OptiFGP(LS,this,this.bounds);
-                    this.optim.ItUpOut = 0;
-                    this.optim.verbose = 0;
-                    this.optim.OutOp=OutputOpti(0);
-            end
-            % Call superclass method (important to ensure the right execution order)
-            handlePropEvents@CostComposition(this,src);
-        end
-        
         function setProxAlgo(this,bounds,maxiter,xtol,Outop)
             % Set the parameters of :class:`OptiFGP` used to compute the proximity
             % operator. 
@@ -95,25 +75,30 @@ classdef CostTV < CostComposition
             this.xtol=xtol;
             this.optim.OutOp=Outop;
             warning('setProxAlgo will be removed in future releases. Instead set directly this.myParam=new_value');
-
-%             OLD VERSION
-%             if nargin<=1 || isempty(bounds),bounds = this.bounds;end
-%             if nargin<=2 || isempty(maxiter),maxiter = this.maxiter;end
-%             if nargin<=3 || isempty(xtol),xtol = [];end
-%             if nargin<=4 || isempty(Outop),Outop = OutputOpti(0);end
-%             
-%             this.bounds = bounds;
-%             this.maxiter = maxiter;
-%       
-%             LS = CostL2(this.sizein);
-%             %lambda is always 1 here. It can be set differently by multiplying this cost with a scalar
-%             this.optim = OptiFGP(LS,this,this.bounds);
-%             this.optim.OutOp=Outop;
-%             this.optim.maxiter = this.maxiter;
-%             this.optim.ItUpOut = 0;
-%             this.optim.CvOp = TestCvgStepRelative(xtol);
-%             this.optim.verbose = 0;
         end       
+    end
+        %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`CostComposition`
+            
+            % Call superclass method
+            updateProp@CostComposition(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'bounds') ||  strcmp(prop,'all')
+                LS = CostL2(this.sizein);
+                this.optim = OptiFGP(LS,this,this.bounds);
+                this.optim.ItUpOut = 0;
+                this.optim.verbose = 0;
+                this.optim.OutOp=OutputOpti(0);
+            end
+            if strcmp(prop,'xtol') ||  strcmp(prop,'all')
+                this.optim.CvOp = TestCvgStepRelative(this.xtol);
+            end
+            if strcmp(prop,'maxiter') ||  strcmp(prop,'all')
+                this.optim.maxiter = this.maxiter;
+            end
+        end
     end
     
     %% Core Methods containing implementations (Protected)

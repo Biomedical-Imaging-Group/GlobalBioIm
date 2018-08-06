@@ -34,12 +34,12 @@ classdef CostHyperBolic < Cost
         epsilon;
         index;
     end
-    % - Private
+    % - Protected
     properties (SetAccess = protected,GetAccess = protected)
         sumOp;
     end
     
-    %% Constructor and handlePropEvents method
+    %% Constructor
     methods
         function this = CostHyperBolic(sz,epsilon,index,y)
             % Default values
@@ -48,9 +48,6 @@ classdef CostHyperBolic < Cost
             if nargin<2|| isempty(epsilon), epsilon=1e-3; end
             % Call superclass constructor
             this@Cost(sz,y);
-            % Listeners to PostSet events
-            addlistener(this,'index','PostSet',@this.handlePropEvents);
-            addlistener(this,'epsilon','PostSet',@this.handlePropEvents);
             % Set properties
             this.name='CostHyperBolic';
             this.isConvex=true;
@@ -58,20 +55,25 @@ classdef CostHyperBolic < Cost
             this.epsilon = epsilon;
             this.index = index;          
             this.memoizeOpts.computeF=true;
-            this.memoCache.computeF= struct('in',[],'out', []);
+            % Initialize
+            this.initialize('CostHyperBolic');
         end
-        function handlePropEvents(this,src,~)
-            % Reimplemented from superclass :class:`Cost`
-            switch src.Name
-                case 'index'
-                    if this.index~=0
-                        this.sumOp = LinOpSum(this.sizein,this.index);
-                    else
-                        this.sumOp = LinOpDiag(this.sizein);
-                    end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Cost`
+            
+            % Call superclass method
+            updateProp@Cost(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'index') || strcmp(prop,'all')
+                if this.index~=0
+                    this.sumOp = LinOpSum(this.sizein,this.index);
+                else
+                    this.sumOp = LinOpDiag(this.sizein);
+                end
             end
-            % Call superclass method (important to ensure the right execution order)
-            handlePropEvents@Cost(this,src);
         end
     end
     

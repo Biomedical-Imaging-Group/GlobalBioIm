@@ -55,10 +55,11 @@ classdef CostL2 < Cost
     %% updateProp method (Private)
     methods (Access = protected)
         function updateProp(this,prop)
-            % Reimplemented superclass :class:`Map`
+            % Reimplemented superclass :class:`Cost`
             
             % Call superclass method
             updateProp@Cost(this,prop);
+            % Update current-class specific properties
             if strcmp(prop,'W') ||  strcmp(prop,'all')
                 assert((isnumeric(this.W) && isscalar(this.W))||isa(this.W,'LinOp'),'weight W must be scalar or LinOp');
                 if isnumeric(this.W) && isscalar(this.W)

@@ -53,12 +53,12 @@ classdef CostMixNormSchatt1 < Cost
     properties (SetObservable, AbortSet)
         p;       % order of the Shatten norm (>=1)
     end
-    % - Private
+    % - Protected
     properties (SetAccess = protected,GetAccess = protected)
         reshDim; % index for reshaping
     end
     
-    %% Constructor and handlePropEvents method
+    %% Constructor 
     methods        
         function this = CostMixNormSchatt1(sz,p,y)
             % Verify if the mexgl files exist
@@ -70,8 +70,6 @@ classdef CostMixNormSchatt1 < Cost
             if nargin<2 || isempty(p), p=1; end;
             % Call superclass constructor
             this@Cost(sz,y);
-            % Listeners to PostSet events
-            addlistener(this,'p','PostSet',@this.handlePropEvents);
             % Set properties
             this.name='CostMixNormSchatt1';
             this.isConvex=true;
@@ -83,15 +81,21 @@ classdef CostMixNormSchatt1 < Cost
             elseif this.sizein(end)==6
                 this.reshDim=[this.sizein(1),prod(this.sizein(2:end-1)),1,6];
             end
+            % Initialize
+            this.initialize('CostMixNormSchatt1');
         end
-        function handlePropEvents(this,src,~)
-            % Reimplemented from superclass :class:`Cost`
-            switch src.Name
-                case 'p'
-                    assert(this.p>=1,'p should be >=1');
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Cost`
+            
+            % Call superclass method
+            updateProp@Cost(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'p') ||  strcmp(prop,'all')
+                 assert(this.p>=1,'p should be >=1');
             end
-            % Call superclass method (important to ensure the right execution order)
-            handlePropEvents@Cost(this,src);
         end
     end
     

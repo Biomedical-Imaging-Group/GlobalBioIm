@@ -35,7 +35,9 @@ classdef CostLinear < Cost
             this.isConvex=true;
             this.isDifferentiable=true;
             this.isSeparable=true;
-        end        
+            % Initialize
+            this.initialize('CostLinear');
+        end
     end
     
     %% Core Methods containing implementations (Protected)

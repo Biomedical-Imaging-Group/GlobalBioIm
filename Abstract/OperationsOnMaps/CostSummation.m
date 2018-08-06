@@ -62,7 +62,7 @@ classdef CostSummation <  MapSummation & Cost
                     this.isConvex = this.isConvex & this.mapsCell{n}.isConvex;
                     this.isSeparable = this.isSeparable & this.mapsCell{n}.isSeparable;
                     if this.mapsCell{n}.lip~=-1
-                        this.mapsCell.lip = this.mapsCell.lip + this.mapsCell{n}.lip;
+                        this.lip = this.lip + this.mapsCell{n}.lip;
                     else
                         this.lip=-1;
                         break;

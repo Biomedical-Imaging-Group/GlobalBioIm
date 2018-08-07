@@ -94,6 +94,27 @@ if isa(H, 'LinOp')
         fprintf('\tcannot assess accuracy\n');
     end
     
+    % applyAdjointInverse
+    if H.isInvertible
+        try
+            yhat = H.applyAdjointInverse(HTy);
+            s.applyAdjointInverseOK = true;
+            fprintf('applyAdjointInverse OK\n');
+        catch ME
+            s.applyAdjointInverseOK = false;
+            fprintf('H.isInvertible, but applyAdjointInverse FAILs:\n\t%s\n', ME.message);
+        end
+        
+        if s.applyAdjointOK && s.applyAdjointInverseOK
+            curSNR = snr(y, y-yhat);
+            s.applyAdjointInverseOK = checkSNR(curSNR);
+        else
+            fprintf('\tcannot assess accuracy\n');
+        end
+    end
+    
+
+    
     if ~strcmp(getDefiningClass('makeAdjoint_', meta), 'LinOp') % if makeAdjoint is implemented
         try
             Ht = H.makeAdjoint;

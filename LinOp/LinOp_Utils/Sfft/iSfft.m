@@ -1,4 +1,4 @@
-function y = iSfft(x, Notindex)
+function y = iSfft(x, Notindex, pad)
 %% iSfft function
 % Recursive function for sliced inverse FFT. Computed the inverse FFT along all dimension
 % of x but those indexed by Notindex;
@@ -9,8 +9,6 @@ function y = iSfft(x, Notindex)
 %  y(:,:,m,n) = ifftn(x(:,:,m,n} for all (m,n)
 %
 % See also Sfft fftn
-
-
 
 %     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
 %
@@ -28,32 +26,26 @@ function y = iSfft(x, Notindex)
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-if numel(Notindex)~=0
-    y = complex(zeros_(size(x))); 
-    switch Notindex(1)
-        case(1)
-            for n=1:size(x,1)
-                y(n,:,:,:,:,:,:,:) = iSfft(x(n,:,:,:,:,:,:,:),Notindex(2:end));
-            end
-        case(2)
-            for n=1:size(x,2)
-                y(:,n,:,:,:,:,:,:) = iSfft(x(:,n,:,:,:,:,:,:),Notindex(2:end));
-            end            
-        case(3)
-            for n=1:size(x,3)
-                y(:,:,n,:,:,:,:,:) = iSfft(x(:,:,n,:,:,:,:,:),Notindex(2:end));
-            end            
-        case(4)
-            for n=1:size(x,4)
-                y(:,:,:,n,:,:,:,:) = iSfft(x(:,:,:,n,:,:,:,:),Notindex(2:end));
-            end            
-        case(5)
-            for n=1:size(x,5)
-                y(:,:,:,:,n,:,:,:) = iSfft(x(:,:,:,:,n,:,:,:),Notindex(2:end));
-            end            
-        otherwise
-                error('Slice FFT not implemented for number of dimensions >5')
-    end
+sz=size(x);
+if nargin < 2, Notindex=[]; end
+if nargin < 3 || isempty(pad), pad=sz; end
+ndms=length(sz);
+index=setdiff(1:ndms,Notindex);
+t=pad>=sz;
+
+elems = repmat({':'}, 1,ndms);
+if t(index(1))
+    y=ifft(x,pad(index(1)),index(1));
 else
-y = ifftn(x);
+    y=ifft(x,[],index(1));
+    elems{index(1)}=1:pad(index(1));
 end
+for n=2:length(index)
+    if t(index(n))
+        y=ifft(y,pad(index(n)),index(n));
+    else
+        y=ifft(y,[],index(n));
+        elems{index(n)}=1:pad(index(n));
+    end
+end
+y=y(elems{:});

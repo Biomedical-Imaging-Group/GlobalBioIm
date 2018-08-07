@@ -56,7 +56,7 @@ classdef Cost < Map
             if nargin <2, y=0; end
             if nargin<1 || isempty(sz), sz=size(y); end;
             % Set properties       
-            assert(issize(sz),'First argument must be conformable to a size');
+            assert(issize(sz),'sz must be conformable to a size');
             this.sizein=sz;
             this.y=y;
             this.memoizeOpts.applyGrad=false;

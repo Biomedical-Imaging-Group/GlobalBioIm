@@ -40,7 +40,7 @@ classdef TemplateCost < Cost
         % TODO : Set here new public properties
     end
     % - Readable
-    properties (SetAccess = protected,GetAccess = protected)
+    properties (SetAccess = protected,GetAccess = public)
         % TODO : Set here new readable properties (read only)
     end
     % - Protected

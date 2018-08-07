@@ -49,13 +49,18 @@ classdef LinOpConv <  LinOp
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-    properties (SetAccess = protected,GetAccess = public)
+    
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
         mtf;       % Fourier transform of the PSF
-        index;     % Dimensions along which the convolution is performed
-        isReal;    % true (default) if the result of the convolution should be real
         useRFT=0;  % true if the real-to-half-complex fourier transformation is used rather than the complex-to-complex FFT
                    % Default : false
+        isReal;    % true (default) if the result of the convolution should be real
+    end
+    % - Readable
+    properties (SetAccess = protected,GetAccess = public)
+        index;     % Dimensions along which the convolution is performed
         Notindex;  % Remaining dimensions
         ndms;      % number of dimensions
     end
@@ -63,7 +68,6 @@ classdef LinOpConv <  LinOp
     %% Constructor
     methods
         function this = LinOpConv(varargin)
-
             %====  Read arguments
             ispsf = false;
             centering = false;
@@ -157,8 +161,7 @@ classdef LinOpConv <  LinOp
                             psf = padarray(psf,padsize,padvalue,'pre');
                         end
                     end
-                end
-                
+                end               
                 if centering
                     for n=1:ndims(psf)
                         if any(index==n)
@@ -166,8 +169,7 @@ classdef LinOpConv <  LinOp
                             
                         end
                     end
-                end
-                
+                end                
                 this.sizeout =size(psf);
             else
                 this.sizeout =size(mtf);
@@ -206,19 +208,27 @@ classdef LinOpConv <  LinOp
             else
                 this.mtf = mtf;
             end
-            
-            if sum(this.mtf(:)==0)==0
-                this.isInvertible=true;
-            else
-                this.isInvertible=false;
-            end
-            
-            % -- Norm of the operator
-            this.norm=max(abs(this.mtf(:)));
-            
-            
-            % Initialize listeners
+     
+            %====== Initialize listeners
             this.initialize('LinOpConv');
+        end
+    end
+        %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`LinOp`
+            
+            % Call superclass method
+            updateProp@LinOp(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'mtf') || strcmp(prop,'all')
+                if sum(this.mtf(:)==0)==0
+                    this.isInvertible=true;
+                else
+                    this.isInvertible=false;
+                end
+                this.norm=max(abs(this.mtf(:)));
+            end
         end
     end
     

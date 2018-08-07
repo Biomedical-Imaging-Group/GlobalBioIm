@@ -32,40 +32,58 @@ classdef LinOpDiag <  LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (SetAccess = protected,GetAccess = public)
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
         diag;                    % diagonal or a scalar
+    end
+    % - Readable
+    properties (SetAccess = protected,GetAccess = public)
         isScaledIdentity=false;  % if diag is constant, it is not stored
     end
     
     %% Constructor
     methods
         function this = LinOpDiag(sz,diag)
-            this.name ='LinOpDiag';
+            % Default values
             if nargin <1, error('At least a size should be given');end
             if nargin <2, diag=1; end
             if isempty(sz), sz=size(diag); end
-            assert(isnumeric(diag),'diag must be numeric');
-            assert(length(sz) >= length(size(diag)),'Number of dimensions of diag must be smaller than the one of the given size');
-            assert(all(1-((sz(1:length(size(diag)))-size(diag)).*(1-(size(diag)==1)))),'Non-singleton dimensions of diag and sz must match each other.');
+            % Checks
+            assert(issize(sz),'The input size sz should be a conformable  to a size ');
+            % Set properties
+            this.name ='LinOpDiag';
             this.sizeout=sz;
-            this.sizein=sz;
+            this.sizein=sz;         
+            this.diag=diag;
             this.isDifferentiable=true;
-            if sum(diag(:)==0)==0
-                this.isInvertible=true;
-            else
-                this.isInvertible=false;
-            end
-            if isscalar(diag) || norm(diag(:)-diag(1))<1e-13
-                this.isScaledIdentity=true;
-                this.diag = diag(1);
-            else
-                this.diag=diag;
-            end
-            % -- Norm of the operator
-            this.norm=max(abs(diag(:)));
-            
-            % Initialize listeners
+            % Initialize 
             this.initialize('LinOpDiag');
+        end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`LinOp`
+            
+            % Call superclass method
+            updateProp@LinOp(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'diag') || strcmp(prop,'all')
+                assert(isnumeric(this.diag),'diag must be numeric');
+                assert(length(this.sizein) >= length(size(this.diag)),'Number of dimensions of diag must be smaller than the one of the given size');
+                assert(all(1-((this.sizein(1:length(size(this.diag)))-size(this.diag)).*(1-(size(this.diag)==1)))),'Non-singleton dimensions of diag and sizein must match each other.');     
+                if sum(this.diag(:)==0)==0
+                    this.isInvertible=true;
+                else
+                    this.isInvertible=false;
+                end
+                if isscalar(this.diag) || norm(this.diag(:)-this.diag(1))<1e-13
+                    this.isScaledIdentity=true;
+                    this.diag = this.diag(1);
+                end
+                this.norm=max(abs(this.diag(:)));
+            end
         end
     end
     

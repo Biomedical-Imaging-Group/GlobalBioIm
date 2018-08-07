@@ -32,9 +32,17 @@ classdef LinOpBroadcastMatrix <  LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
         M            % matrix
+    end
+    % - Readable
+    properties (SetAccess = protected,GetAccess = public)
         index        % index along which the matrix is applied
+    end
+    % - Protected
+    properties (SetAccess = protected,GetAccess = protected)
         indexdiff;   % other idexes
         ndms         % number of dimensions
         permIdxIn;   % indexes for input permutation
@@ -44,27 +52,41 @@ classdef LinOpBroadcastMatrix <  LinOp
     %% Constructor
     methods
         function this = LinOpBroadcastMatrix(M,sz,index)
+            % Default values
+            if nargin<2, sz=[size(M,2),1]; index=1;
+            elseif nargin <3, index=find(sz~=1,1,'last'); end  
+            % Checks
+            assert(issize(sz),'The input size sz should be a conformable  to a size ');
+            % Set properties
             this.name='LinOpBroadcastMatrix';
             this.M=M;  
-            if nargin<2
-                sz=[size(M,2),1];
-                index=1;
-            elseif nargin <3
-                index=find(sz~=1,1,'last');
-            end
             this.ndms=length(sz);
             assert(isscalar(index) && index <= length(sz),'index must be a scalar smaller than the length of sz');
-            assert(size(M,2)==sz(index),'size(M,2) and sz(index) must be equal');
             this.index=index;
             this.indexdiff=setdiff(1:this.ndms,index);
             this.sizein=sz;
             this.sizeout=sz;this.sizeout(index)=size(M,1);
             this.permIdxIn=[index,this.indexdiff];
-            this.permIdxOut=[2:index,1,index+1:this.ndms];
-            this.norm = norm(M);                      
+            this.permIdxOut=[2:index,1,index+1:this.ndms];            
             this.isDifferentiable=true;
-            if size(M,1)==size(M,2) && det(M)~=0
-                this.isInvertible=true;
+            % Initialize
+            this.initialize('LinOpBroadcastMatrix');
+        end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`LinOp`
+            
+            % Call superclass method
+            updateProp@LinOp(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'M') || strcmp(prop,'all')
+                assert(size(this.M,2)==sz(this.index),'size(M,2) and sz(index) must be equal');
+                this.norm = norm(this.M);
+                if size(this.M,1)==size(this.M,2) && det(this.M)~=0
+                    this.isInvertible=true;
+                end
             end
         end
     end

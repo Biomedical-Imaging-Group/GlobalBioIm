@@ -42,6 +42,7 @@ classdef LinOpCpx <  LinOp
             this.sizeout = [sz 2];
             this.sizein = sz;
             this.nbDim = numel(sz);
+            warning('LinOpCpx is deprecated');
 		end
     end
 

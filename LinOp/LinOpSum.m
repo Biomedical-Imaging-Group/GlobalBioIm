@@ -28,6 +28,8 @@ classdef LinOpSum <  LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
+    %% Properties
+    % - Readable
     properties (SetAccess = protected,GetAccess = public)
         index  % index along which dimension are computed the finite differences
         ndms   % number of dimensions of the input
@@ -38,31 +40,25 @@ classdef LinOpSum <  LinOp
     %% Constructor
     methods
         function this = LinOpSum(sz,index)
+            % Default values
+            if nargin == 1, index = []; end
+            % Checks
             assert(issize(sz),'The input size sz should be a conformable  to a size ');
-            if nargin == 1
-                index = [];
-            end
+            % Set properties
             this.name ='LinOpSum ';
             this.isInvertible=false;
             this.isDifferentiable=true;
-            this.sizein = sz;
-            
+            this.sizein = sz;            
             this.ndms = length(this.sizein);
-            % Special case for vectors as matlab thought it is matrix ;-(
-            if this.sizein(2) ==1
-                this.ndms = 1;
-            end
-            
-            
+            if this.sizein(2) ==1, this.ndms = 1; end % Special case for vectors
             if (~isempty(index))
-                assert(isvector(index) && length(index)<= this.ndms && max(index)<= this.ndms,'The index should be a conformable  to sz');
+                assert(isvector(index) && length(index)<= this.ndms && max(index)<= this.ndms,'index should a vector of length <= than length(sizein)');              
                 this.index = sort(index,'descend');
             else
                 this.index = 1:this.ndms;
             end
             T = true(this.ndms,1);
-            T(this.index)=false;
-            
+            T(this.index)=false;            
             %size of the output = size of the input x length of the index
             % Special case for scalar vectors as matlab thought it is 2D matrix ;-(
             switch(length(this.index))
@@ -77,7 +73,8 @@ classdef LinOpSum <  LinOp
             this.kerdims(T)=1;
             this.imdims = this.sizein;
             this.imdims(~T)=1;
-            
+            % Initialize
+            this.initialize('LinOpSum');
         end
     end
     

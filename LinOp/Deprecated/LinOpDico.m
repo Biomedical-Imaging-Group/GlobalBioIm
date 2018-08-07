@@ -51,6 +51,7 @@ classdef LinOpDico <  LinOp
             if this.numelAtom<1000 && sz(end)<1000  % the norm is computed if the dictionary is of reasonable size
                 this.norm=norm(reshape(this.D,[this.numelAtom,sz(end)]));
             end
+            warning('LinOpDico is deprecated');
 		end
     end
 	

@@ -38,35 +38,64 @@ classdef LinOpHess <  LinOp
 	% 
 	%     You should have received a copy of the GNU General Public License
 	%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-    properties (SetAccess = protected,GetAccess = public)
-	  ndms;      % number of dimension of the input
-      bc;        % boundary condition (default mirror);
-      index;     % index along wich dimension are computed the hessian    
-      lgthidx;   % length of INDEX
-    end
-    properties
+   
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
         useRFT=0;  % use RFT when defining the LinOpConv associated to HtH
+        bc;        % boundary condition (default mirror);
+    end
+    % - Readable
+    properties (SetAccess = protected,GetAccess = public)
+        index;     % index along wich dimension are computed the finite differences
+    end
+    % - Protected
+    properties (SetAccess = protected,GetAccess = protected)
+        lgthidx;   % length of INDEX
+        ndms;      % number of dimension of the input
     end
     
     %% Constructor
     methods
         function this = LinOpHess(sz,bc,index)
-            if nargin < 3, index=[];end
-            if nargin < 2, index=[]; bc=[];end
-            if isempty(bc), bc='circular'; end
-            if isempty(index), index=1:length(sz); end
+            % Default values
+            if nargin < 3 || isempty(index), index=[];end
+            if nargin < 2 || isempty(bc), bc='circular';end
+            % Checks
+            assert(issize(sz),'The input size sz should be a conformable  to a size ');
+            % Set properties
             this.name='LinOpHess';
             this.isInvertible=false;
             this.isDifferentiable=true;
-            this.sizein=sz;
+            this.sizein=sz;           
             this.ndms = length(this.sizein);
+            if this.sizein(2) ==1, this.ndms = 1; end % Special case for vectors
             this.bc=bc;
-            this.index=index;
+            if (~isempty(index))
+                assert(isvector(index) && length(index)<= this.ndms && max(index)<= this.ndms,'index should a vector of length <= than length(sizein)');
+                this.index = index;
+            else
+                this.index = 1:this.ndms;
+            end
             this.lgthidx = length(this.index);
             this.sizeout= this.sizein;
             if this.lgthidx > 1
                 this.sizeout(end+1) = (this.lgthidx+1)*this.lgthidx/2;
+            end
+            % Initialize
+            this.initialize('LinOpHess');
+        end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`LinOp`
+            
+            % Call superclass method
+            updateProp@LinOp(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'bc') || strcmp(prop,'all')
+                validatestring(this.bc, {'mirror', 'circular'});
             end
         end
     end

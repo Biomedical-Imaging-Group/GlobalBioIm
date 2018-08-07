@@ -35,57 +35,70 @@ classdef LinOpGrad <  LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (SetAccess = protected,GetAccess = public)
-        index;     % index along wich dimension are computed the finite differences
-        lgthidx;   % length of INDEX
-        ndms;      % number of dimension of the input
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
+        useRFT=0;  % use RFT when defining the LinOpConv associated to HtH
         bc;        % boundary condition (default mirror);
         res;       % resolution, vector of lenght ndms
     end
-    properties
-        useRFT=0;  % use RFT when defining the LinOpConv associated to HtH
+    % - Readable
+    properties (SetAccess = protected,GetAccess = public)
+        index;     % index along wich dimension are computed the finite differences
+    end
+    % - Protected
+    properties (SetAccess = protected,GetAccess = protected)
+        lgthidx;   % length of INDEX
+        ndms;      % number of dimension of the input
     end
     
     %% Constructor
     methods
         function this = LinOpGrad(sz,index,bc,res)
+            % Default values
             if nargin == 1, index = [];end
             if nargin<=2 || isempty(bc), bc='circular';end
             if nargin<=3 || isempty(res), res=ones_(size(sz));end
-            this.name ='LinOpGrad';
+            % Checks
+            assert(issize(sz),'The input size sz should be a conformable  to a size ');
+            % Set properties
+            this.name ='LinOpGrad';           
             this.isInvertible=false;
             this.isDifferentiable=true;
             this.res=res;
-            this.bc=bc;            
-            assert(issize(sz),'The input size sz should be a conformable  to a size ');
+            this.bc=bc;         
             this.sizein = sz;
-            this.ndms = length(this.sizein);
-            % Special case for vectors as matlab thought it is matrix ;-(
-            if this.sizein(2) ==1
-                this.ndms = 1;
-            end
+            this.ndms = length(this.sizein);           
+            if this.sizein(2) ==1, this.ndms = 1; end % Special case for vectors
             if (~isempty(index))
-                assert(isvector(index) && length(index)<= this.ndms && max(index)<= this.ndms,'The index should be a conformable  to sz');
+                assert(isvector(index) && length(index)<= this.ndms && max(index)<= this.ndms,'index should a vector of length <= than length(sizein)');
                 this.index = index;
             else
                 this.index = 1:this.ndms;
             end
             this.lgthidx = length(this.index);
-            % size of the output = size of the input x length of the index
-            % Special case for vectors as matlab thought it is matrix ;-(
-            if this.sizein(2) ==1
-                this.sizeout= [this.sizein(1),this.lgthidx];
-            else
-                this.sizeout= this.sizein;
-            end
-            
+            this.sizeout= this.sizein;
             if this.lgthidx > 1
                 this.sizeout(end+1) = this.lgthidx;
             end
+            % Initialize
+            this.initialize('LinOpGrad');
+        end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`LinOp`
             
-            this.norm = 2 * sqrt( sum(1./res.^2) );
-            
-            validatestring(this.bc, {'mirror', 'circular', 'zeros'});
+            % Call superclass method
+            updateProp@LinOp(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'bc') || strcmp(prop,'all')
+                validatestring(this.bc, {'mirror', 'circular', 'zeros'});
+            end
+            if strcmp(prop,'res') || strcmp(prop,'all')
+                this.norm = 2 * sqrt( sum(1./this.res.^2) );
+            end
         end
     end
     

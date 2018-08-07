@@ -29,6 +29,7 @@ classdef OpEWSquaredMagnitude < Map
     %% Constructor
     methods
         function this = OpEWSquaredMagnitude(sz)
+            % Set properties
             this.name ='OpEWSquaredMagnitude ';
             this.sizein=sz;
             this.sizeout=sz;

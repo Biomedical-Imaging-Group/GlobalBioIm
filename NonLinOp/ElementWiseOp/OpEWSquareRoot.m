@@ -29,6 +29,7 @@ classdef OpEWSquareRoot < Map
     %% Constructor
     methods
         function this = OpEWSquareRoot(sz)
+            % Set properties
             this.name ='OpEWSquareRoot';
             this.sizein=sz;
             this.sizeout=sz;

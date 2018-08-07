@@ -29,6 +29,7 @@ classdef OpEWInverse < Map
     %% Constructor
     methods
         function this = OpEWInverse(sz)
+            % Set properties
             this.name ='OpEWInverse ';
             this.sizein=sz;
             this.sizeout=sz;

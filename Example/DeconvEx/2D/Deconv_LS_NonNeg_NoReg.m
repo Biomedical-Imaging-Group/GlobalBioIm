@@ -86,7 +86,7 @@ set(gca,'xtick',[1 2]);ylabel('Time (s)');
 set(gca,'xticklabels',{'LS+POS (FISTA)','LS+POS (VMLMB)'});set(gca,'XTickLabelRotation',45)
 
 %% For Unitary Tests
-global generateDataUnitTests stateTest
+global generateDataUnitTests stateTest message
 if ~isempty(generateDataUnitTests)
     if generateDataUnitTests
         valFBS=FBS.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_NonNeg_NoReg_FBS','valFBS');
@@ -95,5 +95,7 @@ if ~isempty(generateDataUnitTests)
         load('Util/UnitTest/Data/Deconv_LS_NonNeg_NoReg_FBS');
         load('Util/UnitTest/Data/Deconv_LS_NonNeg_NoReg_VMLMB');
         stateTest=isequal(valFBS,FBS.OutOp.evolcost) &&  isequal(valVMLMB,VMLMB.OutOp.evolcost);
+        message=['Max error between costs evolution : ',num2str(norm(valFBS-FBS.OutOp.evolcost),...
+            norm(valVMLMB-VMLMB.OutOp.evolcost))];
     end
 end

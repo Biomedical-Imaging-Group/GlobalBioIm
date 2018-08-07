@@ -89,7 +89,7 @@ set(gca,'xtick',[1 2]);ylabel('Time (s)');
 set(gca,'xticklabels',{'LS+TV (CP)','LS+TV (ADMM)'});set(gca,'XTickLabelRotation',45)  
 
 %% For Unitary Tests
-global generateDataUnitTests stateTest
+global generateDataUnitTests stateTest message
 if ~isempty(generateDataUnitTests)
     if generateDataUnitTests
         valADMM=ADMM.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_TV_ADMM','valADMM');
@@ -98,5 +98,7 @@ if ~isempty(generateDataUnitTests)
         load('Util/UnitTest/Data/Deconv_LS_TV_ADMM');
         load('Util/UnitTest/Data/Deconv_LS_TV_CP');
         stateTest=isequal(valADMM,ADMM.OutOp.evolcost) &&  isequal(valCP,CP.OutOp.evolcost);
+        message=['Max error between costs evolution : ',num2str(max([norm(valCP-CP.OutOp.evolcost),...
+            norm(valADMM-ADMM.OutOp.evolcost)]))];
     end
 end

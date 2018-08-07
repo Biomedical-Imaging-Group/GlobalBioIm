@@ -91,7 +91,7 @@ set(gca,'xtick',[1 2]);ylabel('Time (s)');
 set(gca,'xticklabels',{'KL+HESS+POS (ADMM)','KL+HESS+POS (Condat)'});set(gca,'XTickLabelRotation',45)
 
 %% For Unitary Tests
-global generateDataUnitTests stateTest
+global generateDataUnitTests stateTest message
 if ~isempty(generateDataUnitTests)
     if generateDataUnitTests
         valADMM=ADMM.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_KL_HessSchatt_NonNeg_ADMM','valADMM');
@@ -100,5 +100,7 @@ if ~isempty(generateDataUnitTests)
         load('Util/UnitTest/Data/Deconv_KL_HessSchatt_NonNeg_PDC');
         load('Util/UnitTest/Data/Deconv_KL_HessSchatt_NonNeg_ADMM');
         stateTest=isequal(valADMM,ADMM.OutOp.evolcost) &&  isequal(valPDC,PDC.OutOp.evolcost);
+        message=['Max error between costs evolution : ',num2str(max(norm(valADMM-ADMM.OutOp.evolcost),...
+            norm(valPDC-PDC.OutOp.evolcost)))];
     end
 end

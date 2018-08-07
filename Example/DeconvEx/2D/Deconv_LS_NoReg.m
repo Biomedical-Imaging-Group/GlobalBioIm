@@ -105,7 +105,7 @@ set(gca,'xtick',[1 2 3]);ylabel('Time (s)');
 set(gca,'xticklabels',{'GD','VMLM','CG'});set(gca,'XTickLabelRotation',45)
 
 %% For Unitary Tests
-global generateDataUnitTests stateTest
+global generateDataUnitTests stateTest message
 if ~isempty(generateDataUnitTests)
     if generateDataUnitTests
         valGD=GD.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_NoReg_GD','valGD');
@@ -116,5 +116,7 @@ if ~isempty(generateDataUnitTests)
         load('Util/UnitTest/Data/Deconv_LS_NoReg_VMLMB');
         load('Util/UnitTest/Data/Deconv_LS_NoReg_CG');
         stateTest=isequal(valGD,GD.OutOp.evolcost) &&  isequal(valVMLMB,VMLMB.OutOp.evolcost) &&  isequal(valCG,CG.OutOp.evolcost);
+        message=['Max error between costs evolution : ',num2str(max([norm(valGD-GD.OutOp.evolcost),...
+            norm(valVMLMB-VMLMB.OutOp.evolcost),norm(valCG-CG.OutOp.evolcost)]))];
     end
 end

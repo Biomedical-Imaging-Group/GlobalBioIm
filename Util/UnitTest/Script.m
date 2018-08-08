@@ -12,7 +12,7 @@
 %--------------------------------------------------------------
 % Initializations
 clc; clear; close all;
-global generateDataUnitTests  stateTest
+global generateDataUnitTests  stateTest message
 generateDataUnitTests=0; 
 mess={'FAIL !','OK !'};
 
@@ -34,12 +34,17 @@ revert=0;
 
 fnames=fieldnames(test);
 for idx=1:length(fnames)
+    message=[];
     if (test.(fnames{idx}) && ~revert) || (~test.(fnames{idx}) && revert) 
         evalc(['run ',fnames{idx}]);close all;
         if generateDataUnitTests
             fprintf(' %-30s  --> results saved \n',fnames{idx});
         else
-            fprintf(' %-30s  --> %s \n',fnames{idx},mess{stateTest+1});
+            if stateTest
+                fprintf(' %-30s  --> %s \n',fnames{idx},mess{stateTest+1});
+            else
+                fprintf(' %-30s  --> %s \n \t %s\n',fnames{idx},mess{stateTest+1},message);
+            end
         end
     end
 end

@@ -1,4 +1,4 @@
-function y = Sfft(x, Notindex)
+function y = Sfft(x, Notindex,pad)
 %% Sfft function
 % Recursive function for sliced FFT. Computed the FFT along all dimension
 % of x but those indexed by Notindex;
@@ -12,7 +12,7 @@ function y = Sfft(x, Notindex)
 
 
 
-%     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch
+%     Copyright (C) 2015 F. Soulez ferreol.soulez@epfl.ch, E. Soubies emmanuel.soubies@epfl.ch
 %
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
@@ -27,33 +27,26 @@ function y = Sfft(x, Notindex)
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+sz=size(x);
+if nargin < 2, Notindex=[]; end
+if nargin < 3 || isempty(pad), pad=sz; end
+ndms=length(sz);
+index=setdiff(1:ndms,Notindex);
+t=pad>=sz;
 
-if numel(Notindex)~=0
-    y = complex(zeros_(size(x)));
-    switch Notindex(1)
-        case(1)
-            for n=1:size(x,1)
-                y(n,:,:,:,:,:,:,:) = Sfft(x(n,:,:,:,:,:,:,:),Notindex(2:end));
-            end
-        case(2)
-            for n=1:size(x,2)
-                y(:,n,:,:,:,:,:,:) = Sfft(x(:,n,:,:,:,:,:,:),Notindex(2:end));
-            end
-        case(3)
-            for n=1:size(x,3)
-                y(:,:,n,:,:,:,:,:) = Sfft(x(:,:,n,:,:,:,:,:),Notindex(2:end));
-            end
-        case(4)
-            for n=1:size(x,4)
-                y(:,:,:,n,:,:,:,:) = Sfft(x(:,:,:,n,:,:,:,:),Notindex(2:end));
-            end
-        case(5)
-            for n=1:size(x,5)
-                y(:,:,:,:,n,:,:,:) = Sfft(x(:,:,:,:,n,:,:,:),Notindex(2:end));
-            end
-        otherwise
-            error('Slice FFT not implemented for number of dimensions >5')
-    end
+elems = repmat({':'}, 1,ndms);
+if t(index(1))
+    y=fft(x,pad(index(1)),index(1));
 else
-    y = fftn(x);
+    y=fft(x,[],index(1));
+    elems{index(1)}=1:pad(index(1));
 end
+for n=2:length(index)
+    if t(index(n))
+        y=fft(y,pad(index(n)),index(n));
+    else
+        y=fft(y,[],index(n));
+        elems{index(n)}=1:pad(index(n));
+    end
+end
+y=y(elems{:});

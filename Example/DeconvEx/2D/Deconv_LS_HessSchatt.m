@@ -90,7 +90,7 @@ set(gca,'xticklabels',{'LS+HESS (CP)','LS+HESS (ADMM)'});set(gca,'XTickLabelRota
 
 
 %% For Unitary Tests
-global generateDataUnitTests stateTest
+global generateDataUnitTests stateTest message
 if ~isempty(generateDataUnitTests)
     if generateDataUnitTests
         valADMM=ADMM.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_HessSchatt_ADMM','valADMM');
@@ -99,5 +99,7 @@ if ~isempty(generateDataUnitTests)
         load('Util/UnitTest/Data/Deconv_LS_HessSchatt_ADMM');
         load('Util/UnitTest/Data/Deconv_LS_HessSchatt_CP');
         stateTest=isequal(valADMM,ADMM.OutOp.evolcost) &&  isequal(valCP,CP.OutOp.evolcost);
+        message=['Max error between costs evolution : ',num2str(norm(valADMM-ADMM.OutOp.evolcost),...
+            norm(valCP-CP.OutOp.evolcost))];
     end
 end

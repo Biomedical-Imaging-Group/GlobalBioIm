@@ -31,7 +31,9 @@ classdef LinOpSelectorPatch < LinOpSelector
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
+    %% Properties
+    % - Readable
     properties (SetAccess = protected,GetAccess = public)
         idxmin
         idxmax
@@ -40,11 +42,13 @@ classdef LinOpSelectorPatch < LinOpSelector
     %% Constructor
     methods
         function this = LinOpSelectorPatch(sz,idxmin,idxmax)
-            this.name ='LinOp SelectorPatch';	
+            % Checks
             assert(cmpSize(size(sz),size(idxmin)) && cmpSize(size(sz),size(idxmax)),'Parameters sz idxmin and idxmax must have the same size');
             assert(~any(idxmin<=0) && ~any(idxmin>sz),'idxmin out of sz range');
             assert(~any(idxmax<=0) && ~any(idxmax>sz),'idxmax out of sz range');
             assert(~any(idxmin>idxmax),'idxmin must be smaller than idxmax in each dimension');
+            % Set properties
+            this.name ='LinOpSelectorPatch';
             this.idxmin=idxmin;
             this.idxmax=idxmax;
             this.sizeout=idxmax-idxmin+1;
@@ -54,6 +58,8 @@ classdef LinOpSelectorPatch < LinOpSelector
             for ii=1:length(sz)
                 this.sel{ii}=this.idxmin(ii):this.idxmax(ii);
             end
+            % Initialize
+            this.initialize('LinOpSelectorPatch');
         end
     end
     

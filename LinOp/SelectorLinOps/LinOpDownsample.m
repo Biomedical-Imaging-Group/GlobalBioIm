@@ -31,6 +31,8 @@ classdef LinOpDownsample < LinOpSelector
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
+    %% Properties
+    % - Readable
     properties (SetAccess = protected,GetAccess = public)
         df; % downsampling factors in each direction
     end
@@ -38,9 +40,11 @@ classdef LinOpDownsample < LinOpSelector
     %% Constructor
     methods
         function this = LinOpDownsample(sz,df)
-            this.name ='LinOpDownsample';
+            % Checks
             assert(cmpSize(size(sz),size(df)),'Parameters sz and df must have the same size');
-            assert(~any(mod(sz,df)),'Sizes in sz must be multiples of downsampling factors in df');  
+            assert(~any(mod(sz,df)),'Sizes in sz must be multiples of downsampling factors in df');
+            % Set properties
+            this.name ='LinOpDownsample';
             this.sizein=sz;
             this.df=df;
             this.sizeout=this.sizein./this.df;
@@ -48,6 +52,8 @@ classdef LinOpDownsample < LinOpSelector
             for ii=1:length(sz)
                 this.sel{ii}=1:this.df(ii):this.sizein(ii);
             end
+            % Initialize
+            this.initialize('LinOpDownsample');
         end
     end
     

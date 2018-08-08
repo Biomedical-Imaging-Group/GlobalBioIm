@@ -34,6 +34,8 @@ classdef LinOpSelector <  LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
+    %% Properties
+    % - Readable
     properties (SetAccess = protected,GetAccess = public)
         sel;         % boolean
     end
@@ -41,17 +43,19 @@ classdef LinOpSelector <  LinOp
     %% Constructor
     methods
         function this = LinOpSelector(sel)
-            this.name ='LinOp Selector';
-            if nargin==0
-                sel=false;
-            end
-            assert(islogical(sel),'The input selector should be boolean');            
+            if nargin==0, sel=false; end; % to avoid an error when this constructor is called from derived classes
+            % Checks
+            assert(islogical(sel),'The input selector should be boolean');     
+            % Set properties
+            this.name ='LinOp Selector';  
 			this.norm = 1;			
             this.sizeout=[sum(sel(:)), 1];
             this.sel = sel;
             this.sizein=size(sel);
             this.isInvertible=false;
-        end    
+            % Initialize
+            this.initialize('LinOpSelector');
+        end
     end
     
     %% Core Methods containing implementations (Protected)

@@ -25,12 +25,12 @@ test.Deconv_LS_HessSchatt=1;
 test.Deconv_LS_HessSchatt_NonNeg=1;
 test.Deconv_KL_NonNeg_NoReg=1;
 test.Deconv_KL_TV_NonNeg=1;
-test.Deconv_KL_HessSchatt_NonNeg=0;
+test.Deconv_KL_HessSchatt_NonNeg=1;
 test.TestProxL2SumConv=1;
 test.TestProxL2DownSampledConv=1;
 
 % Put 1 to run test when test.??=0
-revert=1;
+revert=0;
 
 fnames=fieldnames(test);
 for idx=1:length(fnames)

@@ -37,7 +37,7 @@ classdef LinOpSelector <  LinOp
     %% Properties
     % - Readable
     properties (SetAccess = protected,GetAccess = public)
-        sel;         % boolean
+        sel;         % cell containing a boolean array (the cell serve for consistency with derived classes)
     end
     
     %% Constructor
@@ -50,7 +50,7 @@ classdef LinOpSelector <  LinOp
             this.name ='LinOp Selector';  
 			this.norm = 1;			
             this.sizeout=[sum(sel(:)), 1];
-            this.sel = sel;
+            this.sel = {sel};
             this.sizein=size(sel);
             this.isInvertible=false;
             % Initialize
@@ -61,30 +61,30 @@ classdef LinOpSelector <  LinOp
     %% Core Methods containing implementations (Protected)
     methods (Access = protected)	
         function y = apply_(this,x)
-            % Reimplemented from parent class :class:`LinOp`.           
-             y =x(this.sel);
+            % Reimplemented from parent class :class:`LinOpSelector`.           
+            y =x(this.sel{:});
         end        
         function y = applyAdjoint_(this,x)
-            % Reimplemented from parent class :class:`LinOp`.  
+            % Reimplemented from parent class :class:`LinOpSelector`.
             y = zeros_(this.sizein);
-            y(this.sel) = x;
+            y(this.sel{:}) = x;
         end
         function y = applyHtH_(this,x)
-            % Reimplemented from parent class :class:`LinOp`.  
+            % Reimplemented from parent class :class:`LinOpSelector`.
             y = zeros_(this.sizein);
-            y(this.sel) = x(this.sel);            
+            y(this.sel{:}) = x(this.sel{:});
         end
-        function y = applyHHt_(this,x)
+        function y = applyHHt_(~,x)
             % Reimplemented from parent class :class:`LinOp`.  
             y = x;
         end
         function M = makeHHt_(this)
-            % Reimplemented from parent class :class:`LinOp`.  
+            % Reimplemented from parent class :class:`LinOp`.
             M=LinOpIdentity(this.sizeout);
         end
         function M = makeHtH_(this)
             % Reimplemented from parent class :class:`LinOp`.
-            w=zeros_(size(this.sel));w(this.sel)=1;
+            w=zeros_(this.sizein);w(this.sel{:})=1;
             M=LinOpDiag([],w);
         end
     end

@@ -31,26 +31,65 @@ classdef TemplateLinOp <  LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-    % Protected Set and public Read properties     
-    properties (SetAccess = protected,GetAccess = public)
-		% TODO SET HERE NEW PROTECTED SET AND PUBLIC READ PROPERTIES IF NEEDED.
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
+        myVar
+        % TODO : Set here new public properties
     end
-    % Full protected properties 
+    % - Readable
+    properties (SetAccess = protected,GetAccess = public)
+        % TODO : Set here new readable properties (read only)
+    end
+    % - Protected
     properties (SetAccess = protected,GetAccess = protected)
-		% TODO SET HERE NEW FULLY PROTECTED PROPERTIES 
-		% (E.G. INTERNAL VARIABLE USED TO AVOID MULTIPLE COMPUTATION)
+        % TODO : Set here new protected properties
     end
     
     %% Constructor
     methods
-        function this = TemplateLinOp() %change the name of the constructor
-            this.name ='';             
+        function this = TemplateLinOp(sz,par1) %change the name of the constructor
+            % Default values
+            if nargin<2, par1=0; end
+                % TODO : add others default values
+            % Set properties
+            this.name ='TemplateLinOp';             
             this.isInvertible = ??; 
+            this.isDifferentiable=???;
             this.sizein = ??;         
-            this.sizeout = ??;         
+            this.sizeout = ??;  
+                % TODO : set new defined properties 
+            % Initialize
+            this.initialize('TemplateLinOp'); % Call the method initialize with class name as attribute (du NOT put this.name BUT 'TemplateLinOp')
+
+            % IMPORTANT : No computations in the constructor, only
+            % affectations. Computations should be done in the method
+            % updateProp (see below) in order to ensure a proper update 
+            % when public properties are modified.
 		end
     end
-	
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`LinOp`
+            
+            % Call superclass method
+            updateProp@LinOp(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'myVar') ||  strcmp(prop,'all')
+                % TODO : code which has to be executed at each
+                % modification of myVar
+                % e.g. recomputation of the lipschitz constant
+                this.norm= ???;
+            end
+            % TODO : other public properties
+            
+            % IMPORTANT : for each if statement ADD " || strcmp(prop,'all') "
+            % in order to ensure that all computation are done at object
+            % construction.
+        end
+    end
+    
     %% Core Methods containing implementations (Protected)
     % - apply_(this,x)
     % - applyAdjoint_(this,x)

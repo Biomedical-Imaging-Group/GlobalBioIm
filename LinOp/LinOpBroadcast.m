@@ -30,6 +30,8 @@ classdef LinOpBroadcast <  LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
+    %% Properties
+    % - Readable
     properties (SetAccess = protected,GetAccess = public)
         index  % index along which dimension are computed the finite differences
         ndms   % number of dimensions of the input
@@ -40,21 +42,15 @@ classdef LinOpBroadcast <  LinOp
     %% Constructor
     methods
         function this = LinOpBroadcast(sz,index)
-            if nargin == 1
-                index = [];
-            end
+            % Default values
+            if nargin == 1, index = []; end
+            % Set properties
             this.name ='LinOpBroadcast ';
             this.isInvertible=false;
             this.isDifferentiable=true;
-            this.sizeout = sz;
-            
+            this.sizeout = sz;            
             this.ndms = length(this.sizeout);
-            % Special case for vectors as matlab thought it is matrix ;-(
-            if this.sizeout(2) ==1
-                this.ndms = 1;
-            end
-            
-            
+            if this.sizeout(2) ==1, this.ndms = 1; end % Special case for vectors   
             if (~isempty(index))
                 assert(isvector(index) && length(index)<= this.ndms && max(index)<= this.ndms,'The index should be a conformable  to sz');
                 this.index = sort(index,'descend');
@@ -62,8 +58,7 @@ classdef LinOpBroadcast <  LinOp
                 this.index = 1:this.ndms;
             end
             T = true(this.ndms,1);
-            T(this.index)=false;
-            
+            T(this.index)=false;            
             %size of the output = size of the input x length of the index
             % Special case for scalar vectors as matlab thought it is 2D matrix ;-(
             switch(length(this.index))
@@ -79,6 +74,8 @@ classdef LinOpBroadcast <  LinOp
             this.imdims = this.sizeout;
             this.imdims(~T)=1;
             this.norm = prod(this.kerdims); % To be checked
+            % Initialize
+            this.initialize('LinOpBroadcast');
         end
     end
     

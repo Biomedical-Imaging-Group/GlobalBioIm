@@ -28,20 +28,20 @@ classdef LinOpShape <  LinOp
     
     %% Constructor
     methods
-        function this = LinOpShape(sizein, sizeout)
+        function this = LinOpShape(sizein, sizeout)  
+            % Checks
+            assert(issize(sizein),'The input size sizein should be a conformable  to a size ');
+            assert(issize(sizeout),'The input size sizeout should be a conformable  to a size ');
+            assert(prod(sizeout)==prod(sizein),'The inputs sizein and sizeout should be a conformable');
+            % Set properties
             this.name ='LinOpShape';
             this.isInvertible=true;
-			
-			this.norm = 1;
-            
-            assert(issize(sizein),'The input size sizein should be a conformable  to a size ');
+            this.norm = 1;
             this.sizein = sizein;
-            assert(issize(sizeout),'The input size sizeout should be a conformable  to a size ');
             this.sizeout = sizeout;
-            
-            assert(prod(sizeout)==prod(sizein),'The inputs sizein and sizeout should be a conformable');
-            
-		end
+            % Initialize
+            this.initialize('LinOpShape');
+        end
     end
     
     %% Core Methods containing implementations (Protected)

@@ -82,7 +82,7 @@ classdef LinOpBroadcastMatrix <  LinOp
             updateProp@LinOp(this,prop);
             % Update current-class specific properties
             if strcmp(prop,'M') || strcmp(prop,'all')
-                assert(size(this.M,2)==sz(this.index),'size(M,2) and sz(index) must be equal');
+                assert(size(this.M,2)==this.sizein(this.index),'size(M,2) and sizein(index) must be equal');
                 this.norm = norm(this.M);
                 if size(this.M,1)==size(this.M,2) && det(this.M)~=0
                     this.isInvertible=true;

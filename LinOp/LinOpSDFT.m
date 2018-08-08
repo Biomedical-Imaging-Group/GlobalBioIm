@@ -28,24 +28,35 @@ classdef LinOpSDFT <  LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
+        unitary
+    end
+    % - Readable
     properties (SetAccess = protected,GetAccess = public)
         index % index along wich dimension are computed the FFT
-        Notindex% ~index
+        Notindex% ~index   
+    end
+    % - Protected
+    properties (SetAccess = protected,GetAccess = protected)
         N % Number of element
         ndms % number of dimensions
-        unitary
     end
     
     %% Constructor
     methods
         function this = LinOpSDFT(sz,index,unitary, pad)
+            % Default values
             if nargin < 2 || isempty(index), index= 1:length(sz); end;
             if nargin < 3 || isempty(unitary), unitary=false; end;
             if nargin < 4 || isempty(pad), pad=sz; end
+            % Checks
             assert(issize(index),'The index should be a conformable  to sz');
             assert(islogical(unitary), 'UNITARY should be logical');  
             assert(issize(sz),'The input size sz should be a conformable  to a size ');
             assert(issize(pad) || isempty(pad),'pad  should be a conformable  to a size ');
+            % Set properties
             this.index = index;
             this.unitary= unitary;
             this.sizeout=pad;
@@ -55,9 +66,8 @@ classdef LinOpSDFT <  LinOp
                 this.isInvertible=true; % i.e. there is no padding
             end
             this.isDifferentiable=true;            
-            this.ndms = length(this.sizein);
-            % Special case for vectors 
-            if (this.ndms==2) && (this.sizein(2) ==1 || this.sizein(1) ==1)
+            this.ndms = length(this.sizein);          
+            if (this.ndms==2) && (this.sizein(2) ==1 || this.sizein(1) ==1) % Special case for vectors 
                 this.ndms = 1;
             end           
             if (~isempty(this.index))
@@ -70,7 +80,9 @@ classdef LinOpSDFT <  LinOp
                 this.Notindex = [];
             end
             assert(isequal(this.sizein(this.Notindex),pad(this.Notindex)),'padding values associated to NotIndex elements should be equal to those of sizein');
-            this.N= prod(this.sizeout(this.index));           
+            this.N= prod(this.sizeout(this.index));  
+            % Initialize
+            this.initialize('LinOpSDFT');
         end
     end
     

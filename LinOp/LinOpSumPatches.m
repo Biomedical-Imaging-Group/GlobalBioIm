@@ -27,6 +27,8 @@ classdef LinOpSumPatches <  LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
+    %% Properties
+    % - Readable
     properties (SetAccess = protected,GetAccess = public)
         szPatch    % array containing the patch size in each direction
         sel;
@@ -35,15 +37,19 @@ classdef LinOpSumPatches <  LinOp
     %% Constructor
     methods
         function this = LinOpSumPatches(sz,szPatch)
-            this.name ='LinOpSumPatches';
+            % Checks
             assert(cmpSize(size(sz),size(szPatch)),'Parameters sz and szPatches must have the same size');
-            assert(~any(mod(sz,szPatch)),'Sizes in sz must be multiples of patch sizes in szPatches');  
+            assert(~any(mod(sz,szPatch)),'Sizes in sz must be multiples of patch sizes in szPatches');
+            % Set properties
+            this.name ='LinOpSumPatches';
             this.sizein=sz;
             this.szPatch=szPatch;
-            this.sizeout=this.szPatch;           
+            this.sizeout=this.szPatch;
             for n=1:length(this.sizein)
                 this.sel{n}=this.szPatch(n)*ones(1,this.sizein(n)/this.szPatch(n));
             end
+            % Initialize
+            this.initialize('LinOpSumPatches');
 		end
     end
 	

@@ -129,7 +129,9 @@ classdef (Abstract) Map < handle
                     this.listenerList{end+1}=addlistener(this.(src.Name),'modified',@this.handleModifiedEvents);
                 elseif isa(this.(src.Name),'cell') && isa(this.(src.Name){1},'Map')
                     for i=1:length(this.(src.Name))
-                        this.listenerList{end+1}=addlistener(this.(src.Name){i},'modified',@this.handleModifiedEvents);
+                        if ~any(cellfun(@(x) isequal(this.(src.Name){2},x.Source{1}),this.listenerList))
+                            this.listenerList{end+1}=addlistener(this.(src.Name){i},'modified',@this.handleModifiedEvents);
+                       end
                     end
                 end
             end

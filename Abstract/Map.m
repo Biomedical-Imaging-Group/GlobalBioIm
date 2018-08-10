@@ -120,7 +120,8 @@ classdef (Abstract) Map < handle
             % This function is called when an observable property is
             % set to another value in order to update properly some
             % (precomputed) properties (re-initialize)
-            disp(['     In ',this.name,' property ',src.Name,' has been updated']);
+            
+            %disp(['     In ',this.name,' property ',src.Name,' has been updated']);
             this.updateProp(src.Name);
             % Because the listeners for modified events are lost when a new
             % object is set to the property -> define a new one
@@ -129,9 +130,9 @@ classdef (Abstract) Map < handle
                     this.listenerList{end+1}=addlistener(this.(src.Name),'modified',@this.handleModifiedEvents);
                 elseif isa(this.(src.Name),'cell') && isa(this.(src.Name){1},'Map')
                     for i=1:length(this.(src.Name))
-                        if ~any(cellfun(@(x) isequal(this.(src.Name){2},x.Source{1}),this.listenerList))
+                        if ~any(cellfun(@(x) isequal(this.(src.Name){i},x.Source{1}),this.listenerList))
                             this.listenerList{end+1}=addlistener(this.(src.Name){i},'modified',@this.handleModifiedEvents);
-                       end
+                        end
                     end
                 end
             end
@@ -159,7 +160,7 @@ classdef (Abstract) Map < handle
                     ,prop,'UniformOutput',false));
                 if any(idx)
                     sourc.Name=prop{idx};
-                    disp(['     In ',this.name,' property ',sourc.Name,' has been modified']);
+                    %disp(['     In ',this.name,' property ',sourc.Name,' has been modified']);
                     handlePostSetEvents(this,sourc,evnt);
                 end
             end

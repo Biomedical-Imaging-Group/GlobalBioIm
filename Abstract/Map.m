@@ -59,13 +59,18 @@ classdef (Abstract) Map < handle
             'applyJacobianT', struct('in', [], 'out', []), ...
             'applyInverse', struct('in', [], 'out', []));
         precomputeCache = struct();
+        listenerList=cell(0);
+    end
+    % - Hidden
+    properties (Hidden)
+        cleanup
     end
     
     %% Events
     events
       modified % to propagate the modification of a property into compositions
     end
-    
+        
     %% Initialize and methods related to listeners (Private)
     methods (Access = protected)
         function updateProp(this,prop)
@@ -96,50 +101,66 @@ classdef (Abstract) Map < handle
                     % If public property, add a PostSet listener
                     pp=findprop(this,prop{i});
                     if strcmp(pp.SetAccess,'public')
-                        addlistener(this,prop{i},'PostSet',@this.handlePostSetEvents);
+                        this.listenerList{end+1}=addlistener(this,prop{i},'PreSet',@this.handlePreSetEvents);
+                        this.listenerList{end+1}=addlistener(this,prop{i},'PostSet',@this.handlePostSetEvents);
                         % If property is a Map, add a modified listener
                         if isa(this.(prop{i}),'Map')
-                            addlistener(this.(prop{i}),'modified',@this.handleModifiedEvents);
+                            this.listenerList{end+1}=addlistener(this.(prop{i}),'modified',@this.handleModifiedEvents);
                         elseif isa(this.(prop{i}),'cell') && isa(this.(prop{i}){1},'Map')
                             for j=1:length(this.(prop{i}))
-                                addlistener(this.(prop{i}){j},'modified',@this.handleModifiedEvents);
+                                this.listenerList{end+1}=addlistener(this.(prop{i}){j},'modified',@this.handleModifiedEvents);
                             end
                         end
                     end
                 end
+                this.cleanup = onCleanup(@()delete(this));
             end
         end
         function handlePostSetEvents(this,src,evnt)
             % This function is called when an observable property is
             % set to another value in order to update properly some
             % (precomputed) properties (re-initialize)
-            disp(['In ',this.name,' property ',src.Name,' has been updated']);
+            disp(['     In ',this.name,' property ',src.Name,' has been updated']);
             this.updateProp(src.Name);
             % Because the listeners for modified events are lost when a new
             % object is set to the property -> define a new one
             if strcmp(evnt.EventName,'PostSet')
                 if isa(this.(src.Name),'Map')
-                    addlistener(this.(src.Name),'modified',@this.handleModifiedEvents);
+                    this.listenerList{end+1}=addlistener(this.(src.Name),'modified',@this.handleModifiedEvents);
                 elseif isa(this.(src.Name),'cell') && isa(this.(src.Name){1},'Map')
                     for i=1:length(this.(src.Name))
-                        addlistener(this.(src.Name){i},'modified',@this.handleModifiedEvents);
+                        this.listenerList{end+1}=addlistener(this.(src.Name){i},'modified',@this.handleModifiedEvents);
                     end
                 end
             end
             % To propagate the modification within Map properties
             notify(this,'modified');
         end
+        function handlePreSetEvents(this,src,~)
+            % This function is called before an observable property is set
+            if isa(this.(src.Name),'Map')
+                this.(src.Name).clearListenerList();
+            elseif isa(this.(src.Name),'cell') && isa(this.(src.Name){1},'Map')
+                for i=1:length(this.(src.Name))
+                    this.(src.Name){i}.clearListenerList();
+                end
+            end
+        end
         function handleModifiedEvents(this,src,evnt) % Necessary for properties which are objects of the Library (i.e. Maps)
             % This function is called when an observable property has been
             % modified in order to update properly some (precomputed)
             % properties (re-initialize)
             prop=properties(this);
-            idx=cell2mat(cellfun(@(x) (isa(this.(x),'Map')  && this.(x)==src) || ...
-                                      (isa(this.(x),'cell') && any(cell2mat(cellfun(@(y) isa(y,'Map') && y==src,this.(x),'UniformOutput',false))))...
-                                     ,prop,'UniformOutput',false));
-            sourc.Name=prop{idx};
-            disp(['In ',this.name,' property ',sourc.Name,' has been modified']);
-            handlePostSetEvents(this,sourc,evnt);
+            if isvalid(this) % to avoid error with already deleted objects
+                idx=cell2mat(cellfun(@(x) (isa(this.(x),'Map')  && this.(x)==src) || ...
+                    (isa(this.(x),'cell') && any(cell2mat(cellfun(@(y) isa(y,'Map') && y==src,this.(x),'UniformOutput',false))))...
+                    ,prop,'UniformOutput',false));
+                if any(idx)
+                    sourc.Name=prop{idx};
+                    disp(['     In ',this.name,' property ',sourc.Name,' has been modified']);
+                    handlePostSetEvents(this,sourc,evnt);
+                end
+            end
         end
     end
     
@@ -319,8 +340,7 @@ classdef (Abstract) Map < handle
         function sz = size(this, varargin)
             sz = {this.sizeout, this.sizein};
             if length(varargin) == 1
-                sz = sz{varargin{:}};
-                
+                sz = sz{varargin{:}};               
             end
         end
     end
@@ -398,6 +418,8 @@ classdef (Abstract) Map < handle
     %% Utility methods
     % - memoize(this, fieldName, fcn, xs)
     % - clearCaches
+    % - clearListenerList
+    % - delete
     methods (Access = protected)
         function x = memoize(this, fieldName, fcn, x)
             if ~iscell(x) % handle single input case
@@ -410,16 +432,44 @@ classdef (Abstract) Map < handle
             else
                 x = this.memoCache.(fieldName).out;
             end
-        end      
+        end
     end
-     methods 
-         function clearCaches(this)
-             % Clear precomputation and memoize caches
-             this.precomputeCache = struct();       % clean the precompute cache
-             fnames = fieldnames(this.memoizeOpts); % clean the memoize cache
-             for i = 1:length(fnames)
-                 this.memoCache.(fnames{i})=struct('in', [], 'out', []);
-             end
-         end
-     end
+    methods
+        function clearCaches(this)
+            % Clear precomputation and memoize caches
+            this.precomputeCache = struct();       % clean the precompute cache
+            fnames = fieldnames(this.memoizeOpts); % clean the memoize cache
+            for i = 1:length(fnames)
+                this.memoCache.(fnames{i})=struct('in', [], 'out', []);
+            end
+        end
+        function clearListenerList(this)
+            % Clear properly the listener list
+            prop=properties(this);
+            for i=1:length(prop)
+                % If public property, add a PostSet listener
+                pp=findprop(this,prop{i});
+                if ~isempty(pp) && strcmp(pp.SetAccess,'public')
+                    if isa(this.(prop{i}),'Map')
+                        this.(prop{i}).clearListenerList();
+                    elseif isa(this.(prop{i}),'cell') && isa(this.(prop{i}){1},'Map')
+                        for j=1:length(this.(prop{i}))
+                            this.(prop{i}){j}.clearListenerList();
+                        end
+                    end
+                end
+            end
+            if isvalid(this) % to avoid error with already deleted objects
+                for ii = 1:numel(this.listenerList)
+                    if isa(this.listenerList{ii}.Source{1},'Map')
+                        delete(this.listenerList{ii});
+                    end
+                end
+                this.listenerList=cell(0);
+            end
+        end
+        function delete(this)
+            this.clearListenerList();
+        end
+    end
 end

@@ -74,7 +74,8 @@ classdef CostComposition < MapComposition & Cost
                             this.nu=T.diag;
                         end
                     end
-                end
+                    delete(T);
+                end  
             end
         end
     end

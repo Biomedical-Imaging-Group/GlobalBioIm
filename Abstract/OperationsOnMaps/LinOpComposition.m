@@ -1,4 +1,4 @@
-classdef LinOpComposition < MapComposition & LinOp
+classdef LinOpComposition <  LinOp & MapComposition
     % LinOpComposition : Composition of LinOps
     % $$ \\mathrm{H}(\\mathrm{x}) = \\mathrm{H}_1 \\mathrm{H}_2\\mathrm{x} $$
     %
@@ -36,7 +36,7 @@ classdef LinOpComposition < MapComposition & LinOp
     methods
         function this = LinOpComposition(H1,H2)
             % Call superclass constructor
-            this@MapComposition(H1,H2);      
+            this@MapComposition(H1,H2); 
             % Initialize
             this.initialize('LinOpComposition');
         end
@@ -136,6 +136,7 @@ classdef LinOpComposition < MapComposition & LinOp
                else
                     M = LinOpComposition(this, G);
                 end
+                delete(H2G);
             else
                 M=makeComposition_@MapComposition(this,G);
             end

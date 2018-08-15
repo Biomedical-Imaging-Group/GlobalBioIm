@@ -123,8 +123,6 @@ classdef OptiFGP < Opti
             this.P = Pnew;
             this.xopt = this.C.applyProx(this.F0.y - this.lambda*this.D'*(this.P),0);
             
-            
-            this.xopt = this.C.applyProx(this.F0.y - this.lambda*this.D'*(this.P),0);
             flag = this.OPTI_NEXT_IT;
         end
     end

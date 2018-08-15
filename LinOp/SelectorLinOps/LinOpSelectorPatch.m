@@ -56,31 +56,4 @@ classdef LinOpSelectorPatch < LinOpSelector
             end
         end
     end
-    
-    %% Core Methods containing implementations (Protected)
-	methods (Access = protected)		
-        function y = apply_(this,x)
-            % Reimplemented from parent class :class:`LinOpSelector`.           
-            y =x(this.sel{:});
-        end        
-        function y = applyAdjoint_(this,x)
-            % Reimplemented from parent class :class:`LinOpSelector`.  
-            y = zeros_(this.sizein);
-            y(this.sel{:}) = x;
-        end
-        function y = applyHtH_(this,x)
-            % Reimplemented from parent class :class:`LinOpSelector`.  
-            y = zeros_(this.sizein);
-            y(this.sel{:}) = x(this.sel{:});            
-        end
-        function y = applyHHt_(this,x)
-            % Reimplemented from parent class :class:`LinOpSelector`.  
-            y = x;
-        end
-        function M = makeHtH_(this)
-            % Reimplemented from parent class :class:`LinOpSelector`. 
-            w=zeros_(this.sizein);w(this.sel{:})=1;
-            M=LinOpDiag([],w);
-        end
-    end
 end

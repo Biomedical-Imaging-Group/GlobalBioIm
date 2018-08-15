@@ -49,20 +49,6 @@ classdef LinOpSummation < MapSummation &  LinOp
                 x = x + this.alpha(n) .* this.mapsCell{n}(1).applyAdjoint(y);
             end
         end	
-		function y = applyHtH_(this,x) 
-            % Reimplemented from :class:`LinOp` 
-			y =  zeros_(this.sizein);
-			for n = 1:this.numMaps
-				y = y + this.alpha(n) .* this.mapsCell{n}.applyHtH(x);
-			end
-        end		
-		function x = applyHHt_(this,y) 
-            % Reimplemented from :class:`LinOp` 
-            x =  zeros_(this.sizeout);
-            for n = 1:this.numMaps
-                x = x + this.alpha(n) .* this.mapsCell{n}.applyHHt(y);
-            end
-		end
         function M = makeAdjoint_(this)
             % Reimplemented from :class:`LinOp`
             adjointCell = cellfun(@(x)x',this.mapsCell,'UniformOutput',false);

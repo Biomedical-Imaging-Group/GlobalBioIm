@@ -10,7 +10,7 @@
 % See LinOp, LinOpConv, LinOpHess, Cost, CostL2, CostNonNeg,  
 % CostMixNorm1Schatt, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
 %------------------------------------------------------------
-clear; close all;
+close all;
 help Deconv_LS_HessSchatt_NonNeg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -93,3 +93,18 @@ bar(1,[ADMM.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
 bar(2,[PDC.time],'FaceColor',orderCol(2,:),'EdgeColor','k');
 set(gca,'xtick',[1 2]);ylabel('Time (s)');
 set(gca,'xticklabels',{'LS+HESS+POS (ADMM)','LS+HESS+POS (Condat)'});set(gca,'XTickLabelRotation',45)
+
+%% For Unitary Tests
+global generateDataUnitTests stateTest message
+if ~isempty(generateDataUnitTests)
+    if generateDataUnitTests
+        valADMM=ADMM.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_HessSchatt_NonNeg_ADMM','valADMM');
+        valPDC=PDC.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_HessSchatt_NonNeg_PDC','valPDC');
+    else
+        load('Util/UnitTest/Data/Deconv_LS_HessSchatt_NonNeg_PDC');
+        load('Util/UnitTest/Data/Deconv_LS_HessSchatt_NonNeg_ADMM');
+        stateTest=isequal(valADMM,ADMM.OutOp.evolcost) &&  isequal(valPDC,PDC.OutOp.evolcost);
+        message=['Max error between costs evolution : ',num2str(norm(valADMM-ADMM.OutOp.evolcost),...
+            norm(valPDC-PDC.OutOp.evolcost))];
+    end
+end

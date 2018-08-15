@@ -10,7 +10,7 @@
 % See LinOp, LinOpConv, Cost, CostKullLeib, CostNonNeg, Opti, 
 % OptiFBS, OptiRichLucy, OutpuOpti
 %------------------------------------------------------------
-clear; close all; 
+close all; 
 help Deconv_KL_NonNeg_NoReg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -78,3 +78,18 @@ bar(1,[FBS.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
 bar(2,[RL.time],'FaceColor',orderCol(2,:),'EdgeColor','k');
 set(gca,'xtick',[1 2]);ylabel('Time (s)');
 set(gca,'xticklabels',{'KL+POS (FBS)','KL+POS (RL)'});set(gca,'XTickLabelRotation',45)
+
+%% For Unitary Tests
+global generateDataUnitTests stateTest message
+if ~isempty(generateDataUnitTests)
+    if generateDataUnitTests
+        valFBS=FBS.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_KL_NonNeg_NoReg_FBS','valFBS');
+        valRL=RL.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_KL_NonNeg_NoReg_RL','valRL');
+    else
+        load('Util/UnitTest/Data/Deconv_KL_NonNeg_NoReg_FBS');
+        load('Util/UnitTest/Data/Deconv_KL_NonNeg_NoReg_RL');
+        stateTest=isequal(valFBS,FBS.OutOp.evolcost) &&  isequal(valRL,RL.OutOp.evolcost);
+        message=['Max error between costs evolution : ',num2str(max(norm(valFBS-FBS.OutOp.evolcost),...
+            norm(valRL-RL.OutOp.evolcost)))];
+    end
+end

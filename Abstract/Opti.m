@@ -58,17 +58,17 @@ classdef Opti < matlab.mixin.SetGet
         OPTI_STOP    = 2;    % stop iteration
     end
 
-    %% Constructor 
+    %% Methods
     methods
         function run(this,x0)
             % Run the algorithm.
             %
-            % :param x0: initial point in \\(\\in X\\), if x0=[] restarts from the current value :attr:`xopt`.
+            % :param x0: initial point in \\(\\in X\\), if no argument restarts from the current value :attr:`xopt`.
             %
             % **note**: this method does not return anything, the result being stored in public attribute :attr:`xopt`.
             if(nargin==1)
-            assert(~isempty(this.xopt),'Missing starting point x0');
-            x0 = this.xopt;
+                assert(~isempty(this.xopt),'Missing starting point x0');
+                x0 = this.xopt;
             end
             this.initialize(x0);
             tstart=tic;

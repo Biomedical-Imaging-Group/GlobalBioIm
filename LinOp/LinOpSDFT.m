@@ -80,7 +80,12 @@ classdef LinOpSDFT <  LinOp
                 this.Notindex = [];
             end
             assert(isequal(this.sizein(this.Notindex),pad(this.Notindex)),'padding values associated to NotIndex elements should be equal to those of sizein');
-            this.N= prod(this.sizeout(this.index));  
+            this.N= prod(this.sizeout(this.index));    
+            if this.unitary
+                this.norm=1;
+            else
+                this.norm=sqrt(this.N);
+            end               
             % Initialize
             this.initialize('LinOpSDFT');
         end

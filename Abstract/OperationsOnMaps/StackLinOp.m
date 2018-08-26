@@ -103,7 +103,7 @@ classdef StackLinOp < LinOp
                 y = reshape(y, this.sizeout);
             end
         end
-        function y = adjoint_(this,x) % apply the adjoint
+        function y = applyAdjoint_(this,x) % apply the adjoint
             assert(checkSize(x, this.sizeout));
             y =  zeros_(this.sizein);
             

@@ -74,6 +74,9 @@ classdef StackMap < Map
                 assert(cmpSize(this.sizeout,this.mapsCell{n}.sizeout),'%d-th input does not have the consistent sizeout ', n);
                 this.isDifferentiable= this.mapsCell{n}.isDifferentiable && this.isDifferentiable;
             end
+            if this.sizeout(end)==1
+               this.sizeout(end) = []; 
+            end
             this.sizeout = [this.sizeout,this.numMaps];
         end
     end

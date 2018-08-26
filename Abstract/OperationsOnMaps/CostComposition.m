@@ -34,6 +34,9 @@ classdef CostComposition < MapComposition & Cost
         isH2SemiOrtho=false;
         nu=0;
     end
+    properties
+        isInputReal=0;% to correctly switch in the  grad
+    end
     
     %% Constructor
     methods
@@ -88,6 +91,9 @@ classdef CostComposition < MapComposition & Cost
         function g=applyGrad_(this,x)
             % Reimplemented from :class:`Cost`
             g = this.H2.applyJacobianT(this.H1.applyGrad(this.H2.apply(x)),x);
+            if this.isInputReal
+                g = real(g);
+            end
         end
         function x=applyProx_(this,z,alpha)
             % Reimplemented from :class:`Cost`

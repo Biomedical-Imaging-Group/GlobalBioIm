@@ -57,15 +57,19 @@ classdef CostSummation <  MapSummation & Cost
                 assert(iscell(this.mapsCell) && allcosts, 'Property mapsCell should be a cell array Cost');
                 this.isConvex=this.mapsCell{1}.isConvex;
                 this.isSeparable=this.mapsCell{1}.isSeparable;
-                this.lip=this.mapsCell{1}.lip;
                 for n =2:length(this.mapsCell)
                     this.isConvex = this.isConvex & this.mapsCell{n}.isConvex;
                     this.isSeparable = this.isSeparable & this.mapsCell{n}.isSeparable;
-                    if this.mapsCell{n}.lip~=-1
-                        this.lip = this.lip + this.mapsCell{n}.lip;
-                    else
-                        this.lip=-1;
-                        break;
+                end
+                this.lip=this.mapsCell{1}.lip;
+                if this.lip~=-1
+                    for n =2:length(this.mapsCell)
+                        if this.mapsCell{n}.lip~=-1
+                            this.lip = this.lip + this.mapsCell{n}.lip;
+                        else
+                            this.lip=-1;
+                            break;
+                        end
                     end
                 end
             end

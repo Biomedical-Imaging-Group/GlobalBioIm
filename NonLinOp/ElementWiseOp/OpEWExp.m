@@ -1,12 +1,12 @@
-classdef OpEWInverse < Map
+classdef OpEWExp < Map
     % Element-wise Inverse operator: compute the pointwise inverse
-    % $$[\\mathrm{H}(x)]_k = \\frac{1}{x_k} $$
+    % $$[\\mathrm{H}(x)]_k = \\exp(x_k) $$
     % 
     % :param sz: input size
     %
     % All attributes of parent class :class:`Map` are inherited. 
     %
-    % **Example** H=OpEWInverse(sz)
+    % **Example** H=OpEWExp(sz)
     %
     % See also :class:`Map`
     
@@ -28,31 +28,27 @@ classdef OpEWInverse < Map
     
     %% Constructor
     methods
-        function this = OpEWInverse(sz)
+        function this = OpEWExp(sz)
             % Set properties
-            this.name ='OpEWInverse ';
+            this.name ='OpEWExp ';
             this.sizein=sz;
             this.sizeout=sz;
             this.isDifferentiable=true;
             this.isInvertible=true;
             % Initialize
-            this.initialize('OpEWInverse');
+            this.initialize('OpEWExp');
         end
     end
 	
     %% Core Methods containing implementations (Protected)
 	methods (Access = protected)
         function y = apply_(this,x)
-            % Reimplemented from parent class :class:`Map`.
-            
-            assert(sum(x(:)==0)==0,'Input vector contains zeros');
-            y=1./x;
+            % Reimplemented from parent class :class:`Map`.            
+            y=exp(x);
         end	
         function x = applyJacobianT_(this,y,v)
             % Reimplemented from parent class :class:`Map`.
-
-            assert(sum(v(:)==0)==0,'Input vector contains zeros');
-            x=-1./v.^2.*y;
+            x=exp(v).*y;
         end	
     end
 end

@@ -35,6 +35,8 @@ classdef OpEWSquaredMagnitude < Map
             this.sizeout=sz;
             this.isDifferentiable=true;
             this.isInvertible=false;
+            % Initialize
+            this.initialize('OpEWSquaredMagnitude');
         end
     end
 	

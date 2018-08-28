@@ -42,7 +42,7 @@ classdef CostSummation <  MapSummation & Cost
             if this.lip~=-1
                 for n =2:length(costs)
                     if costs{n}.lip~=-1
-                        this.lip = this.lip + costs{n}.lip;
+                        this.lip = this.lip + this.alpha(n)*costs{n}.lip;
                     else
                         this.lip=-1;
                         break;

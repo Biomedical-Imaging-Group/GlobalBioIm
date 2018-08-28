@@ -28,14 +28,15 @@ classdef CostComposition < MapComposition & Cost
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
     %% Properties
-    % - Private 
+    % - Public
+    properties (SetObservable, AbortSet)
+        isInputReal=0;% to correctly switch in the  grad
+    end
+    % - Private
     properties  (SetAccess = protected,GetAccess = protected)
         isH2LinOp=false;
         isH2SemiOrtho=false;
         nu=0;
-    end
-    properties
-        isInputReal=0;% to correctly switch in the  grad
     end
     
     %% Constructor

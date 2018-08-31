@@ -38,11 +38,12 @@ classdef CostSummation <  MapSummation & Cost
                 this.isConvex = this.isConvex & costs{n}.isConvex;
                 this.isSeparable = this.isSeparable & costs{n}.isSeparable;              
             end
-            this.lip=costs{1}.lip;
+            this.lip = costs{1}.lip;
             if this.lip~=-1
+                this.lip = abs(this.alpha(1))*this.lip;
                 for n =2:length(costs)
                     if costs{n}.lip~=-1
-                        this.lip = this.lip + this.alpha(n)*costs{n}.lip;
+                        this.lip = this.lip + abs(this.alpha(n))*costs{n}.lip;
                     else
                         this.lip=-1;
                         break;

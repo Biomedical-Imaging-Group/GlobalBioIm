@@ -118,12 +118,12 @@ classdef CostL2Composition <  CostComposition
             % $$ C(\\mathrm{x}) = \\frac12 \\langle \\mathrm{W H^{\\star}Hx,x} \\rangle - \\langle \\mathrm{x}, \\mathrm{H^* Wy}  \\rangle  + \\frac12\\| \\mathrm{y} \\|^2_{\\mathrm{W}}$$
 			if this.isH2LinOp && (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity) && this.doPrecomputation
 				if ~isfield(this.precomputeCache,'WHty')
-					this.precomputeCache.WHty=this.H1.W*this.H2.applyAdjoint(this.H1.y);
+					this.precomputeCache.WHty=this.H1.W.diag*this.H2.applyAdjoint(this.H1.y);
 				end
 				if ~isfield(this.precomputeCache,'ytWy')
-					this.precomputeCache.ytWy= this.H1.y(:)' * reshape(this.H1.W * this.H1.y,numel(this.H1.y), 1);
+					this.precomputeCache.ytWy= this.H1.y(:)' * reshape(this.H1.W.diag * this.H1.y,numel(this.H1.y), 1);
 				end
-				y=0.5 * x(:)' * reshape(this.H1.W*this.H2.applyHtH(x),numel(this.H1.y),1) - x(:)' * this.precomputeCache.WHty(:) + 0.5 * this.precomputeCache.ytWy;
+				y=0.5 * x(:)' * reshape(this.H1.W.diag*this.H2.applyHtH(x),prod(this.H2.sizein),1) - x(:)' * this.precomputeCache.WHty(:) + 0.5 * this.precomputeCache.ytWy;
 				y = real(y); % due to numerical error
 			else
 				y=apply_@CostComposition(this,x);
@@ -142,7 +142,7 @@ classdef CostL2Composition <  CostComposition
                 if ~isfield(this.precomputeCache,'WHty')
                     this.precomputeCache.WHty=this.H1.W*this.H2.applyAdjoint(this.H1.y);
                 end
-                g=this.H1.W*this.H2.applyHtH(x) - this.precomputeCache.WHty;
+                g=this.H1.W.diag*this.H2.applyHtH(x) - this.precomputeCache.WHty;
             else
                 g=applyGrad_@CostComposition(this,x);
             end

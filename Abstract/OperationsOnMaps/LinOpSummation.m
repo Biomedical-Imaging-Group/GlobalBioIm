@@ -34,7 +34,7 @@ classdef LinOpSummation < MapSummation &  LinOp
             % Set properties 
             this.name ='LinOpSummation';			
             % Initialize
-            this.initialize('LinOpSummation');
+            this.initObject('LinOpSummation');
         end
     end
     %% updateProp method (Private)

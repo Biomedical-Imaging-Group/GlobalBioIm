@@ -49,7 +49,7 @@ classdef CostL2 < Cost
             this.isSeparable=true;
             this.isDifferentiable=true;
             % Initialize
-            this.initialize('CostL2');
+            this.initObject('CostL2');
         end
     end
     %% updateProp method (Private)

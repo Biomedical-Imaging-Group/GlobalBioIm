@@ -45,7 +45,7 @@ classdef CostComplexCircle < CostComplexRing
             this.name='CostComplexCircle';
 			this.isConvex= false;    
             % Initialize
-            this.initialize('CostComplexCircle');
+            this.initObject('CostComplexCircle');
         end
     end
 end

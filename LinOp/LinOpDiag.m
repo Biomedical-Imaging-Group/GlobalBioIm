@@ -58,7 +58,7 @@ classdef LinOpDiag <  LinOp
             this.diag=diag;
             this.isDifferentiable=true;
             % Initialize 
-            this.initialize('LinOpDiag');
+            this.initObject('LinOpDiag');
         end
     end
     %% updateProp method (Private)

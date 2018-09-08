@@ -42,7 +42,7 @@ classdef MapComposition < Map
             this.sizein=H2.sizein;
             this.sizeout=H1.sizeout;
             % Initialize
-            this.initialize('MapComposition');
+            this.initObject('MapComposition');
         end
     end
     %% updateProp method (Private)

@@ -38,7 +38,7 @@ classdef CostMixNorm21NonNeg < CostMixNorm21
             % Set properties
             this.name='CostMixNorm21NonNeg';
             % Initialize
-            this.initialize('CostMixNorm21NonNeg');
+            this.initObject('CostMixNorm21NonNeg');
         end
     end
     

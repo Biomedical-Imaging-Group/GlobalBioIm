@@ -36,7 +36,7 @@ classdef CostLinear < Cost
             this.isDifferentiable=true;
             this.isSeparable=true;
             % Initialize
-            this.initialize('CostLinear');
+            this.initObject('CostLinear');
         end
     end
     

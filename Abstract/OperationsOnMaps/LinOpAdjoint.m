@@ -42,7 +42,7 @@ classdef LinOpAdjoint < LinOp
             this.sizeout =  this.TLinOp.sizein;			
             this.norm = this.TLinOp.norm;
             % Initialize
-            this.initialize('LinOpAdjoint');
+            this.initObject('LinOpAdjoint');
         end       
     end
 	

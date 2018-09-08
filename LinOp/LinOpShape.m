@@ -40,7 +40,7 @@ classdef LinOpShape <  LinOp
             this.sizein = sizein;
             this.sizeout = sizeout;
             % Initialize
-            this.initialize('LinOpShape');
+            this.initObject('LinOpShape');
         end
     end
     

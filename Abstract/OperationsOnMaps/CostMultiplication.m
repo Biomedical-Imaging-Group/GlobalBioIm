@@ -52,7 +52,7 @@ classdef CostMultiplication <  Cost
             this.cost1 = C1;
             this.cost2 = C2;
             % Initialize
-            this.initialize('CostMultiplication');
+            this.initObject('CostMultiplication');
         end
     end
     %% updateProp method (Private)

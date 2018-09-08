@@ -51,7 +51,7 @@ classdef CostMixNorm21 < Cost
             this.isDifferentiable=false;
             this.isSeparable=false;
             % Initialize
-            this.initialize('CostMixNorm21');
+            this.initObject('CostMixNorm21');
         end
     end
     %% updateProp method (Private)

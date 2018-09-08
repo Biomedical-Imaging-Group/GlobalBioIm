@@ -56,7 +56,7 @@ classdef CostHyperBolic < Cost
             this.index = index;          
             this.memoizeOpts.computeF=true;
             % Initialize
-            this.initialize('CostHyperBolic');
+            this.initObject('CostHyperBolic');
         end
     end
     %% updateProp method (Private)

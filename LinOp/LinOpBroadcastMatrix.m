@@ -70,7 +70,7 @@ classdef LinOpBroadcastMatrix <  LinOp
             this.permIdxOut=[2:index,1,index+1:this.ndms];            
             this.isDifferentiable=true;
             % Initialize
-            this.initialize('LinOpBroadcastMatrix');
+            this.initObject('LinOpBroadcastMatrix');
         end
     end
     %% updateProp method (Private)

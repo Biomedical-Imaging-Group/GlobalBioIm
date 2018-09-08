@@ -39,7 +39,7 @@ classdef CostReals < CostRectangle
             % Set properties
             this.name='CostReals';  
             % Initialize
-            this.initialize('CostReals');
+            this.initObject('CostReals');
         end
     end
     %% updateProp method (Private)

@@ -49,7 +49,7 @@ classdef LinOpSumPatches <  LinOp
                 this.sel{n}=this.szPatch(n)*ones(1,this.sizein(n)/this.szPatch(n));
             end
             % Initialize
-            this.initialize('LinOpSumPatches');
+            this.initObject('LinOpSumPatches');
 		end
     end
 	

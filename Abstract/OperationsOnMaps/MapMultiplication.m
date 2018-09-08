@@ -42,7 +42,7 @@ classdef MapMultiplication < Map
             this.sizein = this.M1.sizein;
             this.sizeout = this.M2.sizeout;
             % Initialize
-            this.initialize('MapMultiplication');
+            this.initObject('MapMultiplication');
         end
     end
     %% updateProp method (Private)

@@ -74,7 +74,7 @@ classdef LinOpSum <  LinOp
             this.imdims = this.sizein;
             this.imdims(~T)=1;
             % Initialize
-            this.initialize('LinOpSum');
+            this.initObject('LinOpSum');
         end
     end
     

@@ -84,7 +84,7 @@ classdef LinOpMatrix <  LinOp
             this.leftsz = prod(this.sizeout);            
             this.isDifferentiable=true;            
             % Initialize
-            this.initialize('LinOpMatrix');
+            this.initObject('LinOpMatrix');
         end
     end
     %% updateProp method (Private)

@@ -59,7 +59,7 @@ classdef LinOpSelectorPatch < LinOpSelector
                 this.sel{ii}=this.idxmin(ii):this.idxmax(ii);
             end
             % Initialize
-            this.initialize('LinOpSelectorPatch');
+            this.initObject('LinOpSelectorPatch');
         end
     end
 end

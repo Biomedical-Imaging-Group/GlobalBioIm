@@ -83,7 +83,7 @@ classdef LinOpHess <  LinOp
                 this.sizeout(end+1) = (this.lgthidx+1)*this.lgthidx/2;
             end
             % Initialize
-            this.initialize('LinOpHess');
+            this.initObject('LinOpHess');
         end
     end
     %% updateProp method (Private)

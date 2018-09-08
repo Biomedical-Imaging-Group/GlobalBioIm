@@ -51,7 +51,7 @@ classdef CostKullLeib < Cost
             this.isConvex=true;
             this.isSeparable=true;
             % Initialize
-            this.initialize('CostKullLeib');
+            this.initObject('CostKullLeib');
         end
     end
     %% updateProp method (Private)

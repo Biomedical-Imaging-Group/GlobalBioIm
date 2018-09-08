@@ -54,7 +54,7 @@ classdef LinOpSelector <  LinOp
             this.sizein=size(sel);
             this.isInvertible=false;
             % Initialize
-            this.initialize('LinOpSelector');
+            this.initObject('LinOpSelector');
         end
     end
     

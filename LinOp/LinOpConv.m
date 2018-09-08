@@ -210,7 +210,7 @@ classdef LinOpConv <  LinOp
             end
      
             %====== Initialize listeners
-            this.initialize('LinOpConv');
+            this.initObject('LinOpConv');
         end
     end
         %% updateProp method (Private)

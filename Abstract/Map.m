@@ -86,7 +86,7 @@ classdef (Abstract) Map < handle
                 this.clearCaches();
             end
         end
-        function initialize(this,hrch)
+        function initObject(this,hrch)
             % Run the updateProp method with parameter 'all' and
             % initialize the listeners if this method is executed from the
             % hierarchy level hrch corresponding to class(this).

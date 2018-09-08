@@ -37,7 +37,7 @@ classdef CostNonNeg < CostReals
             % Set properties
             this.name='CostNonNeg';
             % Initialize
-            this.initialize('CostNonNeg');
+            this.initObject('CostNonNeg');
         end
     end
 end

@@ -52,7 +52,7 @@ classdef CostComplexRing < CostIndicator
             this.inner=inner;
             this.outer = outer;
             % Initialize
-            this.initialize('CostComplexRing');         
+            this.initObject('CostComplexRing');         
         end
     end
     %% updateProp method (Private)

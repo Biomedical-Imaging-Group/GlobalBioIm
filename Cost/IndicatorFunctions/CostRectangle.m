@@ -58,7 +58,7 @@ classdef CostRectangle < CostIndicator
             this.isConvex=true;
             this.isSeparable=true;
             % Initialize
-            this.initialize('CostRectangle');
+            this.initObject('CostRectangle');
         end
     end
     %% updateProp method (Private)

@@ -52,7 +52,7 @@ classdef CostPartialSummation <  CostSummation
             this.partialGrad=1;  % default value
             this.Lsub=Lsub;
             % Initialize
-            this.initialize('CostPartialSummation');
+            this.initObject('CostPartialSummation');
         end
         function setLsub(this,Lsub)
             % Set Lsub parameter

@@ -31,7 +31,7 @@ classdef LinOpInversion < MapInversion & LinOp
             this@MapInversion(M);    
             assert(isa(M,'LinOp'),'Input should be a  LinOp');      
             % Initialize
-            this.initialize('LinOpInversion');
+            this.initObject('LinOpInversion');
           end
     end
     

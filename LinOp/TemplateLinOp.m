@@ -60,7 +60,7 @@ classdef TemplateLinOp <  LinOp
             this.sizeout = ??;  
                 % TODO : set new defined properties 
             % Initialize
-            this.initialize('TemplateLinOp'); % Call the method initialize with class name as attribute (du NOT put this.name BUT 'TemplateLinOp')
+            this.initObject('TemplateLinOp'); % Call the method initObject with class name as attribute (du NOT put this.name BUT 'TemplateLinOp')
 
             % IMPORTANT : No computations in the constructor, only
             % affectations. Computations should be done in the method

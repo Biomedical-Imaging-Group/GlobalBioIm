@@ -59,7 +59,7 @@ classdef CostGoodRoughness < Cost
             this.isConvex=false;
             this.isDifferentiable=true;
             % Initialize
-            this.initialize('CostGoodRoughness');
+            this.initObject('CostGoodRoughness');
         end
     end
     %% updateProp method (Private)

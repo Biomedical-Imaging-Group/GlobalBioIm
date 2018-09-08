@@ -82,7 +82,7 @@ classdef CostMixNormSchatt1 < Cost
                 this.reshDim=[this.sizein(1),prod(this.sizein(2:end-1)),1,6];
             end
             % Initialize
-            this.initialize('CostMixNormSchatt1');
+            this.initObject('CostMixNormSchatt1');
         end
     end
     %% updateProp method (Private)

@@ -63,7 +63,7 @@ classdef TemplateCost < Cost
             this.isSeparable=???;
                 % TODO : set new defined properties 
             % Initialize
-            this.initialize('TemplateCost'); % Call the method initialize with class name as attribute (du NOT put this.name BUT 'TemplateCost')
+            this.initObject('TemplateCost'); % Call the method initObject with class name as attribute (du NOT put this.name BUT 'TemplateCost')
 
             % IMPORTANT : No computations in the constructor, only
             % affectations. Computations should be done in the method

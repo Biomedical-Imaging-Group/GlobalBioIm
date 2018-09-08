@@ -49,7 +49,7 @@ classdef MapSummation < Map
             this.mapsCell = Maps;
             this.isInvertible=false;
             % Initialize
-            this.initialize('MapSummation');
+            this.initObject('MapSummation');
         end
     end
     %% updateProp method (Private)

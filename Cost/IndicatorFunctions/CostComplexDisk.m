@@ -44,7 +44,7 @@ classdef CostComplexDisk < CostComplexRing
             this.name='CostComplexDisk';
             this.isConvex= true;
             % Initialize
-            this.initialize('CostComplexDisk');
+            this.initObject('CostComplexDisk');
         end
     end
 end

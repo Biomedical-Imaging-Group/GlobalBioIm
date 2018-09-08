@@ -87,7 +87,7 @@ classdef LinOpSDFT <  LinOp
                 this.norm=sqrt(this.N);
             end               
             % Initialize
-            this.initialize('LinOpSDFT');
+            this.initObject('LinOpSDFT');
         end
     end
     

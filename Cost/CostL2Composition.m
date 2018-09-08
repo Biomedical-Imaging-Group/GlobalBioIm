@@ -48,7 +48,7 @@ classdef CostL2Composition <  CostComposition
             % Call superclass constructor
             this@CostComposition(H1,H2);
             % Initialize
-            this.initialize('CostL2Composition');
+            this.initObject('CostL2Composition');
         end
     end
     %% updateProp method (Private)

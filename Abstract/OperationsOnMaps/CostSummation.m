@@ -33,7 +33,7 @@ classdef CostSummation <  MapSummation & Cost
             % Set properties 
             this.name='CostSummation';            
             % Initialize
-            this.initialize('CostSummation');
+            this.initObject('CostSummation');
         end
         function M = makePartialSummation(this,Lsub)
             % Instanciation of :class:`CostPartialSummation`.

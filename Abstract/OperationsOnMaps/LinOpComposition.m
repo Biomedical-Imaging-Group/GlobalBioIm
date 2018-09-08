@@ -38,7 +38,7 @@ classdef LinOpComposition <  LinOp & MapComposition
             % Call superclass constructor
             this@MapComposition(H1,H2); 
             % Initialize
-            this.initialize('LinOpComposition');
+            this.initObject('LinOpComposition');
         end
     end
     %% updateProp method (Private)

@@ -64,7 +64,7 @@ classdef CostTV < CostComposition
             this.maxiter = 20;
             this.xtol=1e-5;
             % Initialize
-            this.initialize('CostTV');
+            this.initObject('CostTV');
         end
         function setProxAlgo(this,bounds,maxiter,xtol,Outop)
             % Set the parameters of :class:`OptiFGP` used to compute the proximity

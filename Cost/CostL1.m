@@ -49,7 +49,7 @@ classdef CostL1 < Cost
             this.isDifferentiable=false;
             this.nonneg = nonneg;
             % Initialize
-            this.initialize('CostL1');
+            this.initObject('CostL1');
         end
     end
     

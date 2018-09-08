@@ -45,7 +45,7 @@ classdef CostComposition < MapComposition & Cost
             % Call superclass constructor
             this@MapComposition(H1,H2);  
             % Initialize
-            this.initialize('CostComposition');
+            this.initObject('CostComposition');
         end
     end
     %% updateProp method (Private)

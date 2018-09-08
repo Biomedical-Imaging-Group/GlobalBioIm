@@ -53,7 +53,7 @@ classdef LinOpDownsample < LinOpSelector
                 this.sel{ii}=1:this.df(ii):this.sizein(ii);
             end
             % Initialize
-            this.initialize('LinOpDownsample');
+            this.initObject('LinOpDownsample');
         end
     end
     

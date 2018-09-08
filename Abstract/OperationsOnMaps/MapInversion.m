@@ -43,7 +43,7 @@ classdef MapInversion < Map
             this.sizeout =this.M.sizein;
             this.norm = 1/this.M.norm;
             % Initialize
-            this.initialize('MapInversion');
+            this.initObject('MapInversion');
           end
     end
     

@@ -82,7 +82,7 @@ classdef LinOpGrad <  LinOp
                 this.sizeout(end+1) = this.lgthidx;
             end
             % Initialize
-            this.initialize('LinOpGrad');
+            this.initObject('LinOpGrad');
         end
     end
     %% updateProp method (Private)

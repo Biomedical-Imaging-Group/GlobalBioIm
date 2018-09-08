@@ -38,7 +38,7 @@ classdef  CostIndicator < Cost
             % Set properties
             this.isDifferentiable=false;
             % Initialize
-            this.initialize('CostIndicator');
+            this.initObject('CostIndicator');
         end
     end
             

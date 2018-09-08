@@ -75,7 +75,7 @@ classdef LinOpBroadcast <  LinOp
             this.imdims(~T)=1;
             this.norm = prod(this.kerdims); % To be checked
             % Initialize
-            this.initialize('LinOpBroadcast');
+            this.initObject('LinOpBroadcast');
         end
     end
     

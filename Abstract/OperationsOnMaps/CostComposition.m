@@ -78,7 +78,7 @@ classdef CostComposition < MapComposition & Cost
                             this.nu=T.diag;
                         end
                     end
-                    delete(T);
+                    T.clearListenerList({this.H2});
                 end  
             end
         end

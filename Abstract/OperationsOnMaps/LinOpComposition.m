@@ -130,15 +130,15 @@ classdef LinOpComposition <  LinOp & MapComposition
              if ~isa(this.H1, 'LinOpComposition')  &&  isa(G, 'LinOpComposition')                 
                 M =  this.H1*(this.H2*G); % Since H1*H2 is not simplified,
              elseif isa(G,'LinOp')
-                H2G = this.H2*G; % Since H1*H2 is not simplified, first try to compose H2 with G
-                if ~isa(H2G, 'LinOpComposition')
-                    M=this.H1*H2G;
-               else
-                    M = LinOpComposition(this, G);
-                end
-                delete(H2G);
-            else
-                M=makeComposition_@MapComposition(this,G);
+                 H2G = this.H2*G; % Since H1*H2 is not simplified, first try to compose H2 with G
+                 if ~isa(H2G, 'LinOpComposition')
+                     M=this.H1*H2G;
+                 else
+                     M = LinOpComposition(this, G);
+                 end
+                 H2G.clearListenerList({this.H2,G});
+             else
+                 M=makeComposition_@MapComposition(this,G);
             end
         end
     end

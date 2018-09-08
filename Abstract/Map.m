@@ -61,10 +61,6 @@ classdef (Abstract) Map < handle
         precomputeCache = struct();
         listenerList=cell(0);
     end
-    % - Hidden
-    properties (Hidden)
-        cleanup
-    end
     
     %% Events
     events
@@ -113,7 +109,6 @@ classdef (Abstract) Map < handle
                         end
                     end
                 end
-                this.cleanup = onCleanup(@()delete(this));
             end
         end
         function handlePostSetEvents(this,src,evnt)
@@ -446,33 +441,35 @@ classdef (Abstract) Map < handle
                 this.memoCache.(fnames{i})=struct('in', [], 'out', []);
             end
         end
-        function clearListenerList(this)
-            % Clear properly the listener list
-            prop=properties(this);
-            for i=1:length(prop)
-                % If public property, add a PostSet listener
-                pp=findprop(this,prop{i});
-                if ~isempty(pp) && strcmp(pp.SetAccess,'public')
-                    if isa(this.(prop{i}),'Map')
-                        this.(prop{i}).clearListenerList();
-                    elseif isa(this.(prop{i}),'cell') && isa(this.(prop{i}){1},'Map')
-                        for j=1:length(this.(prop{i}))
-                            this.(prop{i}){j}.clearListenerList();
+        function clearListenerList(this,obj)
+            % Clear properly the listener list and call recursively on all
+            % public properties.
+            % If the given object is this, then do nothing
+            if nargin==1, obj={}; end;
+            if ~any(cellfun(@(x) isequal(this,x),obj))
+                prop=properties(this);
+                for i=1:length(prop)
+                    % If public property, add a PostSet listener
+                    pp=findprop(this,prop{i});
+                    if ~isempty(pp) && strcmp(pp.SetAccess,'public')
+                        if isa(this.(prop{i}),'Map')
+                            this.(prop{i}).clearListenerList(obj);
+                        elseif isa(this.(prop{i}),'cell') && isa(this.(prop{i}){1},'Map')
+                            for j=1:length(this.(prop{i}))
+                                this.(prop{i}){j}.clearListenerList(obj);
+                            end
                         end
                     end
                 end
-            end
-            if isvalid(this) % to avoid error with already deleted objects
-                for ii = 1:numel(this.listenerList)
-                    if isa(this.listenerList{ii}.Source{1},'Map')
-                        delete(this.listenerList{ii});
+                if isvalid(this) % to avoid error with already deleted objects
+                    for ii = 1:numel(this.listenerList)
+                        if isa(this.listenerList{ii}.Source{1},'Map')
+                            delete(this.listenerList{ii});
+                        end
                     end
+                    this.listenerList=cell(0);
                 end
-                this.listenerList=cell(0);
             end
-        end
-        function delete(this)
-            this.clearListenerList();
         end
     end
 end

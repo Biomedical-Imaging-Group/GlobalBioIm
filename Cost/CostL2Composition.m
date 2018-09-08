@@ -93,7 +93,7 @@ classdef CostL2Composition <  CostComposition
                         this.Id=LinOpIdentity(this.H2.sizeout);
                         this.doWoodbury=1;
                     end
-                    delete(T); 
+                    T.clearListenerList({this.H2});
                 end
                 this.name=sprintf('CostL2Composition ( %s )',this.H2.name);
             end

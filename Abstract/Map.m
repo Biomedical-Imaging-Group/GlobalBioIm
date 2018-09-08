@@ -417,7 +417,6 @@ classdef (Abstract) Map < handle
     % - memoize(this, fieldName, fcn, xs)
     % - clearCaches
     % - clearListenerList
-    % - delete
     methods (Access = protected)
         function x = memoize(this, fieldName, fcn, x)
             if ~iscell(x) % handle single input case

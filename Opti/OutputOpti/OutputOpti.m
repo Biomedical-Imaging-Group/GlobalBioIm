@@ -49,7 +49,7 @@ classdef OutputOpti < handle
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (SetAccess = protected,GetAccess = public)
+    properties
         name = 'OutputOpti'% name of the optimization algorithm
         evolcost;          % array saving the evolution of the cost function
         evolsnr;           % array saving the evolution of the error with the groud truth
@@ -96,7 +96,7 @@ classdef OutputOpti < handle
         	this.count=1;
         	this.evolcost=zeros_(1);
         	this.evolsnr=zeros_(1);
-			this.iternum = [];
+			this.iternum =zeros_(1);
 			this.evolxopt = {};
         end
         %% Update method

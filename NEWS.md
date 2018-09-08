@@ -1,3 +1,22 @@
+## v1.1.1 release notes
+The v1.1.1 release does not contain any major changes but mainly incremental improvements and bug fixes. 
+
+### Improvements 
+- Sfft functions: faster implementation, work with any dimension, new padding option argument.
+- Merge LinOpDFT into LinOpSDFT. LinOpDFT remains now as an alias.
+- Remove code duplication in SelectorLinOps.
+- Add unitary tests (using the provided examples, see /Util/UnitTest/Script.m)
+- Add subgradient in CostL1 
+- Add test for applyAdjointInverse method in checkMap
+- Add property for real input in CostComposition. When activated, takes the real part after gradient computation.
+
+#### Bug fixes
+- Fix bug in applyHtH and applyHHt of LinOpSummation
+- Fix a memory issue in Cost
+- Fix bug in the computation of the Lipschitz constant of CostSummation.
+- Fix index of the coefficients vetor in the plus method of LinOp
+- Fix superclass constructor call in CostReals
+
 ## v1.1 release notes
 The v1.1 release contains a new functionality for GPU computation plus incremental improvements and bug fixes. 
 

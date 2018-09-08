@@ -40,19 +40,11 @@ classdef OptiVMLMB<Opti
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    properties (Constant)
-        OPL_TASK_START  = 0; % first entry, start search
-        OPL_TASK_FG     = 1; % computation of F and G requested
-        OPL_TASK_FREEVARS  = 2; % caller has to determine the free variables
-        OPL_TASK_NEWX      = 3; % new variables available for inspection
-        OPL_TASK_CONV      = 4; % search has converged
-        OPL_TASK_WARN      = 5; % search aborted with warning
-        OPL_TASK_ERROR     = 6; % search aborted with error
-    end
-    % Full public properties
-    properties
-        m=3;                %  M is the number of correction pairs to remember in order to compute the limited memory variable metric (BFGS) approximation of the inverse of the Hessian.  For large problems, M = 3 to 5 gives good results.  For small problems, M should be less or equal N.  The larger is M (and N) the more computer memory will be needed to store the workspace WS.
+  
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
+        m=3;                % M is the number of correction pairs to remember in order to compute the limited memory variable metric (BFGS) approximation of the inverse of the Hessian.  For large problems, M = 3 to 5 gives good results.  For small problems, M should be less or equal N.  The larger is M (and N) the more computer memory will be needed to store the workspace WS.
         fatol=0.0;          % absolute error desired in the function (e.g. FATOL=0.0). Convergence occurs if the estimate of the absolute error between F(X) and F(XSOL), where XSOL is a local minimizer, is less or equal FATOL. FATOL must have a non-negative floating point value.
         frtol=0.;           % relative error desired in the function (e.g.  FRTOL=1e-9). Convergence occurs if the estimate of the relative error between F(X) and F(XSOL), where XSOL is a local minimizer, is less or equal FRTOL. FRTOL must have a non-negative floating point value.
         gtol=0;             % Convergence occurs if the norm of gradient is lower than GTOL
@@ -61,41 +53,88 @@ classdef OptiVMLMB<Opti
         sgtol=0.9;
         sxtol=0.1;
         epsilon=0.01;       % a small value, in the range [0,1), equals to the cosine of the maximum angle between the search direction and the anti-gradient. The BFGS recursion is restarted, whenever the search direction is not sufficiently "descending".
-        delta=0.1;          %   DELTA is a small nonegative value used to compute a small initial step.
-    end
-    properties (SetAccess = protected,GetAccess = public)
-        nparam;
-        task;
+        delta=0.1;          % DELTA is a small nonegative value used to compute a small initial step.
         xmin=[];
         xmax=[];
-        neval;
-        bounds =0;
-        ws;
+        nparam=[];
     end
-    properties (SetAccess = protected,GetAccess = protected)
+    % - Protected
+    properties (Access = protected)
         nbeval;
         active;
         grad;
         cc;
+        task;
+        ws;
+        bounds =0;
     end
+    % - Constant
+    properties (Hidden,Constant)
+        OPL_TASK_START  = 0; % first entry, start search
+        OPL_TASK_FG     = 1; % computation of F and G requested
+        OPL_TASK_FREEVARS  = 2; % caller has to determine the free variables
+        OPL_TASK_NEWX      = 3; % new variables available for inspection
+        OPL_TASK_CONV      = 4; % search has converged
+        OPL_TASK_WARN      = 5; % search aborted with warning
+        OPL_TASK_ERROR     = 6; % search aborted with error
+    end
+    
+    %% Constructor
     methods
         function this = OptiVMLMB(C,xmin,xmax)
+            % Default values
+            if nargin <2, xmin=[];end
+            if nargin <3, xmax=[]; end
+            % Set properties
             this.name='OptiVMLMB';
-            if(nargin>1)
-                if(~isempty(xmin))
-                    this.bounds=1;
-                    this.xmin = xmin;
-                end
-                if(~isempty(xmax))
-                    this.bounds=bitor(this.bounds,2);
-                    this.xmax = xmax;
-                end
-            end
+            this.xmin = xmin;
+            this.xmax = xmax;
             this.cost=C;
+            % Compile mex-files if necessary
             if (exist('m_opl_vmlmb_create')~=3)||(exist('m_opl_vmlmb_restore')~=3)||(exist('m_opl_vmlmb_iterate')~=3)||(exist('m_opl_vmlmb_get_reason')~=3)
                 installOptimPack();
             end
+            % Initialize
+            this.initObject('OptiVMLMB');
         end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Opti`
+            
+            % Call superclass method
+            updateProp@Opti(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'xmin') || strcmp(prop,'xmax')  || strcmp(prop,'all')
+                this.bounds=0;
+                if(~isempty(this.xmin))
+                    this.bounds=1;
+                end
+                if(~isempty(this.xmax))
+                    this.bounds=bitor(this.bounds,2);
+                end
+            end
+            if strcmp(prop,'m') || strcmp(prop,'fatol') || strcmp(prop,'frtol') || strcmp(prop,'gtol') ...
+                    ||  strcmp(prop,'sftol') || strcmp(prop,'sgtol') || strcmp(prop,'sxtol') ...
+                    ||  strcmp(prop,'epsilon') || strcmp(prop,'delta')  || strcmp(prop,'nparam') || strcmp(prop,'all')
+                if ~isempty(this.nparam)
+                    this.ws = m_opl_vmlmb_create(this.nparam, this.m, this.fatol, this.frtol,...
+                        this.sftol, this.sgtol, this.sxtol, this.epsilon, this.delta);
+                end
+            end
+            if strcmp(prop,'cost') && ~isempty(this.xopt)          
+                this.cc = this.cost.apply(this.xopt);
+                this.grad = this.cost.applyGrad(this.xopt);
+                this.nbeval=this.nbeval+1;
+                this.ws = m_opl_vmlmb_create(this.nparam, this.m, this.fatol, this.frtol,...
+                this.sftol, this.sgtol, this.sxtol, this.epsilon, this.delta);
+            end
+        end
+    end
+    
+    %% Methods for optimization
+    methods
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
             
@@ -107,8 +146,6 @@ classdef OptiVMLMB<Opti
             if isscalar(this.xmax)
                 this.xmax=ones_(size(x0))*this.xmax;
             end
-            this.ws = m_opl_vmlmb_create(this.nparam, this.m, this.fatol, this.frtol,...
-                this.sftol, this.sgtol, this.sxtol, this.epsilon, this.delta);
             
             this.task = this.OPL_TASK_FG;
             this.nbeval=0;
@@ -125,15 +162,11 @@ classdef OptiVMLMB<Opti
                 test = (this.xopt>this.xmax);
                 if any(test(:)), this.xopt(test) = this.xmax(test); end
             end
-            
-            
+                        
             this.cc = this.cost.apply(this.xopt);
-            this.grad = this.cost.applyGrad(this.xopt);
-            
-            this.nbeval=this.nbeval+1;
-            
-        end
-        
+            this.grad = this.cost.applyGrad(this.xopt);          
+            this.nbeval=this.nbeval+1;           
+        end       
         function flag=doIteration(this)
             % Reimplementation from :class:`Opti`. For details see [1].
             
@@ -157,8 +190,6 @@ classdef OptiVMLMB<Opti
                 
                 this.cc = this.cost.apply(this.xopt);
                 this.grad = this.cost.applyGrad(this.xopt);
-                
-                
                 this.nbeval=this.nbeval+1;
                 
                 if this.gtol>0

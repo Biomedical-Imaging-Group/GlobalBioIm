@@ -36,29 +36,130 @@ classdef Opti < matlab.mixin.SetGet
     % - Public 
     properties (SetObservable, AbortSet)
         verbose=true;        % if true display information (starting and ending message
-        endingMessage;       % Ending message
         OutOp=OutputOpti(false,[],1);  % OutputOpti object
         CvOp=TestCvg();      % OutputOpti object
         maxiter=50;          % maximal number of iterates
         ItUpOut=0;           % period (in number of iterations) of calling the OutputOpti object
+        cost;                % minimized cost
+        endingMessage;       % Ending message
     end
-    % - Readable 
+    % - Readable
     properties (SetAccess = protected,GetAccess = public)
         name = 'none'        % name of the optimization algorithm
-        cost;                % minimized cost
         time;                % running time of the algorithm (last run)
         niter;               % iteration counter
         xopt=[];             % optimization variable
         xold;
     end
-    % - Constant 
-    properties (Constant)
-        OPTI_NEXT_IT = 0;   % new iteration
-        OPTI_REDO_IT = 1; %
-        OPTI_STOP    = 2;    % stop iteration
+    % - Protected
+    properties (Access = protected)       
+        listenerList=cell(0);
     end
-
-    %% Methods
+    % - Hidden
+    properties (Hidden)
+        cleanup
+    end
+    % - Constant
+    properties (Hidden,Constant)
+        OPTI_NEXT_IT = 0;   % new iteration
+        OPTI_REDO_IT = 1;   %
+        OPTI_STOP    = 2;   % stop iteration
+    end
+    
+    %% Events
+    events
+        modified % to propagate the modification of a property into compositions
+    end
+    
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Implements initializing actions for a given property (prop)
+        end
+        function initObject(this,hrch)
+            % Run the updateProp method with parameter 'all' and
+            % initialize the listeners if this method is executed from the
+            % hierarchy level hrch corresponding to class(this).
+            if strcmp(class(this),hrch)
+                this.updateProp('all');
+                prop=properties(this);
+                for i=1:length(prop)
+                    % If public property, add a PostSet listener
+                    pp=findprop(this,prop{i});
+                    if strcmp(pp.SetAccess,'public')
+                        this.listenerList{end+1}=addlistener(this,prop{i},'PreSet',@this.handlePreSetEvents);
+                        this.listenerList{end+1}=addlistener(this,prop{i},'PostSet',@this.handlePostSetEvents);
+                        % If property is a Map, add a modified listener
+                        if isa(this.(prop{i}),'Map')
+                            this.listenerList{end+1}=addlistener(this.(prop{i}),'modified',@this.handleModifiedEvents);
+                        elseif isa(this.(prop{i}),'cell') && isa(this.(prop{i}){1},'Map')
+                            for j=1:length(this.(prop{i}))
+                                this.listenerList{end+1}=addlistener(this.(prop{i}){j},'modified',@this.handleModifiedEvents);
+                            end
+                        end
+                    end
+                end
+                this.cleanup = onCleanup(@()delete(this));
+            end
+        end
+        function handlePostSetEvents(this,src,evnt)
+            % This function is called when an observable property is
+            % set to another value in order to update properly some
+            % (precomputed) properties (re-initialize)
+            
+            %disp(['     In ',this.name,' property ',src.Name,' has been updated']);
+            this.updateProp(src.Name);
+            % Because the listeners for modified events are lost when a new
+            % object is set to the property -> define a new one
+            if strcmp(evnt.EventName,'PostSet')
+                if isa(this.(src.Name),'Map')
+                    this.listenerList{end+1}=addlistener(this.(src.Name),'modified',@this.handleModifiedEvents);
+                elseif isa(this.(src.Name),'cell') && isa(this.(src.Name){1},'Map')
+                    for i=1:length(this.(src.Name))
+                        if ~any(cellfun(@(x) isequal(this.(src.Name){i},x.Source{1}),this.listenerList))
+                            this.listenerList{end+1}=addlistener(this.(src.Name){i},'modified',@this.handleModifiedEvents);
+                        end
+                    end
+                end
+            end
+            % To propagate the modification within Map properties
+            notify(this,'modified');
+        end
+        function handlePreSetEvents(this,src,~)
+            % This function is called before an observable property is set
+            if isa(this.(src.Name),'Map')
+                this.(src.Name).clearListenerList();
+            elseif isa(this.(src.Name),'cell') && isa(this.(src.Name){1},'Map')
+                for i=1:length(this.(src.Name))
+                    this.(src.Name){i}.clearListenerList();
+                end
+            end
+        end
+        function handleModifiedEvents(this,src,evnt) % Necessary for properties which are objects of the Library (i.e. Maps)
+            % This function is called when an observable property has been
+            % modified in order to update properly some (precomputed)
+            % properties (re-initialize)
+            prop=properties(this);
+            if isvalid(this) % to avoid error with already deleted objects
+                idx=cell2mat(cellfun(@(x) (isa(this.(x),'Map')  && this.(x)==src) || ...
+                    (isa(this.(x),'cell') && any(cell2mat(cellfun(@(y) isa(y,'Map') && y==src,this.(x),'UniformOutput',false))))...
+                    ,prop,'UniformOutput',false));
+                if any(idx)
+                    sourc.Name=prop{idx};
+                    %disp(['     In ',this.name,' property ',sourc.Name,' has been modified']);
+                    handlePostSetEvents(this,sourc,evnt);
+                end
+            end
+        end
+    end
+    
+    %% Methods for optimization
+    % - run
+    % - initialize
+    % - doIteration
+    % - updateParams
+    % - starting_verb
+    % - ending_verb
     methods
         function run(this,x0)
             % Run the algorithm.
@@ -141,6 +242,41 @@ classdef Opti < matlab.mixin.SetGet
             if this.verbose
                 disp(this.endingMessage);
                 fprintf('... Optimization finished \nElapsed time (s): %4.2d (%i iterations). \n',this.time, this.niter);
+            end
+        end
+    end
+    
+    %% Utility methods
+    % - clearListenerList
+    methods
+     function clearListenerList(this,obj)
+            % Clear properly the listener list and call recursively on all
+            % public properties.
+            % If the given object is this, then do nothing
+            if nargin==1, obj={}; end;
+            if ~any(cellfun(@(x) isequal(this,x),obj))
+                prop=properties(this);
+                for i=1:length(prop)
+                    % If public property, add a PostSet listener
+                    pp=findprop(this,prop{i});
+                    if ~isempty(pp) && strcmp(pp.SetAccess,'public')
+                        if isa(this.(prop{i}),'Map')
+                            this.(prop{i}).clearListenerList(obj);
+                        elseif isa(this.(prop{i}),'cell') && isa(this.(prop{i}){1},'Map')
+                            for j=1:length(this.(prop{i}))
+                                this.(prop{i}){j}.clearListenerList(obj);
+                            end
+                        end
+                    end
+                end
+                if isvalid(this) % to avoid error with already deleted objects
+                    for ii = 1:numel(this.listenerList)
+                        if isa(this.listenerList{ii}.Source{1},'Map')
+                            delete(this.listenerList{ii});
+                        end
+                    end
+                    this.listenerList=cell(0);
+                end
             end
         end
     end

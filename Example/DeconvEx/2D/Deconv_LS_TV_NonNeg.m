@@ -12,7 +12,7 @@
 % CostMixNorm12, Opti, OptiPrimalDualCondat, OptiADMM, OutpuOpti
 % CostHyperBolic, OptiVMLMB
 %------------------------------------------------------------
-clear; close all; 
+close all;
 help Deconv_LS_TV_NonNeg
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -122,3 +122,19 @@ bar(3,[VMLMB.time],'FaceColor',orderCol(3,:),'EdgeColor','k');
 set(gca,'xtick',[1 2 3]);ylabel('Time (s)');
 set(gca,'xticklabels',{'LS+TV+POS (ADMM)','LS+TV+POS (Condat)','LS+TV+POS (VMLMB)'});set(gca,'XTickLabelRotation',45)
 
+%% For Unitary Tests
+global generateDataUnitTests stateTest message
+if ~isempty(generateDataUnitTests)
+    if generateDataUnitTests
+        valADMM=ADMM.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_TV_NonNeg_ADMM','valADMM');
+        valPDC=PDC.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_TV_NonNeg_PDC','valPDC');
+        valVMLMB=VMLMB.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_TV_NonNeg_VMLMB','valVMLMB');
+    else
+        load('Util/UnitTest/Data/Deconv_LS_TV_NonNeg_VMLMB');
+        load('Util/UnitTest/Data/Deconv_LS_TV_NonNeg_PDC');
+        load('Util/UnitTest/Data/Deconv_LS_TV_NonNeg_ADMM');
+        stateTest=isequal(valADMM,ADMM.OutOp.evolcost) &&  isequal(valPDC,PDC.OutOp.evolcost) &&  isequal(valVMLMB,VMLMB.OutOp.evolcost);
+        message=['Max error between costs evolution : ',num2str(max([norm(valPDC-PDC.OutOp.evolcost),...
+            norm(valADMM-ADMM.OutOp.evolcost),norm(valVMLMB-VMLMB.OutOp.evolcost)]))];
+    end
+end

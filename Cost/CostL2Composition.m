@@ -135,11 +135,13 @@ classdef CostL2Composition <  CostComposition
             %
             % **Note** If :attr:`doPrecomputation` is true, then \\(\\mathrm{H^TWy}\\) is stored.
             %
-            % **References**          
+            % **References**     
+            %
             % [1] Zhao Ningning et al. "Fast Single Image Super-Resolution Using a New Analytical Solution for l2-l2 Problems".
-            %     IEEE Transactions on Image Processing, 25(8), 3683-3697 (2016).
+            % IEEE Transactions on Image Processing, 25(8), 3683-3697 (2016).
+            %
             % [2] Emmanuel Soubies and Michael Unser. "Computational Super-Sectioning for Single-Slice
-            %     Structured-Illumination Microscopy" (2018)
+            % Structured-Illumination Microscopy" (2018)
             
             if isa(this.H2,'LinOpConv') && (isnumeric(this.H1.W) || (isa(this.H1.W,'LinOpDiag') && this.H1.W.isScaledIdentity))
             % If the composed operator is a LinOpConv

@@ -80,19 +80,19 @@ classdef CostPartialSummation <  CostSummation
                 end
                 y = y/this.Lsub;%to decide whether it is kept.
             else
-                y=apply_@CostSummation(this,x);
+                y = apply_@CostSummation(this,x);
             end
         end
         function g=applyGrad_(this,x)
             % Reimplemented from :class:`Cost`
             if this.partialGrad > 0
-                this.updateSubset();
                 g = zeros(size(x));
                 for kk = 1:this.Lsub
                     ind = this.subset(kk);
                     g = g + this.alpha(ind)*this.mapsCell{ind}.applyGrad(x);
                 end
                 g = g/this.Lsub;%to decide whether it is kept. real AD HOC
+                this.updateSubset();%because of hierarchical ADMM, I need it after
             else
                 g = applyGrad_@CostSummation(this,x);
             end

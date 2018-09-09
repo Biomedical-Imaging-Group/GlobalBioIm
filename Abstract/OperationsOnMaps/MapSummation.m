@@ -53,7 +53,7 @@ classdef MapSummation < Map
 			eMaps = []; % expanded LinOp list
 			newAlphas = [];
 			for i = 1:length(Maps)
-				if isa(Maps{i}, 'MapSummation')
+				if isa(Maps{i}, 'MapSummation') && ~isa(Maps{i},'CostPartialSummation')
 					eMaps = [eMaps Maps{i}.mapsCell];
 					newAlphas = [newAlphas  Maps{i}.alpha*this.alpha(i)];
 				else

@@ -91,15 +91,6 @@ OutputOpti (Default)
     :show-inheritance:
     :members: init, update, computeCost, computeSNR
 
-OutputOptiADMM
-..............
-
-.. autoclass:: OutputOptiADMM
-    :show-inheritance:
-    :members: init, update, computeCost, computeSNR
-
-
-
 OutputOptiConjGrad
 ..................
 

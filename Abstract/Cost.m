@@ -83,7 +83,11 @@ classdef Cost < Map
                     num2str(size(x)), num2str(this.sizein));
             end
             % memoize
-            g = this.memoize('applyGrad', @this.applyGrad_, x); 
+            if this.memoizeOpts.applyGrad
+                g = this.memoize('applyGrad', @this.applyGrad_, x);
+            else
+                g =this.applyGrad_(x);
+            end
             if ~checkSize(g, this.sizein) % check output size
                 error('Output of applyGrad was size [%s], didn''t match stated sizein [%s].',...
                     num2str(size(g)), num2str(this.sizein));
@@ -100,7 +104,11 @@ classdef Cost < Map
                     num2str(size(z)), num2str(this.sizein));
             end
             % memoize
-            x = this.memoize('applyProx', @this.applyProx_,{z,alpha}); 
+            if this.memoizeOpts.applyProx
+                x = this.memoize('applyProx', @this.applyProx_,{z,alpha});
+            else
+                x =this.applyProx_(z,alpha);
+            end
             if ~checkSize(x, this.sizein) % check output size
                 error('Output of applyProx was size [%s], didn''t match stated sizein [%s].',...
                     num2str(size(x)), num2str(this.sizein));
@@ -116,7 +124,11 @@ classdef Cost < Map
                     num2str(size(z)), num2str(this.sizein));
             end
             % memoize
-            y = this.memoize('applyProxFench', @this.applyProxFench_,{z,alpha});
+            if this.memoizeOpts.applyProxFench
+                y = this.memoize('applyProxFench', @this.applyProxFench_,{z,alpha});
+            else
+                y =this.applyProxFench_(z,alpha);
+            end
             if ~checkSize(y, this.sizein) % check output size
                 error('Output of applyProxFench was size [%s], didn''t match stated sizein [%s].',...
                     num2str(size(y)), num2str(this.sizein));

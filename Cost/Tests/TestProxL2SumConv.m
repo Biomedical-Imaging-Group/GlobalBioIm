@@ -14,7 +14,7 @@
 % [1] Emmanuel Soubies and Michael Unser. "Computational Super-Sectioning for Single-Slice
 %     Structured-Illumination Microscopy" (2018)
 %--------------------------------------------------------------------------
-clear; close all; clc;
+close all;
 help TestProxL2SumConv
 %--------------------------------------------------------------
 % Copyright (C) 2018, E. Soubies emmanuel.soubies@epfl.ch
@@ -100,7 +100,7 @@ AA=fwd'*fwd+regTikh0*In;
 CG=OptiConjGrad(AA,b*regTikh0);
 CG.maxiter=100;
 CG.CvOp=TestCvgStepRelative(1e-6);
-CG.verbose=true;CG.OutOp.iterVerb=20;
+CG.verbose=true;CG.OutOp.iterVerb=20;CG.OutOp.saveXopt=1;
 CG.ItUpOut=1;
 CG.run(x0);
 disp(['With CG : ',num2str(CG.time),' s']);
@@ -120,4 +120,21 @@ for ii=1:sz(3)
     imagesc(CG.xopt(:,:,ii)); axis image;  colormap gray;title(['ConjGrad Slice #',num2str(ii)]);
     subplot(3,sz(3),2*sz(3)+ii);
     imagesc(abs(CG.xopt(:,:,ii)-xTikh0_prox(:,:,ii))); axis image;  colorbar; colormap gray;title(['Diff Slice #',num2str(ii)]);
+end
+
+%% For Unitary Tests
+global generateDataUnitTests stateTest
+if ~isempty(generateDataUnitTests)
+    if generateDataUnitTests
+        valxTikh0=xTikh0;save('Util/UnitTest/Data/TestProxL2SumConv_xTikh0','valxTikh0');
+        valxTikh0_bis=xTikh0_bis;save('Util/UnitTest/Data/TestProxL2SumConv_xTikh0_bis','valxTikh0_bis');
+        valxTikh0_prox=xTikh0_prox;save('Util/UnitTest/Data/TestProxL2SumConv_xTikh0_prox','valxTikh0_prox');
+        xopt=CG.xopt;save('Util/UnitTest/Data/TestProxL2SumConv_xopt','xopt');
+    else
+        load('Util/UnitTest/Data/TestProxL2SumConv_xTikh0');
+        load('Util/UnitTest/Data/TestProxL2SumConv_xTikh0_bis');
+        load('Util/UnitTest/Data/TestProxL2SumConv_xTikh0_prox');
+        load('Util/UnitTest/Data/TestProxL2SumConv_xopt');
+        stateTest=isequal(xopt,CG.xopt) &&  isequal(valxTikh0,xTikh0) &&  isequal(valxTikh0_bis,xTikh0_bis) &&  isequal(valxTikh0_prox,xTikh0_prox);
+    end
 end

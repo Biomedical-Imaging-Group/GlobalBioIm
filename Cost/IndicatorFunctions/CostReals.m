@@ -34,7 +34,7 @@ classdef CostReals < CostRectangle
         function this = CostReals(sz,xmin,xmax,y)
             if nargin<4, y=0; end
             assert(all(isreal(xmin))&&all(isreal(xmax)),'In CostReal bounds xmin and xmax must be real');
-            this@CostRectangle(sz,y);
+            this@CostRectangle(sz,xmin,xmax,y);
             this.name='CostReals';   
         end
     end

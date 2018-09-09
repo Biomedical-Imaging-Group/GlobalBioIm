@@ -9,7 +9,7 @@
 % See LinOp, LinOpConv, LinOpHess, Cost, CostL2,   
 % CostMixNorm1Schatt, Opti, OptiChambPock, OptiADMM, OutpuOpti
 %------------------------------------------------------------
-clear; close all;
+close all;
 help Deconv_LS_HessSchatt
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -89,3 +89,17 @@ set(gca,'xtick',[1 2]);ylabel('Time (s)');
 set(gca,'xticklabels',{'LS+HESS (CP)','LS+HESS (ADMM)'});set(gca,'XTickLabelRotation',45)
 
 
+%% For Unitary Tests
+global generateDataUnitTests stateTest message
+if ~isempty(generateDataUnitTests)
+    if generateDataUnitTests
+        valADMM=ADMM.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_HessSchatt_ADMM','valADMM');
+        valCP=CP.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_HessSchatt_CP','valCP');
+    else
+        load('Util/UnitTest/Data/Deconv_LS_HessSchatt_ADMM');
+        load('Util/UnitTest/Data/Deconv_LS_HessSchatt_CP');
+        stateTest=isequal(valADMM,ADMM.OutOp.evolcost) &&  isequal(valCP,CP.OutOp.evolcost);
+        message=['Max error between costs evolution : ',num2str(norm(valADMM-ADMM.OutOp.evolcost),...
+            norm(valCP-CP.OutOp.evolcost))];
+    end
+end

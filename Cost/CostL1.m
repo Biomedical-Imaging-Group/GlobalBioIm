@@ -2,7 +2,7 @@ classdef CostL1 < Cost
     % CostL1: L1 norm cost function
     % $$C(x) := \\|\\mathrm{x} - \\mathrm{y}\\|_1 $$
     %
-    % If nonneg is set to true, it add positivity constraint on x:
+    % If nonneg is set to true, it adds positivity constraint on x:
     % $$C(x) := \\|\\mathrm{x} - \\mathrm{y}\\|_1 + i(\\mathrm{x} - \\mathrm{y}) $$
     % where i() is the indicator function of $\\mathbb{R}^{+}
     %
@@ -78,7 +78,7 @@ classdef CostL1 < Cost
         end
         function y=apply_(this,x)
             % Reimplemented from parent class :class:`Cost`.
-            
+
             if(isscalar(this.y)&&(this.y==0))
                 if this.nonneg && any(x(:)<0)
                     y = + inf;
@@ -92,6 +92,15 @@ classdef CostL1 < Cost
                 else
                     y=sum(abs(tmp));
                 end
+            end
+        end
+        function y = applyGrad_(this,x)
+            % Reimplemented from parent class :class:`Cost`.
+            % Subgradient of CostL1
+            if ~this.nonneg
+                y = sign(x);
+            else
+                this.applyGrad_@Cost(this,x);
             end
         end
     end

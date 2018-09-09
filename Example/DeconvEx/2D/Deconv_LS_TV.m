@@ -9,7 +9,7 @@
 % See LinOp, LinOpConv, LinOpGrad, Cost, CostL2,   
 % CostMixNorm12, Opti, OptiChambPock, OptiADMM, OutpuOpti
 %------------------------------------------------------------
-clear; close all;
+close all;
 help Deconv_LS_TV
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
@@ -87,3 +87,18 @@ bar(1,[CP.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
 bar(2,[ADMM.time],'FaceColor',orderCol(2,:),'EdgeColor','k');
 set(gca,'xtick',[1 2]);ylabel('Time (s)');
 set(gca,'xticklabels',{'LS+TV (CP)','LS+TV (ADMM)'});set(gca,'XTickLabelRotation',45)  
+
+%% For Unitary Tests
+global generateDataUnitTests stateTest message
+if ~isempty(generateDataUnitTests)
+    if generateDataUnitTests
+        valADMM=ADMM.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_TV_ADMM','valADMM');
+        valCP=CP.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_TV_CP','valCP');
+    else
+        load('Util/UnitTest/Data/Deconv_LS_TV_ADMM');
+        load('Util/UnitTest/Data/Deconv_LS_TV_CP');
+        stateTest=isequal(valADMM,ADMM.OutOp.evolcost) &&  isequal(valCP,CP.OutOp.evolcost);
+        message=['Max error between costs evolution : ',num2str(max([norm(valCP-CP.OutOp.evolcost),...
+            norm(valADMM-ADMM.OutOp.evolcost)]))];
+    end
+end

@@ -1,0 +1,32 @@
+language: python
+
+install: 
+ - pip install -r requirements.txt
+
+before_script:
+- git config --global user.email "ferreol.soulez@univ-lyon1.fr"
+- git config --global user.name "ferreolS"
+- git checkout release
+
+
+script:
+- cd Doc
+- mkdir build
+- cd build
+- git clone https://github.com/Biomedical-Imaging-Group/GlobalBioIm.git html
+- cd html
+- git symbolic-ref HEAD refs/heads/gh-pages  # auto-switches branches to gh-pages
+- rm .git/index
+- git clean -fdx
+- cd ../..
+- make html
+
+after_success:
+- cd build/html
+- touch .nojekyll
+- git add *
+- git add .nojekyll 
+- git commit -a -m "Add Doc"
+- git push --force  https://${GH_TOKEN}@github.com/Biomedical-Imaging-Group/GlobalBioIm.git  gh-pages 
+
+

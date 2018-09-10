@@ -6,7 +6,7 @@ install:
 before_script:
 - git config --global user.email "ferreol.soulez@univ-lyon1.fr"
 - git config --global user.name "ferreolS"
-- git checkout release
+
 
 
 script:

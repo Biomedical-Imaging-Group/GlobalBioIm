@@ -86,7 +86,7 @@ classdef CostPartialSummation <  CostSummation
         function g=applyGrad_(this,x)
             % Reimplemented from :class:`Cost`
             if this.partialGrad > 0
-                g = zeros(size(x));
+                g = zeros_(size(x));
                 for kk = 1:this.Lsub
                     ind = this.subset(kk);
                     g = g + this.alpha(ind)*this.mapsCell{ind}.applyGrad(x);

@@ -18,6 +18,7 @@ classdef CostL2 < Cost
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
     %     the Free Software Foundation, either version 3 of the License, or
+    %      
     %     (at your option) any later version.
     %
     %     This program is distributed in the hope that it will be useful,
@@ -65,10 +66,10 @@ classdef CostL2 < Cost
         	% Reimplemented from parent class :class:`Cost`.       
             if (isscalar(this.y)&&(this.y==0))
                 wr=this.W*(x);
-                y=0.5*dot(x(:),wr(:));
+                y=0.5*real(dot(x(:),wr(:)));
             else
                 wr=this.W*(x-this.y);
-                y=0.5*dot(x(:)-this.y(:),wr(:));
+                y=0.5*real(dot(x(:)-this.y(:),wr(:)));
             end
         end
         function g=applyGrad_(this,x)

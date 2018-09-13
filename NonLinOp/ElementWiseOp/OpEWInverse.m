@@ -36,7 +36,7 @@ classdef OpEWInverse < Map
             this.isDifferentiable=true;
             this.isInvertible=true;
             % Initialize
-            this.initialize('OpEWInverse');
+            this.initObject('OpEWInverse');
         end
     end
 	

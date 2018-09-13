@@ -36,7 +36,7 @@ classdef OpEWExp < Map
             this.isDifferentiable=true;
             this.isInvertible=true;
             % Initialize
-            this.initialize('OpEWExp');
+            this.initObject('OpEWExp');
         end
     end
 	

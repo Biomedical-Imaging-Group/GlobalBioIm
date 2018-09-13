@@ -36,7 +36,7 @@ classdef OpEWSquareRoot < Map
             this.isDifferentiable=true;
             this.isInvertible=true;
             % Initialize
-            this.initialize('OpEWSquareRoot');
+            this.initObject('OpEWSquareRoot');
         end
     end
 	

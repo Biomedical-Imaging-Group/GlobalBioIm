@@ -93,12 +93,12 @@ classdef OptiFBS < Opti
             % Reimplementation from :class:`Opti`. For details see [1-3].
             
             if this.fista  % if fista
-                this.xopt=this.G.applyProx(this.y - this.gam*this.F.applyGrad(this.y),this.gam);
+                this.xopt=this.G.applyProx(this.y - this.gam.*this.F.applyGrad(this.y),this.gam);
                 told=this.tk;
                 this.tk=0.5*(1+sqrt(1+4*this.tk^2));
                 this.y=this.xopt + this.alpha*(told-1)/this.tk*(this.xopt - this.xold);
             else
-                this.xopt=this.G.applyProx(this.xopt - this.gam*this.F.applyGrad(this.xopt),this.gam);
+                this.xopt=this.G.applyProx(this.xopt - this.gam.*this.F.applyGrad(this.xopt),this.gam);
             end
 
             flag=this.OPTI_NEXT_IT;

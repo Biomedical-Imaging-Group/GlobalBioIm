@@ -35,21 +35,40 @@ classdef OptiGradDsct < Opti
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-	% Full public properties
-    properties
+	%% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
     	gam=[];      % descent step
     end
     
-    methods
-    	%% Constructor
+    %% Constructor
+    methods   	
     	function this=OptiGradDsct(F)
+            % Set properties
     		this.name='Opti Gradient Descent';
     		this.cost=F;
-    		if F.lip>0
-    			this.gam=1/F.lip;
+            % Initialize
+            this.initObject('OptiGradDsct');
+        end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Opti`
+            
+            % Call superclass method
+            updateProp@Opti(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'cost') || strcmp(prop,'all')
+                if this.cost.lip>0 && (isempty(this.gam) || this.gam >this.cost.lip)
+                    this.gam=1/this.cost.lip;
+                end
             end
-    	end 
-        %% Run the algorithm
+        end
+    end
+    
+    %% Methods for optimization
+    methods
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
             
@@ -63,5 +82,5 @@ classdef OptiGradDsct < Opti
             this.xopt=this.xopt-this.gam*this.cost.applyGrad(this.xopt);
             flag=this.OPTI_NEXT_IT;
         end
-	end
+    end
 end

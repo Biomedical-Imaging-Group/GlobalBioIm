@@ -50,46 +50,64 @@ classdef OptiPrimalDualCondat < Opti
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    % Protected Set and public Read properties
-    properties (SetAccess = protected,GetAccess = public)
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
+        tau;    % parameter of the algorithm
+        sig;    % parameter of the algorithm
+        rho;    % parameter of the algorithm
         F0;    % cost F0
         G;     % cost G
         Fn;    % costs F_n (cell)
         Hn;    % associated LinOp (cell))
     end
-    % Full protected properties
+    % - Protected
     properties (SetAccess = protected,GetAccess = protected)
         y;    % cell containing the dual variables
     end
-    % Full public properties
-    properties
-        tau;    % parameter of the algorithm
-        sig;    % parameter of the algorithm
-        rho;    % parameter of the algorithm
-    end
     
-    methods
-        %% Constructor
+    %% Constructor
+    methods       
         function this=OptiPrimalDualCondat(F0,G,Fn,Hn)
-            this.name='Opti Primal-Dual Condat';
-            assert(length(Fn)==length(Hn),'Fn, Hn and rho_n must have the same length');
+            % Set properties
+            this.name='Opti Primal-Dual Condat';            
             this.Fn=Fn;
             this.Hn=Hn;
             this.F0=F0;
             this.G=G;
-            if ~isempty(F0), this.cost=F0;end
-            if ~isempty(G)
-                if isempty(this.cost), this.cost=G;
-                else, this.cost=this.cost + G; end
-            end
-            if ~isempty(Fn)
-                if isempty(this.cost), this.cost=Fn{1}*Hn{1};
-                else, this.cost=this.cost + Fn{1}*Hn{1}; end
-            end
-            for n=2:length(Fn)
-                this.cost=this.cost+Fn{n}*Hn{n};
+            % Initialize
+            this.initObject('OptiPrimalDualCondat');                      
+        end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Opti`
+            
+            % Call superclass method
+            updateProp@Opti(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'F0') || strcmp(prop,'G') || strcmp(prop,'Fn') || strcmp(prop,'Hn') || strcmp(prop,'all')
+                assert(length(this.Fn)==length(this.Hn),'Fn, Hn and rho_n must have the same length');
+                assert(length(this.Fn)==length(this.Hn),'Fn, Hn and rho_n must have the same length');
+                if ~isempty(this.F0), this.cost=this.F0;end
+                if ~isempty(this.G)
+                    if isempty(this.cost), this.cost=this.G;
+                    else, this.cost=this.cost + this.G; end
+                end
+                if ~isempty(this.Fn)
+                    if isempty(this.cost), this.cost=this.Fn{1}*this.Hn{1};
+                    else, this.cost=this.cost + this.Fn{1}*this.Hn{1}; end
+                end
+                for n=2:length(this.Fn)
+                    this.cost=this.cost+this.Fn{n}*this.Hn{n};
+                end
             end
         end
+    end
+    
+    %% Methods for optimization
+    methods
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
             

@@ -48,35 +48,52 @@ classdef OptiFBS < Opti
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    % Full protected properties
-    properties (SetAccess = protected,GetAccess = public)
+
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
+        F;             % Cost F
+        G;             % Cost G        
+        gam=[];        % descent step
+        fista=false;   % FISTA option [3]        
+        alpha = 1;     % see Kamilov paper
+    end
+    % - Protected
+    properties (SetAccess = protected,GetAccess = protected)
         y;         % Internal parameters
         tk;
     end
-    % Full public properties
-    properties
-        F;  % Cost F
-        G;  % Cost G
-        
-        gam=[];        % descent step
-        fista=false;   % FISTA option [3]
-        
-        reducedStep = false; % reduce the step size (TODO : add the possibilty to chose the update rule)
-        mingam;
-        alpha = 1; % see Kamilov paper
-    end
     
+    %% Constructor
     methods
-        
         function this=OptiFBS(F,G)
+            % Set properties
             this.name='Opti FBS';
             this.cost=F+G;
             this.F=F;
             this.G=G;
-            if F.lip~=-1
-                this.gam=1/F.lip;
+            % Initialize
+            this.initObject('OptiFBS');
+        end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Opti`
+            
+            % Call superclass method
+            updateProp@Opti(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'F') || strcmp(prop,'all')
+                if this.F.lip>0 && (isempty(this.gam) || this.gam >this.F.lip)
+                    this.gam=1/this.F.lip;
+                end
             end
         end
+    end
+    
+    %% Methods for optimization
+    methods
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
             
@@ -100,8 +117,8 @@ classdef OptiFBS < Opti
             else
                 this.xopt=this.G.applyProx(this.xopt - this.gam*this.F.applyGrad(this.xopt),this.gam);
             end
-
+            
             flag=this.OPTI_NEXT_IT;
-        end          
+        end
     end
 end

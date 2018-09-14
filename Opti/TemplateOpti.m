@@ -31,32 +31,64 @@ classdef TemplateOpti < Opti
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-    % Protected Set and public Read properties     
+    
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
+        myVar
+        % TODO : Set here new public properties
+    end
+    % - Readable
     properties (SetAccess = protected,GetAccess = public)
-		% TODO SET HERE NEW PROTECTED SET AND PUBLIC READ PROPERTIES
-		% IF NEEDED.
-		% EXAMPLE THE MINIMIZED FUNC
+        % TODO : Set here new readable properties (read only)
     end
-    % Full protected properties 
+    % - Protected
     properties (SetAccess = protected,GetAccess = protected)
-		% TODO SET HERE NEW FULLY PROTECTED PROPERTIES 
-		% (E.G. INTERNAL VARIABLE USED TO AVOID MULTIPLE COMPUTATION)
-    end
-    % Full public properties
-    properties
-		% TODO SET FULLY PUBLIC PROPERTIES
+        % TODO : Set here new protected properties
     end
     
+    %% Constructor
     methods
-    	%% Constructor
-    	function this=TemplateOpti(~)
-    		% TODO SET THE INHERITED PROPERTIES
-    		this.name='TemplateOpti';
-    		this.cost=????;
-    		this.OutOp=?????;
-    		% TODO SET NEW DEFINED PROPERTIES
+        function this=TemplateOpti(~)
+            % Default values
+            if nargin<2, end
+                % TODO : add default values if any
+            % Set properties
+            this.name='TemplateOpti';
+            this.cost=????;
+            this.OutOp=?????;
+                % TODO : set new defined properties
+            % Initialize
+            this.initObject('TemplateOpti'); % Call the method initObject with class name as attribute (du NOT put this.name BUT 'TemplateOpti')
+            
+            % IMPORTANT : No computations in the constructor, only
+            % affectations. Computations should be done in the method
+            % updateProp (see below) in order to ensure a proper update
+            % when public properties are modified.
         end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Opti`
+            
+            % Call superclass method
+            updateProp@Opti(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'myVar') ||  strcmp(prop,'all')
+                % TODO : code which has to be executed at each
+                % modification of myVar
+            end
+            % TODO : other public properties
+            
+            % IMPORTANT : for each if statement ADD " || strcmp(prop,'all') "
+            % in order to ensure that all computation are done at object
+            % construction.
+        end
+    end
+    
+    %% Methods for optimization
+    methods
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
             

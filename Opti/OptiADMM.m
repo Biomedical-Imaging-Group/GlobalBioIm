@@ -53,17 +53,18 @@ classdef OptiADMM < Opti
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    % Protected Set and public Read properties
-    properties (SetAccess = protected,GetAccess = public)
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
         F0=[];               % func F0
         Fn;                  % Cell containing the Cost Fn
         Hn;                  % Cell containing the LinOp Hn
         solver=[];           % solver for the last step of the algorithm
-        A;     % LinOp for conjugate gradient (if used)
-    %end
-    % Full protected properties
-    %properties (SetAccess = protected,GetAccess = {?OutputOpti ,
-    %?TestCvg})  % This makes problems for doc compilation. For the moment
+        rho_n;               % vector containing the multipliers
+        CG=[];               % conjugate gradient algo (Opti Object, when used)
+    end
+    % - Protected (execpt for OutputOpti and TestCvg)
+    properties (SetAccess = protected,GetAccess = {?OutputOpti ,?TestCvg})  % This makes problems for doc compilation. For the moment
     %I let all the attributes public
         yn;    % Internal parameters
         zn;
@@ -72,70 +73,95 @@ classdef OptiADMM < Opti
         b0=0;
         yold=0;  % Parameter needed for termination criterion
     end
-    % Full public properties
-    properties
-        rho_n;                 % vector containing the multipliers
-        CG;                    % conjugate gradient algo (Opti Object, when used)
+    % - Protected
+    properties (Access=protected)
+        A;                   % LinOp for conjugate gradient (if used)
     end
     
+    %% Constructor
     methods
-        %% Constructor
         function this=OptiADMM(F0,Fn,Hn,rho_n,solver)
-            this.name='Opti ADMM';
+            % Default values
             if ~isempty(F0), this.F0=F0; end
             if nargin<=4, solver=[]; end
-            assert(length(Fn)==length(Hn),'Fn, Hn and rho_n must have the same length');
-            assert(length(Hn)==length(rho_n),'Fn, Hn and rho_n must have the same length');
+            % Set properties
+            this.name='Opti ADMM';
+            this.solver=solver;
             this.Fn=Fn;
             this.Hn=Hn;
             this.rho_n=rho_n;
-            if ~isempty(F0)
-                assert(~isempty(solver) || isa(F0,'CostL2') || isa(F0,'CostL2Composition') || ... 
-                    ( isa(F0,'CostSummation')  && all(cellfun(@(x) (isa(x,'CostL2Composition') || isa(x,'CostL2')), F0.mapsCell))), ...
-                    'when F0 is nonempty and is not CostL2 or CostL2Composition (or a sum of them), a solver must be given (see help)');
-                this.cost=F0 +Fn{1}*Hn{1};
-            else
-                this.cost=Fn{1}*Hn{1};
-            end
-            this.solver=solver;
-            for n=2:length(Fn)
-                this.cost=this.cost+Fn{n}*Hn{n};
-            end
-            if isempty(this.solver)
-                this.A=this.rho_n(1)* ((this.Hn{1})' *this.Hn{1});
-                for n=2:length(this.Hn)
-                    this.A=this.A + this.rho_n(n)*((this.Hn{n})' * this.Hn{n});
-                end
+            % Initialize
+            this.initObject('OptiADMM');
+        end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Opti`
+            
+            % Call superclass method
+            updateProp@Opti(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'F0') || strcmp(prop,'Fn') || strcmp(prop,'Hn') || strcmp(prop,'all')
+                assert(length(this.Fn)==length(this.Hn),'Fn, Hn and rho_n must have the same length');
+                assert(length(this.Hn)==length(this.rho_n),'Fn, Hn and rho_n must have the same length');
                 if ~isempty(this.F0)
-                    if isa(this.F0,'CostL2Composition')
-                        this.A=this.A + this.F0.H2'*(this.F0.H1.W*this.F0.H2);
-                        this.b0=this.F0.H2'*this.F0.H1.y;
-                    elseif isa(this.F0,'CostL2')
-                        this.A=this.A + LinOpDiag(this.A.sizein);
-                        this.b0=this.F0.y;
-                    elseif isa(this.F0,'CostSummation')
-                        for n=1:length(this.F0.mapsCell)
-                            if isa(this.F0.mapsCell{n},'CostL2Composition')
-                                this.A=this.A   + this.F0.alpha(n)*this.F0.mapsCell{n}.H2'*this.F0.mapsCell{n}.H2;
-                                this.b0=this.b0 + this.F0.alpha(n)*this.F0.mapsCell{n}.H2'*this.F0.mapsCell{n}.H1.y;
-                            else
-                                this.A=this.A + this.F0.alpha(n)*LinOpDiag(this.A.sizein);
-                                this.b0=this.b0 + this.F0.alpha(n)*this.F0.mapsCell{n}.y;
+                    assert(~isempty(this.solver) || isa(this.F0,'CostL2') || isa(this.F0,'CostL2Composition') || ...
+                        ( isa(this.F0,'CostSummation')  && all(cellfun(@(x) (isa(x,'CostL2Composition') || isa(x,'CostL2')), this.F0.mapsCell))), ...
+                        'when F0 is nonempty and is not CostL2 or CostL2Composition (or a sum of them), a solver must be given (see help)');
+                    this.cost=this.F0 +this.Fn{1}*this.Hn{1};
+                else
+                    this.cost=this.Fn{1}*this.Hn{1};
+                end
+                for n=2:length(this.Fn)
+                    this.cost=this.cost+this.Fn{n}*this.Hn{n};
+                end
+            end
+            if strcmp(prop,'F0') || strcmp(prop,'Fn') || strcmp(prop,'Hn') || strcmp(prop,'rho_n') || strcmp(prop,'all')
+                if isempty(this.solver)
+                    this.A=this.rho_n(1)* ((this.Hn{1})' *this.Hn{1});
+                    for n=2:length(this.Hn)
+                        this.A=this.A + this.rho_n(n)*((this.Hn{n})' * this.Hn{n});
+                    end
+                    if ~isempty(this.F0)
+                        if isa(this.F0,'CostL2Composition')
+                            this.A=this.A + this.F0.H2'*(this.F0.H1.W*this.F0.H2);
+                            this.b0=this.F0.H2'*this.F0.H1.y;
+                        elseif isa(this.F0,'CostL2')
+                            this.A=this.A + LinOpDiag(this.A.sizein);
+                            this.b0=this.F0.y;
+                        elseif isa(this.F0,'CostSummation')
+                            for n=1:length(this.F0.mapsCell)
+                                if isa(this.F0.mapsCell{n},'CostL2Composition')
+                                    this.A=this.A   + this.F0.alpha(n)*this.F0.mapsCell{n}.H2'*this.F0.mapsCell{n}.H2;
+                                    this.b0=this.b0 + this.F0.alpha(n)*this.F0.mapsCell{n}.H2'*this.F0.mapsCell{n}.H1.y;
+                                else
+                                    this.A=this.A + this.F0.alpha(n)*LinOpDiag(this.A.sizein);
+                                    this.b0=this.b0 + this.F0.alpha(n)*this.F0.mapsCell{n}.y;
+                                end
                             end
-                        end                      
-                    else
-                        error('If F0 is not a CostL2 / CostL2Composition / CostSummation of them, a solver is required in ADMM');
+                        else
+                            error('If F0 is not a CostL2 / CostL2Composition / CostSummation of them, a solver is required in ADMM');
+                        end
                     end
                 end
                 if ~this.A.isInvertible  % If A is non invertible -> intanciate a CG
-                    this.CG=OptiConjGrad(this.A,zeros_(this.A.sizeout));
-                    this.CG.verbose=0;
-                    this.CG.maxiter=20;
-                    this.CG.ItUpOut=0;
+                    if isempty(this.CG)
+                        this.CG=OptiConjGrad(this.A,zeros_(this.A.sizeout));
+                        this.CG.verbose=0;
+                        this.CG.maxiter=20;
+                        this.CG.ItUpOut=0;
+                    else
+                        this.GC.A=this.A;
+                    end
                     disp('Warning : ADMM will use a Conjugate Gradient to compute the linear step');
                 end
             end
         end
+    end
+    
+    %% Methods for optimization
+    methods
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
             
@@ -188,7 +214,5 @@ classdef OptiADMM < Opti
             end
             flag=0;
         end
-        
-        
     end
 end

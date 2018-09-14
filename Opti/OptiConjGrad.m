@@ -28,34 +28,51 @@ classdef OptiConjGrad < Opti
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    % Protected Set and public Read properties
-    properties (SetAccess = protected,GetAccess = public)
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
         A;  % Linear operator
         b;  % right hand side term
     end
-    % Full protected properties
+    % - Protected
     properties (SetAccess = protected,GetAccess = protected)
         r; % residual
         rho_prec;
         p;
     end
     
+    %% Constructor
     methods
-        %% Constructor
         function this=OptiConjGrad(A,b)
+            % Set properties
             this.name='Opti Conjugate Gradient';
             this.A=A;
-            assert(checkSize(b,this.A.sizeout),'A sizeout and size of b must be equal');
             this.b=b;
-            this.cost=CostL2(this.A.sizeout,0., this.A) - CostLinear(this.A.sizeout, this.b);
+            this.cost=CostL2(this.A.sizeout,0.,this.A) - CostLinear(this.A.sizeout, this.b);
+            % Initialize
+            this.initObject('OptiConjGrad');
         end
-        %% Set data b
-        function set_b(this,b)
-            % Set the right-hand side \\(\\mathrm{b}\\)
-            assert(checkSize(b,this.A.sizeout),'A sizeout and size of b must be equal');
-            this.b=b;
-            this.cost.y=b;
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Opti`
+            
+            % Call superclass method
+            updateProp@Opti(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'b') || strcmp(prop,'all')
+                assert(checkSize(this.b,this.A.sizeout),'A sizeout and size of b must be equal');
+                this.cost.mapsCell{2}.y=this.b;
+            end
+            if strcmp(prop,'A') || strcmp(prop,'all')
+                this.cost=CostL2(this.A.sizeout,0.,this.A) - CostLinear(this.A.sizeout, this.b);
+            end
         end
+    end
+    
+    %% Methods for optimization
+    methods
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
             
@@ -88,6 +105,14 @@ classdef OptiConjGrad < Opti
             this.r = this.r - alpha*q;
             this.rho_prec = rho;
             flag=this.OPTI_NEXT_IT;
+        end
+    end
+    
+    %% Deprecated (kept as alias)
+    methods
+        function set_b(this,b)
+            % Set the right-hand side \\(\\mathrm{b}\\)            
+            this.b=b;
         end
     end
 end

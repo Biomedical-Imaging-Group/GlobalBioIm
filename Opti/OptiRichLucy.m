@@ -46,55 +46,81 @@ classdef OptiRichLucy < Opti
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    % Full public properties     
-    properties (SetAccess = public,GetAccess = public)
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
 		epsl=1e-6; % smoothing parameter for TV
-    end
-    % Protected set public read    
-    properties (SetAccess = public,GetAccess = public)
-		TV=false;   % boolean true if RL-TV version activated (default false)
+        TV=false;   % boolean true if RL-TV version activated (default false)
 		lamb=1e-2;  % regularization parameter
-	end
-    % Full protected properties
-    properties (SetAccess = protected,GetAccess = protected)
-		G;   % gradient operator (used if TV activated)
-		F;   % Kullback-Leibler divergence
-        isH; % boolean true if F is a CostComposition
+        F;   % Kullback-Leibler divergence
+    end
+    % - Protected
+    properties (Access = protected)
+		G=[];   % gradient operator (used if TV activated)
+        isH;    % boolean true if F is a CostComposition
         data;
         He1;
         bet;
     end
    
+    %% Constructor
     methods
-    	%% Constructor
-    	function this=OptiRichLucy(F,TV,lamb)
-    		this.name='Opti Richardson-Lucy';
-    		assert((isa(F,'CostComposition') && isa(F.H1,'CostKullLeib') && isa(F.H2,'LinOp') ) || ...
-                isa(F,'CostKullLeib'), 'The minimized functional should be the FuncKullLeib or a CostComposition between a CostKullLeib and a LinOp');
-            if ~isa(F,'CostComposition')
-                this.F=F*LinOpDiag(F.sizein);
-            else
-                this.F=F;
-            end
-            if nargin>=2 && ~isempty(TV), this.TV=TV; end
-            this.cost=this.F;
+        function this=OptiRichLucy(F,TV,lamb)
+            % Default values
             if nargin>=3 && ~isempty(lamb), this.lamb=lamb; end
-            if this.TV
-                this.G=LinOpGrad(this.F.sizein);
-                if length(this.F.sizein)==2  % 2D
-                    this.cost=this.cost + this.lamb*CostMixNorm21([this.F.sizein,2],3)*this.G;
-                elseif length(this.F.sizein)==3
-                    this.cost=this.cost + this.lamb*CostMixNorm21([this.F.sizein,3],4)*this.G;
+            if nargin>=2 && ~isempty(TV), this.TV=TV; end
+            % Set properties
+            this.name='Opti Richardson-Lucy';
+            this.F=F;
+            % Initialize
+            this.initObject('OptiRichLucy');
+        end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Opti`
+            
+            % Call superclass method
+            updateProp@Opti(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'F') || strcmp(prop,'all')
+                assert((isa(this.F,'CostComposition') && isa(this.F.H1,'CostKullLeib') && isa(this.F.H2,'LinOp') ) || ...
+                    isa(this.F,'CostKullLeib'), 'The minimized functional should be the FuncKullLeib or a CostComposition between a CostKullLeib and a LinOp');                
+                if ~isa(this.F,'CostComposition')
+                    this.F=this.F*LinOpDiag(this.F.sizein);
+                end
+                if isempty(this.G)
+                    this.cost=this.F;
+                else
+                    this.cost=this.F + this.lamb*CostMixNorm21([this.F.sizein,2],3)*this.G;
+                end
+                this.data=this.F.H1.y;
+                this.He1=this.F.H2.applyAdjoint(ones_(this.F.sizein));
+                this.bet=this.F.H1.bet;
+            end
+            if strcmp(prop,'TV') || strcmp(prop,'all')
+                if this.TV
+                    this.G=LinOpGrad(this.F.sizein);
+                    if length(this.F.sizein)==2  % 2D
+                        this.cost=this.F + this.lamb*CostMixNorm21([this.F.sizein,2],3)*this.G;
+                    elseif length(this.F.sizein)==3
+                        this.cost=this.F + this.lamb*CostMixNorm21([this.F.sizein,3],4)*this.G;
+                    end
+                else
+                    this.G=[];
+                    this.cost=this.F;
                 end
             end
         end
+    end
+    
+    %% Methods for optimization
+    methods
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
             
             initialize@Opti(this,x0);
-            this.data=this.F.H1.y;
-            this.He1=this.F.H2.applyAdjoint(ones_(this.F.sizein));
-            this.bet=this.F.H1.bet;
             if this.bet==0, error('Smoothing parameter beta has to be different from 0 (see constructor of CostKullLeib)'); end;
         end
         function flag=doIteration(this)
@@ -119,6 +145,5 @@ classdef OptiRichLucy < Opti
             end
             flag=this.OPTI_NEXT_IT;
         end
- 
-	end
+    end
 end

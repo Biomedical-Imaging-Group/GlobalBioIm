@@ -30,34 +30,55 @@ classdef OptiDouglasRachford < Opti
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-	properties
+    %% Properties
+    % - Public
+    properties (SetObservable, AbortSet)
 		F1;
 		F2;
 		lambda
 		gamma
     end
+    % - Protected
     properties (SetAccess = protected,GetAccess = protected)
         y;    
     end
     
+    %% Constructor
 	methods
-		function this = OptiDouglasRachford(F1, F2, L, gamma, lambda)
+        function this = OptiDouglasRachford(F1, F2, L, gamma, lambda)
+            % Default values
             if isempty(L), L=LinOpIdentity(F2.sizein); end;
-			% F1, F2
-			this.F1 = F1;
-			this.F2 = F2*L;
-            this.cost=this.F1+this.F2;
-			
-			% gamma
-			if numel(gamma)==1
-				gamma = [gamma, gamma];
-			end
-			this.gamma = gamma;
-			
-			% lambda
-			this.lambda = lambda;
-			
-		end
+            % F1, F2
+            this.F1 = F1;
+            this.F2 = F2*L;
+            this.cost=this.F1+this.F2;           
+            % gamma
+            if numel(gamma)==1
+                gamma = [gamma, gamma];
+            end
+            this.gamma = gamma;           
+            % lambda
+            this.lambda = lambda;
+            % Initialize
+            this.initObject('OptiDouglasRachford');
+        end
+    end
+    %% updateProp method (Private)
+    methods (Access = protected)
+        function updateProp(this,prop)
+            % Reimplemented superclass :class:`Opti`
+            
+            % Call superclass method
+            updateProp@Opti(this,prop);
+            % Update current-class specific properties
+            if strcmp(prop,'F1') || strcmp(prop,'F2') || strcmp(prop,'all')
+                this.cost=this.F1+this.F2;   
+            end
+        end
+    end
+       
+    %% Methods for optimization
+    methods
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
             

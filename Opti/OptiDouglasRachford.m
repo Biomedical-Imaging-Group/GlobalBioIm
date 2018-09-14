@@ -31,37 +31,22 @@ classdef OptiDouglasRachford < Opti
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
 	properties
-		nu = 1;
-		useL = 0;
 		F1;
 		F2;
 		lambda
 		gamma
-        L;
     end
     properties (SetAccess = protected,GetAccess = protected)
-        y;
-        Ly;       
+        y;    
     end
     
 	methods
 		function this = OptiDouglasRachford(F1, F2, L, gamma, lambda)
+            if isempty(L), L=LinOpIdentity(F2.sizein); end;
 			% F1, F2
 			this.F1 = F1;
-			this.F2 = F2;
-			
-			% L
-			if exist('L', 'var') && ~isempty(L)
-				this.useL = 1;
-				r = randn(L.sizeout);
-				nu = r ./ L.HHt(r);
-				assert(std(nu(:)) <1e-6, 'LLt != nu I');
-				this.nu = real(mean(nu(:)));
-				if this.nu==1
-					this.useL = 2;
-                end
-                this.L=L;
-			end
+			this.F2 = F2*L;
+            this.cost=this.F1+this.F2;
 			
 			% gamma
 			if numel(gamma)==1
@@ -84,18 +69,9 @@ classdef OptiDouglasRachford < Opti
         function flag=doIteration(this)
             % Reimplementation from :class:`Opti`.
 
-            if this.useL
-                this.Ly = this.L*this.y;
-                if this.useL==2
-                    this.xopt = this.L.adjoint( this.F2.prox(this.Ly, this.gamma(2)));
-                else
-                    this.xopt = this.y + (1./this.nu).* this.L.adjoint( this.F2.prox(this.Ly, this.nu.*this.gamma(2)) - this.Ly);
-                end
-            else
-                this.xopt = this.F2.prox(this.y, this.gamma(2));
-            end
-            this.y = this.y + this.lambda .* ( this.F1.prox(2.*this.xopt- this.y,this.gamma(1)) - this.xopt); 
-            flag=OPTI_NEXT_IT;
+            this.xopt = this.F2.applyProx(this.y, this.gamma(2));
+            this.y = this.y + this.lambda .* ( this.F1.applyProx(2.*this.xopt- this.y,this.gamma(1)) - this.xopt);
+            flag=this.OPTI_NEXT_IT;
         end
     end
 end

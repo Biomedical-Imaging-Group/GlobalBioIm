@@ -69,6 +69,15 @@ classdef MapSummation < Map
             this.isInvertible=false;
             this.sizein = this.mapsCell{1}.sizein;
             this.sizeout = this.mapsCell{1}.sizeout;
+            this.norm=0;
+            for n=1:this.numMaps
+                if this.mapsCell{n}.norm~=-1
+                    this.norm=this.norm+abs(this.alpha(n))*this.mapsCell{n}.norm;
+                else
+                    this.norm=-1;
+                    break
+                end
+            end
             for n =2:this.numMaps
                 assert(cmpSize(this.sizein,this.mapsCell{n}.sizein),'%d-th input does not have consistent  sizein', n) ;
                 assert(cmpSize(this.sizeout,this.mapsCell{n}.sizeout),'%d-th input does not have the consistent sizeout ', n);

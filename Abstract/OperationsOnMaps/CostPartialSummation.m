@@ -56,6 +56,8 @@ classdef CostPartialSummation <  CostSummation
     methods (Access = protected)
         function updateSubset(this)
             switch this.partialGrad
+                case 0
+                    this.subset = 1:this.numMaps;
                 case 1
                     this.subset = sort(randi(this.numMaps,this.Lsub,1));
                 case 2

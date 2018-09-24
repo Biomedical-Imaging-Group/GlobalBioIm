@@ -8,7 +8,7 @@
 %    results to those saved (e.g. from the current version of the Library)
 % .  - use the structure 'test' to choose which scripts are used
 %
-%  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+%  Copyright (C) 2018 E. Soubies emmanuel.soubies@epfl.ch
 %--------------------------------------------------------------
 % Initializations
 clc; clear; close all;
@@ -34,6 +34,7 @@ test.TestsCompositionLinOps=1;
 % Put 1 to run test when test.??=0
 revert=0;
 
+tt=tic;
 fnames=fieldnames(test);
 for idx=1:length(fnames)
     message=[];
@@ -50,3 +51,4 @@ for idx=1:length(fnames)
         end
     end
 end
+toc(tt);

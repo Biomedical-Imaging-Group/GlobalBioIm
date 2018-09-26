@@ -1,18 +1,18 @@
 classdef LinOpMatrix <  LinOp
     % LinOpMatrix : Matrix operator
-    % 
-    % Build a LinOp from a given matrix 
+    %
+    % Build a LinOp from a given matrix
     %
     % :param M: matrix
-    % :param index: 
+    % :param index:
     %
-    % All attributes of parent class :class:`LinOp` are inherited. 
+    % All attributes of parent class :class:`LinOp` are inherited.
     %
     % **Example** H=LinOpMatrix(M,index)
     %
     % See also :class:`LinOp`, :class:`Map`
-     
-    %%    Copyright (C) 2015 
+    
+    %%    Copyright (C) 2015
     %     F. Soulez  ferreol.soulez@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -55,16 +55,20 @@ classdef LinOpMatrix <  LinOp
             this.M = M;
             this.sz = size(M);
             this.ndms = ndims(M);
-            this.norm = norm(M);                      
+            if issparse(M)
+                this.norm = normest(M);
+            else
+                this.norm = norm(M);
+            end
             if (~isempty(index))
                 assert(isvector(index) && length(index)<= this.ndms && max(index)<= this.ndms,'The index should be a conformable  to the size of M');
                 this.index = index;
             else
                 assert(this.ndms<3,'Without index parameter ndims(M) should be <3 ' );
                 this.index = 2;
-            end           
+            end
             T = true(this.ndms,1);
-            T(this.index)=false;          
+            T(this.index)=false;
             % Size of the output = size of the input x length of the index
             % Special case for scalar vectors as matlab thought it is 2D matrix ;-(
             switch(length(this.index))
@@ -81,8 +85,8 @@ classdef LinOpMatrix <  LinOp
                     this.sizein=  this.sz(~T);
             end
             this.rightsz = prod(this.sizein);
-            this.leftsz = prod(this.sizeout);            
-            this.isDifferentiable=true;            
+            this.leftsz = prod(this.sizeout);
+            this.isDifferentiable=true;
             % Initialize
             this.initObject('LinOpMatrix');
         end
@@ -96,7 +100,7 @@ classdef LinOpMatrix <  LinOp
             updateProp@LinOp(this,prop);
             % Update current-class specific properties
             if strcmp(prop,'M') || strcmp(prop,'all')
-                this.M= reshape(this.M,this.leftsz,this.rightsz);  
+                this.M= reshape(this.M,this.leftsz,this.rightsz);
             end
         end
     end
@@ -106,7 +110,7 @@ classdef LinOpMatrix <  LinOp
         function y = apply_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             y = reshape(this.M * reshape(x,[this.rightsz,1]),this.sizeout);
-        end       
+        end
         function y = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.
             y = reshape(this.M' * reshape(x,[this.leftsz,1]),this.sizein);

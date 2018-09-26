@@ -44,7 +44,11 @@ classdef LinOpMatrix <  LinOp
             this.M = M;
             this.sz = size(M);
             this.ndms = ndims(M);
-            this.norm = norm(M);                      
+            if issparse(M)
+                this.norm = normest(M);
+            else
+                this.norm = norm(M);
+            end
             if nargin == 1
                 index = [];
             end

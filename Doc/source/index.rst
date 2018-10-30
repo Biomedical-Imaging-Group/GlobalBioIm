@@ -22,15 +22,15 @@ This page contains the detailed documentation of each function/class of the libr
 automatically from comments within M-files. 
 
 
-News
-----
+Releases
+--------
 
-  - **July 2018**: New release (`v 1.1 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm>`_). *Speed up your codes using the library with GPU* (:ref:`read more <ref-gpu>`).
-  - **May 2018**: New release (`v 1.0.1 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.0.1>`_).
-  - **March 2018**: New release (`v 1.0 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.0>`_).
-  - **November 2017**: New release (`v 0.2 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v0.2>`_).
-    *New tools, more flexibility, improved composition*.
-  - **June 2017**: First public release of the library (v 0.1).
+  - `v 1.1.1 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm>`_ (September 2018).
+  - `v 1.1 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.1>`_ (July 2018). *Speed up your codes using the library with GPU* (:ref:`read more <ref-gpu>`).
+  - `v 1.0.1 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.0.1>`_ (May 2018).
+  - `v 1.0 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.0>`_ milestone (March 2018). 
+  - `v 0.2 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v0.2>`_ (November 2017). *New tools, more flexibility, improved composition*.
+  -  v 0.1 (June 2017). First public release of the library.
 
 Reference
 ---------
@@ -46,7 +46,7 @@ Contents
    :maxdepth: 1
    :caption: General
 
-   Download or Clone (v 1.1) <https://github.com/Biomedical-Imaging-Group/GlobalBioIm>
+   Download or Clone (v 1.1.1) <https://github.com/Biomedical-Imaging-Group/GlobalBioIm>
    infos
    examples   
    conditionsuse

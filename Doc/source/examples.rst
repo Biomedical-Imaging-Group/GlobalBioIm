@@ -76,11 +76,11 @@ constraint, respectively. We are now ready to instanciate and run our algorithm 
       Hn={H,Opreg,Id};               % Associated operators H_n
       rho_n=[1e-3,1e-3,1e-3];        % Multipliers rho_n
       ADMM=OptiADMM([],Fn,Hn,rho_n); % Declare optimizer
-      ADMM.OutOp=OutputOpti(1,im,round(maxIt/10),[1 2]); % build the output object
+      ADMM.OutOp=OutputOpti(1,[],round(maxIt/10),[1 2]); % build the output object
       ADMM.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4); % Set the convergence tests
       ADMM.ItUpOut=dispIt;
       ADMM.maxiter=maxIt;
-      ADMM.run(xopt);
+      ADMM.run(zeros(sznew));
 
 Here, three splittings have been done: \\(\\mathrm{u_1=Hx}, \\; \\mathrm{u_2=\\nabla x}\\), and \\(\\mathrm{u_3=x}\\).
 We do not need to provide a solver to the ADMM algorithm (5th argument) since the operator algebra ensures that the operator

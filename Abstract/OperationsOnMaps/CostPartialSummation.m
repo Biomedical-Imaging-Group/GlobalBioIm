@@ -56,6 +56,8 @@ classdef CostPartialSummation <  CostSummation
     methods (Access = protected)
         function updateSubset(this)
             switch this.partialGrad
+                case 0
+                    this.subset = 1:this.numMaps;
                 case 1
                     this.subset = sort(randi(this.numMaps,this.Lsub,1));
                 case 2
@@ -86,7 +88,7 @@ classdef CostPartialSummation <  CostSummation
         function g=applyGrad_(this,x)
             % Reimplemented from :class:`Cost`
             if this.partialGrad > 0
-                g = zeros(size(x));
+                g = zeros_(size(x));
                 for kk = 1:this.Lsub
                     ind = this.subset(kk);
                     g = g + this.alpha(ind)*this.mapsCell{ind}.applyGrad(x);

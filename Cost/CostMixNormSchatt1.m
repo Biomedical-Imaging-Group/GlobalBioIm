@@ -97,25 +97,14 @@ classdef CostMixNormSchatt1 < Cost
         function y=applyProx_(this,x,alpha)
             % Reimplemented from parent class :class:`Cost`.
             
-            dim=size(x);
             if this.p==1
                 [E,V]=this.svdDecomp(x);
                 E=max(abs(E)-alpha,0).*sign(E);
                 y=reshape(this.svdRecomp(E,V),this.sizein);
-               % y=this.svdRecomp(E,V);
             elseif this.p==2
-                % Emmanuel (05/07/2018): this part should also be updated
-                % in order to use the last dimension (not :,:,k or :,:,:,k,
-                % but more general
-                if dim(end)==3     % 2D
-                    N=sqrt(x(:,:,1).^2+2*x(:,:,2).^2+x(:,:,3).^2);
-                    y=repmat((N-1)./N,[ones(1,length(this.sizein)-1),3]).*x;
-                elseif dim(end)==6 % 3D
-                    N=sqrt(x(:,:,:,1).^2+2*x(:,:,:,2).^2+2*x(:,:,:,3).^2+x(:,:,:,4)+2*x(:,:,:,5)+x(:,:,:,6));
-                    y=repmat((N-1)./N,[ones(1,length(this.sizein)-1),6]).*x;
-                else
-                    error('last dimension of x should be 3 or 6');
-                end
+                [E,V]=this.svdDecomp(x);
+                E=E./(1+alpha);
+                y=reshape(this.svdRecomp(E,V),this.sizein);
             else
                 y=applyProx_@Cost(this,x,alpha);
             end

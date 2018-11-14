@@ -1,4 +1,4 @@
-sphinx  
+sphinx==1.8.1
 sphinxcontrib-matlabdomain 
 sphinx_rtd_theme 
 sphinxcontrib-email

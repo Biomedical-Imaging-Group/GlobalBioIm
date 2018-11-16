@@ -37,6 +37,11 @@ classdef TestCvgADMM < TestCvg
        eps_abs;     % Termination criterion tolerances.
        eps_rel;  
     end
+    properties
+        evolResPrim
+        evolResDual
+        count=0;
+    end
     
     methods
         %% Constructor
@@ -52,7 +57,7 @@ classdef TestCvgADMM < TestCvg
         %% Update method
         function stop = testConvergence(this,opti)
             % Reimplemented from parent class :class:`TestCvg`.
-            
+            this.count=this.count+1;
             stop = false;
             
             p = 0; % Number of constraints
@@ -74,6 +79,8 @@ classdef TestCvgADMM < TestCvg
             eps_primal = sqrt(p)*this.eps_abs + this.eps_rel*sqrt(max(Hnx_norm, y_norm));
             eps_dual = sqrt(length(opti.xopt))*this.eps_abs + this.eps_rel*sqrt(adjHnwn_norm);
             
+            this.evolResPrim(this.count)=r_norm;
+            this.evolResDual(this.count)=s_norm;
             if (sqrt(r_norm) <= eps_primal) && (sqrt(s_norm) <= eps_dual)
                 stop = true;
                 endingMessage = [this.name,' convergence reached'];

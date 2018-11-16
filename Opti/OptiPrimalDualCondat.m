@@ -63,9 +63,9 @@ classdef OptiPrimalDualCondat < Opti
     end
     % Full public properties
     properties
-        tau;    % parameter of the algorithm
-        sig;    % parameter of the algorithm
-        rho;    % parameter of the algorithm
+        tau;       % parameter of the algorithm
+        sig;       % parameter of the algorithm
+        rho=1.95;  % parameter of the algorithm
     end
     
     methods
@@ -128,7 +128,7 @@ classdef OptiPrimalDualCondat < Opti
             for n=1:length(this.Fn)
                 ytilde=this.Fn{n}.applyProxFench(this.y{n}+this.sig*this.Hn{n}.apply(2*xtilde-this.xold),this.sig);
                 this.y{n}=this.rho*ytilde +(1-this.rho)*this.y{n};
-            end
+            end            
             flag=this.OPTI_NEXT_IT;
         end
     end

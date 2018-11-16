@@ -209,7 +209,6 @@ classdef Cost < Map
             % Uses the method applyGrad (hence do not need to be
             % reimplemented in derived classes)
             x=y.*this.applyGrad(v);
-            x=sum(x(:));
         end
     end
     

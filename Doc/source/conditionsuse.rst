@@ -10,7 +10,7 @@ If not, see <http://www.gnu.org/licenses/> .
 
 Whenever you present or publish results that are based on this library, please cite:
 
-M. Unser, E. Soubies, F. Soulez, M. McCann, L. Donati, 
-`GlobalBioIm: A Unifying Computational Framework for Solving Inverse Problems <http://bigwww.epfl.ch/publications/unser1701.html>`_ 
-Proceedings of the OSA Imaging and Applied Optics Congress on Computational Optical Sensing and Imaging (COSI'17), San Francisco CA, USA, June 26-29, 2017, paper no. CTu1B.
-
+| `GlobalBioIm: A Unifying Computational Framework for Solving Inverse Problems <http://bigwww.epfl.ch/publications/unser1701.html>`_,
+| Proceedings of the OSA Computational Optical Sensing and Imaging congres, 2017.
+| M. Unser, E. Soubies, F. Soulez, M. McCann, and L. Donati.
+|

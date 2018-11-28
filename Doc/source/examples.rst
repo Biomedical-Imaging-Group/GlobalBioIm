@@ -96,3 +96,4 @@ The deconvolved image is shown in Figure 2.
    :align: center
 
    Fig 2. Deconvolved C. Elegans embryo.
+

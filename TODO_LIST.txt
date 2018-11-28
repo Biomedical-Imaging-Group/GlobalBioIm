@@ -13,3 +13,7 @@ TODO GlobalBioIm
     - Put OneToMany and StackLinOp properly in the new framework
 
     - Check things related to RFT
+
+    - improve the makeComposition of LinOpComposition. Suff from LinOpComposition can be moved into MapComposition
+
+    - generic norm computation (with Mike’s function) ?

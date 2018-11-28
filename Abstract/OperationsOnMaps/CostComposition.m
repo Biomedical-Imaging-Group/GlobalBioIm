@@ -77,8 +77,9 @@ classdef CostComposition < MapComposition & Cost
             % If this.H2 is a :class:`LinOp` and \\(\\mathrm{H}
             % \\mathrm{H}^{\\star}\\) is a :class:`LinOpScaledIdentity`
             % 
-            if this.isConvex && this.isH2LinOp && this.isH2SemiOrtho   
-                x = z + 1/this.nu*this.H2.applyAdjoint(this.H1.applyProx(this.H2*z,alpha*this.nu)-this.H2*z);
+            if this.isConvex && this.isH2LinOp && this.isH2SemiOrtho 
+                H2z=this.H2*z;
+                x = z + 1/this.nu*this.H2.applyAdjoint(this.H1.applyProx(H2z,alpha*this.nu)-H2z);
             else
                 x = applyProx_@Cost(this,z,alpha);
             end

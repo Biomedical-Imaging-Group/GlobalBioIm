@@ -10,10 +10,10 @@ This section contains non-linear operator classes which all derive directly from
 Element-wise Operators
 ----------------------
 
-OpEWSquareRoot
-..............
+OpEWSqrt
+........
 
-.. autoclass:: OpEWSquareRoot
+.. autoclass:: OpEWSqrt
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
 

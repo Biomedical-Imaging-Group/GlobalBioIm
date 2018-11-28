@@ -9,7 +9,7 @@ G=LinOpGrad(sz);                     % Gradient operator
 sq=OpEWSquaredMagnitude(G.sizeout);  % Elem-wise square magnitude for numerator
 S=LinOpSum(G.sizeout,3);             % To sum the two squared gradient components
 iv=OpEWInverse(sz);                  % Elem-wise inverse 
-sqr=OpEWSquareRoot(sz);              % Elem-wise square root
+sqr=OpEWSqrt(sz);                    % Elem-wise square root
 sq2=OpEWSquaredMagnitude(sz);        % Elem-wise square magnitude for denominator (different size)
 SS=LinOpSum(sz);                     % Final sum of all pixels
 
@@ -28,7 +28,7 @@ tic;gg=op.applyJacobianT(1,x),toc
 G=LinOpGrad(sz);                     % Gradient operator
 sq=OpEWSquaredMagnitude(G.sizeout);  % Elem-wise square magnitude for numerator
 S=LinOpSum(G.sizeout,3);             % To sum the two squared gradient components
-sqr=OpEWSquareRoot(sz);              % Elem-wise square root
+sqr=OpEWSqrt(sz);                    % Elem-wise square root
 SS=LinOpSum(sz);                     % Final sum of all pixels
 
 op=SS*sqr*S*sq*G;                           % Combinaison of Maps

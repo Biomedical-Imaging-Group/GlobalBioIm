@@ -100,7 +100,7 @@ classdef MapSummation < Map
         end  
         function x = applyJacobianT_(this, y, v)
             % Reimplemented from :class:`Map`   
-            x = zeros_(this.sizeout);
+            x = zeros_(this.sizein);
             for n = 1:this.numMaps
                 x = x + this.alpha(n) .* this.mapsCell{n}.applyJacobianT(y,v);
             end

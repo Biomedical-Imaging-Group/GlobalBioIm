@@ -80,11 +80,11 @@ classdef Opti < matlab.mixin.SetGet
                 % - Algorithm iteration   
                 flag=this.doIteration();
 
-                if(flag == this.OPTI_NEXT_IT)
+                if(flag == this.OPTI_NEXT_IT )
                     this.niter=this.niter+1;
                     
                     % - Convergence test
-                    if this.CvOp.testConvergence(this), break; end
+                    if this.niter>1 && this.CvOp.testConvergence(this), break; end
                     
                     % - Call OutputOpti object
                     if this.ItUpOut>0 && (((mod(this.niter,this.ItUpOut)==0)|| (this.niter==1)))

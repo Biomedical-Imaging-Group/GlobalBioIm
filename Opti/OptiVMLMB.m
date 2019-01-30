@@ -62,19 +62,20 @@ classdef OptiVMLMB<Opti
         sxtol=0.1;
         epsilon=0.01;       % a small value, in the range [0,1), equals to the cosine of the maximum angle between the search direction and the anti-gradient. The BFGS recursion is restarted, whenever the search direction is not sufficiently "descending".
         delta=0.1;          %   DELTA is a small nonegative value used to compute a small initial step.
+        xmin=[];
+        xmax=[];
+        active;
     end
     properties (SetAccess = protected,GetAccess = public)
         nparam;
         task;
-        xmin=[];
-        xmax=[];
         neval;
         bounds =0;
         ws;
     end
     properties (SetAccess = protected,GetAccess = protected)
         nbeval;
-        active;
+        %active;
         grad;
         cc;
     end
@@ -127,8 +128,8 @@ classdef OptiVMLMB<Opti
             end
             
             
-            this.cc = this.cost.apply(this.xopt);
-            this.grad = this.cost.applyGrad(this.xopt);
+            this.cc = gather(this.cost.apply(this.xopt));
+            this.grad = gather(real(this.cost.applyGrad(this.xopt)));
             
             this.nbeval=this.nbeval+1;
             
@@ -139,7 +140,7 @@ classdef OptiVMLMB<Opti
             
             % Computes next step:
             this.xopt(1) = this.xopt(1); %Warning : side effect on x0 if x=x0 (due to the fact that x is passed-by-reference in the mexfiles)
-            this.task = m_opl_vmlmb_iterate(this.ws,this.xopt,this.cc,this.grad,this.active);
+            this.task = m_opl_vmlmb_iterate(this.ws,gather(this.xopt),this.cc,this.grad,this.active);
             
             flag=this.OPTI_REDO_IT;
             if (this.task == this.OPL_TASK_FG)
@@ -155,8 +156,8 @@ classdef OptiVMLMB<Opti
                 end
                 
                 
-                this.cc = this.cost.apply(this.xopt);
-                this.grad = this.cost.applyGrad(this.xopt);
+                this.cc = gather(this.cost.apply(this.xopt));
+                this.grad = gather(real(this.cost.applyGrad(this.xopt)));
                 
                 
                 this.nbeval=this.nbeval+1;
@@ -185,12 +186,13 @@ classdef OptiVMLMB<Opti
                     case 3
                         this.active = int32( ( (this.xopt>this.xmin) + (this.grad<0) ).*( (this.xopt<this.xmax) + (this.grad>0) ) );
                 end
+                this.active = gather(this.active);
             else
                 % Convergence, or error, or warning
                 this.endingMessage = ['Convergence, or error, or warning : ',this.task,m_opl_vmlmb_get_reason(this.ws)];
                 
                 flag=this.OPTI_STOP;
-                this.task = m_opl_vmlmb_restore(this.ws,this.xopt,this.cc,this.grad);
+                this.task = m_opl_vmlmb_restore(this.ws,gather(this.xopt),this.cc,this.grad);
                 
                 return;
             end

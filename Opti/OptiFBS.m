@@ -6,6 +6,7 @@ classdef OptiFBS < Opti
     % :param G: a :class:`Cost` with an implementation of the :meth:`applyProx`.
     % :param gam: descent step
     % :param fista: boolean true if the accelerated version FISTA [3] is used (default false)
+    % :param momRestart: boolean true if the moment restart strategy is used [4] is used (default false)
     %
     % All attributes of parent class :class:`Opti` are inherited.
     %
@@ -26,6 +27,8 @@ classdef OptiFBS < Opti
     % [3] Amir Beck and Marc Teboulle, "A Fast Iterative Shrinkage-Thresholding Algorithm for Linear inverse Problems",
     % SIAM Journal on Imaging Science, vol 2, no. 1, pp 182-202 (2009)
     %
+    % [4] Brendan O'donoghue and Emmanuel Candès. 2015. Adaptive Restart for Accelerated Gradient Schemes. Found. Comput. Math. 15, 3 (June 2015), 715-732.
+    % 
     % **Example** FBS=OptiFBS(F,G)
     %
     % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
@@ -57,7 +60,7 @@ classdef OptiFBS < Opti
     properties
         F;  % Cost F
         G;  % Cost G
-        
+        momRestart = false;  % Donoho put grad
         gam=[];        % descent step
         fista=false;   % FISTA option [3]
         
@@ -94,14 +97,22 @@ classdef OptiFBS < Opti
             
             if this.fista  % if fista
                 this.xopt=this.G.applyProx(this.y - this.gam.*this.F.applyGrad(this.y),this.gam);
-                told=this.tk;
-                this.tk=0.5*(1+sqrt(1+4*this.tk^2));
-                this.y=this.xopt + this.alpha*(told-1)/this.tk*(this.xopt - this.xold);
+                if this.momRestart && dot(this.y(:) - this.xopt(:),this.xopt(:) - this.xold(:)) > 0
+                    fprint('Restarting\n');
+                    this.y = this.xold;
+                    this.tk = 1;
+                    this.xopt=this.G.applyProx(this.y - this.gam.*this.F.applyGrad(this.y),this.gam);
+                else
+                    told=this.tk;
+                    this.tk=0.5*(1+sqrt(1+4*this.tk^2));
+                    this.y=this.xopt + this.alpha*(told-1)/this.tk*(this.xopt - this.xold);
+                end
             else
                 this.xopt=this.G.applyProx(this.xopt - this.gam.*this.F.applyGrad(this.xopt),this.gam);
             end
-
+            
             flag=this.OPTI_NEXT_IT;
-        end          
+            
+        end
     end
 end

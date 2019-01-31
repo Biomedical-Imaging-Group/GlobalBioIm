@@ -48,7 +48,7 @@ classdef LinOpSelectorPatch < LinOpSelector
             this.idxmin=idxmin;
             this.idxmax=idxmax;
             this.sizeout=idxmax-idxmin+1;
-            if this.sizeout(end)==1, this.sizeout=this.sizeout(1:end-1);end;
+            if this.sizeout(end)==1 && length(this.sizeout)>2, this.sizeout=this.sizeout(1:end-1);end;
             this.sizein=sz;
             this.sel=cell(length(sz),1);
             for ii=1:length(sz)

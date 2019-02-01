@@ -1,6 +1,9 @@
-function installOptimPack()
+function installOptimPack(varargin)
 %% installOptimPack function
 %   Install OptimPackLegacy and its matlab API from https://github.com/emmt/OptimPackLegacy
+%
+%   You can give as a parameter of this function the path to your GCC
+%   compiler. Ex: installOptimPack('/usr/bin/gcc-6')
 
 %     Copyright (C) 2018 F. Soulez ferreol.soulez@epfl.ch
 %
@@ -17,6 +20,12 @@ function installOptimPack()
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+if nargin==1
+    pathToGcc=[' GCC=''',varargin{1},''' '];
+else
+    pathToGcc='';
+end
+
 [mpath,~,~] = fileparts(which('installOptimPack'));
 disp('Installing OptimPackLegacy');
 pth = cd;
@@ -27,10 +36,10 @@ matDir = 'OptimPackLegacy-master/matlab/';
 srcDir = 'OptimPackLegacy-master/src/';
 MexOpt= ['-largeArrayDims ' '-DUSE_BLAS_LIB ' '-DNEW_MATLAB_BLAS ' '-DINT_64BITS '  '-largeArrayDims ' 'COMPFLAGS=''$COMPFLAGS -Wall -mtune=native  -fomit-frame-pointer -O2 '''];
 CFiles =  [srcDir,'opl_vmlmb.c ',srcDir,'opl_algebra.c ',srcDir,'opl_lnsrch.c ',srcDir,'opl_utils.c ','-IOptimPackLegacy-master/src/ '];
-eval(['mex ',matDir,'m_opl_vmlmb_get_reason.c ', CFiles,MexOpt]);
-eval(['mex ',matDir,'m_opl_vmlmb_create.c ', CFiles,MexOpt]);
-eval(['mex ',matDir,'m_opl_vmlmb_iterate.c ', CFiles,MexOpt]);
-eval(['mex ',matDir,'m_opl_vmlmb_restore.c ', CFiles,MexOpt]);
+eval(['mex ',pathToGcc,matDir,'m_opl_vmlmb_get_reason.c ', CFiles,MexOpt]);
+eval(['mex ',pathToGcc,matDir,'m_opl_vmlmb_create.c ', CFiles,MexOpt]);
+eval(['mex ',pathToGcc,matDir,'m_opl_vmlmb_iterate.c ', CFiles,MexOpt]);
+eval(['mex ',pathToGcc,matDir,'m_opl_vmlmb_restore.c ', CFiles,MexOpt]);
 movefile('OptimPackLegacy-master/matlab/*.m');
 delete('makeOptimPack.m');
 delete('OptimPackLegacy.zip');

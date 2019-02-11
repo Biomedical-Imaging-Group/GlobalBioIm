@@ -1,7 +1,7 @@
 ## v1.1.1 release notes
 The v1.1.1 release does not contain any major changes but mainly incremental improvements and bug fixes. 
 
-### Improvements 
+#### Improvements 
 - Sfft functions: faster implementation, work with any dimension, new padding option argument.
 - Merge LinOpDFT into LinOpSDFT. LinOpDFT remains now as an alias.
 - Remove code duplication in SelectorLinOps.

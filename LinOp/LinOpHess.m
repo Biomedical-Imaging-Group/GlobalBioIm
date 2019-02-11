@@ -10,8 +10,10 @@ classdef LinOpHess <  LinOp
     % the index vector. The last dimension of length lidx(lidx+1)/2
     % represents the coefficients of upper-right part of the symmetric hessian 
     % matrix ordered from top to bottom and left to right. For instance:
-    %   - in 3D with index=[1 2 3], [d^2F/dxx;d^2F/dxy;d^2F/dxz;d^2F/dyy;d^2F/dyz;d^2F/dzz]
-    %   - in 3D with index=[2 3], [d^2F/dyy;d^2F/dyz;d^2F/dzz]
+    %
+    % - in 3D with index=[1 2 3], [d^2F/dxx;d^2F/dxy;d^2F/dxz;d^2F/dyy;d^2F/dyz;d^2F/dzz]
+    %
+    % - in 3D with index=[2 3], [d^2F/dyy;d^2F/dyz;d^2F/dzz]
     %
     % All attributes of parent class :class:`LinOp` are inherited. 
     %

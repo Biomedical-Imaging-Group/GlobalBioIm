@@ -16,7 +16,7 @@ CostGoodRoughness
       applyGrad_, applyProx_, applyProxFench_, set_y 
 
 CostHyperBolic
----------------------
+--------------
     
 .. autoclass:: CostHyperBolic
     :show-inheritance:
@@ -68,7 +68,7 @@ CostMixNorm21
       applyGrad_, applyProx_, applyProxFench_, set_y
 
 CostMixNorm21NonNeg
--------------
+-------------------
     
 .. autoclass:: CostMixNorm21NonNeg
     :show-inheritance:

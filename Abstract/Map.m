@@ -194,9 +194,10 @@ classdef (Abstract) Map < handle
         function G = mtimes(this,G)
             % Overload operator (*) for :class:`Map` objects
             % $$ \\mathrm{M}(\\mathrm{x}) := \\mathrm{H}(\\mathrm{G}(\\mathrm{x}))$$
-            %  - If \\(\\mathrm{G}\\) is numeric of size sizein, then :meth:`apply` is called
-            %  - If \\(\\mathrm{G}\\) is a :class:`Map`, then a
-            %    :class:`MapComposition`is intanciated
+            %
+            % - If \\(\\mathrm{G}\\) is numeric of size sizein, then :meth:`apply` is called
+            %
+            % - If \\(\\mathrm{G}\\) is a :class:`Map`, then a :class:`MapComposition` is intanciated
             if isa(G,'Map')
                 if (isnumeric(this) && isscalar(this)) % Left multiplication by scalar
                     if ~isequal(this,1) % if multiply by 1 do noting

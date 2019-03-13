@@ -58,18 +58,19 @@ classdef OutputOpti < handle
         normXtrue;         % Norm of the true signal (to compute snr)
         isgt=false;        % Boolean true if Ground Truth is provided
         count;             % internal counter
-        xtrue;             % Ground Thruth
+        xtrue;             % Ground Truth
+        snrOp=[];          % Map to which the coefficients must be applied to compute reconstructed signal
     end
     properties
         computecost=false; % Boolean, if true the cost function will be computed
         iterVerb=0;        % message will be displayed every iterVerb iterations
         costIndex=0;       % index of the cost function
-        saveXopt=false;        % save evolution of the optimized variable
+        saveXopt=false;    % save evolution of the optimized variable
     end
     
     methods
     	%% Constructor
-        function this=OutputOpti(computecost,xtrue,iterVerb,costIndex) 
+        function this=OutputOpti(computecost,xtrue,iterVerb,costIndex,snrOp) 
             if nargin>=1
                 if isscalar(computecost)
                     computecost = (computecost ~= 0);
@@ -89,6 +90,16 @@ classdef OutputOpti < handle
                 this.xtrue=xtrue;
                 this.normXtrue=norm(this.xtrue(:));
             end
+            if nargin==5, this.snrOp = snrOp;end
+            if ~isempty(this.snrOp)
+                assert(~isempty(this.xtrue), 'Ground truth must be provided in order to compute SNR');
+                assert(isa(this.snrOp, 'Map') && isequal(this.snrOp.sizeout, size(this.xtrue)), ...
+                    'The SNR operator must have the same output size as the ground truth');
+            elseif ~isempty(this.xtrue)
+                this.snrOp = LinOpDiag(size(this.xtrue)); % Identity operator by default
+            end
+                
+                
         end
         %% Initialization
         function init(this)
@@ -137,7 +148,8 @@ classdef OutputOpti < handle
         function snr=computeSNR(this,opti)
             % Evaluate the snr for the current iterate xopt of
             % the given :class:`Opti` opti object
-            snr=20*log10(this.normXtrue/norm(this.xtrue(:)-opti.xopt(:)));
+            reconstruction = this.snrOp.apply(opti.xopt);
+            snr=20*log10(this.normXtrue/norm(this.xtrue(:)-reconstruction(:)));
         end
     end
 end

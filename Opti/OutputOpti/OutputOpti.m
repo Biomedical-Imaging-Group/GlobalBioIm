@@ -136,7 +136,7 @@ classdef OutputOpti < handle
         end
         function snr=computeSNR(this,opti)
             % Evaluate the snr for the current iterate xopt of
-            % the given :class:`Opti` opti object 
+            % the given :class:`Opti` opti object
             snr=20*log10(this.normXtrue/norm(this.xtrue(:)-opti.xopt(:)));
         end
     end

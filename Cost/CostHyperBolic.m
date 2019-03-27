@@ -1,9 +1,9 @@
 classdef CostHyperBolic < Cost
     % CostHyperBolic: Hyperbolic cost function
-    % $$C(\\mathrm{x}) := \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{x}-y)_{k,l}^2 + \\varepsilon^2}$$
+    % $$C(\\mathrm{x}) := \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{x}-y)_{k,l}^2 + \\varepsilon_k^2} - \\sum_{k=1}^K\\varepsilon_k $$
     %
     % :param index: dimensions along which the l2-norm will be applied (inner sum over l)
-    % :param epsilon: \\(\\in \\mathbb{R}_+\\) smoothing parameter (default
+    % :param epsilon: \\(\\in \\mathbb{R}^K_+\\)  smoothing parameter (default
     %                 \\(10^{-3}\\))
     %
     % All attributes of parent class :class:`Cost` are inherited. 
@@ -33,6 +33,7 @@ classdef CostHyperBolic < Cost
         epsilon;
         index;
         sumOp;
+        sumEpsilon;
     end
     
     %% Constructor
@@ -47,17 +48,28 @@ classdef CostHyperBolic < Cost
             if nargin<3|| isempty(index) %no sum
                 index=0;
             end
-            if nargin<2|| isempty(epsilon)
-                epsilon=1e-3;
-            end
-            this.epsilon = epsilon;
             this.index = index;
-            
             if index~=0
                 this.sumOp = LinOpSum(sz,index);
             else
                 this.sumOp = LinOpDiag(sz);
             end
+            
+            
+            if nargin<2|| isempty(epsilon)
+                epsilon=1e-3;
+            end
+            if ~(isscalar(epsilon)||checkSize(epsilon, this.sumOp.sizeout))
+                error('epsilon is of size [%s] and didn''t match  [%s].',...
+                num2str(size(epsilon)), num2str(this.sumOp.sizeout));
+            end
+            
+            this.epsilon = epsilon;
+             if isscalar(this.epsilon)            
+                 this.sumEpsilon =  prod(this.sumOp.sizeout(:)).*this.epsilon;
+             else
+                 this.sumEpsilon = sum(this.epsilon(:));
+             end
             
             this.memoizeOpts.computeF=true;
             this.memoCache.computeF= struct('in',[],'out', []);

@@ -37,7 +37,7 @@ classdef CostL2 < Cost
     %% Constructor
     methods
         function this = CostL2(sz,y,wght)
-            if nargin<2, y=zeros(sz); end
+            if nargin<2, y=0; end
             this@Cost(sz,y);
             this.name='CostL2';
             if nargin==3

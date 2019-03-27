@@ -16,6 +16,7 @@ classdef LinOpBroadcast <  LinOp
     
     %%    Copyright (C) 2018
     %     F. Soulez ferreol.soulez@epfl.ch
+    %     Anthony Berdeu (Laboratoire Hubert Curien)
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -96,7 +97,7 @@ classdef LinOpBroadcast <  LinOp
             for n=this.index
                 x = sum(x,n);
             end
-            y = squeeze(x);
+            y = reshape(x, this.sizein);
         end
         function y = applyHtH_(this,x)
             % Reimplemented from parent class :class:`LinOp`.

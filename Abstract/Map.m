@@ -159,37 +159,96 @@ classdef (Abstract) Map < handle
             % $$ \\mathrm{M}(\\mathrm{x}) := \\mathrm{H}(\\mathrm{x}) + \\mathrm{G}(\\mathrm{x})$$
             %
             % Calls the method :meth:`plus_`
-            if ~cmpSize(this.sizein, G.sizein) % check input size
-                error('Input to plus is a %s of sizein  [%s], which didn''t match the added %s sizein [%s].',...
-                    class(G),num2str(G.sizein),class(this), num2str(this.sizein));
+            
+            if isnumeric(this) && isscalar(this) 
+                if isequal(this,0) 
+                M = G;
+                elseif cmpSize(G.sizein, G.sizeout)
+                    M =  LinOpDiag(G.sizein,this) +G;
+                else
+                    error('Cannot sum a scalar and a non-square matrix');
+                end
+            elseif isnumeric(G) && isscalar(G)
+                if isequal(G,0)
+                    M = this;
+                elseif cmpSize(this.sizein, this.sizeout)
+                    M = this + LinOpDiag(this.sizein,G);
+                else
+                    error('Cannot sum a scalar and a non-square matrix');
+                end
+            else
+                if ~cmpSize(this.sizein, G.sizein) % check input size
+                    error('Input to plus is a %s of sizein  [%s], which didn''t match the added %s sizein [%s].',...
+                        class(G),num2str(G.sizein),class(this), num2str(this.sizein));
+                end
+                if ~cmpSize(this.sizeout, G.sizeout) % check input size
+                    error('Input to plus is a %s of sizeout  [%s], which didn''t match the added %s sizeout [%s].',...
+                        class(G),num2str(G.sizeout),class(this), num2str(this.sizeout));
+                end
+                M = this.plus_(G);
             end
-            if ~cmpSize(this.sizeout, G.sizeout) % check input size
-                error('Input to plus is a %s of sizeout  [%s], which didn''t match the added %s sizeout [%s].',...
-                    class(G),num2str(G.sizeout),class(this), num2str(this.sizeout));
-            end
-            M = this.plus_(G);
         end
         function M = minus(this,G)
             % Overload operator (-) for :class:`Map` objects
             % $$ \\mathrm{M}(\\mathrm{x}) := \\mathrm{H}(\\mathrm{x}) - \\mathrm{G}(\\mathrm{x})$$
             %
             % Calls the method :meth:`minus_`
-            if ~cmpSize(this.sizein, G.sizein) % check input size
-                error('Input to plus is a %s of sizein  [%s], which didn''t match the substracted %s sizein [%s].',...
-                    class(G),num2str(G.sizein),class(this), num2str(this.sizein));
+            if isnumeric(this) && isscalar(this) && isequal(this,0) % if multiply by 0 return 0
+                M = -1*G;
+            elseif isscalar(G)
+                if isequal(G,0)
+                    M = this;
+                else
+                    M = this - LinOpDiag(this.sizeout,G);
+                end
+            else
+                
+                
+                if ~cmpSize(this.sizein, G.sizein) % check input size
+                    error('Input to plus is a %s of sizein  [%s], which didn''t match the substracted %s sizein [%s].',...
+                        class(G),num2str(G.sizein),class(this), num2str(this.sizein));
+                end
+                if ~cmpSize(this.sizeout, G.sizeout) % check input size
+                    error('Input to plus is a %s of sizeout  [%s], which didn''t match the substracted %s sizeout [%s].',...
+                        class(G),num2str(G.sizeout),class(this), num2str(this.sizeout));
+                end 
+                M = this.minus_(G);
             end
-            if ~cmpSize(this.sizeout, G.sizeout) % check input size
-                error('Input to plus is a %s of sizeout  [%s], which didn''t match the substracted %s sizeout [%s].',...
-                    class(G),num2str(G.sizeout),class(this), num2str(this.sizeout));
-            end
-            M = this.minus_(G);
         end
         function M = mpower(this,p)
             % Returns a new :class:`Map` which is the power p \\(\\mathrm{H}^{p}\\) of the
             % current \\(\\mathrm{H}\\).
             %
             % Calls the method :meth:`mpower_`
-            M=this.mpower_(p);
+            if  isnumeric(p) && isscalar(p) 
+                if isequal(p,0)
+                    M = 1;
+                elseif isequal(p,1)
+                    M = this;
+                else
+                    M=this.mpower_(p);
+                end
+            else
+               error('p must be a scalar'); 
+            end
+        end
+        
+        function M = power(this,p)
+            % Returns a new :class:`Map` which is the power p \\(\\mathrm{H}.^{p}\\) of the
+            % current \\(\\mathrm{H}\\).
+            %
+            % Calls the method :meth:`mpower_`
+            if   isnumeric(p) && isscalar(p) 
+                if isequal(p,0)
+                    M = 1;
+                elseif isequal(p,1)
+                    M = this;
+                else
+                    M=this.power_(p);
+                end
+            else
+               error('p must be a scalar'); 
+            end
         end
         function G = mtimes(this,G)
             % Overload operator (*) for :class:`Map` objects
@@ -198,21 +257,28 @@ classdef (Abstract) Map < handle
             % - If \\(\\mathrm{G}\\) is numeric of size sizein, then :meth:`apply` is called
             %
             % - If \\(\\mathrm{G}\\) is a :class:`Map`, then a :class:`MapComposition` is intanciated
-            if isa(G,'Map')
-                if (isnumeric(this) && isscalar(this)) % Left multiplication by scalar
-                    if ~isequal(this,1) % if multiply by 1 do noting
-                        if isa(G,'Cost')
-                            G=CostMultiplication(this,G);
-                        else
-                            H=LinOpDiag(G.sizeout,this);
-                            G=H.makeComposition(G);
+          
+            if isa(this,'LinOp') &&  isnumeric(G) && isscalar(G)&&  isequal(G,0)
+                G = 0;
+            else
+                if isa(G,'Map')
+                    if (isnumeric(this) && isscalar(this)) % Left multiplication by scalar
+                        if isequal(this,0) % if multiply by 0 return 0
+                            G = 0;
+                        elseif ~isequal(this,1) % if multiply by 1 do noting
+                            if isa(G,'Cost')
+                                G=CostMultiplication(this,G);
+                            else
+                                H=LinOpDiag(G.sizeout,this);
+                                G=H.makeComposition(G);
+                            end
                         end
+                    else
+                        G =this.makeComposition(G);
                     end
                 else
-                    G =this.makeComposition(G);
+                    G = this.apply(G);
                 end
-            else
-                G = this.apply(G);
             end
         end
         function M = times(this,G)
@@ -221,17 +287,23 @@ classdef (Abstract) Map < handle
             % $$ \\mathrm{M}(\\mathrm{x}) := \\mathrm{H}(\\mathrm{x}) \\times \\mathrm{G}(\\mathrm{x})$$
             %
             % Calls the method :meth:`times_`
-            if ~cmpSize(this.sizein, G.sizein) % check input size
-                error('Input to times is a %s of sizein  [%s], which didn''t match the multiplied %s sizein [%s].',...
-                    class(G),num2str(G.sizein),class(this), num2str(this.sizein));
+            
+            if isnumeric(this) && isscalar(this) && isequal(this,0) % if multiply by 0 return 0
+                M = 0;
+            elseif isa(this,'LinOp')&&  isnumeric(G)&& isscalar(G) && isequal(G,0)
+                M = 0;
+            else
+                if ~cmpSize(this.sizein, G.sizein) % check input size
+                    error('Input to times is a %s of sizein  [%s], which didn''t match the multiplied %s sizein [%s].',...
+                        class(G),num2str(G.sizein),class(this), num2str(this.sizein));
+                end
+                if ~cmpSize(this.sizeout, G.sizeout) % check input size
+                    error('Input to times is a %s of sizeout  [%s], which didn''t match the multiplied %s sizeout [%s].',...
+                        class(G),num2str(G.sizeout),class(this), num2str(this.sizeout));
+                end
+                M=this.times_(G);
             end
-            if ~cmpSize(this.sizeout, G.sizeout) % check input size
-                error('Input to times is a %s of sizeout  [%s], which didn''t match the multiplied %s sizeout [%s].',...
-                    class(G),num2str(G.sizeout),class(this), num2str(this.sizeout));
-            end
-            M=this.times_(G);
         end
-        % TODO Overload operator .^ to do (H(x)).^p ?
         function sz = size(this, varargin)
             sz = {this.sizeout, this.sizein};
             if length(varargin) == 1
@@ -284,6 +356,10 @@ classdef (Abstract) Map < handle
             else
                 error('mpower_ method not implemented for the given power==%d',p);
             end
+        end
+        function M = power_(~,p)
+            % this method is not implemented in this Abstract class
+                error('power_ method not implemented for the given power==%d',p);
         end
         function M = times_(this,G)
             % Constructs a :class:`MapMultiplication` object to element-wise multiply the

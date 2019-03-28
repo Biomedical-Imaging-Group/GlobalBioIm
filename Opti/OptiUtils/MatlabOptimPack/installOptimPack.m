@@ -23,6 +23,11 @@ if nargin==0
     options=[];
 end
 
+get_architecture;
+if linux
+   options = [ options, ' CXXFLAGS= ',' LDFLAGS=''$LDFLAGS -fopenmp '''];
+end
+
 [mpath,~,~] = fileparts(which('installOptimPack'));
 disp('Installing OptimPackLegacy');
 pth = cd;
@@ -36,7 +41,7 @@ CFiles =  [srcDir,'opl_vmlmb.c ',srcDir,'opl_algebra.c ',srcDir,'opl_lnsrch.c ',
 eval(['mex ',matDir,'m_opl_vmlmb_get_reason.c ', CFiles,MexOpt]);
 eval(['mex ',matDir,'m_opl_vmlmb_create.c ', CFiles,MexOpt]);
 eval(['mex ',matDir,'m_opl_vmlmb_iterate.c ', CFiles,MexOpt]);
-eval(['mex -v ',matDir,'m_opl_vmlmb_restore.c ', CFiles,MexOpt]);
+eval(['mex  ',matDir,'m_opl_vmlmb_restore.c ', CFiles,MexOpt]);
 movefile('OptimPackLegacy-master/matlab/*.m');
 delete('makeOptimPack.m');
 delete('OptimPackLegacy.zip');

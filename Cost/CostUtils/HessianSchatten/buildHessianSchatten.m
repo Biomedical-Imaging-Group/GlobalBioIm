@@ -23,16 +23,22 @@ if nargin==0
     options=[];
 end
 
+disp('Installing HessianSchatten');
+get_architecture;
+if linux
+   options = [ options, ' CXXFLAGS='' -fopenmp ''',' LDFLAGS=''$LDFLAGS -fopenmp '''];
+else
+    disp('On your system and compiler,  OPENMP is desactivated leading to slow computation. This can be tuned using the options parameter:');
+    disp('Example: options =  CXXFLAGS=  -fopenmp ');
+end
 
 [mpath,~,~] = fileparts(which('buildHessianSchatten'));
-disp('Installing HessianSchatten');
-disp('WARNING: depending on your system and compiler,  OPENMP may not be activated leading to slow computation.');
 pth = cd;
 cd(mpath);
-MexOpt= ['-DUSE_BLAS_LIB ' '-DNEW_MATLAB_BLAS ' '-DINT_64BITS '  '-largeArrayDims ' ,options,  ' CXXFLAGS=''-fPIC -Wall -mtune=native  -fomit-frame-pointer -O2 -fopenmp '''  ' LDFLAGS=''$LDFLAGS -fopenmp'''];
+MexOpt= ['-DUSE_BLAS_LIB ' '-DNEW_MATLAB_BLAS ' '-DINT_64BITS '  '-largeArrayDims ' ,options,  ' CXXFLAGS=''$CXXFLAGS -fPIC -Wall -mtune=native  -fomit-frame-pointer -O2  '''  ' LDFLAGS=''$LDFLAGS '''];
 eval(['mex ',' svd2D_recomp.cpp ',MexOpt]);
 eval(['mex ',' svd2D_decomp.cpp ',MexOpt]);
 eval(['mex ',' svd3D_recomp.cpp ',MexOpt]);
-eval(['mex  ',' svd3D_decomp.cpp ',MexOpt]);
+eval(['mex ',' svd3D_decomp.cpp ',MexOpt]);
 cd(pth);
 end

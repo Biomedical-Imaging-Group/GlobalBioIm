@@ -3,7 +3,7 @@ function buildHessianSchatten(options)
 %   build the HessianSchatten norm mexgl files for CostMixNormSchatt1
 %
 %   You can give as a parameter of this function the path to your GCC
-%   compiler. Ex: buildHessianSchatten('/usr/bin/gcc-6')
+%   compiler. Ex: buildHessianSchatten('GCC=/usr/bin/gcc-6')
 
 %     Copyright (C) 2018 F. Soulez ferreol.soulez@epfl.ch
 %

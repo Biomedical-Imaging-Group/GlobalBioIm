@@ -195,7 +195,7 @@ classdef (Abstract) Map < handle
             % Calls the method :meth:`minus_`
             if isnumeric(this) && isscalar(this) && isequal(this,0) % if multiply by 0 return 0
                 M = -1*G;
-            elseif isscalar(G)
+            elseif isnumeric(G) && isscalar(G)
                 if isequal(G,0)
                     M = this;
                 else

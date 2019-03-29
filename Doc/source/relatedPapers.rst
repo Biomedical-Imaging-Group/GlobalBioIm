@@ -74,3 +74,14 @@ Other papers
   `[Paper] <https://ieeexplore.ieee.org/document/7932483>`_
 | M.T. McCann and M. Unser.
 
+| **Compact lensless phase imager**
+| Optics Express, Optical Society of America, 2017, 25 (4), pp.889 - 895. 〈10.1364/OE.25.004438〉
+`[Paper] <https://hal-insu.archives-ouvertes.fr/insu-01632709>`_
+| M. Rostykus, F. Soulez, M. Unser, C. Moser.
+
+| **Compact in-line lensfree digital holographic microscope**
+| Methods, Elsevier, 2017, 〈10.1016/j.ymeth.2017.11.008〉
+`[Paper] <https://hal-insu.archives-ouvertes.fr/insu-01696945>`_
+| M. Rostykus, F. Soulez, M. Unser, C. Moser.
+
+

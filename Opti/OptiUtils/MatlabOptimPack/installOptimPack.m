@@ -23,10 +23,6 @@ if nargin==0
     options=[];
 end
 
-get_architecture;
-if linux
-   options = [ options, ' CXXFLAGS= ',' LDFLAGS=''$LDFLAGS -fopenmp '''];
-end
 
 [mpath,~,~] = fileparts(which('installOptimPack'));
 disp('Installing OptimPackLegacy');

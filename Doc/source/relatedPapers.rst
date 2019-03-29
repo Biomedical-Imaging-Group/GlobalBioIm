@@ -12,21 +12,15 @@ Papers with open-source code
 
 | **Improving 3D MA-TIRF Reconstruction with Deconvolution and Background Estimation**
 | Proceedings of ISBI, 2019.
-  `[Paper] <tt>`_
+  `[Paper] <https://hal.inria.fr/hal-02017862>`_
   `[Code] <https://github.com/esoubies/MA-TIRF_Reconstruction>`_
 | E. Soubies, L. Blanc-Feraud, S. Schaub, and E. Van Obberghen-Schilling.
 
 | **Nanometric Axial Resolution of Fibronectin Assembly Units Achieved with an Efficient Reconstruction Approach for Multi-Angle-TIRF Microscopy**
 | Scientific Reports, 2019. 
-  `[Paper] <tt>`_
+  `[Paper] <https://www.nature.com/articles/s41598-018-36119-3>`_
   `[Code] <https://github.com/esoubies/MA-TIRF_Reconstruction>`_
 | E. Soubies, A. Radwanska, D. Grall, L. Blanc-Feraud, E. Van Obberghen-Schilling, and S. Schaub.
-
-| **Computational Super-Sectioning for Single-Slice Structured Illumination Microscopy**
-| IEEE Transactions on Computational Imaging, 2018. 
-  `[Paper] <https://ieeexplore.ieee.org/document/8579117>`_
-  `[Code] <tt>`_
-| E. Soubies and M. Unser.
 
 | **Region of interest X-ray computed tomography via corrected back projection** 
 | Proceedings of ISBI, 2018. 
@@ -48,6 +42,11 @@ Other papers
 | Proceedings of ISBI, 2019.
   `[Paper] <http://bigwww.epfl.ch/preprints/donati1901p.pdf>`_
 | L. Donati, E. Soubies, and M. Unser. 
+
+| **Computational Super-Sectioning for Single-Slice Structured Illumination Microscopy**
+| IEEE Transactions on Computational Imaging, 2018. 
+  `[Paper] <https://ieeexplore.ieee.org/document/8579117>`_
+| E. Soubies and M. Unser.
 
 | **Phaseless Diffraction Tomography with Regularized Beam Propagation** 
 | Proceedings of ISBI, 2018.

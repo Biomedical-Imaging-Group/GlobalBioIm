@@ -112,11 +112,18 @@ if ~isempty(generateDataUnitTests)
         valVMLMB=VMLMB.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_NoReg_VMLMB','valVMLMB');
         valCG=CG.OutOp.evolcost;save('Util/UnitTest/Data/Deconv_LS_NoReg_CG','valCG');
     else
+        if (exist('Util/UnitTest/Data/Deconv_LS_NoReg_GD.mat','file')==2) && ... 
+                (exist('Util/UnitTest/Data/Deconv_LS_NoReg_VMLMB.mat','file')==2) && ...
+                (exist('Util/UnitTest/Data/Deconv_LS_NoReg_CG.mat','file')==2)
+
         load('Util/UnitTest/Data/Deconv_LS_NoReg_GD');
         load('Util/UnitTest/Data/Deconv_LS_NoReg_VMLMB');
         load('Util/UnitTest/Data/Deconv_LS_NoReg_CG');
         stateTest=isequal(valGD,GD.OutOp.evolcost) &&  isequal(valVMLMB,VMLMB.OutOp.evolcost) &&  isequal(valCG,CG.OutOp.evolcost);
         message=['Max error between costs evolution : ',num2str(max([norm(valGD-GD.OutOp.evolcost),...
             norm(valVMLMB-VMLMB.OutOp.evolcost),norm(valCG-CG.OutOp.evolcost)]))];
+        else
+            error('you must generate data before setting : set generateDataUnitTests=1 in UnitScript.m');
+        end
     end
 end

@@ -220,9 +220,13 @@ classdef (Abstract) Map < handle
             % current \\(\\mathrm{H}\\).
             %
             % Calls the method :meth:`mpower_`
+            if  ~cmpSize(this.sizeout, this.sizein)
+                    error('Input to mpower must be a square map. Here %s x %s',...
+                      num2str(this.sizeout),num2str(this.sizein));          
+            end
             if  isnumeric(p) && isscalar(p) 
                 if isequal(p,0)
-                    M = 1;
+                    M = LinOpIdentity(G.sizein);
                 elseif isequal(p,1)
                     M = this;
                 else
@@ -239,9 +243,7 @@ classdef (Abstract) Map < handle
             %
             % Calls the method :meth:`mpower_`
             if   isnumeric(p) && isscalar(p) 
-                if isequal(p,0)
-                    M = 1;
-                elseif isequal(p,1)
+                if isequal(p,1)
                     M = this;
                 else
                     M=this.power_(p);
@@ -353,6 +355,22 @@ classdef (Abstract) Map < handle
             % When \\(p\\neq-1\\), this method is not implemented in this Abstract class
             if p==-1
                 M=this.makeInversion_();
+            elseif mod(p,1)==0 
+                if p>0
+                    M = this;
+                    while p>1
+                        M = M *this;
+                        p = p-1;
+                    end
+                else                    
+                    M = this;
+                    p = abs(p);
+                    while p>1
+                        M = M *this;
+                        p = p-1;
+                    end
+                    M= M.makeInversion_();
+                end
             else
                 error('mpower_ method not implemented for the given power==%d',p);
             end

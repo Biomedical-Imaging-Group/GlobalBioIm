@@ -57,7 +57,7 @@ Fn={CostKullLeib([],y,1e-6),lamb*R_N12,R_POS};
 Hn={H,G,LinOpDiag(sz)};
 rho_n=[1e-3,1e-3,1e-3];
 ADMM=OptiADMM([],Fn,Hn,rho_n);
-ADMM.OutOp=OutputOpti(1,im,40,[1 2]);
+ADMM.OutOp=OutputOptiSNR(1,im,40,[1 2]);
 ADMM.ItUpOut=2;                                  % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;                                 % max number of iterations
 ADMM.run(y);                                      % run the algorithm
@@ -66,7 +66,7 @@ ADMM.run(y);                                      % run the algorithm
 Fn={lamb*R_N12,F};
 Hn={G,H};
 PDC=OptiPrimalDualCondat([],R_POS,Fn,Hn);
-PDC.OutOp=OutputOpti(1,im,40,[2 3]);
+PDC.OutOp=OutputOptiSNR(1,im,40,[2 3]);
 PDC.tau=100;          % set algorithm parameters
 PDC.sig=1e-2;         %
 PDC.rho=1.2;          %
@@ -76,7 +76,7 @@ PDC.run(y);           % run the algorithm
 
 % -- Richardson-Lucy-TV  KL + TV + NonNeg (implicit)
 RLTV=OptiRichLucy(F*H,1,lamb);
-RLTV.OutOp=OutputOpti(1,im,40);
+RLTV.OutOp=OutputOptiSNR(1,im,40);
 RLTV.ItUpOut=2;   % call OutputOpti update every ItUpOut iterations
 RLTV.maxiter=200;  % max number of iterations
 RLTV.run(y);       % run the algorithm 
@@ -86,7 +86,7 @@ hyperB = CostHyperBolic(G.sizeout,   1e-7,  3)*G;
 C = F*H+ lamb*hyperB; 
 C.memoizeOpts.apply=true;
 VMLMB=OptiVMLMB(C,0.,[]);  
-VMLMB.OutOp=OutputOpti(1,im,40);
+VMLMB.OutOp=OutputOptiSNR(1,im,40);
 VMLMB.ItUpOut=2; 
 VMLMB.maxiter=200;                             % max number of iterations
 VMLMB.m=3;                                     % number of memorized step in hessian approximation

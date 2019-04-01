@@ -57,14 +57,14 @@ F.doPrecomputation=1;
 
 % -- Gradient Descent LS
 GD=OptiGradDsct(F);
-GD.OutOp=OutputOpti(1,im,40);
+GD.OutOp=OutputOptiSNR(1,im,40);
 GD.ItUpOut=2;           % call OutputOpti update every ItUpOut iterations
 GD.maxiter=200;         % max number of iterations
 GD.run(y); % run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
 
 %% -- VMLMB LS 
 VMLMB=OptiVMLMB(F,[],[]);  
-VMLMB.OutOp=OutputOpti(1,im,40);
+VMLMB.OutOp=OutputOptiSNR(1,im,40);
 VMLMB.ItUpOut=2; 
 VMLMB.maxiter=200;                             % max number of iterations
 VMLMB.m=2;                                     % number of memorized step in hessian approximation (one step is enough for quadratic function)

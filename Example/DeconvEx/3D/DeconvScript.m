@@ -93,7 +93,7 @@ else
     rho_n=[1e-3,1e-3,1e-3];             % Multipliers rho_n
     ADMM=OptiADMM([],Fn,Hn,rho_n);
 end
-ADMM.OutOp=OutputOpti(1,im,round(maxIt/10),[1 2]);
+ADMM.OutOp=OutputOptiSNR(1,im,round(maxIt/10),[1 2]);
 ADMM.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
 ADMM.ItUpOut=round(maxIt/10);
 ADMM.maxiter=maxIt;

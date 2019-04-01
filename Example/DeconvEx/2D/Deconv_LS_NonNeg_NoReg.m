@@ -48,7 +48,7 @@ F.doPrecomputation=1;
 
 % -- FISTA LS + NonNeg
 FBS=OptiFBS(F,R_POS);
-FBS.OutOp=OutputOpti(1,im,10);
+FBS.OutOp=OutputOptiSNR(1,im,10);
 FBS.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
 FBS.ItUpOut=2;          % call OutputOpti update every ItUpOut iterations
 FBS.fista=true;         % activate fista
@@ -57,7 +57,7 @@ FBS.run(zeros(size(y)));% run the algorithm (Note that gam is fixed automaticall
 
 % -- Douglas-Rachford LS + NonNeg
 DR=OptiDouglasRachford(F,R_POS,[],10,1.5);
-DR.OutOp=OutputOpti(1,im,10);
+DR.OutOp=OutputOptiSNR(1,im,10);
 DR.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
 DR.ItUpOut=2;          % call OutputOpti update every ItUpOut iterations
 DR.maxiter=200;        % max number of iterations
@@ -66,7 +66,7 @@ DR.run(y);
 % - VMLMB LS +  NonNeg 
 H.memoizeOpts.applyHtH=true;
 VMLMB=OptiVMLMB(F,0.,[]);  
-VMLMB.OutOp=OutputOpti(1,im,10);
+VMLMB.OutOp=OutputOptiSNR(1,im,10);
 VMLMB.CvOp=TestCvgCombine('CostRelative',1e-4, 'StepRelative',1e-4); % identical to VMLMB.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4),TestCvgStepRelative(1e-5)); 
 VMLMB.ItUpOut=2; 
 VMLMB.maxiter=200;                             % max number of iterations

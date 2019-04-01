@@ -13,7 +13,7 @@
 % Initializations
 clc; clear; close all;
 global generateDataUnitTests  stateTest message
-generateDataUnitTests=1; 
+generateDataUnitTests=0; 
 mess={'FAIL !','OK !'};
 
 % Select scripts to run

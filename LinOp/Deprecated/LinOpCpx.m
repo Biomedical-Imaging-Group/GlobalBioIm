@@ -35,6 +35,7 @@ classdef LinOpCpx <  LinOp
     %% Constructor
     methods
         function this = LinOpCpx(sz)
+            warning('LinOpCpx Deprecated');
             this.name ='LinOpCpx';
             assert(issize(sz),'The input size sz should be a conformable  to a size ');
             this.isInvertible = true;

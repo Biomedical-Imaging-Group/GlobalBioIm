@@ -90,7 +90,7 @@ LinOpSum
 
       
 LinOpXRay
-..................
+---------
 
 .. autoclass:: LinOpXRay
     :show-inheritance:

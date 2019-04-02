@@ -17,15 +17,13 @@ classdef OutputOpti < handle
     %
     % :param name:  name of the :class:`OutputOpti`
     % :param computecost:  boolean, if true the cost function will be computed
-    % :param xtrue: ground truth to compute the error with the solution (if provided)
     % :param evolcost: array to save the evolution of the cost function
-    % :param evolsnr: array to save the evolution of the SNR
     % :param saveXopt: boolean (defaul true) to save the evolution of the optimized variable xopt.
     % :param evolxopt:  cell saving the optimization variable xopt
     % :param iterVerb:  message will be displayed every iterVerb iterations (must be a multiple of the :attr:`ItUpOut` parameter of classes :class:`Opti`)
     % :param costIndex: select a specific cost function among a sum in the case where the optimized cost function is a sum of cost functions
     %
-    % **Example** OutOpti=OutputOpti(computecost,xtrue,iterVerb) 
+    % **Example** OutOpti=OutputOpti(computecost,iterVerb,costIndex) 
     %
     % **Important** The update method should have an unique imput that is the :class:`Opti` object in order to 
     % be generic for all Optimization routines. Hence the update method has access (in reading mode) 
@@ -86,7 +84,7 @@ classdef OutputOpti < handle
             
             
             if nargin>=2
-                if ~isscalar( varargin{2})
+                if ~isscalar( varargin{2}) 
                     warning('xtrue parameter OutputOpti is deprecated use OutputOptiSNR');
                     this=this.OutputOptiSNR_(varargin{:});
                     return
@@ -121,7 +119,7 @@ classdef OutputOpti < handle
                 this.evolcost(this.count)=cc;
             end
             
-            if this.OptiSNR_
+            if this.OptiSNR_ && this.isgt
                 snr=this.computeSNR(opti);
                 str=sprintf('%s | SNR: %4.4e dB',str,snr);
                 this.evolsnr(this.count)=snr;
@@ -168,6 +166,7 @@ classdef OutputOpti < handle
             end
             if nargin==5, this.costIndex=costIndex;end
             if ~isempty(this.xtrue)
+                this.isgt=true;
                 this.xtrue=xtrue;
                 this.normXtrue=norm(this.xtrue(:));
             end

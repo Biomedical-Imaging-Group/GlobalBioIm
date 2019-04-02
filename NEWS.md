@@ -2,15 +2,15 @@
 The v1.1.2 release does not contain any major changes but mainly incremental improvements and bug fixes. 
 
 #### Improvements 
-- New LinOpXRay for 2D radon transform (Note that the adjoint is not really the adjoint, but only an approximation (up to about 20 dB),
+- New `LinOpXRay` for 2D radon transform (Note that the adjoint is not really the adjoint, but only an approximation (up to about 20 dB),
 - LinOp compatibility with sparse matrices,
-- Util/estimateNorm.m for estimation of the norm of an operator,
-- New OutputOptiSNR to print SNR during optimization,
+- `Util/estimateNorm.m` for estimation of the norm of an operator,
+- New `OutputOptiSNR` to print SNR during optimization,
 - Better summation and multiplication of Map objects with scalars,
-- Rename OpEWSquareRoot to OpEWSqrt,
+- Rename `OpEWSquareRoot` to` OpEWSqrt`,
 - Add some kind of unitary tests,
-- CostHyperBolic: Epsilon can be a vector,
-- non scalar step size in FBS
+- `CostHyperBolic`: Epsilon can be a vector,
+- non scalar step size in `OptiFBS`
 
 
 #### Bug fixes

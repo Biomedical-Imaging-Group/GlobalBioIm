@@ -5,7 +5,7 @@ This Matlab toolbox provides a set of tools (operators, cost functions, optimiza
 
 ## Getting started 
 
-Download or clone this repository and run the script *setMatlabPath.m* which will update your Matlab path with the library.
+Download or clone this repository and run the script *setGlobalBioImPath.m* which will update your Matlab path with the library.
 
 ## Documentation
 

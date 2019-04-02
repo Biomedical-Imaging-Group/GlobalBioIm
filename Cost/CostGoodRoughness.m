@@ -4,7 +4,7 @@ classdef CostGoodRoughness < Cost
     % with \\( \\vert (\\nabla \\mathrm{x})_{.,k} \\vert^2 \\)  the gradient
     % magnitude at pixel k.
     %
-    % :param G: :class:`LinOpGrad`object
+    % :param G: :class:`LinOpGrad` object
     % :param bet: smoothing parameter (default 1e-1)
     %
     % All attributes of parent class :class:`Cost` are inherited. 

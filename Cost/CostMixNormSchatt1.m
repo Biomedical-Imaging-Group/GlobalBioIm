@@ -11,18 +11,17 @@ classdef CostMixNormSchatt1 < Cost
     %
     % All attributes of parent class :class:`Cost` are inherited.
     %
-    % **Note** The actual implementation works for size (sz) having one of the two following forms: 
+    % **Note** The actual implementation works for size (sz) having one of the two following forms:
     %
-    % - (NxMx3) such that the Sp norm will be applied on each symetric 2x2
-    % $$ \\begin{bmatrix} \\mathrm{x}_{n m 1} & \\mathrm{x}_{n m 2} \\newline 
-    % \\mathrm{x}_{n m 2} & \\mathrm{x}_{n m 3} \\end{bmatrix}$$
-    % and then the \\(\\ell_1\\) norm on the two other dimensions.
-    %
-    % - (NxMxKx6) such that the Sp norm will be applied on each symetric 3x3
-    % $$ \\begin{bmatrix} \\mathrm{x}_{n m k 1} & \\mathrm{x}_{n m k 2} & \\mathrm{x}_{n m k 3} \\newline 
-    % \\mathrm{x}_{n m k 2} & \\mathrm{x}_{n m k 4} & \\mathrm{x}_{n m k 5} \\newline 
-    % \\mathrm{x}_{n m k 3} & \\mathrm{x}_{n m k 5} & \\mathrm{x}_{n m k 6} \\newline  \\end{bmatrix}$$
-    % and then the \\(\\ell_1\\) norm on the three other dimensions.
+    %   * (NxMx3) such that the Sp norm will be applied on each symetric 2x2
+    %     $$ \\begin{bmatrix} \\mathrm{x}_{n m 1} & \\mathrm{x}_{n m 2} \\newline 
+    %     \\mathrm{x}_{n m 2} & \\mathrm{x}_{n m 3} \\end{bmatrix}$$
+    %     and then the \\(\\ell_1\\) norm on the two other dimensions.
+    %   * (NxMxKx6) such that the Sp norm will be applied on each symetric 3x3
+    %     $$ \\begin{bmatrix} \\mathrm{x}_{n m k 1} & \\mathrm{x}_{n m k 2} & \\mathrm{x}_{n m k 3} \\newline 
+    %     \\mathrm{x}_{n m k 2} & \\mathrm{x}_{n m k 4} & \\mathrm{x}_{n m k 5} \\newline 
+    %     \\mathrm{x}_{n m k 3} & \\mathrm{x}_{n m k 5} & \\mathrm{x}_{n m k 6} \\newline  \\end{bmatrix}$$
+    %     and then the \\(\\ell_1\\) norm on the three other dimensions.
     %
     % **References**
     % [1] Lefkimmiatis, S., Ward, J. P., & Unser, M. (2013). Hessian Schatten-norm regularization

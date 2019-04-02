@@ -13,7 +13,9 @@ classdef OutputOptiConjGrad < OutputOpti
     % :param xtrue: ground truth to compute the error with the solution (if provided)
     % :param iterVerb:  message will be displayed every iterVerb iterations (must be a multiple of the :attr:`ItUpOut` parameter of classes :class:`Opti`)
     % :param ytWy:  weighted norm of $y$ : $ \\mathrm{ytWy} = \\mathrm{ y^T\\,W\\,y}$
+    %
     % See also :class:`OptiConjGrad` :class:`OutputOpti`
+    %
 
     %%    Copyright (C) 2018
     %     F. Soulez ferreol.soulez@epfl.ch

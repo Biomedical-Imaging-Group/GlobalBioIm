@@ -121,6 +121,7 @@ classdef CostL2Composition <  CostComposition
         end
         function y=applyProx_(this,x,alpha)
             % Reimplemented from parent class :class:`CostComposition`.
+	    %
             % Implemented 
             %  - if the operator \\(\\alpha\\mathrm{H^{\\star}WH + I}  \\) is invertible:
             %    $$ \\mathrm{y} = (\\alpha\\mathrm{H^{\\star}WH + I} )^{-1} (\\alpha \\mathrm{H^TWy +x})$$

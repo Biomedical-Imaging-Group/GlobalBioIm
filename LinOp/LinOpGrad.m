@@ -10,8 +10,8 @@ classdef LinOpGrad <  LinOp
     % All attributes of parent class :class:`LinOp` are inherited. 
     % 
     % **Note** When circular boundary conditions are selected, the method
-    % makeHtH (or equivalently the composition H'*H) returns a convolution
-    % linear operator :class:`LinOp`
+    %          makeHtH (or equivalently the composition ``H'*H``) returns a convolution
+    %          linear operator :class:`LinOp`
     %
     % **Example** G = LinOpGrad(sz,index,bc,res)
     %

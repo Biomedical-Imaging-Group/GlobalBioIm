@@ -1,23 +1,44 @@
 classdef LinOpXRay < LinOp
-   % LinOpXray: 2D, parallel x-ray operator based on MATLAB's radon.
-   % Be warned that the adjoint is only accurate to around 20 dB for
-   % for images of size 500x500 px. The error is smaller for larger
-   % images.
+   % LinOpXray: 2D, parallel x-ray operator based on MATLAB's ``radon`` function.
+   % 
    %
    % :param x: structure defining the reconstruction domain (always 2D)
-   %        x.size - 1x2 vector giving dimensions of the domain in pixels,
-   %                 must be of the form N*ones(1,2)
-   %        x.step - 1x2 vector giving the spacing of the pixels (in
-   %                 an apropirate unit of length, e.g. milimeteres)
-   %        the center is assumed to be at floor((x.size+1)/2)
+   % :param x.size: 1x2 vector giving dimensions of the domain in pixels, must be of the form ``N*ones(1,2)``.
+   % :param x.step: 1x2 vector giving the spacing of the pixels
+   %                (in an apropirate unit of length, e.g. milimeteres).
+   % :param thetas: 1x(number of projections) vector giving the projection directions in radians.
+%                   Specifically, ``[cos(theta) sin(theta)]`` points in the direction of the positive axis in the projection coordinate system.
    %
-   %  the center of each projection is at ceil(sizeout/2)
- 
-    properties
-     x
-	 y
-	 thetas 
-    end
+   % **Note** We take rows as $$x$$ and columns as $$y$$ in the reconstruction domain.
+   % **Note** The center of the reconstruction (and rotation axis) is assumed to be at ``floor((x.size+1)/2)``. 
+   %
+   % **Note** The center of each projection is at ``ceil(sizeout/2)``.
+   %
+   % **Note** Be warned that the adjoint is only accurate to around 20 dB for
+   % for images of size 500x500 px. The error is smaller for larger
+   % images.
+
+   %% Copyright (C) 2019
+   %  M. McCann michael.thompson.mccann@gmail.com
+%     This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+%
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+%
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  
+  
+  properties
+    x
+    y
+    thetas 
+  end
     
     methods
 

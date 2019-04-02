@@ -88,6 +88,15 @@ LinOpSum
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
       applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, makeInversion_
 
+      
+LinOpXRay
+..................
+
+.. autoclass:: LinOpXRay
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, makeInversion_
+
 
 
 .. automodule:: LinOp.SelectorLinOps

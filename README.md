@@ -17,7 +17,7 @@ See [NEWS](https://github.com/Biomedical-Imaging-Group/GlobalBioIm/blob/release/
 
 ## References
 
-[Pocket Guide to Solve Inverse Problems with GlobalBioIm](https://128.84.21.199/abs/1812.07908)  <br />
+[Pocket Guide to Solve Inverse Problems with GlobalBioIm](https://arxiv.org/abs/1812.07908)  <br />
 Submitted, 2019. <br />
 E. Soubies, F. Soulez, M. McCann,  T-A. Pham, L. Donati, T. Debarre, D. Sage, and M. Unser.
 

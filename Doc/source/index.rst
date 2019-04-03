@@ -36,7 +36,7 @@ Releases
 References
 ----------
 
-| `Pocket Guide to Solve Inverse Problems with GlobalBioIm <https://128.84.21.199/abs/1812.07908>`_,
+| `Pocket Guide to Solve Inverse Problems with GlobalBioIm <https://arxiv.org/abs/1812.07908>`_,
 | Submitted, 2019.
 | E. Soubies, F. Soulez, M. T. McCann, T-A. Pham, L. Donati, T. Debarre, D. Sage, and M. Unser.
 

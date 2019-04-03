@@ -3,17 +3,17 @@ Non-Linear Operators
 
 This section contains non-linear operator classes which all derive directly from the abstract class :class:`Map`.
 
-.. automodule:: NonLinop
+.. automodule:: NonLinOp
 
-.. automodule:: NonLinop.ElementWiseOp
+.. automodule:: NonLinOp.ElementWiseOp
 
 Element-wise Operators
 ----------------------
 
-OpEWSquareRoot
-..............
+OpEWSqrt
+........
 
-.. autoclass:: OpEWSquareRoot
+.. autoclass:: OpEWSqrt
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
 

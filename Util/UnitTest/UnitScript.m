@@ -7,8 +7,8 @@
 %    - set generateDataUnitTests=0; to run the scripts and compare their
 %    results to those saved (e.g. from the current version of the Library)
 % .  - use the structure 'test' to choose which scripts are used
-%
-%  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
+%g
+%  Copyright (C) 2018 E. Soubies emmanuel.soubies@epfl.ch
 %--------------------------------------------------------------
 % Initializations
 clc; clear; close all;
@@ -34,6 +34,15 @@ test.TestsCompositionLinOps=1;
 % Put 1 to run test when test.??=0
 revert=0;
 
+[lpath,~,~] = fileparts(which('setGlobalBioImPath'));
+pth = cd;
+cd(lpath);
+
+warning('off','MATLAB:MKDIR:DirectoryExists');
+mkdir('Util/UnitTest/Data');
+warning('on','MATLAB:MKDIR:DirectoryExists');
+
+tt=tic;
 fnames=fieldnames(test);
 for idx=1:length(fnames)
     message=[];
@@ -50,3 +59,5 @@ for idx=1:length(fnames)
         end
     end
 end
+toc(tt);
+cd(pth);

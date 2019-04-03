@@ -59,6 +59,7 @@ classdef LinOpSelector <  LinOp
         function y = apply_(this,x)
             % Reimplemented from parent class :class:`LinOpSelector`.           
             y =x(this.sel{:});
+            y = reshape(y, this.sizeout);
         end        
         function y = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOpSelector`.

@@ -51,7 +51,7 @@ lamb=5e-3;                           % Hyperparameter
 
 % -- Chambolle-Pock  LS + ShattenHess
 CP=OptiChambPock(lamb*R_1sch,Hess,F);
-CP.OutOp=OutputOpti(1,im,20);
+CP.OutOp=OutputOptiSNR(1,im,20);
 CP.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4); 
 CP.tau=1;               % algorithm parameters
 CP.sig=0.02;            %
@@ -65,7 +65,7 @@ Hn={Hess};
 rho_n=[1e-1];
 ADMM=OptiADMM(F,Fn,Hn,rho_n);
 ADMM.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4); 
-ADMM.OutOp=OutputOpti(1,im,10);
+ADMM.OutOp=OutputOptiSNR(1,im,10);
 ADMM.ItUpOut=1;            % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;           % max number of iterations
 ADMM.run(zeros(size(y)));   % run the algorithm 

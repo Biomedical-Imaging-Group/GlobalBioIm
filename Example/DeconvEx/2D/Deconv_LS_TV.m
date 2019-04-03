@@ -51,7 +51,7 @@ lamb=1e-3;                  % Hyperparameter
 
 % -- Chambolle-Pock  LS + TV
 CP=OptiChambPock(lamb*R_N12,G,F);
-CP.OutOp=OutputOpti(1,im,10);
+CP.OutOp=OutputOptiSNR(1,im,10);
 CP.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
 CP.tau=15;                            % algorithm parameters
 CP.sig=1/(CP.tau*G.norm^2)*0.99;      %
@@ -65,7 +65,7 @@ Hn={G};rho_n=[1e-1];
 % Here no solver needed in ADMM since the operator H'*H + alpha*G'*G is invertible
 ADMM=OptiADMM(F,Fn,Hn,rho_n);
 ADMM.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
-ADMM.OutOp=OutputOpti(1,im,10);
+ADMM.OutOp=OutputOptiSNR(1,im,10);
 ADMM.ItUpOut=2;            % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;           % max number of iterations
 ADMM.run(zeros(size(y)));   % run the algorithm 

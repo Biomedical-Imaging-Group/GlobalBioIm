@@ -39,7 +39,7 @@ classdef TestCvgStepRelative  < TestCvg
             % Tests algorithm convergence from the relative difference between two successive value of the step function
             %
             % :return: boolean true if
-            % $$ \\frac{\\| \\mathrm{x}^{k} - \\mathrm{x}^{k-1}\\|}{\\|\\mathrm{x}^{k-1}\\|} < \\text{stepRelativeTol}.$$
+            %          $$ \\frac{\\| \\mathrm{x}^{k} - \\mathrm{x}^{k-1}\\|}{\\|\\mathrm{x}^{k-1}\\|} < \\text{stepRelativeTol}.$$
             
             stop = false;
             if ~isempty(opti.xold)

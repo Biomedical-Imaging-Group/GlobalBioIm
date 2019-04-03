@@ -37,6 +37,11 @@ classdef TestCvgADMM < TestCvg
        eps_abs;     % Termination criterion tolerances.
        eps_rel;  
     end
+    properties
+        evolResPrim
+        evolResDual
+        count=0;
+    end
     
     methods
         %% Constructor
@@ -52,7 +57,7 @@ classdef TestCvgADMM < TestCvg
         %% Update method
         function stop = testConvergence(this,opti)
             % Reimplemented from parent class :class:`TestCvg`.
-            
+            this.count=this.count+1;
             stop = false;
             
             p = 0; % Number of constraints
@@ -63,15 +68,19 @@ classdef TestCvgADMM < TestCvg
             adjHnwn_norm = 0; % ||H'w||
             for n = 1:length(opti.wn)
                 p = p + length(opti.yn{n});
-                r_norm = r_norm + norm(opti.Hnx{n}-opti.yn{n})^2;
-                s_norm = s_norm + norm(opti.rho_n(n)*opti.Hn{n}.applyAdjoint(opti.yn{n} - opti.yold{n}))^2;
-                Hnx_norm = Hnx_norm + norm(opti.Hnx{n})^2;
-                y_norm = y_norm + norm(opti.yn{n})^2;
-                adjHnwn_norm = adjHnwn_norm + norm(opti.Hn{n}.applyAdjoint(opti.wn{n}))^2;
+                r_norm = r_norm + norm(opti.Hnx{n}(:)-opti.yn{n}(:))^2;
+                tmp=opti.rho_n(n)*opti.Hn{n}.applyAdjoint(opti.yn{n} - opti.yold{n});
+                s_norm = s_norm + norm(tmp(:))^2;
+                Hnx_norm = Hnx_norm + norm(opti.Hnx{n}(:))^2;
+                y_norm = y_norm + norm(opti.yn{n}(:))^2;
+                tmp=opti.Hn{n}.applyAdjoint(opti.wn{n});
+                adjHnwn_norm = adjHnwn_norm + norm(tmp(:))^2;
             end
             eps_primal = sqrt(p)*this.eps_abs + this.eps_rel*sqrt(max(Hnx_norm, y_norm));
             eps_dual = sqrt(length(opti.xopt))*this.eps_abs + this.eps_rel*sqrt(adjHnwn_norm);
             
+            this.evolResPrim(this.count)=r_norm;
+            this.evolResDual(this.count)=s_norm;
             if (sqrt(r_norm) <= eps_primal) && (sqrt(s_norm) <= eps_dual)
                 stop = true;
                 endingMessage = [this.name,' convergence reached'];

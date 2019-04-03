@@ -4,3 +4,4 @@
 *doctrees/
 *Opti/OptiUtils/MatlabOptimPack/
 .DS_Store
+*Util/UnitTest/Data/

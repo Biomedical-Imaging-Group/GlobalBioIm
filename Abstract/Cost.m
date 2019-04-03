@@ -98,7 +98,7 @@ classdef Cost < Map
             % $$ \\mathrm{prox}_{\\alpha C}(\\mathrm{z}) =  \\mathrm{arg} \\, \\mathrm{min}_{\\mathrm{u} \\in \\mathrm{X}} \\; \\frac{1}{2\\alpha} \\| \\mathrm{u} - \\mathrm{z} \\|_2^2 + C(\\mathrm{u}). $$
             %
             % Calls the method :meth:`applyProx_`
-            assert(isscalar(alpha),'alpha must be a scalar');
+            assert(isnumeric(alpha),'alpha must be a numeric');
             if ~checkSize(z, this.sizein) % check input size
                 error('Input to applyProx was size [%s], didn''t match stated sizein [%s].',...
                     num2str(size(z)), num2str(this.sizein));
@@ -209,7 +209,6 @@ classdef Cost < Map
             % Uses the method applyGrad (hence do not need to be
             % reimplemented in derived classes)
             x=y.*this.applyGrad(v);
-            x=sum(x(:));
         end
     end
     

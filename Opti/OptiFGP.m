@@ -72,7 +72,7 @@ classdef OptiFGP < Opti
             
             this.TV = TV;
             this.cost = this.F0 + this.TV;
-            this.gam = 1/8;
+            this.gam = 1/this.D.norm^2;
         end
         
         function setLambda(this,new_l)

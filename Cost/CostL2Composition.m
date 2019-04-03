@@ -95,7 +95,7 @@ classdef CostL2Composition <  CostComposition
 				if ~isfield(this.precomputeCache,'ytWy')
 					this.precomputeCache.ytWy= this.H1.y(:)' * reshape(this.H1.W * this.H1.y,numel(this.H1.y), 1);
 				end
-				y=0.5 * x(:)' * reshape(this.H1.W*this.H2.applyHtH(x),numel(this.H1.y),1) - x(:)' * this.precomputeCache.WHty(:) + 0.5 * this.precomputeCache.ytWy;
+				y=0.5 * x(:)' * reshape(this.H1.W*this.H2.applyHtH(x),prod(this.H2.sizein),1) - x(:)' * this.precomputeCache.WHty(:) + 0.5 * this.precomputeCache.ytWy;
 				y = real(y); % due to numerical error
 			else
 				y=apply_@CostComposition(this,x);
@@ -121,6 +121,7 @@ classdef CostL2Composition <  CostComposition
         end
         function y=applyProx_(this,x,alpha)
             % Reimplemented from parent class :class:`CostComposition`.
+	    %
             % Implemented 
             %  - if the operator \\(\\alpha\\mathrm{H^{\\star}WH + I}  \\) is invertible:
             %    $$ \\mathrm{y} = (\\alpha\\mathrm{H^{\\star}WH + I} )^{-1} (\\alpha \\mathrm{H^TWy +x})$$

@@ -7,7 +7,7 @@ classdef CostComplexCircle < CostComplexRing
     % All attributes of parent class :class:`CostComplexRing` are inherited 
     %
     % 
-    % :param radius radius of the circle (default 1)
+    % :param radius: radius of the circle (default 1)
     % 
     % **Example** C=CostComplexCircle(radius,sz,y)
     %

@@ -57,7 +57,7 @@ Hn={Hess,LinOpIdentity(size(im))};
 rho_n=[1e-1,1e-1];
 ADMM=OptiADMM(F,Fn,Hn,rho_n);
 ADMM.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4,[1 2]), 'StepRelative',1e-4); 
-ADMM.OutOp=OutputOpti(1,im,10,[1 2]);
+ADMM.OutOp=OutputOptiSNR(1,im,10,[1 2]);
 ADMM.ItUpOut=1;           % call OutputOpti update every ItUpOut iterations
 ADMM.maxiter=200;          % max number of iterations
 ADMM.run(zeros(size(y)));  % run the algorithm 
@@ -67,7 +67,7 @@ Fn={lamb*R_1sch};
 Hn={Hess};
 PDC=OptiPrimalDualCondat(F,R_POS,Fn,Hn);
 PDC.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4,[1 3]), 'StepRelative',1e-4); 
-PDC.OutOp=OutputOpti(1,im,40,[1 3]);
+PDC.OutOp=OutputOptiSNR(1,im,40,[1 3]);
 PDC.tau=1;                % set algorithm parameters
 PDC.sig=1e-2;             %
 PDC.rho=1.7;             %

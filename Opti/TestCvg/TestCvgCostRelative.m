@@ -47,7 +47,7 @@ classdef TestCvgCostRelative  < TestCvg
             % Tests algorithm convergence from the relative difference between two successive value of the cost function
             %
             % :return: boolean true if
-            % $$ \\frac{\\left| C(\\mathrm{x}^{k}) - C(\\mathrm{x}^{k-1})\\right|}{\\left|C(\\mathrm{x}^{k-1})\\right|} < \\mathrm{costRelativeTol}$$
+            %     $$ \\frac{\\left| C(\\mathrm{x}^{k}) - C(\\mathrm{x}^{k-1})\\right|}{\\left|C(\\mathrm{x}^{k-1})\\right|} < \\mathrm{costRelativeTol}$$
             
             
             stop = false;

@@ -162,7 +162,7 @@ classdef LinOpConv <  LinOp
                 if centering
                     for n=1:ndims(psf)
                         if any(index==n)
-                            psf = fftshift(psf,n);
+                            psf = ifftshift(psf,n);
                             
                         end
                     end

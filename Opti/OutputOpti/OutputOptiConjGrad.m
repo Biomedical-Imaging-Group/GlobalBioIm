@@ -13,7 +13,9 @@ classdef OutputOptiConjGrad < OutputOpti
     % :param xtrue: ground truth to compute the error with the solution (if provided)
     % :param iterVerb:  message will be displayed every iterVerb iterations (must be a multiple of the :attr:`ItUpOut` parameter of classes :class:`Opti`)
     % :param ytWy:  weighted norm of $y$ : $ \\mathrm{ytWy} = \\mathrm{ y^T\\,W\\,y}$
+    %
     % See also :class:`OptiConjGrad` :class:`OutputOpti`
+    %
 
     %%    Copyright (C) 2018
     %     F. Soulez ferreol.soulez@epfl.ch
@@ -37,25 +39,10 @@ classdef OutputOptiConjGrad < OutputOpti
             
     methods
         function this=OutputOptiConjGrad(computecost,yty,xtrue,iterVerb)
+            this@OutputOpti(computecost,xtrue,iterVerb);
             if nargin>=1
-                if isscalar(computecost)
-                    computecost = (computecost ~= 0);
-                end
-                
-                assert(islogical(computecost),'Parameter computecost must be logical');
-                this.computecost=computecost;
                 this.ytWy = 0.5.*yty;
-            end
-            if nargin>=3, this.xtrue=xtrue;end
-            if nargin>=4
-                assert(isscalar(iterVerb) && iterVerb>=0,'Parameter iterVerb must be a positive integer');
-                this.iterVerb=iterVerb;
-            end
-            if ~isempty(this.xtrue)
-                this.isgt=true;
-                this.xtrue=xtrue;
-                this.normXtrue=norm(this.xtrue(:));
-            end
+            end                
         end
         function cc=computeCost(this,opti)
             % Evaluate the cost function at the current iterate xopt of

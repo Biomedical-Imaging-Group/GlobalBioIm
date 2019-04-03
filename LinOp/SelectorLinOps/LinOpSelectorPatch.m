@@ -8,6 +8,7 @@ classdef LinOpSelectorPatch < LinOpSelector
     % :param sz:  size of \\(\\mathrm{x}\\) on which the :class:`LinOpDownsample` applies.
     % :param idxmin: array containing the first kept index in each direction         
     % :param idxmax: array containing the last kept index in each direction  
+    % :param squeezeflag: true to squeeze  singleton dimensions (default: false)
     %
     % All attributes of parent class :class:`LinOpSelector` are inherited. 
     %
@@ -18,6 +19,8 @@ classdef LinOpSelectorPatch < LinOpSelector
     
     %%    Copyright (C) 2017 
     %     E. Soubies  emmanuel.soubies@epfl.ch
+    %     F. Soulez 
+    %     A. Berdeu
     %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
@@ -39,7 +42,7 @@ classdef LinOpSelectorPatch < LinOpSelector
     
     %% Constructor
     methods
-        function this = LinOpSelectorPatch(sz,idxmin,idxmax)
+        function this = LinOpSelectorPatch(sz,idxmin,idxmax,squeezeflag)
             this.name ='LinOp SelectorPatch';	
             assert(cmpSize(size(sz),size(idxmin)) && cmpSize(size(sz),size(idxmax)),'Parameters sz idxmin and idxmax must have the same size');
             assert(~any(idxmin<=0) && ~any(idxmin>sz),'idxmin out of sz range');
@@ -48,7 +51,16 @@ classdef LinOpSelectorPatch < LinOpSelector
             this.idxmin=idxmin;
             this.idxmax=idxmax;
             this.sizeout=idxmax-idxmin+1;
-            if this.sizeout(end)==1, this.sizeout=this.sizeout(1:end-1);end;
+            % flag_squeeze
+            if (nargin>3)&& ~isscalar(squeezeflag )
+                error('squeezeflag must be a single boolean');
+            end
+            if (nargin>3) && squeezeflag
+                this.sizeout = this.sizeout(this.sizeout~=1);
+            end
+            if numel(this.sizeout)==1
+                this.sizeout = [this.sizeout, 1];
+            end
             this.sizein=sz;
             this.sel=cell(length(sz),1);
             for ii=1:length(sz)

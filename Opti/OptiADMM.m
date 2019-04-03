@@ -90,8 +90,10 @@ classdef OptiADMM < Opti
             this.Hn=Hn;
             this.rho_n=rho_n;
             if ~isempty(F0)
-                assert(~isempty(solver) || isa(F0,'CostL2') || isa(F0,'CostL2Composition') || ... 
-                    ( isa(F0,'CostSummation')  && all(cellfun(@(x) (isa(x,'CostL2Composition') || isa(x,'CostL2')), F0.mapsCell))), ...
+                assert(~isempty(solver) || isa(F0,'CostL2') || isa(F0,'CostL2Composition') || ...
+                    (isa(F0,'CostMultiplication') && F0.isnum && (isa(F0.cost2,'CostL2') || isa(F0.cost2,'CostL2Composition'))) || ...
+                    ( isa(F0,'CostSummation')  && all(cellfun(@(x) (isa(x,'CostL2Composition') || isa(x,'CostL2') || ...
+                    (isa(x,'CostMultiplication') && x.isnum && (isa(x.cost2,'CostL2') || isa(x.cost2,'CostL2Composition'))) ), F0.mapsCell))), ...
                     'when F0 is nonempty and is not CostL2 or CostL2Composition (or a sum of them), a solver must be given (see help)');
                 this.cost=F0 +Fn{1}*Hn{1};
             else
@@ -113,14 +115,30 @@ classdef OptiADMM < Opti
                     elseif isa(this.F0,'CostL2')
                         this.A=this.A + LinOpDiag(this.A.sizein);
                         this.b0=this.F0.y;
+                    elseif isa(this.F0,'CostMultiplication') && F0.isnum
+                        if isa(F0.cost2,'CostL2')
+                            this.A=this.A + this.F0.cost1 * LinOpDiag(this.A.sizein);
+                            this.b0=this.F0.cost1 * this.F0.cost2.y;
+                        elseif isa(F0.cost2,'CostL2Composition')
+                            this.A=this.A + this.F0.cost1 * this.F0.cost2.H2'*(this.F0.cost2.H1.W*this.F0.cost2.H2);
+                            this.b0=this.F0.cost1 * this.F0.cost2.H2'*this.F0.cost2.H1.y;
+                        else
+                            error('If F0 is not a CostL2 / CostL2Composition / CostSummation of them, a solver is required in ADMM');
+                        end
                     elseif isa(this.F0,'CostSummation')
                         for n=1:length(this.F0.mapsCell)
                             if isa(this.F0.mapsCell{n},'CostL2Composition')
                                 this.A=this.A   + this.F0.alpha(n)*this.F0.mapsCell{n}.H2'*this.F0.mapsCell{n}.H2;
                                 this.b0=this.b0 + this.F0.alpha(n)*this.F0.mapsCell{n}.H2'*this.F0.mapsCell{n}.H1.y;
-                            else
+                            elseif isa(this.F0.mapsCell{n},'CostL2')
                                 this.A=this.A + this.F0.alpha(n)*LinOpDiag(this.A.sizein);
                                 this.b0=this.b0 + this.F0.alpha(n)*this.F0.mapsCell{n}.y;
+                            elseif isa(this.F0.mapsCell{n}.cost2,'CostL2Composition') % If CostMultiplication with a scalar
+                                this.A=this.A   + this.F0.alpha(n)*this.F0.mapsCell{n}.cost1*this.F0.mapsCell{n}.cost2.H2'*this.F0.mapsCell{n}.cost2.H2;
+                                this.b0=this.b0 + this.F0.alpha(n)*this.F0.mapsCell{n}.cost1*this.F0.mapsCell{n}.cost2.H2'*this.F0.mapsCell{n}.cost2.H1.y;
+                            elseif isa(this.F0.mapsCell{n}.cost2,'CostL2')
+                                this.A=this.A + this.F0.alpha(n)*this.F0.mapsCell{n}.cost1*LinOpDiag(this.A.sizein);
+                                this.b0=this.b0 + this.F0.alpha(n)*this.F0.mapsCell{n}.cost1*this.F0.mapsCell{n}.cost2.y;
                             end
                         end                      
                     else

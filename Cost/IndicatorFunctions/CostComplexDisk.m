@@ -6,7 +6,7 @@ classdef CostComplexDisk < CostComplexRing
     %
     % All attributes of parent class :class:`CostComplexRing` are inherited 
     %
-    % :param radius radius of the disk (default 1)
+    % :param radius: radius of the disk (default 1)
     %
     % **Example** C=CostComplexDisk(sz,radius, y)
     %

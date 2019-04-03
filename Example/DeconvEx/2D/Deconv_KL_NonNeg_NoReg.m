@@ -47,7 +47,7 @@ R_POS=CostNonNeg(sz);              % Non-Negativity
 
 % -- FISTA KL + NonNeg
 FBS=OptiFBS(KL*H,R_POS);
-FBS.OutOp=OutputOpti(1,im,40);
+FBS.OutOp=OutputOptiSNR(1,im,40);
 FBS.ItUpOut=5;   % call OutputOpti update every ItUpOut iterations
 FBS.fista=true;   % activate fista
 FBS.maxiter=200;  % max number of iterations
@@ -56,7 +56,7 @@ FBS.run(y);       % run the algorithm
 
 % -- Richardson-Lucy KL + NonNeg (implicit)
 RL=OptiRichLucy(KL*H);
-RL.OutOp=OutputOpti(1,im,40);
+RL.OutOp=OutputOptiSNR(1,im,40);
 RL.ItUpOut=5;   % call OutputOpti update every ItUpOut iterations
 RL.maxiter=200;  % max number of iterations
 RL.run(y);       % run the algorithm 

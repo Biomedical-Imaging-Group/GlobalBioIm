@@ -1,4 +1,4 @@
-classdef OpEWSquareRoot < Map
+classdef OpEWSqrt < Map
     % Element-wise square root operator: 
     % $$[\\mathrm{H}(x)]_k = \\sqrt{(x_k)} $$
     % 
@@ -28,8 +28,8 @@ classdef OpEWSquareRoot < Map
     
     %% Constructor
     methods
-        function this = OpEWSquareRoot(sz)
-            this.name ='OpEWSquareRoot';
+        function this = OpEWSqrt(sz)
+            this.name ='OpEWSqrt';
             this.sizein=sz;
             this.sizeout=sz;
             this.isDifferentiable=true;

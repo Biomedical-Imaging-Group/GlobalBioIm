@@ -25,7 +25,7 @@ automatically from comments within M-files.
 Releases
 --------
 
-  - `v 1.1.2 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.1.2>`_ (April 2018).
+  - `v 1.1.2 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.1.2>`_ (April 2019).
   - `v 1.1.1 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.1.1>`_ (September 2018).
   - `v 1.1 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.1>`_ (July 2018). *Speed up your codes using the library with GPU* (:ref:`read more <ref-gpu>`).
   - `v 1.0.1 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.0.1>`_ (May 2018).
@@ -36,8 +36,8 @@ Releases
 References
 ----------
 
-| `Pocket Guide to Solve Inverse Problems with GlobalBioIm <https://arxiv.org/abs/1812.07908>`_,
-| Submitted, 2019.
+| `Pocket Guide to Solve Inverse Problems with GlobalBioIm <https://iopscience.iop.org/article/10.1088/1361-6420/ab2ae9>`_,
+| Inverse Problems, 2019.
 | E. Soubies, F. Soulez, M. T. McCann, T-A. Pham, L. Donati, T. Debarre, D. Sage, and M. Unser.
 
 | `GlobalBioIm: A Unifying Computational Framework for Solving Inverse Problems <http://bigwww.epfl.ch/publications/unser1701.html>`_,

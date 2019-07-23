@@ -50,7 +50,7 @@ classdef CostL2Composition <  CostComposition
             end
             this.name=sprintf('CostL2Composition ( %s )',H2.name);
             % If H2 is a composition between a LinOpDownsample and a LinOpConv    
-            if isa(this.H2,'LinOpComposition') && isa(this.H2.H1,'LinOpDownsample') &&  isa(this.H2.H2,'LinOpConv') && isnumeric(this.H1.W) && this.H1.W==1
+            if isa(this.H2,'LinOpComposition') && isa(this.H2.H1,'LinOpDownsample') && unique(this.H2.H1.first)==1 &&  isa(this.H2.H2,'LinOpConv') && isnumeric(this.H1.W) && this.H1.W==1
                 this.OpSumP=LinOpSumPatches(this.H2.H1.sizein,this.H2.H1.sizein./this.H2.H1.df);
                 this.H2H2t=this.OpSumP*(abs(this.H2.H2.mtf).^2);      
                 this.doDownConv=1;

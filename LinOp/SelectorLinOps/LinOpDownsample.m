@@ -6,6 +6,7 @@ classdef LinOpDownsample < LinOpSelector
     % :param sz:  size of \\(\\mathrm{x}\\) on which the :class:`LinOpDownsample` applies.
     % :param df: array containing the downsampling factor in each direction
     %            (must divide the corresponding entry of sz)
+    % :param first: array containing the index of the first element in each direction 
     %
     % All attributes of the parent class :class:`LinOpSelector` 
     % are inherited. 
@@ -33,12 +34,19 @@ classdef LinOpDownsample < LinOpSelector
     
     properties (SetAccess = protected,GetAccess = public)
         df; % downsampling factors in each direction
+        first; % first element in each direction
     end
     
     %% Constructor
     methods
-        function this = LinOpDownsample(sz,df)
+        function this = LinOpDownsample(sz,df,first)
             this.name ='LinOpDownsample';
+            if nargin <=2
+                this.first=ones(size(df));
+            else
+                assert(cmpSize(size(first),size(df)),'Parameters first and df must have the same size');
+                this.first=first;
+            end
             assert(cmpSize(size(sz),size(df)),'Parameters sz and df must have the same size');
             assert(~any(mod(sz,df)),'Sizes in sz must be multiples of downsampling factors in df');  
             this.sizein=sz;
@@ -46,7 +54,7 @@ classdef LinOpDownsample < LinOpSelector
             this.sizeout=this.sizein./this.df;
             this.sel=cell(length(sz),1);
             for ii=1:length(sz)
-                this.sel{ii}=1:this.df(ii):this.sizein(ii);
+                this.sel{ii}=this.first(ii):this.df(ii):this.sizein(ii);
             end
         end
     end

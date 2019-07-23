@@ -6,8 +6,8 @@
 %    from an older version of the Library
 %    - set generateDataUnitTests=0; to run the scripts and compare their
 %    results to those saved (e.g. from the current version of the Library)
-% .  - use the structure 'test' to choose which scripts are used
-%g
+%    - use the structure 'test' to choose which scripts are used
+%
 %  Copyright (C) 2018 E. Soubies emmanuel.soubies@epfl.ch
 %--------------------------------------------------------------
 % Initializations

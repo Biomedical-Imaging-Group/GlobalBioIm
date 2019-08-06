@@ -1,4 +1,4 @@
-classdef OutputOptiConjGrad < OutputOpti
+classdef OutputOptiConjGrad < OutputOptiSNR
     % OutputOptiConjGrad class displayings and savings dedicated to for OptiConjGrad 
     %
     % The conjugate gradient algorithm minimizes the function
@@ -39,7 +39,7 @@ classdef OutputOptiConjGrad < OutputOpti
             
     methods
         function this=OutputOptiConjGrad(computecost,yty,xtrue,iterVerb)
-            this@OutputOpti(computecost,xtrue,iterVerb);
+            this@OutputOptiSNR(computecost,xtrue,iterVerb);
             if nargin>=1
                 this.ytWy = 0.5.*yty;
             end                

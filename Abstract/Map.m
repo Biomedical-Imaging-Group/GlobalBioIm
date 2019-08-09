@@ -148,10 +148,10 @@ classdef (Abstract) Map < handle
             % \\(\\mathrm{G}\\). Returns a new map \\(\\mathrm{M=HG}\\)
             %
             % Calls the method :meth:`makeComposition_`
-            if ~cmpSize(this.sizein,G.sizeout)
-                error('Input to makeComposition is a %s of sizeout size [%s], which didn''t match the %s sizein [%s].',...
-                    class(G),num2str(G.sizeout),class(this), num2str(this.sizein));
-            end
+%             if ~cmpSize(this.sizein,G.sizeout)
+%                 error('Input to makeComposition is a %s of sizeout size [%s], which didn''t match the %s sizein [%s].',...
+%                     class(G),num2str(G.sizeout),class(this), num2str(this.sizein));
+%             end
             M = this.makeComposition_(G);
         end
         function M = plus(this,G)

@@ -82,7 +82,9 @@ classdef OptiADMM < Opti
         %% Constructor
         function this=OptiADMM(F0,Fn,Hn,rho_n,solver)
             this.name='Opti ADMM';
-            if ~isempty(F0), this.F0=F0; end
+            if ~isempty(F0), 
+                this.F0=F0; 
+            end
             if nargin<=4, solver=[]; end
             assert(length(Fn)==length(Hn),'Fn, Hn and rho_n must have the same length');
             assert(length(Hn)==length(rho_n),'Fn, Hn and rho_n must have the same length');
@@ -95,6 +97,11 @@ classdef OptiADMM < Opti
                     ( isa(F0,'CostSummation')  && all(cellfun(@(x) (isa(x,'CostL2Composition') || isa(x,'CostL2') || ...
                     (isa(x,'CostMultiplication') && x.isnum && (isa(x.cost2,'CostL2') || isa(x.cost2,'CostL2Composition'))) ), F0.mapsCell))), ...
                     'when F0 is nonempty and is not CostL2 or CostL2Composition (or a sum of them), a solver must be given (see help)');
+%                 assert(~isempty(solver) || isa(F0,'myCostL2') || isa(F0,'myCostL2Composition') || ...
+%                     (isa(F0,'CostMultiplication') && F0.isnum && (isa(F0.cost2,'myCostL2') || isa(F0.cost2,'myCostL2Composition'))) || ...
+%                     ( isa(F0,'CostSummation')  && all(cellfun(@(x) (isa(x,'myCostL2Composition') || isa(x,'myCostL2') || ...
+%                     (isa(x,'CostMultiplication') && x.isnum && (isa(x.cost2,'myCostL2') || isa(x.cost2,'myCostL2Composition'))) ), F0.mapsCell))), ...
+%                     'when F0 is nonempty and is not CostL2 or CostL2Composition (or a sum of them), a solver must be given (see help)');
                 this.cost=F0 +Fn{1}*Hn{1};
             else
                 this.cost=Fn{1}*Hn{1};

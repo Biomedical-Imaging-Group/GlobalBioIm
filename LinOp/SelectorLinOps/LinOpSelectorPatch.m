@@ -5,7 +5,7 @@ classdef LinOpSelectorPatch < LinOpSelector
     % where \\( i_{min} \\) and \\( i_{max} \\) are indexes corresponding
     % to the first and last elements of the patch.
     %
-    % :param sz:  size of \\(\\mathrm{x}\\) on which the :class:`LinOpDownsample` applies.
+    % :param sz:  size of \\(\\mathrm{x}\\) on which the :class:`LinOpSelectorPatch` applies.
     % :param idxmin: array containing the first kept index in each direction         
     % :param idxmax: array containing the last kept index in each direction  
     % :param squeezeflag: true to squeeze  singleton dimensions (default: false)

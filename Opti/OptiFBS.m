@@ -7,6 +7,8 @@ classdef OptiFBS < Opti
     % :param gam: descent step
     % :param fista: boolean true if the accelerated version FISTA [3] is used (default false)
     % :param momRestart: boolean true if the moment restart strategy is used [4] is used (default false)
+    % :param updateGam: Rule for updating gamma (none : default, reduced : the parameter gam is decreased according to \\(\\gamma / \\sqrt{k} \\), backtracking : backtracking rule following [3])
+    % :param eta: parameter greater than 1 that is used with backtracking (see [3])
     %
     % All attributes of parent class :class:`Opti` are inherited.
     %
@@ -27,7 +29,8 @@ classdef OptiFBS < Opti
     % [3] Amir Beck and Marc Teboulle, "A Fast Iterative Shrinkage-Thresholding Algorithm for Linear inverse Problems",
     % SIAM Journal on Imaging Science, vol 2, no. 1, pp 182-202 (2009)
     %
-    % [4] Brendan O'donoghue and Emmanuel Candès. 2015. Adaptive Restart for Accelerated Gradient Schemes. Found. Comput. Math. 15, 3 (June 2015), 715-732.
+    % [4] Brendan O'donoghue and Emmanuel Candès. 2015. Adaptive Restart for Accelerated Gradient Schemes. 
+    % Found. Comput. Math. 15, 3 (June 2015), 715-732.
     % 
     % **Example** FBS=OptiFBS(F,G)
     %
@@ -35,7 +38,7 @@ classdef OptiFBS < Opti
     
     
     %%     Copyright (C) 2017
-    %     E. Soubies emmanuel.soubies@epfl.ch
+    %     E. Soubies emmanuel.soubies@irit.fr
     %     T-A. Pham thanh-an.pham@epfl.ch
     %
     %     This program is free software: you can redistribute it and/or modify
@@ -58,15 +61,15 @@ classdef OptiFBS < Opti
     end
     % Full public properties
     properties
-        F;  % Cost F
-        G;  % Cost G
-        momRestart = false;  % Donoho put grad
-        gam=[];        % descent step
-        fista=false;   % FISTA option [3]
+        F;                   % Cost F
+        G;                   % Cost G
+        momRestart = false;  % boolean true if the moment restart strategy is used [4]
+        gam=[];              % descent step
+        fista=false;         % FISTA option [3]
         
-        reducedStep = false; % reduce the step size (TODO : add the possibilty to chose the update rule)
-        mingam;
-        alpha = 1; % see Kamilov paper
+        updateGam = 'none'; % reduce the step size (TODO : add the possibilty to chose the update rule)
+        alpha = 1;   % see Kamilov paper
+        eta = 1.1;  % parameter > 1 used in the backtracking rule
     end
     
     methods
@@ -95,24 +98,57 @@ classdef OptiFBS < Opti
         function flag=doIteration(this)
             % Reimplementation from :class:`Opti`. For details see [1-3].
             
+            if strcmp(this.updateGam,'backtracking')
+                if isa(this.F,'CostPartialSummation')
+                    orig_subset = this.F.subset;
+                end
+                if this.fista
+                    tmp=this.y;
+                    this.xopt=this.G.applyProx(this.y - this.gam.*this.F.applyGrad(this.y),this.gam);
+                else
+                    tmp=this.xopt;
+                    this.xopt=this.G.applyProx(this.xopt - this.gam.*this.F.applyGrad(this.xopt),this.gam);
+                end
+                g = this.F*tmp;
+                grad = this.F.applyGrad(tmp);
+                if isa(this.F,'CostPartialSummation')
+                    this.F.subset = orig_subset;
+                end
+                t = this.gam;
+                
+                satisfied = this.F*this.xopt ...
+                    <= g + dot(grad(:),(this.xopt(:) - tmp(:))) + norm(this.xopt(:) - tmp(:))^2/(2*t);
+                
+                while ~gather(satisfied)
+                    t = t/this.eta;
+                    this.xopt = this.G.applyProx(tmp - t*grad,t);%p_L(yk)
+                    satisfied = this.F*this.xopt ...
+                        <= g + dot(grad(:),(this.xopt(:) - tmp(:))) + norm(this.xopt(:) - tmp(:))^2/(2*t);
+                end
+                this.gam=t;
+            else
+                if this.fista
+                    this.xopt=this.G.applyProx(this.y - this.gam.*this.F.applyGrad(this.y),this.gam);
+                else
+                    this.xopt=this.G.applyProx(this.xopt - this.gam.*this.F.applyGrad(this.xopt),this.gam);
+                end
+                if strcmp(this.updateGam,'reduced')
+                    this.gam = this.gam/sqrt(this.niter+1)*max(sqrt(this.niter),1);
+                end
+            end
             if this.fista  % if fista
-                this.xopt=this.G.applyProx(this.y - this.gam.*this.F.applyGrad(this.y),this.gam);
                 if this.momRestart && dot(this.y(:) - this.xopt(:),this.xopt(:) - this.xold(:)) > 0
                     fprint('Restarting\n');
                     this.y = this.xold;
                     this.tk = 1;
-                    this.xopt=this.G.applyProx(this.y - this.gam.*this.F.applyGrad(this.y),this.gam);
                 else
                     told=this.tk;
                     this.tk=0.5*(1+sqrt(1+4*this.tk^2));
                     this.y=this.xopt + this.alpha*(told-1)/this.tk*(this.xopt - this.xold);
                 end
-            else
-                this.xopt=this.G.applyProx(this.xopt - this.gam.*this.F.applyGrad(this.xopt),this.gam);
             end
             
-            flag=this.OPTI_NEXT_IT;
-            
+            flag=this.OPTI_NEXT_IT;            
         end
     end
 end

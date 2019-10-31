@@ -57,6 +57,11 @@ classdef CostGoodRoughness < Cost
             this.isDifferentiable=true;
             this.G=G;
             this.sumOp=LinOpSum(G.sizeout,this.G.ndms+1);
+            
+            this.memoizeOpts.computeNum=true;
+            this.memoCache.computeNum= struct('in',[],'out', []);
+            this.memoizeOpts.computeDem=true;
+            this.memoCache.computeDem= struct('in',[],'out', []);
         end        
     end
     
@@ -66,18 +71,23 @@ classdef CostGoodRoughness < Cost
 	methods (Access = protected)
         function y=apply_(this,x)
         	% Reimplemented from parent class :class:`Cost`. 
-            
-            tmp=this.sumOp*abs(this.G*x).^2./sqrt(abs(x).^2+this.bet);
-            y=sum(tmp(:));
+            num = this.memoize('computeNum',@this.computeNum_,x);
+            dem = this.memoize('computeDem',@this.computeDem_,x);
+            y=sum(num(:)./sqrt(dem(:)));
         end
         function g=applyGrad_(this,x)
         	% Reimplemented from parent class :class:`Cost`.
-            
+            num = this.memoize('computeNum',@this.computeNum_,x);
+            dem = this.memoize('computeDem',@this.computeDem_,x);           
+            gnum=this.G.applyAdjoint(2*this.G*x); % derivative cost numerator
+            g=gnum./sqrt(dem)-num./dem.^(3/2).*x;
+        end
+        function num = computeNum_(this,x)
             gx=this.G*x;                  % gradient of x
             num=this.sumOp*abs(gx).^2;    % cost numerator
-            gnum=this.G.applyAdjoint(2*gx); % derivative cost numerator
+        end
+        function dem = computeDem_(this,x)
             dem=abs(x).^2 + this.bet;                % squared denominator gdem=dem.^(-3/2)
-            g=gnum./sqrt(dem)-num./dem.^(3/2).*x;
         end
     end
 end

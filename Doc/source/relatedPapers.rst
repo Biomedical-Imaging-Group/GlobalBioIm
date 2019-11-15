@@ -38,15 +38,45 @@ Papers with open-source code
 Other papers
 ------------
 
+| **Hybrid-Spline Dictionaries for Continuous-Domain Inverse Problems** 
+| IEEE Transactions on Signal Processing, 67-22, 5824-5836.
+  `[Paper] <https://ieeexplore.ieee.org/abstract/document/8859268>`_
+| T. Debarre, S. Aziznejad, and M. Unser. 
+
+| **Reconstruction of in-line holograms: combining model-based and regularized inversion**
+| Optics express, 27-10, pp. 14951-14968, 2019.
+  `[Paper] <https://www.osapublishing.org/oe/abstract.cfm?uri=oe-27-10-14951>`_
+| A. Berdeu, O. Flasseur, L. Méès, L. Denis, F. Momey, T. Olivier, N. Grosjean, and C. Fournier.
+
+| **B-Spline-Based Exact Discretization of Continuous-Domain Inverse Problems with Generalized TV Regularization**
+| IEEE Transactions on Information Theory, 2019.
+  `[Paper] <https://ieeexplore.ieee.org/abstract/document/8660432>`_
+| T. Debarre, J. Fageot, H. Gupta, and M. Unser. 
+
+| **Computational Super-Sectioning for Single-Slice Structured Illumination Microscopy**
+| IEEE Transactions on Computational Imaging, 5-2, pp. 240-250, 2019. 
+  `[Paper] <https://ieeexplore.ieee.org/document/8579117>`_
+| E. Soubies and M. Unser.
+
+| **Geometric Invariants for Sparse Unknown View Tomography**
+| Proceedings of ICASSP, 2019.
+  `[Paper] <https://ieeexplore.ieee.org/abstract/document/8682401>`_
+| M. Zehni, S. Huang, I. Dokmanić, and Z. Zhao. 
+
+| **Solving Continuous-domain Problems Exactly with Multiresolution B-splines**
+| Proceedings of ICASSP, 2019.
+  `[Paper] <https://ieeexplore.ieee.org/abstract/document/8683214>`_
+| T. Debarre, J. Fageot, H. Gupta, and M. Unser. 
+
 | **Inner-Loop-Free ADMM for Cryo-EM** 
 | Proceedings of ISBI, 2019.
   `[Paper] <http://bigwww.epfl.ch/preprints/donati1901p.pdf>`_
 | L. Donati, E. Soubies, and M. Unser. 
 
-| **Computational Super-Sectioning for Single-Slice Structured Illumination Microscopy**
-| IEEE Transactions on Computational Imaging, 2018. 
-  `[Paper] <https://ieeexplore.ieee.org/document/8579117>`_
-| E. Soubies and M. Unser.
+| **Joint density map and continuous angular refinement in cryo-electron microscopy** 
+| Electronic Imaging, 13, pp. 133-1, 2019.
+  `[Paper] <https://www.ingentaconnect.com/content/ist/ei/2019/00002019/00000013/art00004#>`_
+| M. Zehni, L. Donati, E. Soubies, Z. J. Zhao, M. N. Do,  and M. Unser. 
 
 | **Phaseless Diffraction Tomography with Regularized Beam Propagation** 
 | Proceedings of ISBI, 2018.

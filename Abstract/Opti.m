@@ -65,15 +65,14 @@ classdef Opti < matlab.mixin.SetGet
             % **note**: this method does not return anything, the result being stored in public attribute :attr:`xopt`.
             if(nargin==1)
                 assert(~isempty(this.xopt),'Missing starting point x0');
-                x0 = this.xopt;
-            end
-            this.initialize(x0);
+            else
+                this.initialize(x0);
+            end            
             tstart=tic;
             this.OutOp.init();
             this.niter=0;
             this.starting_verb();
-            this.endingMessage= ['Maximum number of iterations reached: ', num2str(this.maxiter)];
-            this.xold= x0;
+            this.endingMessage= ['Maximum number of iterations reached: ', num2str(this.maxiter)];           
             while (this.niter<this.maxiter)
                 % - Update parameters
                 this.updateParams();
@@ -105,6 +104,7 @@ classdef Opti < matlab.mixin.SetGet
             
             if ~isempty(x0) % To restart from current state if wanted
                 this.xopt=x0;
+                this.xold= x0;
             end
         end
         function flag=doIteration(this)

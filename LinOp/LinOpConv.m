@@ -34,6 +34,13 @@ classdef LinOpConv <  LinOp
     %
     % See also :class:`LinOp`, :class:`Map`
     
+    %% GUI-Header
+    % GUInotation-C-
+    % GUIcall-LinOpConv('PSF',PSF,1,index,'Pad',InputSize,0)-
+    % GUIparam-InputSize-vec-[]-
+    % GUIparam-PSF-file-[]-
+    % GUIparam-index-vec-[]-
+    
     %%    Copyright (C) 2015
     %     F. Soulez ferreol.soulez@epfl.ch
     %

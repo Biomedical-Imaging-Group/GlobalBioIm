@@ -17,6 +17,13 @@ classdef LinOpSelectorPatch < LinOpSelector
     % See also :class:`LinOp`, :class:`LinOpSelector`,
     % :class:`LinOpDownsampling`.
     
+    %% GUI-Header
+    % GUInotation-S-
+    % GUIcall-LinOpSelectorPatch(InputSize,idxmin,idxmax,1)-
+    % GUIparam-InputSize-vec-[]-
+    % GUIparam-idxmin-vec-[]-
+    % GUIparam-idxmax-vec-[]-
+    
     %%    Copyright (C) 2017 
     %     E. Soubies  emmanuel.soubies@epfl.ch
     %     F. Soulez 

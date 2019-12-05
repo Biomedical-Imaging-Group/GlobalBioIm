@@ -20,9 +20,9 @@ classdef LinOpSelectorPatch < LinOpSelector
     %% GUI-Header
     % GUInotation-S-
     % GUIcall-LinOpSelectorPatch(InputSize,idxmin,idxmax,1)-
-    % GUIparam-InputSize-vec-[]-
-    % GUIparam-idxmin-vec-[]-
-    % GUIparam-idxmax-vec-[]-
+    % GUIparam-InputSize-vecInt-[]-
+    % GUIparam-idxmin-vecInt-[]-
+    % GUIparam-idxmax-vecInt-[]-
     
     %%    Copyright (C) 2017 
     %     E. Soubies  emmanuel.soubies@epfl.ch

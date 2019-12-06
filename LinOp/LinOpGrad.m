@@ -17,6 +17,12 @@ classdef LinOpGrad <  LinOp
     %
     % See also :class:`Map`, :class:`LinOp`
     
+    %% GUI-Header
+    % GUInotation-G-
+    % GUIcall-LinOpGrad(InputSize,index)-
+    % GUIparam-InputSize-vecInt-[]-Input size of the gradient operator (e.g. [512 512]).
+    % GUIparam-index-vecInt-[]-dimension along which the gradient is computed (all by default)
+    
     %%    Copyright (C) 2017
     %     F. Soulez ferreol.soulez@epfl.ch, 
     %     E. Soubies emmanuel.soubies@epfl.ch, 

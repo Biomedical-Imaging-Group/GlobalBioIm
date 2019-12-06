@@ -25,6 +25,12 @@ classdef LinOpHess <  LinOp
     %
     % See also :class:`Map`, :class:`LinOp`
     
+    %% GUI-Header
+    % GUInotation-H-
+    % GUIcall-LinOpHess(InputSize,index)-
+    % GUIparam-InputSize-vecInt-[]-Input size of the gradient operator (e.g. [512 512]).
+    % GUIparam-index-vecInt-[]-dimension along which the gradient is computed (all by default)
+    
 	%%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch
 	%	 

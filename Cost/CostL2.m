@@ -15,8 +15,8 @@ classdef CostL2 < Cost
     % GUInotation-L2-
     % GUIcall-CostL2(InputSize,data,Weight)-
     % GUIparam-InputSize-vecInt-[]-Input size of the cost function (e.g. [512 512]). If empty, the size of the data will be used.
-    % GUIparam-data-file-[]-data vector  (default 0)
-    % GUIparam-Weight-vecInt-[]-Weighting scalar (default 1)
+    % GUIparam-Data-file-[]-data vector  (default 0)
+    % GUIparam-Weight-vecInt-[]-Weighting matrix (default 1)
     
     %%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch 

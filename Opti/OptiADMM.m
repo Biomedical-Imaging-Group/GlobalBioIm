@@ -37,6 +37,11 @@ classdef OptiADMM < Opti
     %
     % See also :class:`Opti`, :class:`OptiConjGrad` :class:`OutputOpti`, :class:`Cost`
     
+    %% GUI-Header
+    % GUInotation-
+    % GUIcall-OptiADMM(F0,Fn,Hn,rho_n,solver)-
+    % GUIparam-rho_n-vecInt-[]-array of N positive scalars
+    
     %%    Copyright (C) 2017
     %     E. Soubies emmanuel.soubies@epfl.ch
     %

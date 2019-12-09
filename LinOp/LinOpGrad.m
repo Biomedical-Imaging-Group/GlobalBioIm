@@ -19,9 +19,11 @@ classdef LinOpGrad <  LinOp
     
     %% GUI-Header
     % GUInotation-G-
-    % GUIcall-LinOpGrad(InputSize,index)-
+    % GUIcall-LinOpGrad(InputSize,index,BC,res)-
     % GUIparam-InputSize-vecInt-[]-Input size of the gradient operator (e.g. [512 512]).
-    % GUIparam-index-vecInt-[]-dimension along which the gradient is computed (all by default)
+    % GUIparam-Index-vecInt-[]-Dimensions along which the gradient is computed (all by default)
+    % GUIparam-BC-dropDown/circular/zeros/mirror-circular-Boundary condition (default 'circular')
+    % GUIparam-res-vecInt-[]-Vector containing the resolution along each dimension (default all 1)
     
     %%    Copyright (C) 2017
     %     F. Soulez ferreol.soulez@epfl.ch, 

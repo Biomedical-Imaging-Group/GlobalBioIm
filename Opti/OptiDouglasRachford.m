@@ -15,6 +15,12 @@ classdef OptiDouglasRachford < Opti
     %
 	% See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`
     
+    %% GUI-Header
+    % GUInotation-
+    % GUIcall-OptiADMMOptiDouglasRachford(F1, F2, L, gamma, lambda)-
+    % GUIparam-gamma-vecInt-[]-?
+    % GUIparam-lambda-vecInt-[]-relaxation parameter  
+    
     %%    Copyright (C) (2017)
     %
     %     This program is free software: you can redistribute it and/or modify

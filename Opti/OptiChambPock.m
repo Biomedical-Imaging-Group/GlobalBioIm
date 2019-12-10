@@ -43,7 +43,14 @@ classdef OptiChambPock < Opti
     % **Example** CP=OptiChambPock(F,H,G)
     %
     % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
- 
+    
+    %% GUI-Header
+    % GUInotation-
+    % GUIcall-OptiChambPock(F,H,G,tau,sig,var)-
+    % GUIparam-tau-vecInt-[]-parameter of the algorithm (default 1)
+    % GUIparam-sig-vecInt-[]-parameter of the algorithm which is computed automatically if H.norm is different from -1.
+    % GUIparam-var-boolean-[]-select the "bar" variable of the algorithm (see [1])
+    
     %%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch
     %

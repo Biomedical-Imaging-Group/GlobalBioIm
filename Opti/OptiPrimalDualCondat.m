@@ -34,6 +34,13 @@ classdef OptiPrimalDualCondat < Opti
     %
     % See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`
     
+    %% GUI-Header
+    % GUInotation-
+    % GUIcall-OptiPrimalDualCondat(F0,G,Fn,Hn,tau,sig,rho)-
+    % GUIparam-tau-vecInt-[]-parameter of the algorithm
+    % GUIparam-sig-vecInt-[]-parameter of the algorithm
+    % GUIparam-rho-vecInt-[]-parameter of the algorithm
+    
     %%    Copyright (C) 2017
     %     E. Soubies emmanuel.soubies@epfl.ch
     %

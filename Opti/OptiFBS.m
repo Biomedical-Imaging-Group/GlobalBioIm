@@ -6,7 +6,7 @@ classdef OptiFBS < Opti
     % :param G: a :class:`Cost` with an implementation of the :meth:`applyProx`.
     % :param gam: descent step
     % :param fista: boolean true if the accelerated version FISTA [3] is used (default false)
-    % :param momRestart: boolean true if the moment restart strategy is used [4] is used (default false)
+    % :param momRestart: boolean true if the moment restart strategy is used [4](default false)
     % :param updateGam: Rule for updating gamma (none : default, reduced : the parameter gam is decreased according to \\(\\gamma / \\sqrt{k} \\), backtracking : backtracking rule following [3])
     % :param eta: parameter greater than 1 that is used with backtracking (see [3])
     %
@@ -36,6 +36,14 @@ classdef OptiFBS < Opti
     %
     % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
     
+    %% GUI-Header
+    % GUInotation-
+    % GUIcall-OptiFBS(F,G,gam,fista,momRestart,updateGam,eta)-
+    % GUIparam-gam-vecInt-[]-descent step
+    % GUIparam-fista-boolean-[]-true if the accelerated version FISTA is used (default false)
+    % GUIparam-momRestart-boolean-[]-true if the moment restart strategy is used (default false)
+    % GUIparam-updateGam-vecInt-[]-rule for updating gamma
+    % GUIparam-eta-vecInt-[]-parameter greater than 1 that is used with backtracking
     
     %%     Copyright (C) 2017
     %     E. Soubies emmanuel.soubies@irit.fr

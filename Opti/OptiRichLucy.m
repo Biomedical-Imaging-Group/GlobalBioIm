@@ -30,6 +30,13 @@ classdef OptiRichLucy < Opti
     % See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`,
     % :class:`CostKullLeib`
     
+    %% GUI-Header
+    % GUInotation-
+    % GUIcall-OptiRichLucy(F,TV,lamb,epsl)-
+    % GUIparam-TV-boolean-[]-true if TV regularization used  (default false)
+    % GUIparam-lam-vecInt-[]-regularization parameter (when TV used)
+    % GUIparam-epsl-vecInt-[]-smoothing parameter to make TV differentiable at 0
+    
     %%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch
     %

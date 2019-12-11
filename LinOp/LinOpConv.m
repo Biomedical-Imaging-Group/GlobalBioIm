@@ -93,11 +93,11 @@ classdef LinOpConv <  LinOp
                     case('PSF')
                         ispsf = true;
                         psf = varargin{2};
-                        assert(isnumeric(psf),'The psf should be numeric');
+                        assert(isnumeric(psf),'The PSF should be numeric');
                         ndms = ndims(psf);
                     case('MTF')
                         mtf = varargin{2};
-                        assert(isnumeric(mtf),'The psf should be numeric');
+                        assert(isnumeric(mtf),'The PSF should be numeric');
                         ndms = ndims(mtf);
                     otherwise
                         error('Unknown keyword.');
@@ -154,7 +154,9 @@ classdef LinOpConv <  LinOp
                         centering=true;
                     end
                     psfsize = size(psf);
-                    padsz= (sz - psfsize)/2.;
+                    assert(length(sz)==length(psfsize),['The input size [',num2str(sz),'] and the size of the PSF [',num2str(psfsize),'] must have the same number of dimensions']);
+                    padsz= (sz - psfsize)/2.;                    
+                    assert(all(padsz>=0),['The input size [',num2str(sz),'] must be larger than the size of the PSF [',num2str(psfsize),']']);
                     for n=1:ndims(psf)
                         if any(index==n)
                             padsize = zeros(size(psfsize));

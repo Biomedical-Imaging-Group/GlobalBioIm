@@ -194,7 +194,9 @@ classdef LinOpConv <  LinOp
                 this.ndms = 1;
             end           
             if (~isempty(index))
-                assert(isvector(index) && length(index)<= this.ndms && max(index)<= this.ndms,'The index should be a conformable  to sz');
+                assert(isvector(index),'Parameter index should be a vector');
+                assert(length(index)<= this.ndms,'The lenght of vector index must comply with the length of the input size (i.e. the number of dimensions of the input)');
+                assert(max(index)<= this.ndms,'The larger value in vector index should not exceed the number of dimensions of the input (i.e. the length of the input size)');
                 this.index = index;
                 dim = 1:this.ndms;
                 Iidx = true(this.ndms,1);

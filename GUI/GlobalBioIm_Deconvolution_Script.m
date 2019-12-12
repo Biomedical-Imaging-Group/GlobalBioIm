@@ -18,28 +18,28 @@ H1_idxmax = [256 256];
 H2_InputSize = [512 512];
 tmp=load("/home/esoubies/Bureau/GitHub/GlobalBioIm/GUI/psf.mat"); fd=fields(tmp);
 H2_PSF = tmp.(fd{1});
-H2_index = [];
 % - Data-fidelity : L2
 DF_y = double(imread("/home/esoubies/Bureau/GitHub/GlobalBioIm/GUI/data.png"));
-DF_Weight = [];
-% - Regularization-1 : Total-Variation
-R1_lambda = 0.2;
-R1_index = [];
-R1_BC = 'circular';
-R1_res = [];
+% - Algorithm Fwd-Bkwd Splitting
+Opt_gam = 1e-1;
+
+%% GPU/CPU converter
+H2_PSF = gpuCpuConverter(H2_PSF);
+DF_y = gpuCpuConverter(DF_y);
 
 %% Instanciate the Forward Model
 % - Operator-1 : SelectorPatch
 H1 = LinOpSelectorPatch(H1_InputSize,H1_idxmin,H1_idxmax,1);
 % - Operator-2 : Conv
-H2 = LinOpConv('PSF',H2_PSF,1,H2_index,'Pad',H2_InputSize,0);
+H2 = LinOpConv('PSF',H2_PSF,1,[],'Pad',H2_InputSize,0);
 
 %% Instanciate the Cost function
 % - Data-Fidelity : L2
-DF = CostL2(H1.sizeout,DF_y,DF_Weight);
-% - Regularization-1 : Total-Variation
-OpReg1 = LinOpGrad(H2.sizein,R1_index,R1_BC,R1_res);
-CostReg1 = R1_lambda * CostMixNorm21(OpReg1.sizeout,length(OpReg1.sizeout));
+DF = CostL2(H1.sizeout,DF_y);
 
 %% Instanciate and Run the Optimization method
+% - Algorithm Fwd-Bkwd Splitting
+F = DF*(H1*H2);
+P = CostNonNeg(F.sizein);
+Opt = OptiFBS(F,P);
 

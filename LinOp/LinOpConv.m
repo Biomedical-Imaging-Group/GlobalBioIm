@@ -36,7 +36,7 @@ classdef LinOpConv <  LinOp
     
     %% GUI-Header
     % GUInotation-C-
-    % GUIcall-LinOpConv('PSF',PSF,1,index,'Pad',InputSize,0)-
+    % GUIcall-LinOpConv('PSF',PSF,1,index,'Centered','Pad',InputSize,0)-
     % GUIparam-InputSize-vecInt-[]-Input size of the convolution operator (e.g. [512 512]). If empty, the size of the PSF will be used.
     % GUIparam-PSF-file-[]-Select PSF file
     % GUIparam-index-vecInt-[]-Used to specify the dimensions along which the convolution is performed. If empty (default), all dimensions are used. For instance, setting [1 2] in 3D will instanciate a LinOpConv that applies a 2D convolution to each plane of the input 3D volume.

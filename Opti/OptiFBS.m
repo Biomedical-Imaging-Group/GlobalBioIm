@@ -35,16 +35,7 @@ classdef OptiFBS < Opti
     % **Example** FBS=OptiFBS(F,G)
     %
     % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
-    
-    %% GUI-Header
-    % GUInotation-
-    % GUIcall-OptiFBS(F,G,gam,fista,momRestart,updateGam,eta)-
-    % GUIparam-gam-vecInt-[]-descent step
-    % GUIparam-fista-boolean-[]-true if the accelerated version FISTA is used (default false)
-    % GUIparam-momRestart-boolean-[]-true if the moment restart strategy is used (default false)
-    % GUIparam-updateGam-vecInt-[]-rule for updating gamma
-    % GUIparam-eta-vecInt-[]-parameter greater than 1 that is used with backtracking
-    
+       
     %%     Copyright (C) 2017
     %     E. Soubies emmanuel.soubies@irit.fr
     %     T-A. Pham thanh-an.pham@epfl.ch

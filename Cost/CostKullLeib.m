@@ -17,10 +17,10 @@ classdef CostKullLeib < Cost
     
     %% GUI-Header
     % GUInotation-KL-
-    % GUIcall-CostKullLeib(InputSize,data,Beta)-
+    % GUIcall-CostKullLeib(InputSize,y,beta)-
     % GUIparam-InputSize-vecInt-[]-Input size of the cost function (e.g. [512 512]). If empty, the size of the data will be used.
-    % GUIparam-data-file-[]-data vector (default 0)
-    % GUIparam-Beta-vecInt-[]-Smoothing parameter (default 0) 
+    % GUIparam-y-file-[]-data vector (default 0)
+    % GUIparam-beta-double-0-Smoothing parameter (default 0) 
 
     %%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch

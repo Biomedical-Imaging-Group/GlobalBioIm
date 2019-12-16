@@ -7,7 +7,6 @@ classdef OptiADMM < Opti
     % :param H_n: cell of N :class:`LinOp`
     % :param rho_n: array of N positive scalars
     % :param solver: a handle function taking parameters solver(z_n,rho_n,x0) (see the note below)
-    % :param maxiterCG: max number of iterations for conjugate-gradient (CG) (when used)
     % :param OutOpCG: :class:`OutputOpti` object for CG (when used)
     % :param ItUpOutCG: :attr:`ItUpOut` parameter for CG (when used, default 0)
     %
@@ -89,7 +88,11 @@ classdef OptiADMM < Opti
         function this=OptiADMM(F0,Fn,Hn,rho_n,solver)
             this.name='Opti ADMM';
             if ~isempty(F0), this.F0=F0; end
+            if nargin<=3, rho_n=ones(size(Hn)); end
             if nargin<=4, solver=[]; end
+            if isscalar(rho_n)
+                rho_n=rho_n*ones(size(Hn));
+            end
             assert(length(Fn)==length(Hn),'Fn, Hn and rho_n must have the same length');
             assert(length(Hn)==length(rho_n),'Fn, Hn and rho_n must have the same length');
             this.Fn=Fn;
@@ -156,7 +159,7 @@ classdef OptiADMM < Opti
                     this.CG.verbose=0;
                     this.CG.maxiter=20;
                     this.CG.ItUpOut=0;
-                    disp('Warning : ADMM will use a Conjugate Gradient to compute the linear step');
+                    warning('ADMM will use a Conjugate Gradient to compute the linear step: This may lead to slow computations.');
                 end
             end
         end

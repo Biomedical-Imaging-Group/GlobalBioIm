@@ -1,9 +1,11 @@
 function listOpti = GetOptiList(Costs,Ops,NameCosts,NamesOps,isPos)
+global sizein
 warning off
-
 % Initialize listOpti
 nOpti=1;
 listOpti={};
+
+sizein=Ops{1}{end}.sizein;
 
 % Precomputations
 CompOps={};
@@ -45,7 +47,7 @@ if all(isdiff) && isPos
     listOpti{nOpti}.call{2} = 'P = CostNonNeg(F.sizein);';
     listOpti{nOpti}.call{3} = 'Opt = OptiFBS(F,P);';
     isFBS=1;
-else
+elseif sum(isdiff)>0
     % Otherwise: chck that the sum of the non-diff terms is prox
     F=BuildSumCosts(CompCost,~isdiff,isPos);   % Sum all non-differentiable costs 
     isFBS=TestProx(F);                         % Test if prox
@@ -60,6 +62,8 @@ else
             listOpti{nOpti}.call{3} = 'Opt = OptiFBS(F,G);';
         end
     end
+else
+    isFBS=0;
 end
 % If FBS ok set the specific parameters
 if isFBS
@@ -157,12 +161,24 @@ if sum(isproxComp) >= nbCosts-1
         % If ok test if the sum of the remaining costs is prox
         if isCP
             F=BuildSumCosts(CompCost,isproxComp,isPos);
-            isCP=TestProx(F);
+            if ~isempty(F)
+                isCP=TestProx(F);
+            else
+                isCP=0;
+            end
         end
         % If ok, the Chambolle-Pock can be used
         if isCP
             listOpti{nOpti}.name = 'Chambolle-Pock';
-            listOpti{nOpti}.call{1} = ['Opt = OptiChambPock(',NameCosts{~isproxComp},',',GetExprCompOp(NamesOps,find(~isproxComp)),',',GetExprCompCost(NameCosts,NamesOps,find(isproxComp)),');'];                        
+            listOpti{nOpti}.call{1} = ['F = ',NameCosts{~isproxComp},';'];
+            listOpti{nOpti}.call{2} = ['K = ',GetExprCompOp(NamesOps,find(~isproxComp)),';'];
+            tmp=GetExprCompCost(NameCosts,NamesOps,find(isproxComp)); if~isempty(tmp), tmp=[tmp,' + ']; end
+            if isPos
+                listOpti{nOpti}.call{3} = ['G = ',tmp,'CostNonNeg(K.sizein);'];
+            else
+                listOpti{nOpti}.call{3} = ['G = ',tmp,';'];
+            end
+            listOpti{nOpti}.call{4} = 'Opt = OptiChambPock(F,K,G);';
         end
     end
 end
@@ -278,6 +294,7 @@ end
 end
 
 function F=BuildSumCosts(Costs,idx,isPos)
+global sizein
     F=[];
     for ii=find(idx)
         if isempty(F)
@@ -286,7 +303,13 @@ function F=BuildSumCosts(Costs,idx,isPos)
             F=F + Costs{ii};
         end
     end
-    if isPos, F=F+CostNonNeg(F.sizein); end
+    if isPos
+        if isempty(F)
+            F=CostNonNeg(sizein);
+        else
+            F=F+CostNonNeg(sizein);
+        end
+    end
 end
 
 function isproxComp=TestProx(F)

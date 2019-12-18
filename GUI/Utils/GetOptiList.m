@@ -20,6 +20,7 @@ for ii=1:length(Ops)
     isdiff(ii) = CompCost{ii}.isDifferentiable;
     isproxComp(ii) = TestProx(CompCost{ii});
     isprox(ii) = TestProx(Costs{ii});
+    isL2(ii) = strcmp(Costs{ii}.name,'CostL2') || (strcmp(Costs{ii}.name,'CostMultiplication') && strcmp(Costs{ii}.cost2.name,'CostMultiplication'));
 end
 nbCosts=length(Costs);
 
@@ -212,8 +213,19 @@ if all(isprox)
     listOpti{nOpti}.call{2} = 'Fn = {';
     listOpti{nOpti}.call{1} = 'Hn = {';
     for ii=1:nbCosts
-        listOpti{nOpti}.call{2} =[listOpti{nOpti}.call{2},NameCosts{ii}];
-        listOpti{nOpti}.call{1} =[listOpti{nOpti}.call{1},GetExprCompOp(NamesOps,ii)];
+        % Combine Costs and Ops while prox
+        tmp=Costs{ii};
+        idx=0;
+        for jj=1:length(Ops{ii})
+            tmp=tmp*Ops{ii}{jj};
+            if TestProx(tmp) && ~(strcmp(tmp.name,'CostTV') || (strcmp(tmp.name,'CostMultiplications') && strcmp(tmp.cost2.name,'CostTV')))
+                idx=jj;                
+            else
+                break
+            end
+        end
+        listOpti{nOpti}.call{2} =[listOpti{nOpti}.call{2},GetExprCompCost(NameCosts,NamesOps,ii,idx*ones(size(NamesOps)))];
+        listOpti{nOpti}.call{1} =[listOpti{nOpti}.call{1},GetExprCompOp(NamesOps,ii,(idx+1)*ones(size(NamesOps)))];
         if ii<nbCosts
              listOpti{nOpti}.call{2}=[ listOpti{nOpti}.call{2},','];
              listOpti{nOpti}.call{1}=[ listOpti{nOpti}.call{1},','];
@@ -241,8 +253,53 @@ if all(isprox)
 %     listOpti{nOpti}.parameters{2}.info = '';
     nOpti=nOpti+1;
 end
-
-
+% Do not split L2 terms
+if any(isL2) && all(isL2+isprox)
+    listOpti{nOpti}.name = 'ADMM-NoFullSplit';
+    listOpti{nOpti}.call{2} = 'Fn = {';
+    listOpti{nOpti}.call{1} = 'Hn = {';
+    for ii=find(~isL2)
+        % Combine Costs and Ops while prox
+        tmp=Costs{ii};
+        idx=0;
+        for jj=1:length(Ops{ii})
+            tmp=tmp*Ops{ii}{jj};
+            if TestProx(tmp) && ~(strcmp(tmp.name,'CostTV') || (strcmp(tmp.name,'CostMultiplications') && strcmp(tmp.cost2.name,'CostTV')))
+                idx=jj;
+            else
+                break
+            end
+        end
+        listOpti{nOpti}.call{2} =[listOpti{nOpti}.call{2},GetExprCompCost(NameCosts,NamesOps,ii,idx*ones(size(NamesOps)))];
+        listOpti{nOpti}.call{1} =[listOpti{nOpti}.call{1},GetExprCompOp(NamesOps,ii,(idx+1)*ones(size(NamesOps)))];
+        if ii<nbCosts
+            listOpti{nOpti}.call{2}=[ listOpti{nOpti}.call{2},','];
+            listOpti{nOpti}.call{1}=[ listOpti{nOpti}.call{1},','];
+        end
+    end
+    if isPos
+        listOpti{nOpti}.call{2}=[ listOpti{nOpti}.call{2},'}; Fn = [Fn,{CostNonNeg(Hn{1}.sizein)}];'];
+        listOpti{nOpti}.call{1}=[ listOpti{nOpti}.call{1},'}; Hn = [Hn,{LinOpIdentity(Hn{1}.sizein)}];'];
+        listOpti{nOpti}.costIndex=1:nbCosts;
+    else
+        listOpti{nOpti}.call{2}=[ listOpti{nOpti}.call{2},'};'];
+        listOpti{nOpti}.call{1}=[ listOpti{nOpti}.call{1},'};'];
+    end
+    listOpti{nOpti}.call{3} = ['F0 = ',GetExprCompCost(NameCosts,NamesOps,find(isL2)),';'];
+    listOpti{nOpti}.call{4}='Opt = OptiADMM(F0,Fn,Hn,rho);';
+    listOpti{nOpti}.parameters{1}.name='rho';
+    listOpti{nOpti}.parameters{1}.type = 'double';
+    listOpti{nOpti}.parameters{1}.val = '1';
+    listOpti{nOpti}.parameters{1}.default = '-1';
+    listOpti{nOpti}.parameters{1}.toSet =0;
+    listOpti{nOpti}.parameters{1}.info = 'Lagrangian Multiplier (positive real).';
+    %     listOpti{nOpti}.parameters{2}.name='maxiterCG';
+    %     listOpti{nOpti}.parameters{2}.type = 'double';
+    %     listOpti{nOpti}.parameters{2}.val = '20';
+    %     listOpti{nOpti}.parameters{2}.default = '0';
+    %     listOpti{nOpti}.parameters{2}.info = '';
+    nOpti=nOpti+1;
+end
 
 
 %% Common parameters
@@ -271,24 +328,38 @@ end
 warning on
 end
 
-function expr = GetExprCompCost(NameCosts,NamesOps,index)
+function expr = GetExprCompCost(NameCosts,NamesOps,idxCosts,nbOps)
+if nargin < 4 || isempty(nbOps)
+    nbOps=cellfun(@(x) length(x),NamesOps);
+end
 expr = [];
-for ii=index
-    expr = [expr,NameCosts{ii},'*(',NamesOps{ii}{1}];
-    for jj=2:length(NamesOps{ii})
-        expr = [expr,'*',NamesOps{ii}{jj}];
+for ii=idxCosts
+    if nbOps(ii)==0
+        expr = [expr,NameCosts{ii},' + '];
+    else
+        expr = [expr,NameCosts{ii},'*(',NamesOps{ii}{1}];
+        for jj=2:nbOps(ii)
+            expr = [expr,'*',NamesOps{ii}{jj}];
+        end
+        expr = [expr,') + '];
     end
-    expr = [expr,') + '];
 end
 expr=expr(1:end-3);
 end
 
-function expr = GetExprCompOp(NamesOps,index)
+function expr = GetExprCompOp(NamesOps,index,firstOps)
+if nargin < 3 || isempty(firstOps)
+    firstOps=ones(size(NamesOps));
+end
 expr = [];
 for ii=index
-    expr = [expr,NamesOps{ii}{1}];
-    for jj=2:length(NamesOps{ii})
-        expr = [expr,'*',NamesOps{ii}{jj}];
+    if firstOps(ii) <= length(NamesOps{ii})
+        expr = [expr,NamesOps{ii}{firstOps(ii)}];
+        for jj=firstOps(ii)+1:length(NamesOps{ii})
+            expr = [expr,'*',NamesOps{ii}{jj}];
+        end
+    else
+        expr = ['LinOpIdentity(',NamesOps{ii}{end},'.sizein)'];
     end
 end
 end

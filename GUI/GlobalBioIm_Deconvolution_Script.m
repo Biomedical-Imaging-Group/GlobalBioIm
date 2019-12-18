@@ -4,7 +4,7 @@
 % Description:
 %    Deconvolution Pipeline
 %
-% Generated on 17-Dec-2019 using the GUI of the GlobalBioIm library
+% Generated on 18-Dec-2019 using the GUI of the GlobalBioIm library
 % Link to GlobalBioIm: <https://biomedical-imaging-group.github.io/GlobalBioIm/>
 %----------------------------------------------
 useGPU(0);
@@ -19,12 +19,13 @@ H2_InputSize = [300 300];
 tmp=load("/home/esoubies/Bureau/GitHub/GlobalBioIm/GUI/psf.mat"); fd=fields(tmp);
 H2_PSF = tmp.(fd{1});
 % - Data-fidelity : L2
-DF_y = double(imread("/home/esoubies/Bureau/GccitHub/GlobalBioIm/GUI/data.png"));
+DF_y = double(imread("/home/esoubies/Bureau/GitHub/GlobalBioIm/GUI/data.png"));
 % - Regularization-1 : Smooth-Total-Variation
 R1_lambda = 0.3;
 % - Algorithm Fwd-Bkwd Splitting
 Opt_gam = 1;
 Opt_fista = 1;
+Opt_updateGam = 'backtracking';
 Opt_TolCost = 1e-4;
 Opt_TolStep = 1e-4;
 % - Path to save results
@@ -54,13 +55,13 @@ P = CostNonNeg(F.sizein);
 Opt = OptiFBS(F,P);
 Opt.gam = Opt_gam;
 Opt.fista = Opt_fista;
+Opt.updateGam = Opt_updateGam;
 Opt.OutOp = OutputOpti(1,round(Opt.maxiter/10));
 Opt.ItUpOut = round(Opt.maxiter/10);
 Opt.CvOp = TestCvgCombine('CostRelative',Opt_TolCost, 'StepRelative',Opt_TolStep);
 Opt.run(zeros(Opt.cost.sizein));
 
 %% Display and Save Results
-imdisp(Opt.xopt,['Deconvolution-Result'],1);
 save([resultPath,'_OptiCell'],'Opt');
 imwrite(uint8(Opt.xopt/max(Opt.xopt(:))*255),[resultPath,'.png']);
 

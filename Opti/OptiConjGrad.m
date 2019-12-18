@@ -11,12 +11,7 @@ classdef OptiConjGrad < Opti
     % **Example** CG=OptiConjGrad(A,b,OutOp)
     %
     % See also :class:`Opti`, :class:`OutputOpti` :class:`Cost`
-    
-    %% GUI-Header
-    % GUInotation-
-    % GUIcall-OptiConjGrad(A,b,OutOp)-
-    % GUIparam-OutOp-vecInt-[]-?
-    
+
     %%    Copyright (C) 2015
     %     F. Soulez ferreol.soulez@epfl.ch
     %

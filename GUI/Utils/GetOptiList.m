@@ -20,7 +20,7 @@ for ii=1:length(Ops)
     isdiff(ii) = CompCost{ii}.isDifferentiable;
     isproxComp(ii) = TestProx(CompCost{ii});
     isprox(ii) = TestProx(Costs{ii});
-    isL2(ii) = strcmp(Costs{ii}.name,'CostL2') || (strcmp(Costs{ii}.name,'CostMultiplication') && strcmp(Costs{ii}.cost2.name,'CostMultiplication'));
+    isL2(ii) = strcmp(Costs{ii}.name,'CostL2') || (strcmp(Costs{ii}.name,'CostMultiplication') && strcmp(Costs{ii}.cost2.name,'CostL2'));
 end
 nbCosts=length(Costs);
 
@@ -207,6 +207,7 @@ if isCP
 end
 
 %% ADMM
+if nbCosts+isPos>1
 % Full splitting case
 if all(isprox)
     listOpti{nOpti}.name = 'ADMM-FullSplit';
@@ -218,7 +219,7 @@ if all(isprox)
         idx=0;
         for jj=1:length(Ops{ii})
             tmp=tmp*Ops{ii}{jj};
-            if TestProx(tmp) && ~(strcmp(tmp.name,'CostTV') || (strcmp(tmp.name,'CostMultiplications') && strcmp(tmp.cost2.name,'CostTV')))
+            if TestProx(tmp) && ~(strcmp(tmp.name,'CostTV') || (strcmp(tmp.name,'CostMultiplication') && strcmp(tmp.cost2.name,'CostTV')))
                 idx=jj;                
             else
                 break
@@ -265,7 +266,7 @@ if any(isL2) && all(isL2+isprox)
         idx=0;
         for jj=1:length(Ops{ii})
             tmp=tmp*Ops{ii}{jj};
-            if TestProx(tmp) && ~(strcmp(tmp.name,'CostTV') || (strcmp(tmp.name,'CostMultiplications') && strcmp(tmp.cost2.name,'CostTV')))
+            if TestProx(tmp) && ~(strcmp(tmp.name,'CostTV') || (strcmp(tmp.name,'CostMultiplication') && strcmp(tmp.cost2.name,'CostTV')))
                 idx=jj;
             else
                 break
@@ -273,7 +274,7 @@ if any(isL2) && all(isL2+isprox)
         end
         listOpti{nOpti}.call{2} =[listOpti{nOpti}.call{2},GetExprCompCost(NameCosts,NamesOps,ii,idx*ones(size(NamesOps)))];
         listOpti{nOpti}.call{3} =[listOpti{nOpti}.call{3},GetExprCompOp(NamesOps,ii,(idx+1)*ones(size(NamesOps)))];
-        if ii<nbCosts
+        if ii<find(~isL2,1,'last')
             listOpti{nOpti}.call{2}=[ listOpti{nOpti}.call{2},','];
             listOpti{nOpti}.call{3}=[ listOpti{nOpti}.call{3},','];
         end
@@ -300,7 +301,129 @@ if any(isL2) && all(isL2+isprox)
     %     listOpti{nOpti}.parameters{2}.info = '';
     nOpti=nOpti+1;
 end
+end
 
+%% Primal-Dual Condat
+% Full splitting case
+if all(isprox)
+    listOpti{nOpti}.name = 'PrimalDualCondat-FullSplit';
+    listOpti{nOpti}.call{2} = 'Fn = {';
+    listOpti{nOpti}.call{1} = 'Hn = {';
+    for ii=1:nbCosts
+        % Combine Costs and Ops while prox
+        tmp=Costs{ii};
+        idx=0;
+        for jj=1:length(Ops{ii})
+            tmp=tmp*Ops{ii}{jj};
+            if TestProx(tmp) && ~(strcmp(tmp.name,'CostTV') || (strcmp(tmp.name,'CostMultiplication') && strcmp(tmp.cost2.name,'CostTV')))
+                idx=jj;                
+            else
+                break
+            end
+        end
+        listOpti{nOpti}.call{2} =[listOpti{nOpti}.call{2},GetExprCompCost(NameCosts,NamesOps,ii,idx*ones(size(NamesOps)))];
+        listOpti{nOpti}.call{1} =[listOpti{nOpti}.call{1},GetExprCompOp(NamesOps,ii,(idx+1)*ones(size(NamesOps)))];
+        if ii<nbCosts
+            listOpti{nOpti}.call{2}=[ listOpti{nOpti}.call{2},','];
+            listOpti{nOpti}.call{1}=[ listOpti{nOpti}.call{1},','];
+        end
+    end
+    listOpti{nOpti}.call{2}=[ listOpti{nOpti}.call{2},'};'];
+    listOpti{nOpti}.call{1}=[ listOpti{nOpti}.call{1},'};'];
+    if isPos
+        listOpti{nOpti}.call{3}='P = CostNonNeg(Fn{1}.sizein);';
+        listOpti{nOpti}.call{4}='Opt = OptiPrimalDualCondat([],P,Fn,Hn);';    
+        listOpti{nOpti}.costIndex=2:nbCosts+1;
+    else
+        listOpti{nOpti}.call{3}='Opt = OptiPrimalDualCondat([],[],Fn,Hn);';    
+    end  
+    listOpti{nOpti}.parameters{1}.name='tau';
+    listOpti{nOpti}.parameters{1}.type = 'double';
+    listOpti{nOpti}.parameters{1}.val = '1e-1';
+    listOpti{nOpti}.parameters{1}.default = '-1';
+    listOpti{nOpti}.parameters{1}.toSet =1;
+    listOpti{nOpti}.parameters{1}.info = 'Parameters tau, sig, and rho have to satisfy an inequality to ensure convergence (see Doc).';
+    listOpti{nOpti}.parameters{2}.name='sig';
+    listOpti{nOpti}.parameters{2}.type = 'double';
+    listOpti{nOpti}.parameters{2}.val = '1e-1';
+    listOpti{nOpti}.parameters{2}.default = '-1';
+    listOpti{nOpti}.parameters{2}.toSet =1;
+    listOpti{nOpti}.parameters{2}.info = 'Parameters tau, sig, and rho have to satisfy an inequality to ensure convergence (see Doc).';
+    listOpti{nOpti}.parameters{3}.name='rho';
+    listOpti{nOpti}.parameters{3}.type = 'double';
+    listOpti{nOpti}.parameters{3}.val = '1.95';
+    listOpti{nOpti}.parameters{3}.default = '1.95';
+    listOpti{nOpti}.parameters{3}.toSet =1;
+    listOpti{nOpti}.parameters{3}.info = 'Parameters tau, sig, and rho have to satisfy an inequality to ensure convergence (see Doc).';
+    nOpti=nOpti+1;
+end
+% Do not split differentiable terms
+if any(isdiff) && all(isdiff+isprox)
+    listOpti{nOpti}.name = 'PrimalDualCondat-NoFullSplit';
+    listOpti{nOpti}.call{1} = ['F0 = ',GetExprCompCost(NameCosts,NamesOps,find(isdiff)),';'];
+    listOpti{nOpti}.call{2} = 'Fn = {';
+    listOpti{nOpti}.call{3} = 'Hn = {';
+    for ii=find(~isdiff)
+        % Combine Costs and Ops while prox
+        tmp=Costs{ii};
+        idx=0;
+        for jj=1:length(Ops{ii})
+            tmp=tmp*Ops{ii}{jj};
+            if TestProx(tmp) && ~(strcmp(tmp.name,'CostTV') || (strcmp(tmp.name,'CostMultiplication') && strcmp(tmp.cost2.name,'CostTV')))
+                idx=jj;
+            else
+                break
+            end
+        end
+        listOpti{nOpti}.call{2} =[listOpti{nOpti}.call{2},GetExprCompCost(NameCosts,NamesOps,ii,idx*ones(size(NamesOps)))];
+        listOpti{nOpti}.call{3} =[listOpti{nOpti}.call{3},GetExprCompOp(NamesOps,ii,(idx+1)*ones(size(NamesOps)))];
+        if ii<find(~isdiff,1,'last')
+            listOpti{nOpti}.call{2}=[ listOpti{nOpti}.call{2},','];
+            listOpti{nOpti}.call{3}=[ listOpti{nOpti}.call{3},','];
+        end
+    end
+    listOpti{nOpti}.call{2}=[ listOpti{nOpti}.call{2},'};'];
+    listOpti{nOpti}.call{3}=[ listOpti{nOpti}.call{3},'};'];
+    if isPos
+        listOpti{nOpti}.call{4}='P = CostNonNeg(F0.sizein);';
+        listOpti{nOpti}.call{5}='Opt = OptiPrimalDualCondat(F0,P,Fn,Hn);';
+        listOpti{nOpti}.costIndex=[1:sum(isdiff),sum(isdiff)+2:nbCosts+1];
+    else
+        listOpti{nOpti}.call{4}='Opt = OptiPrimalDualCondat(F0,[],Fn,Hn);';
+    end
+    listOpti{nOpti}.parameters{1}.name='tau';
+    listOpti{nOpti}.parameters{1}.type = 'double';
+    listOpti{nOpti}.parameters{1}.val = '1e-1';
+    listOpti{nOpti}.parameters{1}.default = '-1';
+    listOpti{nOpti}.parameters{1}.toSet =1;
+    listOpti{nOpti}.parameters{1}.info = 'Parameters tau, sig, and rho have to satisfy an inequality to ensure convergence (see Doc).';
+    listOpti{nOpti}.parameters{2}.name='sig';
+    listOpti{nOpti}.parameters{2}.type = 'double';
+    listOpti{nOpti}.parameters{2}.val = '1e-1';
+    listOpti{nOpti}.parameters{2}.default = '-1';
+    listOpti{nOpti}.parameters{2}.toSet =1;
+    listOpti{nOpti}.parameters{2}.info = 'Parameters tau, sig, and rho have to satisfy an inequality to ensure convergence (see Doc).';
+    listOpti{nOpti}.parameters{3}.name='rho';
+    listOpti{nOpti}.parameters{3}.type = 'double';
+    listOpti{nOpti}.parameters{3}.val = '1.95';
+    listOpti{nOpti}.parameters{3}.default = '1.95';
+    listOpti{nOpti}.parameters{3}.toSet =1;
+    listOpti{nOpti}.parameters{3}.info = 'Parameters tau, sig, and rho have to satisfy an inequality to ensure convergence (see Doc).';
+    nOpti=nOpti+1;
+end
+
+%% FGP
+if nbCosts==2 && isa(Costs{1},'CostL2') && isa(Ops{1}{1},'LinOpDiag') && isscalar(Ops{1}{1}.diag) && isa(CompCost{2}.cost2,'CostTV')
+    listOpti{nOpti}.name = 'Fast Gradient Proximal';
+    listOpti{nOpti}.call{1} = ['TV = ',NameCosts{2},'*',NamesOps{2}{1},';'];
+    if isPos
+        listOpti{nOpti}.call{2} = ['Opt = OptiFGP(',NameCosts{1},',TV,[0,Inf]);'];
+    else
+        listOpti{nOpti}.call{2} = ['Opt = OptiFGP(',NameCosts{1},',TV);'];
+    end
+    listOpti{nOpti}.parameters={};
+    nOpti=nOpti+1;
+end
 
 %% Common parameters
 for ii=1:length(listOpti)

@@ -24,13 +24,7 @@ classdef OptiVMLMB<Opti
     % **Example** VMLMB=OptiVMLMB(C,xmin,xmax)
     %
     % See also :class:`Opti`, :class:`OptiConjGrad` :class:`OutputOpti`, :class:`Cost`
-    
-    %% GUI-Header
-    % GUInotation-
-    % GUIcall-OptiVMLMB(C,xmin,xmax)-
-    % GUIparam-xmin-vecInt-[]-min bound
-    % GUIparam-xmax-vecInt-[]-max bound
-    
+
     %%    Copyright (C) 2017
     %     Ferreol Soulez ferreol.soulez@univ-lyon1.fr
     %

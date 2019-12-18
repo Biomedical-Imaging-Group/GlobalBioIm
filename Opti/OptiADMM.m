@@ -35,12 +35,6 @@ classdef OptiADMM < Opti
     % **Example** ADMM=OptiADMM(F0,Fn,Hn,rho_n,solver)
     %
     % See also :class:`Opti`, :class:`OptiConjGrad` :class:`OutputOpti`, :class:`Cost`
-    
-    %% GUI-Header
-    % GUInotation-
-    % GUIcall-OptiADMM(F0,Fn,Hn,rho_n,solver)-
-    % GUIparam-rho_n-vecInt-[]-array of N positive scalars
-    % GUIparam-maxiterCG-vecInt-[]-max number of iterations for conjugate-gradient (CG) (when used)
 
     %%    Copyright (C) 2017
     %     E. Soubies emmanuel.soubies@epfl.ch

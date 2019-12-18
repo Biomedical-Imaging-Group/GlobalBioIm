@@ -18,12 +18,7 @@ classdef OptiGradDsct < Opti
     % **Example** GD=OptiGradDsct(F)
     %
     % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
-    
-    %% GUI-Header
-    % GUInotation-
-    % GUIcall-OptiGradDsct(F,gam)-
-    % GUIparam-gam-vecInt-[]-descent step
-    
+
     %%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch
     %

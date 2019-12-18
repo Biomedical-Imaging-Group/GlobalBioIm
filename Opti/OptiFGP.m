@@ -18,14 +18,7 @@ classdef OptiFGP < Opti
     %
     % **Example** FGP=OptiFGP(F0,TV,bounds)
     %
-    % See also :class:`Opti`, :class:`OutputOpti` :class:`Cost`
-       
-    %% GUI-Header
-    % GUInotation-
-    % GUIcall-OptiFGP(F0,TV,bounds,gam,lambda)-
-    % GUIparam-bounds-vecInt-[]-bounds for set constraint
-    % GUIparam-gam-vecInt-[]-descent step (default 1/8)
-    % GUIparam-lambda-vecInt-[]-regularization parameter for TV
+    % See also :class:`Opti`, :class:`OutputOpti` :class:`Cost`     
 
 	%%    Copyright (C) 2015 
     %     T. Pham thanh-an.pham@epfl.ch

@@ -42,7 +42,7 @@ classdef CostMultiplication < Cost
     methods
         function this = CostMultiplication(C1,C2)
             this@Cost(C2.sizein);
-            this.name='CostMultiplications';
+            this.name='CostMultiplication';
             this.cost1 = C1;
             this.cost2 = C2;
             if isnumeric(C1)

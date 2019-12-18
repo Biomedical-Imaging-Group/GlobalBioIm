@@ -256,8 +256,9 @@ end
 % Do not split L2 terms
 if any(isL2) && all(isL2+isprox)
     listOpti{nOpti}.name = 'ADMM-NoFullSplit';
+    listOpti{nOpti}.call{1} = ['F0 = ',GetExprCompCost(NameCosts,NamesOps,find(isL2)),';'];
     listOpti{nOpti}.call{2} = 'Fn = {';
-    listOpti{nOpti}.call{1} = 'Hn = {';
+    listOpti{nOpti}.call{3} = 'Hn = {';
     for ii=find(~isL2)
         % Combine Costs and Ops while prox
         tmp=Costs{ii};
@@ -271,21 +272,20 @@ if any(isL2) && all(isL2+isprox)
             end
         end
         listOpti{nOpti}.call{2} =[listOpti{nOpti}.call{2},GetExprCompCost(NameCosts,NamesOps,ii,idx*ones(size(NamesOps)))];
-        listOpti{nOpti}.call{1} =[listOpti{nOpti}.call{1},GetExprCompOp(NamesOps,ii,(idx+1)*ones(size(NamesOps)))];
+        listOpti{nOpti}.call{3} =[listOpti{nOpti}.call{3},GetExprCompOp(NamesOps,ii,(idx+1)*ones(size(NamesOps)))];
         if ii<nbCosts
             listOpti{nOpti}.call{2}=[ listOpti{nOpti}.call{2},','];
-            listOpti{nOpti}.call{1}=[ listOpti{nOpti}.call{1},','];
+            listOpti{nOpti}.call{3}=[ listOpti{nOpti}.call{3},','];
         end
     end
     if isPos
-        listOpti{nOpti}.call{2}=[ listOpti{nOpti}.call{2},'}; Fn = [Fn,{CostNonNeg(Hn{1}.sizein)}];'];
-        listOpti{nOpti}.call{1}=[ listOpti{nOpti}.call{1},'}; Hn = [Hn,{LinOpIdentity(Hn{1}.sizein)}];'];
+        listOpti{nOpti}.call{2}=[ listOpti{nOpti}.call{2},'}; Fn = [Fn,{CostNonNeg(F0.sizein)}];'];
+        listOpti{nOpti}.call{3}=[ listOpti{nOpti}.call{3},'}; Hn = [Hn,{LinOpIdentity(F0.sizein)}];'];
         listOpti{nOpti}.costIndex=1:nbCosts;
     else
         listOpti{nOpti}.call{2}=[ listOpti{nOpti}.call{2},'};'];
-        listOpti{nOpti}.call{1}=[ listOpti{nOpti}.call{1},'};'];
-    end
-    listOpti{nOpti}.call{3} = ['F0 = ',GetExprCompCost(NameCosts,NamesOps,find(isL2)),';'];
+        listOpti{nOpti}.call{3}=[ listOpti{nOpti}.call{3},'};'];
+    end    
     listOpti{nOpti}.call{4}='Opt = OptiADMM(F0,Fn,Hn,rho);';
     listOpti{nOpti}.parameters{1}.name='rho';
     listOpti{nOpti}.parameters{1}.type = 'double';

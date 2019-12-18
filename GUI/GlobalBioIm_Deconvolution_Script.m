@@ -20,12 +20,8 @@ tmp=load("/home/esoubies/Bureau/GitHub/GlobalBioIm/GUI/psf.mat"); fd=fields(tmp)
 H2_PSF = tmp.(fd{1});
 % - Data-fidelity : L2
 DF_y = double(imread("/home/esoubies/Bureau/GitHub/GlobalBioIm/GUI/data.png"));
-% - Regularization-1 : Smooth-Total-Variation
-R1_lambda = 0.3;
-% - Algorithm Fwd-Bkwd Splitting
-Opt_gam = 1;
-Opt_fista = 1;
-Opt_updateGam = 'backtracking';
+% - Algorithm ADMM-NoFullSplit
+Opt_rho = 1;
 Opt_TolCost = 1e-4;
 Opt_TolStep = 1e-4;
 % - Path to save results
@@ -44,19 +40,14 @@ H2 = LinOpConv('PSF',H2_PSF,1,[],'Centered','Pad',H2_InputSize,0);
 %% Instanciate the Cost function
 % - Data-Fidelity : L2
 DF = CostL2(H1.sizeout,DF_y);
-% - Regularization-1 : Smooth-Total-Variation
-OpReg1 = LinOpGrad(H2.sizein);
-CostReg1 = R1_lambda * CostHyperBolic(OpReg1.sizeout,[],length(OpReg1.sizeout));
 
 %% Instanciate and Run the Optimization method
-% - Algorithm Fwd-Bkwd Splitting
-F = DF*(H1*H2) + CostReg1*(OpReg1);
-P = CostNonNeg(F.sizein);
-Opt = OptiFBS(F,P);
-Opt.gam = Opt_gam;
-Opt.fista = Opt_fista;
-Opt.updateGam = Opt_updateGam;
-Opt.OutOp = OutputOpti(1,round(Opt.maxiter/10));
+% - Algorithm ADMM-NoFullSplit
+F0 = DF*(H1*H2);
+Fn = {}; Fn = [Fn,{CostNonNeg(F0.sizein)}];
+Hn = {}; Hn = [Hn,{LinOpIdentity(F0.sizein)}];
+Opt = OptiADMM(F0,Fn,Hn,Opt_rho);
+Opt.OutOp = OutputOpti(1,round(Opt.maxiter/10),[1]);
 Opt.ItUpOut = round(Opt.maxiter/10);
 Opt.CvOp = TestCvgCombine('CostRelative',Opt_TolCost, 'StepRelative',Opt_TolStep);
 Opt.run(zeros(Opt.cost.sizein));

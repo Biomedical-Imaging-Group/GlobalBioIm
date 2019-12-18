@@ -1,4 +1,4 @@
-function listOpti = GetOptiList(Costs,Ops,NameCosts,NamesOps,isPos)
+function listOpti = GetOptiList(Costs,Ops,NameCosts,NamesOps,isPos,doPrecom)
 global sizein
 warning off
 % Initialize listOpti
@@ -30,6 +30,7 @@ if ~isPos && all(isdiff)
     % -- General
     listOpti{nOpti}.name = 'Gradient Descent';
     listOpti{nOpti}.call{1} = ['cf = ',GetExprCompCost(NameCosts,NamesOps,find(isdiff)),';'];
+    if doPrecom,  listOpti{nOpti}.call{1} = [ listOpti{nOpti}.call{1},' cf.doPrecomputation =1;']; end
     listOpti{nOpti}.call{2} = 'Opt = OptiGradDsct(cf);';
     % - Gam parameter
     listOpti{nOpti}.parameters{1}.name = 'gam';
@@ -45,6 +46,7 @@ end
 if all(isdiff) && isPos
     % If all terms are differentiables
     listOpti{nOpti}.call{1} = ['F = ',GetExprCompCost(NameCosts,NamesOps,find(isdiff)),';'];
+    if doPrecom,  listOpti{nOpti}.call{1} = [ listOpti{nOpti}.call{1},' F.doPrecomputation =1;']; end
     listOpti{nOpti}.call{2} = 'P = CostNonNeg(F.sizein);';
     listOpti{nOpti}.call{3} = 'Opt = OptiFBS(F,P);';
     isFBS=1;
@@ -54,6 +56,7 @@ elseif sum(isdiff)>0
     isFBS=TestProx(F);                         % Test if prox
     if isFBS
         listOpti{nOpti}.call{1} = ['F = ',GetExprCompCost(NameCosts,NamesOps,find(isdiff)),';'];
+        if doPrecom,  listOpti{nOpti}.call{1} = [ listOpti{nOpti}.call{1},' F.doPrecomputation =1;']; end
         if isPos
             listOpti{nOpti}.call{2} = 'P = CostNonNeg(F.sizein);';
             listOpti{nOpti}.call{3} = ['G = ',GetExprCompCost(NameCosts,NamesOps,find(~isdiff)),' + P;'];
@@ -100,8 +103,9 @@ end
 if all(isdiff)
     listOpti{nOpti}.name = 'VMLMB';
     listOpti{nOpti}.call{1} = ['cf = ',GetExprCompCost(NameCosts,NamesOps,find(isdiff)),';'];
+    if doPrecom,  listOpti{nOpti}.call{1} = [ listOpti{nOpti}.call{1},' cf.doPrecomputation =1;']; end
     if isPos
-        % if positivity 
+        % if positivity
         listOpti{nOpti}.call{2} = 'Opt=OptiVMLMB(cf,0,Inf);';
         listOpti{nOpti}.parameters={};
     else

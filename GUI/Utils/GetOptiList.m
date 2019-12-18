@@ -294,11 +294,12 @@ if any(isL2) && all(isL2+isprox)
     listOpti{nOpti}.parameters{1}.default = '-1';
     listOpti{nOpti}.parameters{1}.toSet =0;
     listOpti{nOpti}.parameters{1}.info = 'Lagrangian Multiplier (positive real).';
-    %     listOpti{nOpti}.parameters{2}.name='maxiterCG';
-    %     listOpti{nOpti}.parameters{2}.type = 'double';
-    %     listOpti{nOpti}.parameters{2}.val = '20';
-    %     listOpti{nOpti}.parameters{2}.default = '0';
-    %     listOpti{nOpti}.parameters{2}.info = '';
+    listOpti{nOpti}.parameters{2}.name='maxiterCG';
+    listOpti{nOpti}.parameters{2}.type = 'double';
+    listOpti{nOpti}.parameters{2}.val = '20';
+    listOpti{nOpti}.parameters{2}.default = '20';
+    listOpti{nOpti}.parameters{2}.info = 'Maximal number of conjugate gradient iterations (when required)';
+    listOpti{nOpti}.parameters{2}.toSet =1;
     nOpti=nOpti+1;
 end
 end

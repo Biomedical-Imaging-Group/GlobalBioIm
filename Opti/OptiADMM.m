@@ -6,6 +6,7 @@ classdef OptiADMM < Opti
     % :param F_n: cell of N :class:`Cost` with an implementation of the :meth:`prox` for each one
     % :param H_n: cell of N :class:`LinOp`
     % :param rho_n: array of N positive scalars
+    % :param maxiterCG: maximal number of inner conjugate gradient (CG) iterations (when required, default 20)
     % :param solver: a handle function taking parameters solver(z_n,rho_n,x0) (see the note below)
     % :param OutOpCG: :class:`OutputOpti` object for CG (when used)
     % :param ItUpOutCG: :attr:`ItUpOut` parameter for CG (when used, default 0)
@@ -70,11 +71,18 @@ classdef OptiADMM < Opti
         Hnx;
         b0=0;
         yold=0;  % Parameter needed for termination criterion
+        
+        
+        % To manage the new maxiterCG property of ADMM (from v1.1.2)
+        % without "breaking" script written with previous versions of
+        % GlobalBioIm
+        prevIterCG=20;
     end
     % Full public properties
     properties
         rho_n;                 % vector containing the multipliers
         CG;                    % conjugate gradient algo (Opti Object, when used)
+        maxiterCG=20;
     end
     
     methods
@@ -151,7 +159,7 @@ classdef OptiADMM < Opti
                 if ~this.A.isInvertible  % If A is non invertible -> intanciate a CG
                     this.CG=OptiConjGrad(this.A,zeros_(this.A.sizeout));
                     this.CG.verbose=0;
-                    this.CG.maxiter=20;
+                    this.CG.maxiter=this.maxiterCG;
                     this.CG.ItUpOut=0;
                     warning('ADMM will use a Conjugate Gradient to compute the linear step: This may lead to slow computations.');
                 end
@@ -159,6 +167,19 @@ classdef OptiADMM < Opti
         end
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
+            
+            % To manage the new maxiterCG property of ADMM (from v1.1.2)
+            % without "breaking" script written with previous versions of
+            % GlobalBioIm
+            if ~isempty(this.CG)
+                if this.CG.maxiter==this.prevIterCG && this.CG.maxiter~=this.maxiterCG
+                    this.CG.maxiter=this.maxiterCG;
+                    this.prevIterCG=this.maxiterCG;
+                else
+                    this.maxiterCG=this.CG.maxiter;
+                    this.prevIterCG=this.CG.maxiter;
+                end
+            end
             
             initialize@Opti(this,x0);
             if ~isempty(x0) % To restart from current state if wanted

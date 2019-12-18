@@ -16,6 +16,14 @@ classdef LinOpDownsample < LinOpSelector
     % See also :class:`LinOp`, :class:`LinOpSelector`,
     % :class:`LinOpSelectorPatch`.
     
+    %% GUI-Header
+    % GUInotation-Ds-
+    % GUIcall-LinOpDownsample(InputSize,df,first)-
+    % GUIparam-InputSize-vecInt-[]-Input size of the downsample operator (e.g. [512 512])
+    % GUIparam-df-vecInt-[]-array containing the downsampling factor in each direction
+    %            (must divide the corresponding entry of InputSize)
+    % GUIparam-first-vecInt-[]-array containing the index of the first element in each direction
+    
     %%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch
     %

@@ -12,6 +12,12 @@ classdef LinOpSum <  LinOp
     %
     % See also :class:`LinOp`, :class:`Map`
     
+    %% GUI-Header
+    % GUInotation-Sum-
+    % GUIcall-LinOpSum(InputSize,index)-
+    % GUIparam-InputSize-vecInt-[]-Input size of the diagonal operator (e.g. [512 512]).
+    % GUIparam-index-vecInt-[]-Dimensions along which the sum will be performed (inner sum over l)
+    
     %%    Copyright (C) 2015
     %     F. Soulez ferreol.soulez@epfl.ch
     %

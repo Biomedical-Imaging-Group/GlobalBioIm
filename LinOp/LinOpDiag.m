@@ -20,7 +20,7 @@ classdef LinOpDiag <  LinOp
     % GUInotation-Diag-
     % GUIcall-LinOpDiag(InputSize,diag)-
     % GUIparam-InputSize-vecInt-[]-Input size of the diagonal operator (e.g. [512 512]).
-    % GUIparam-diag-vecInt-[]-Elements of the diagonal (Non-singleton dimensions of diag and sz must be consistent)
+    % GUIparam-diag-file-[]- Name of file containing the elements of the diagonal (Non-singleton dimensions of diag and sz must be consistent).
     
     %%    Copyright (C) 2015
     %     F. Soulez ferreol.soulez@epfl.ch

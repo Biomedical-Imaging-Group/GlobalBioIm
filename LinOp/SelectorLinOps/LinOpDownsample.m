@@ -11,7 +11,7 @@ classdef LinOpDownsample < LinOpSelector
     % All attributes of the parent class :class:`LinOpSelector` 
     % are inherited. 
     %
-    % **Example** D=LinOpDownsample(sz,df)
+    % **Example** D=LinOpDownsample(sz,df,first)
     %
     % See also :class:`LinOp`, :class:`LinOpSelector`,
     % :class:`LinOpSelectorPatch`.
@@ -20,8 +20,7 @@ classdef LinOpDownsample < LinOpSelector
     % GUInotation-Ds-
     % GUIcall-LinOpDownsample(InputSize,df,first)-
     % GUIparam-InputSize-vecInt-[]-Input size of the downsample operator (e.g. [512 512])
-    % GUIparam-df-vecInt-[]-array containing the downsampling factor in each direction
-    %            (must divide the corresponding entry of InputSize)
+    % GUIparam-df-vecInt-[]-array containing the downsampling factor in each direction (must divide the corresponding entry of InputSize)
     % GUIparam-first-vecInt-[]-array containing the index of the first element in each direction
     
     %%    Copyright (C) 2017 

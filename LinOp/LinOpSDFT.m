@@ -11,6 +11,14 @@ classdef LinOpSDFT <  LinOp
     % **Example** SDFT=LinOpSDFT(sz,index,unitary, pad)
     %
     % See also :class:`LinOp`, :class:`Map`, fftn, ifftn, Sfft, iSfft
+    
+    %% GUI-Header
+    % GUInotation-S-
+    % GUIcall-LinOpSelectorPatch(InputSize,index,unitary,pad)-
+    % GUIparam-InputSize-vecInt-[]-Input size of the selector operator
+    % GUIparam-index-vecInt-[]-Dimensions along which the DFT is computed (default all)
+    % GUIparam-unitary-boolean-0-boolean true when normalized DFT (default false)
+    % GUIparam-pad-vecInt-[]-padding size (see the doc of fftn function).
 
     %%    Copyright (C) 2015 
     %     F. Soulez ferreol.soulez@epfl.ch

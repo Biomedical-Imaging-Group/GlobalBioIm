@@ -17,8 +17,8 @@ classdef LinOpBroadcast <  LinOp
     %% GUI-Header
     % GUInotation-B-
     % GUIcall-LinOpBroadcast(InputSize,index)-
-    % GUIparam-InputSize-vecInt-[]-Input size of the gradient operator (e.g. [512 512])
-    % GUIparam-index-vecInt-[]-Dimensions along which the gradient is computed (all by default)
+    % GUIparam-OutputSize-vecInt-[]-Size ofthe output of the LinOpBroadcast (e.g. [512 512])
+    % GUIparam-index-vecInt-[]-Dimensions along which vector will be broadcasted (all by default)
     
     %%    Copyright (C) 2018
     %     F. Soulez ferreol.soulez@epfl.ch

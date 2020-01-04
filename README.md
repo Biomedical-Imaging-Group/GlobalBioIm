@@ -16,7 +16,7 @@ A detailled documentation can be found <a href="https://biomedical-imaging-group
 GlobalBioIm is ditributed together with a user-friendly Matlab interface that allows to intuitively build tailored reconstruction algorithms with minimal effort. [Read More](https://biomedical-imaging-group.github.io/GlobalBioIm/gui.html).
 
 <p align="center">
-<img height="256" src="https://github.com/Biomedical-Imaging-Group/GlobalBioIm/tree/master/Doc/source/GUI.png"/>
+<img height="350" src="https://github.com/Biomedical-Imaging-Group/GlobalBioIm/blob/master/Doc/source/GUI.png"/>
 </p>
 
 ## What's changed recently?

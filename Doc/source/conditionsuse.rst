@@ -11,9 +11,6 @@ If not, see <http://www.gnu.org/licenses/> .
 Whenever you present or publish results that are based on this library, please cite:
 
 | `Pocket Guide to Solve Inverse Problems with GlobalBioIm <https://iopscience.iop.org/article/10.1088/1361-6420/ab2ae9>`_,
-| Inverse Problems, 2019.
+| Inverse Problems, 35-10, 2019.
 | E. Soubies, F. Soulez, M. T. McCann, T-A. Pham, L. Donati, T. Debarre, D. Sage, and M. Unser.
 
-| `GlobalBioIm: A Unifying Computational Framework for Solving Inverse Problems <http://bigwww.epfl.ch/publications/unser1701.html>`_,
-| Proceedings of the OSA Computational Optical Sensing and Imaging congres, 2017.
-| M. Unser, E. Soubies, F. Soulez, M. McCann, and L. Donati.

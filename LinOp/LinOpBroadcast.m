@@ -10,9 +10,15 @@ classdef LinOpBroadcast <  LinOp
     %
     % All attributes of parent class :class:`LinOp` are inherited.
     %
-    % **Example** S=LinOpSum(sz,index)
+    % **Example** S=LinOpBroadcast(sz,index)
     %
     % See also :class:`LinOp`, :class:`Map`
+    
+    %% GUI-Header
+    % GUInotation-B-
+    % GUIcall-LinOpBroadcast(InputSize,index)-
+    % GUIparam-OutputSize-vecInt-[]-Size ofthe output of the LinOpBroadcast (e.g. [512 512])
+    % GUIparam-index-vecInt-[]-Dimensions along which vector will be broadcasted (all by default)
     
     %%    Copyright (C) 2018
     %     F. Soulez ferreol.soulez@epfl.ch

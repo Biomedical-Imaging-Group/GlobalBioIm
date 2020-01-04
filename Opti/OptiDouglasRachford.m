@@ -14,7 +14,7 @@ classdef OptiDouglasRachford < Opti
     % **Example** DR=OptiDouglasRachford(F1, F2, L, gamma, lambda)
     %
 	% See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`
-    
+
     %%    Copyright (C) (2017)
     %
     %     This program is free software: you can redistribute it and/or modify

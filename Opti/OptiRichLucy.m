@@ -29,7 +29,7 @@ classdef OptiRichLucy < Opti
     %
     % See also :class:`Opti`, :class:`OutputOpti`, :class:`Cost`,
     % :class:`CostKullLeib`
-    
+
     %%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch
     %
@@ -92,9 +92,10 @@ classdef OptiRichLucy < Opti
             % Reimplementation from :class:`Opti`.
             
             initialize@Opti(this,x0);
+            if ~any(this.xopt(:)), this.xopt=ones(size(this.xopt)); end
             this.data=this.F.H1.y;
-            this.He1=this.F.H2.applyAdjoint(ones_(this.F.sizein));
             this.bet=this.F.H1.bet;
+            this.He1=max(this.F.H2.applyAdjoint(ones_(this.F.H2.sizeout)),this.bet);
             if this.bet==0, error('Smoothing parameter beta has to be different from 0 (see constructor of CostKullLeib)'); end;
         end
         function flag=doIteration(this)
@@ -114,7 +115,9 @@ classdef OptiRichLucy < Opti
                 gradReg=this.G.applyAdjoint(tmp./nor);
                 this.xopt=this.xopt./(this.He1 + this.lamb*gradReg).*this.F.H2.applyAdjoint(this.data./(this.F.H2.apply(this.xopt)+this.bet));
                 if sum(this.xopt(:)<0)~=0
+                    warnStruct = warning('off','backtrace');
                     warning('Violation of the positivity of the solution (the regularization parameter should be decreased).');
+                    warning(warnStruct);
                 end
             end
             flag=this.OPTI_NEXT_IT;

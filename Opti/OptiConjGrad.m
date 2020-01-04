@@ -11,7 +11,7 @@ classdef OptiConjGrad < Opti
     % **Example** CG=OptiConjGrad(A,b,OutOp)
     %
     % See also :class:`Opti`, :class:`OutputOpti` :class:`Cost`
-    
+
     %%    Copyright (C) 2015
     %     F. Soulez ferreol.soulez@epfl.ch
     %

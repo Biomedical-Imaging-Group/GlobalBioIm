@@ -2,7 +2,6 @@
    sphinx-quickstart on Sun Jun 25 15:32:10 2017.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
-
    
 Welcome to the GlobalBioIm Library Webpage
 ******************************************
@@ -33,16 +32,13 @@ Releases
   - `v 0.2 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v0.2>`_ (November 2017). *New tools, more flexibility, improved composition*.
   -  v 0.1 (June 2017). *First public release of the library.*
 
-References
-----------
+Reference
+---------
 
 | `Pocket Guide to Solve Inverse Problems with GlobalBioIm <https://iopscience.iop.org/article/10.1088/1361-6420/ab2ae9>`_,
 | Inverse Problems, 35-10, 2019.
 | E. Soubies, F. Soulez, M. T. McCann, T-A. Pham, L. Donati, T. Debarre, D. Sage, and M. Unser.
 
-| `GlobalBioIm: A Unifying Computational Framework for Solving Inverse Problems <http://bigwww.epfl.ch/publications/unser1701.html>`_,
-| Proceedings of the OSA Computational Optical Sensing and Imaging congres, 2017.
-| M. Unser, E. Soubies, F. Soulez, M. McCann, and L. Donati.
 
 Contents
 ********
@@ -54,6 +50,7 @@ Contents
    Download or Clone (v 1.1.2) <https://github.com/Biomedical-Imaging-Group/GlobalBioIm>
    infos
    examples
+   gui
    relatedPapers     
    conditionsuse
 
@@ -79,6 +76,9 @@ Contents
    
  
 .. default-domain:: mat
+
+.. Hack to force MathJax insertion
+.. math::
 
 
 

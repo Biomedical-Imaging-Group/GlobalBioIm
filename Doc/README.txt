@@ -11,7 +11,7 @@ some commands that worked on macOSX
 sudo -H pip install --ignore-installed Sphinx
 sudo -H pip install --ignore-installed -U sphinxcontrib-matlabdomain
 sudo -H pip install --ignore-installed sphinx_rtd_theme
-sudo -H pip install --ignore-installed sphinxcontrib-email 
+sudo -H pip install --ignore-installed sphinxcontrib.yt
 
 ###### COMPILATION
 
@@ -19,19 +19,7 @@ sudo -H pip install --ignore-installed sphinxcontrib-email
     
        make html
 
-    1a. To see the results, open Doc/build/index.html in a web browser.
-
-    2. To clean up for release:
-    
-    add style="text-align:justify" in the body "basile":
-    <body class="wy-body-for-nav" role="document" style="text-align:justify">
-    I did not find a nicer way to do that... 
-    
-    add <img src="logo.png"  width="300" /> at the following position
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-    <div class="wy-side-scroll">
-       <img src="logo.png"  width="300" />  <<<------- HERE
-    <div class="wy-side-nav-search">
+    2. To see the results, open Doc/build/index.html in a web browser.
     
 
 ###### HOW TO USE
@@ -47,7 +35,7 @@ sudo -H pip install --ignore-installed sphinxcontrib-email
 	- Let an empty line (i.e. without any %) before the copyright paragraph:
 	% See also :class:`LinOp`.
 
-    %     Copyright (C) 2017 ...
+    	% Copyright (C) 2017 ...
     
     
     

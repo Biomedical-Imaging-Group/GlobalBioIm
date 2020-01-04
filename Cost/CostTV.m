@@ -30,6 +30,10 @@ classdef CostTV < CostComposition
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
+    properties  (SetAccess = protected,GetAccess = protected)
+        warn=0;
+    end
+    
     properties
         optim;
         bounds = [-inf,inf];% Bounds for set constraint
@@ -89,7 +93,10 @@ classdef CostTV < CostComposition
             % Computed using the iterative :class:`OptiFGP` 
             
             % If y==0
-            if this.y==0                
+            if this.y==0     
+                if ~this.warn % To raise the warning only once
+                   warnStruct = warning('off','backtrace'); warning('The prox in CostTV is iterative (OptiFGP): This may lead to slow computations.');this.warn=1;warning(warnStruct);
+                end
                 %for k = 1:length(this.optim.Fn)
                 %    this.optim.Fn{k} = alpha*this.optim.Fn{k};%what is that
                 %end

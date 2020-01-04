@@ -10,6 +10,13 @@ classdef CostMixNorm21 < Cost
     %
     % See also :class:`Map` :class:`Cost`, :class:`LinOp`
     
+    %% GUI-Header
+    % GUInotation-mn21-
+    % GUIcall-CostMixNorm21(InputSize,Index,data)-
+    % GUIparam-InputSize-vecInt-[]-Input size of the cost function (e.g. [512 512]). If empty, the size of the data will be used.
+    % GUIparam-data-file-[]-data vector (default 0)
+    % GUIparam-Index-vecInt-[]-dimensions along which the l2-norm will be applied (inner sum over l) 
+    
     %%    Copyright (C) 2017
     %     E. Soubies emmanuel.soubies@epfl.ch
     %

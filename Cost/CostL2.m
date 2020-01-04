@@ -11,6 +11,13 @@ classdef CostL2 < Cost
     %
     % See also :class:`Map`, :class:`Cost`, :class:`LinOp`
 
+    %% GUI-Header
+    % GUInotation-L2-
+    % GUIcall-CostL2(InputSize,y,Weight)-
+    % GUIparam-InputSize-vecInt-[]-Input size of the cost function (e.g. [512 512]). If empty, the size of the data will be used.
+    % GUIparam-y-file-[]-data vector  (default 0)
+    % GUIparam-Weight-vecInt-[]-Weighting matrix (default 1)
+    
     %%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch 
     %     F. Soulez ferreol.soulez@epfl.ch

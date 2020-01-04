@@ -42,8 +42,8 @@ classdef OptiChambPock < Opti
     %
     % **Example** CP=OptiChambPock(F,H,G)
     %
-    % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`
- 
+    % See also :class:`Opti` :class:`OutputOpti` :class:`Cost`    
+    
     %%    Copyright (C) 2017 
     %     E. Soubies emmanuel.soubies@epfl.ch
     %

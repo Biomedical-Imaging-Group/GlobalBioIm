@@ -1,3 +1,6 @@
+.. role:: raw-html(raw)
+   :format: html
+
 .. _ref-relatedPapers:
 
 Related Papers
@@ -5,7 +8,7 @@ Related Papers
 
 This list gathers works that use the GlobalBioIm library.
 If you want to add your work in this list, do not hesitate to
-:email:`contact us<esoubies@gmail.com;ferreol.soulez@univ-lyon1.fr;michael.mccann@epfl.ch>`.
+:raw-html:`<a href="mailto:emmanuel.soubies@irit.fr;ferreol.soulez@univ-lyon1.fr;michael.thompson.mccann@gmail.com"> contact us  </a>`
 
 Papers with open-source code
 ----------------------------

@@ -51,7 +51,7 @@ classdef Cost < Map
             % set data y
             if nargin <2, y=0; end
             if nargin<1 || isempty(sz), sz=size(y); end;
-            assert(issize(sz),'First argument must be conformable to a size');
+            assert(issize(sz),'The input size is not conformable to a size');
             this.sizein=sz;
             this.set_y(y);
             % Add new fields to memoizeOpts and memoCache
@@ -221,7 +221,7 @@ classdef Cost < Map
             %  - has to be conformable with the :attr:`sizein` of the cost
             %  - can be a scalar.
             assert(isnumeric(y),'y must be a numeric');
-            assert(isscalar(y) || checkSize(y,this.sizein),'size y must be a scalar or equal to this.sizein');
+            assert(isscalar(y) || checkSize(y,this.sizein),'The size of y must be equal to the input size of the Cost');
             this.y=y;
         end
     end

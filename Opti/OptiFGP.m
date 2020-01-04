@@ -18,7 +18,7 @@ classdef OptiFGP < Opti
     %
     % **Example** FGP=OptiFGP(F0,TV,bounds)
     %
-    % See also :class:`Opti`, :class:`OutputOpti` :class:`Cost`
+    % See also :class:`Opti`, :class:`OutputOpti` :class:`Cost`     
 
 	%%    Copyright (C) 2015 
     %     T. Pham thanh-an.pham@epfl.ch

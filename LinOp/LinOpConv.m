@@ -34,6 +34,13 @@ classdef LinOpConv <  LinOp
     %
     % See also :class:`LinOp`, :class:`Map`
     
+    %% GUI-Header
+    % GUInotation-C-
+    % GUIcall-LinOpConv('PSF',PSF,1,index,'Centered','Pad',InputSize,0)-
+    % GUIparam-InputSize-vecInt-[]-Input size of the convolution operator (e.g. [512 512]). If empty, the size of the PSF will be used.
+    % GUIparam-PSF-file-[]-Select PSF file
+    % GUIparam-index-vecInt-[]-Used to specify the dimensions along which the convolution is performed. If empty (default), all dimensions are used. For instance, setting [1 2] in 3D will instanciate a LinOpConv that applies a 2D convolution to each plane of the input 3D volume.
+    
     %%    Copyright (C) 2015
     %     F. Soulez ferreol.soulez@epfl.ch
     %
@@ -86,11 +93,11 @@ classdef LinOpConv <  LinOp
                     case('PSF')
                         ispsf = true;
                         psf = varargin{2};
-                        assert(isnumeric(psf),'The psf should be numeric');
+                        assert(isnumeric(psf),'The PSF should be numeric');
                         ndms = ndims(psf);
                     case('MTF')
                         mtf = varargin{2};
-                        assert(isnumeric(mtf),'The psf should be numeric');
+                        assert(isnumeric(mtf),'The PSF should be numeric');
                         ndms = ndims(mtf);
                     otherwise
                         error('Unknown keyword.');
@@ -147,7 +154,9 @@ classdef LinOpConv <  LinOp
                         centering=true;
                     end
                     psfsize = size(psf);
-                    padsz= (sz - psfsize)/2.;
+                    assert(length(sz)==length(psfsize),['The input size [',num2str(sz),'] and the size of the PSF [',num2str(psfsize),'] must have the same number of dimensions']);
+                    padsz= (sz - psfsize)/2.;                    
+                    assert(all(padsz>=0),['The input size [',num2str(sz),'] must be larger than the size of the PSF [',num2str(psfsize),']']);
                     for n=1:ndims(psf)
                         if any(index==n)
                             padsize = zeros(size(psfsize));
@@ -185,7 +194,9 @@ classdef LinOpConv <  LinOp
                 this.ndms = 1;
             end           
             if (~isempty(index))
-                assert(isvector(index) && length(index)<= this.ndms && max(index)<= this.ndms,'The index should be a conformable  to sz');
+                assert(isvector(index),'Parameter index should be a vector');
+                assert(length(index)<= this.ndms,'The lenght of vector index must comply with the length of the input size (i.e. the number of dimensions of the input)');
+                assert(max(index)<= this.ndms,'The larger value in vector index should not exceed the number of dimensions of the input (i.e. the length of the input size)');
                 this.index = index;
                 dim = 1:this.ndms;
                 Iidx = true(this.ndms,1);

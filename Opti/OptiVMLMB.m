@@ -24,7 +24,7 @@ classdef OptiVMLMB<Opti
     % **Example** VMLMB=OptiVMLMB(C,xmin,xmax)
     %
     % See also :class:`Opti`, :class:`OptiConjGrad` :class:`OutputOpti`, :class:`Cost`
-    
+
     %%    Copyright (C) 2017
     %     Ferreol Soulez ferreol.soulez@univ-lyon1.fr
     %

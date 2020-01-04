@@ -12,6 +12,7 @@ To that end, one only needs two simple functions:
    - gpuCpuConverter
 
 The function :meth:`useGPU` takes one single argument which can be
+
    - 0 : computation is done on CPU (default)
    - 1 : computation is done on GPU using the `Matlab Parrallel Computing Toolbox <https://ch.mathworks.com/help/distcomp/>`_ 
    - 2 : computation is done on GPU using CudaMat (`GitHub <https://github.com/RainerHeintzmann/CudaMat>`_, `Documentation <http://www.nanoimaging.de/CudaMat/>`_) 

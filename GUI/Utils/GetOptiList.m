@@ -1,4 +1,4 @@
-function listOpti = GetOptiList(Costs,Ops,NameCosts,NamesOps,isPos,doPrecom)
+function [listOpti,nameInLib] = GetOptiList(Costs,Ops,NameCosts,NamesOps,isPos,doPrecom)
 global sizein
 warning off
 % Initialize listOpti
@@ -25,10 +25,11 @@ end
 nbCosts=length(Costs);
 
 
-%% Gradien Descent
+%% Gradient Descent
 if ~isPos && all(isdiff)
     % -- General
     listOpti{nOpti}.name = 'Gradient Descent';
+    nameInLib{nOpti} = 'GradDsct';
     listOpti{nOpti}.call{1} = ['cf = ',GetExprCompCost(NameCosts,NamesOps,find(isdiff)),';'];
     if doPrecom,  listOpti{nOpti}.call{1} = [ listOpti{nOpti}.call{1},' cf.doPrecomputation =1;']; end
     listOpti{nOpti}.call{2} = 'Opt = OptiGradDsct(cf);';
@@ -73,6 +74,7 @@ end
 if isFBS
     % -- General
     listOpti{nOpti}.name = 'Fwd-Bkwd Splitting';
+    nameInLib{nOpti} = 'FBS';
     % - Gam parameter
     listOpti{nOpti}.parameters{1}.name = 'gam';
     listOpti{nOpti}.parameters{1}.type = 'double';
@@ -102,6 +104,7 @@ end
 % Requires that all costs are differentiables
 if all(isdiff)
     listOpti{nOpti}.name = 'VMLMB';
+    nameInLib{nOpti} = 'VMLMB';
     listOpti{nOpti}.call{1} = ['cf = ',GetExprCompCost(NameCosts,NamesOps,find(isdiff)),';'];
     if doPrecom,  listOpti{nOpti}.call{1} = [ listOpti{nOpti}.call{1},' cf.doPrecomputation =1;']; end
     if isPos
@@ -121,12 +124,14 @@ end
 if (length(Costs)==1 && strcmp(Costs{1}.name,'CostKullLeib') && isPos)
     % Without regularization
     listOpti{nOpti}.name = 'Richardson-Lucy';
+    nameInLib{nOpti} = 'RichLucy';
     listOpti{nOpti}.call{1} = ['Opt = OptiRichLucy(',GetExprCompCost(NameCosts,NamesOps,1),');'];
     listOpti{nOpti}.parameters={};
     nOpti=nOpti+1;
 elseif (length(Costs)==2 && strcmp(Costs{1}.name,'CostKullLeib') && strcmp(CompCost{2}.cost2.H1.name,'CostHyperBolic') && strcmp(CompCost{2}.cost2.H2.name,'LinOpGrad')  && isPos)
     % With TV regularization
     listOpti{nOpti}.name = 'Richardson-Lucy';
+    nameInLib{nOpti} = 'RichLucy';
     listOpti{nOpti}.call{1} = ['Opt = OptiRichLucy(',GetExprCompCost(NameCosts,NamesOps,1),',1,CostReg1.cost2.epsilon);'];
     listOpti{nOpti}.parameters={};
     nOpti=nOpti+1;
@@ -150,6 +155,7 @@ if sum(isproxComp) >= nbCosts-1
         % If ok, the Chambolle-Pock can be used
         if isCP
             listOpti{nOpti}.name = 'Chambolle-Pock';
+            nameInLib{nOpti} = 'ChambPock';
             listOpti{nOpti}.call{1} = ['F = ',NameCosts{ii},';'];
             listOpti{nOpti}.call{2} = ['K = ',GetExprCompOp(NamesOps,ii),';'];
             if isPos
@@ -175,6 +181,7 @@ if sum(isproxComp) >= nbCosts-1
         % If ok, the Chambolle-Pock can be used
         if isCP
             listOpti{nOpti}.name = 'Chambolle-Pock';
+            nameInLib{nOpti} = 'ChambPock';
             listOpti{nOpti}.call{1} = ['F = ',NameCosts{~isproxComp},';'];
             listOpti{nOpti}.call{2} = ['K = ',GetExprCompOp(NamesOps,find(~isproxComp)),';'];
             tmp=GetExprCompCost(NameCosts,NamesOps,find(isproxComp)); if~isempty(tmp), tmp=[tmp,' + ']; end
@@ -215,6 +222,7 @@ if nbCosts+isPos>1
 % Full splitting case
 if all(isprox)
     listOpti{nOpti}.name = 'ADMM-FullSplit';
+    nameInLib{nOpti} = 'ADMM';
     listOpti{nOpti}.call{2} = 'Fn = {';
     listOpti{nOpti}.call{1} = 'Hn = {';
     for ii=1:nbCosts
@@ -251,16 +259,18 @@ if all(isprox)
     listOpti{nOpti}.parameters{1}.default = '-1';
     listOpti{nOpti}.parameters{1}.toSet =0;
     listOpti{nOpti}.parameters{1}.info = 'Lagrangian Multiplier (positive real).';
-%     listOpti{nOpti}.parameters{2}.name='maxiterCG';
-%     listOpti{nOpti}.parameters{2}.type = 'double';
-%     listOpti{nOpti}.parameters{2}.val = '20';
-%     listOpti{nOpti}.parameters{2}.default = '0';
-%     listOpti{nOpti}.parameters{2}.info = '';
+    listOpti{nOpti}.parameters{2}.name='maxiterCG';
+    listOpti{nOpti}.parameters{2}.type = 'double';
+    listOpti{nOpti}.parameters{2}.val = '20';
+    listOpti{nOpti}.parameters{2}.default = '20';
+    listOpti{nOpti}.parameters{2}.info = 'Maximal number of conjugate gradient iterations (when required)';
+    listOpti{nOpti}.parameters{2}.toSet =1;
     nOpti=nOpti+1;
 end
 % Do not split L2 terms
 if any(isL2) && all(isL2+isprox)
     listOpti{nOpti}.name = 'ADMM-NoFullSplit';
+    nameInLib{nOpti} = 'ADMM';
     listOpti{nOpti}.call{1} = ['F0 = ',GetExprCompCost(NameCosts,NamesOps,find(isL2)),';'];
     listOpti{nOpti}.call{2} = 'Fn = {';
     listOpti{nOpti}.call{3} = 'Hn = {';
@@ -312,6 +322,7 @@ end
 % Full splitting case
 if all(isprox)
     listOpti{nOpti}.name = 'PrimalDualCondat-FullSplit';
+    nameInLib{nOpti} = 'PrimalDualCondat';
     listOpti{nOpti}.call{2} = 'Fn = {';
     listOpti{nOpti}.call{1} = 'Hn = {';
     for ii=1:nbCosts
@@ -365,6 +376,7 @@ end
 % Do not split differentiable terms
 if any(isdiff) && all(isdiff+isprox)
     listOpti{nOpti}.name = 'PrimalDualCondat-NoFullSplit';
+    nameInLib{nOpti} = 'PrimalDualCondat';
     listOpti{nOpti}.call{1} = ['F0 = ',GetExprCompCost(NameCosts,NamesOps,find(isdiff)),';'];
     listOpti{nOpti}.call{2} = 'Fn = {';
     listOpti{nOpti}.call{3} = 'Hn = {';
@@ -420,6 +432,7 @@ end
 %% FGP
 if nbCosts==2 && isa(Costs{1},'CostL2') && isa(Ops{1}{1},'LinOpDiag') && isscalar(Ops{1}{1}.diag) && isa(CompCost{2}.cost2,'CostTV')
     listOpti{nOpti}.name = 'Fast Gradient Proximal';
+    nameInLib{nOpti} = 'FGP';
     listOpti{nOpti}.call{1} = ['TV = ',NameCosts{2},'*',NamesOps{2}{1},';'];
     if isPos
         listOpti{nOpti}.call{2} = ['Opt = OptiFGP(',NameCosts{1},',TV,[0,Inf]);'];

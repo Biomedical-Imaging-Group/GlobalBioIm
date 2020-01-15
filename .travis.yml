@@ -12,6 +12,7 @@ install:
  - pip install -r requirements.txt
 
 script:
+- cd Doc
 - make html
 
 after_success:

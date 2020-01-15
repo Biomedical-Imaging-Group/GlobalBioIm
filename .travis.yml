@@ -22,7 +22,7 @@ deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GH_TOKEN
-  local_dir: build/html
+  local_dir: Doc/build/html
   committer_from_gh: true
   on:
     branch: master

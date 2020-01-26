@@ -55,6 +55,7 @@ classdef OptiConjGrad < Opti
             assert(checkSize(b,this.A.sizeout),'A sizeout and size of b must be equal');
             this.b=b;
             this.cost.y=b;
+            this.cost.mapsCell{2}.y=b;
         end
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.

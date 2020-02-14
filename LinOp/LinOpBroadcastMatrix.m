@@ -32,7 +32,7 @@ classdef LinOpBroadcastMatrix <  LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties
+    properties (SetAccess = protected,GetAccess = public)
         M            % matrix
         index        % index along which the matrix is applied
         indexdiff;   % other idexes

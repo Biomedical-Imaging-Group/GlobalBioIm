@@ -25,7 +25,7 @@ classdef MapSummation < Map
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties
+    properties(SetAccess = protected,GetAccess = public)
         mapsCell;    % Cell of summed Maps
         alpha;       % Correcponding coefficients
         numMaps;     % Number of Maps

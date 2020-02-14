@@ -57,14 +57,14 @@ classdef OptiFBS < Opti
     properties (SetAccess = protected,GetAccess = public)
         y;         % Internal parameters
         tk;
+        F;                   % Cost F
+        G;                   % Cost G
+        fista=false;         % FISTA option [3]
     end
     % Full public properties
     properties
-        F;                   % Cost F
-        G;                   % Cost G
         momRestart = false;  % boolean true if the moment restart strategy is used [4]
         gam=[];              % descent step
-        fista=false;         % FISTA option [3]
         
         updateGam = 'none'; % reduce the step size (TODO : add the possibilty to chose the update rule)
         alpha = 1;   % see Kamilov paper

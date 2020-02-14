@@ -30,7 +30,7 @@ classdef OptiDouglasRachford < Opti
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-	properties
+	properties (SetAccess = protected,GetAccess = public)
 		F1;
 		F2;
 		lambda

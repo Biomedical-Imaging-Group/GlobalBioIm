@@ -30,7 +30,7 @@ classdef CostL2Composition <  CostComposition
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties (Access=public)
+    properties (SetAccess = protected,GetAccess = public)
         OpSumP;       % Operator used to compute the prox when H2 is the combination of a LinOpDownsample with a LinOpConv
         Lamb;         % Operator used to compute the prox when H2 is the combination of a LinOpSum with a LinOpConv
         H2H2t;        % operator used for prox computation

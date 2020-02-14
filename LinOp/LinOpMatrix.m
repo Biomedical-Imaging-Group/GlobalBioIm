@@ -28,7 +28,7 @@ classdef LinOpMatrix <  LinOp
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties
+    properties (SetAccess = protected,GetAccess = public)
         M         % matrix
         index
         ndms      % number of dimensions of the matrix M

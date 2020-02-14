@@ -34,7 +34,7 @@ classdef LinOpXRay < LinOp
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   
   
-  properties
+  properties (SetAccess = protected,GetAccess = public)
     x
     y
     thetas 

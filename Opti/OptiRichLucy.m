@@ -51,7 +51,7 @@ classdef OptiRichLucy < Opti
 		epsl=1e-6; % smoothing parameter for TV
     end
     % Protected set public read    
-    properties (SetAccess = public,GetAccess = public)
+    properties (SetAccess = protected,GetAccess = public)
 		TV=false;   % boolean true if RL-TV version activated (default false)
 		lamb=1e-2;  % regularization parameter
 	end

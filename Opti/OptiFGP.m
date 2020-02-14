@@ -37,9 +37,9 @@ classdef OptiFGP < Opti
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     % Protected Set and public Read properties        
-    properties
+    properties (SetAccess = protected,GetAccess = public)
         F0; % L2 norm
-        TV; % CostTV
+        TV; % CostTV (SetAccess = protected,GetAccess = public)
         C; % Indicator function for set constraint
         gam; % descent step
     end

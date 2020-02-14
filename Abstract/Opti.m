@@ -47,8 +47,8 @@ classdef Opti < matlab.mixin.SetGet
     end
     % Full public properties
     properties
-        verbose=true;        % if true display information (starting and ending message
         endingMessage;       % Ending message
+        verbose=true;        % if true display information (starting and ending message
         OutOp=OutputOpti(false,1);  % OutputOpti object
         CvOp=TestCvg();      % OutputOpti object
         maxiter=50;     % maximal number of iterates

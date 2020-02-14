@@ -86,14 +86,14 @@ figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize'
 semilogy(FBS.OutOp.iternum,FBS.OutOp.evolsnr,'LineWidth',1.5);
 semilogy(VMLMB.OutOp.iternum,VMLMB.OutOp.evolsnr,'LineWidth',1.5);
 semilogy(DR.OutOp.iternum,DR.OutOp.evolsnr,'LineWidth',1.5);
-xlabel('Iterations');ylabel('SNR (dB)');legend('LS+POS (FISTA)','LS+POS (VMLMB)','Location','southeast');
+xlabel('Iterations');ylabel('SNR (dB)');legend('LS+POS (FISTA)','LS+POS (VMLMB)','LS+POS (DR)','Location','southeast');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[FBS.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
 bar(2,[VMLMB.time],'FaceColor',orderCol(2,:),'EdgeColor','k');
 bar(3,[DR.time],'FaceColor',orderCol(3,:),'EdgeColor','k');
-set(gca,'xtick',[1 2]);ylabel('Time (s)');
-set(gca,'xticklabels',{'LS+POS (FISTA)','LS+POS (VMLMB)'});set(gca,'XTickLabelRotation',45)
+set(gca,'xtick',[1 2 3]);ylabel('Time (s)');
+set(gca,'xticklabels',{'LS+POS (FISTA)','LS+POS (VMLMB)','LS+POS (DR)'});set(gca,'XTickLabelRotation',45)
 
 %% For Unitary Tests
 global generateDataUnitTests stateTest message

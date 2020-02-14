@@ -36,20 +36,21 @@ classdef (Abstract) Map < handle
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    %% Public properties
-    properties
+    %% Write protected properties
+    properties (SetAccess = protected,GetAccess = public)
         name = 'none'             % name of the linear operator
         isInvertible = false;     % true if H.applyInverse(  ) will work
         isDifferentiable = false; % true if H.applyJacobianT(   ) will work
         sizein;                   % dimension of the right hand side vector space
         sizeout;                  % dimension of the left hand side vector space
         norm=-1;                  % norm of the operator
+    end
+    properties (SetAccess = public,GetAccess = public)
         memoizeOpts = struct('apply', false, ...
             'applyJacobianT', false, ...
             'applyInverse', false);
         doPrecomputation = false;
     end
-    
     %% Private properties
     properties (SetAccess = protected,GetAccess = protected)
         memoCache = struct('apply', struct('in', [], 'out', []),...

@@ -89,4 +89,13 @@ classdef MapComposition < Map
 			 end
         end
     end	
+    
+    methods (Access = protected)
+        %% Copy
+      function this = copyElement(obj)
+          this = copyElement@Map(obj);
+          this.H1 = copyElement@Map(obj.H1);
+          this.H2 = copyElement@Map(obj.H2);
+      end
+    end
 end

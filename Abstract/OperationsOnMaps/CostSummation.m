@@ -98,4 +98,13 @@ classdef CostSummation <  MapSummation & Cost
             M=makeComposition_@MapSummation(this,G);
         end
     end
+    methods (Access = protected)
+         %% Copy
+         function this = copyElement(obj)
+             this = copyElement@MapSummation(obj);
+            this.memoCache.applyGrad=struct('in', [], 'out', []);
+            this.memoCache.applyProx=struct('in', [], 'out', []);
+            this.memoCache.applyProxFench=struct('in', [], 'out', []);
+      end
+    end  
 end

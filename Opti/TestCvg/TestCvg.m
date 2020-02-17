@@ -1,4 +1,4 @@
-classdef TestCvg  < handle
+classdef TestCvg  < matlab.mixin.Copyable
     % TestCvg class  monitor convergence criterion during optimization
     %
     % At each iterations of an optimization algorithm (see :class:`Opti` generic class),

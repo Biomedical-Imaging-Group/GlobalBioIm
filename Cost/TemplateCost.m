@@ -79,5 +79,12 @@ classdef TemplateCost < Cost
         
         % TODO : IMPLEMENT ANY USEFUL METHOD FROM INHERITED FROM MAP OR
         % COST CLASSES
+        
+        %% Deep copy: IMPLEMENT IF APPLICABLE
+        function this = copyElement(obj)
+            this = copyElement@Cost(obj);
+            % properties that are handle objects such as Map have to be copied explicitly to ensure
+            % e.g. this.OBJECT = copy(obj.OBJECT)
+        end
     end
 end

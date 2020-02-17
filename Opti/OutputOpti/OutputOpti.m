@@ -1,4 +1,4 @@
-classdef OutputOpti < handle
+classdef OutputOpti < matlab.mixin.Copyable
     % OutputOpti class for algorithms displayings and savings
     %
     % At each :attr:`ItUpOut` iterations of an optimization algorithm (see :class:`Opti` generic class),
@@ -186,5 +186,12 @@ classdef OutputOpti < handle
             reconstruction = this.snrOp.apply(opti.xopt);
             snr=20*log10(this.normXtrue/norm(this.xtrue(:)-reconstruction(:)));
         end
+    end
+    methods (Access = protected)
+        %% Copy
+      function this = copyElement(obj)
+          this = copyElement@matlab.mixin.Copyable(obj);
+          this.snrOp = copyElement@Map(obj.snrOp);
+      end
     end
 end

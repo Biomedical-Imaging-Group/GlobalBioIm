@@ -107,4 +107,12 @@ classdef CostL2 < Cost
             M = CostL2Composition(this,G);
         end
     end
+    
+    methods (Access = protected)
+         %% Copy
+         function this = copyElement(obj)
+             this = copyElement@Cost(obj);
+             this.W = copy(obj.W);          
+      end
+    end  
 end

@@ -38,7 +38,7 @@ classdef CostGoodRoughness < Cost
     properties 
         bet; % smoothing parameter
     end
-    % Protected Set and protected Read properties
+    % Protected Set and protected Read propersumOpties
     properties (SetAccess = protected,GetAccess = public)
         G;        % gradient operators
         sumOp;
@@ -90,4 +90,13 @@ classdef CostGoodRoughness < Cost
             dem=abs(x).^2 + this.bet;                % squared denominator gdem=dem.^(-3/2)
         end
     end
+    
+    methods (Access = protected)
+         %% Copy
+         function this = copyElement(obj)
+             this = copyElement@Cost(obj);
+             this.G = copy(obj.G);
+            this.sumOp = copy(obj.sumOp);          
+      end
+    end  
 end

@@ -225,4 +225,14 @@ classdef Cost < Map
             this.y=y;
         end
     end
+    
+    methods (Access = protected)
+        %% Copy
+        function this = copyElement(obj)
+            this = copyElement@Map(obj);
+            this.memoCache.applyGrad=struct('in', [], 'out', []);
+            this.memoCache.applyProx=struct('in', [], 'out', []);
+            this.memoCache.applyProxFench=struct('in', [], 'out', []);
+        end
+    end  
 end

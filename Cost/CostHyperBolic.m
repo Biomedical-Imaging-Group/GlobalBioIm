@@ -101,4 +101,12 @@ classdef CostHyperBolic < Cost
             F = sqrt(this.sumOp*u + this.epsilon.^2);
         end
     end
+    
+    methods (Access = protected)
+         %% Copy
+         function this = copyElement(obj)
+             this = copyElement@Cost(obj);
+             this.sumOp = copy(obj.sumOp);
+      end
+    end  
 end

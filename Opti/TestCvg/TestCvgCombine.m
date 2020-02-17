@@ -61,5 +61,15 @@ classdef TestCvgCombine < TestCvg
             end
         end
     end
+    
+    methods (Access = protected)
+        %% Copy
+      function cpObj = copyElement(obj)
+          cpObj = copyElement@TestCvg(obj);
+            for n=1:obj.testNumber
+                cpObj.cvList{n} = copyElement@TestCvg(obj.cvList{n});
+            end
+      end
+    end
 end
 

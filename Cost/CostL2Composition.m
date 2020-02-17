@@ -244,4 +244,15 @@ classdef CostL2Composition <  CostComposition
             end
         end
     end
+    
+    methods (Access = protected)
+         %% Copy
+         function this = copyElement(obj)
+             this = copyElement@CostComposition(obj);
+             this.OpSumP = copy(obj.OpSumP);
+             this.Lamb = copy(obj.Lamb);
+             this.H2H2t = copy(obj.H2H2t);
+      end
+    end  
+    
 end

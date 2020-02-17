@@ -112,5 +112,15 @@ classdef StackMap < Map
             M = StackMap(M,this.alpha);
         end
     end
+    
+    methods (Access = protected)
+        %% Copy
+      function this = copyElement(obj)
+          this = copyElement@Map(obj);
+            for n = 1:this.numMaps
+                 this.mapsCell{n} = copy(obj.mapsCell{n});
+            end
+      end
+    end
 end
 

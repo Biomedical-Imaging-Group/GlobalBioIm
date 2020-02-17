@@ -103,5 +103,14 @@ classdef CostMultiplication < Cost
                 M=makeComposition_@Cost(this,G);
             end
         end
+     end
+    
+    methods (Access = protected)
+         %% Copy
+         function this = copyElement(obj)
+             this = copyElement@Cost(obj);
+            this.cost1 = copy(obj.cost1);
+            this.cost2 =  copy(obj.cost1);
+      end
     end
 end

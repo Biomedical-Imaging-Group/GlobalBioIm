@@ -59,10 +59,10 @@ classdef OptiFBS < Opti
         tk;
         F;                   % Cost F
         G;                   % Cost G
-        fista=false;         % FISTA option [3]
     end
     % Full public properties
     properties
+        fista=false;         % FISTA option [3]
         momRestart = false;  % boolean true if the moment restart strategy is used [4]
         gam=[];              % descent step
         

@@ -26,7 +26,7 @@ classdef MapComposition < Map
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties
+    properties(SetAccess = protected,GetAccess = public)
         H1;           % Left hand side Map
         H2;           % Right hand side Map
     end

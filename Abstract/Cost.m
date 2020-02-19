@@ -33,8 +33,8 @@ classdef Cost < Map
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    %% Public properties
-    properties 
+    %% Write protected properties
+    properties  (SetAccess = protected,GetAccess = public)
         isConvex=false;           % true if the Cost is convex
         isSeparable=false;        % true is the Cost is separable (R^n basis)
         lip=-1;                   % Lipschitz constant of the gradient

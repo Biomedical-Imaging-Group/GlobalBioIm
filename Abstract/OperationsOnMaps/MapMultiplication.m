@@ -25,7 +25,7 @@ classdef MapMultiplication < Map
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    properties
+    properties(SetAccess = protected,GetAccess = public)
         M1;
         M2;
     end

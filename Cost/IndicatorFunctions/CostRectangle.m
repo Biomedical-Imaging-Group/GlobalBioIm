@@ -115,7 +115,7 @@ classdef CostRectangle < CostIndicator
             else
                 if this.isComplex
                     res = x-this.y;
-                    y = min(max(real(x-y), real(this.xmin)),real(this.xmax)) + 1i.* min(max(imag(res), imag(this.xmin)),imag(this.xmax));
+                    y = min(max(real(res), real(this.xmin)),real(this.xmax)) + 1i.* min(max(imag(res), imag(this.xmin)),imag(this.xmax));
                 else
                     y = min(max(real(x-this.y), this.xmin),this.xmax);
                 end

@@ -37,10 +37,10 @@ classdef CostGoodRoughness < Cost
 
     properties 
         bet; % smoothing parameter
-        G;        % gradient operators
     end
     % Protected Set and protected Read properties
     properties (SetAccess = protected,GetAccess = public)
+        G;        % gradient operators
         sumOp;
     end
 

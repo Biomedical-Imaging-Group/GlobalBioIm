@@ -29,7 +29,7 @@ classdef CostHyperBolic < Cost
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     %% Properties
-    properties
+    properties (SetAccess = protected,GetAccess = public)
         epsilon;
         index;
         sumOp;
@@ -83,7 +83,7 @@ classdef CostHyperBolic < Cost
         function y=apply_(this,x)
             % Reimplemented from parent class :class:`Cost`.            
             F = this.memoize('computeF',@this.computeF_,x);
-            y = sum(F(:)) - numel(F).*this.epsilon;
+            y = sum(F(:)) - this.sumEpsilon;
         end    
         function g=applyGrad_(this,x)
             % Reimplemented from parent class :class:`Cost`.             

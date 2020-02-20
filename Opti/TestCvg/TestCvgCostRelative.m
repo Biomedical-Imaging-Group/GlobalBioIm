@@ -26,10 +26,10 @@ classdef TestCvgCostRelative  < TestCvg
     
     properties (SetAccess = public,GetAccess = public)
         costRelativeTol=1e-5;      % stopping criteria tolerance on the relative difference btw two successive iterates
-        costIndex=0;              % index of the cost function
     end
     properties (SetAccess = protected,GetAccess = protected)
         oldCost=[];
+        costIndex=0;              % index of the cost function
     end
     methods
         %% Constructor

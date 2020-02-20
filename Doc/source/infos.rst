@@ -298,6 +298,45 @@ which is semi-orthogonal (its :meth:`makeHHt_` returns a :class:`LinOpDiag` with
 a new object and may slow iterative algorithms. However, it can be
 used freely in constructor methods or in other methods as a default implementation.
 
+Deep Copy
+----------------------------------
+
+By default matlab performs shallow copy of handle objects such as :class:`Map` and inherited classes.
+It means that shallow copied object will share the same properties and memoize system cache during their whole life. 
+The function :meth:`copy` perform a deep copy preventing this sharing. Its behavior can be changed by overloading the 
+method :meth:`copyElement`.
+
+.. code:: matlab
+
+    >> H=LinOpConv(fftn(psf));
+    >> H.memoizeOpts.apply=true;       % Activate the memoize cache
+    >> tic; y =H*x;toc
+    Elapsed time is 2.117364 seconds.
+    >> tic; y =H*x;toc                  
+    Elapsed time is 0.090888 seconds.
+    >> B = H;                           % Shallow copy
+    >> tic; y =B*x;                     % H and B share the same memoize cache 
+    Elapsed time is 0.089999 seconds.   
+    >> tic; y =B*z;toc  
+    Elapsed time is 2.250312 seconds.
+    >> tic; y =H*x;toc                  
+    Elapsed time is 2.180036 seconds.
+
+using :meth:`copy` deep copy:
+
+.. code:: matlab
+
+    >> C = copy(H)                     % Deep Copy
+    >> tic; y =H*x;toc
+    Elapsed time is 2.117364 seconds.
+    >> tic; y =H*x;toc                  
+    Elapsed time is 0.090888 seconds.
+    >> tic; y =C*x;toc
+    Elapsed time is 2.202259 seconds.
+    >> tic; y =C*z;toc
+    Elapsed time is 2.194160 seconds.
+    >> tic; y =H*x;toc
+    Elapsed time is 0.097449 seconds.
 
 Auxiliary Utilities
 -------------------

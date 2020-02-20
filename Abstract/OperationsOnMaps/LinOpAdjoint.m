@@ -91,5 +91,13 @@ classdef LinOpAdjoint < LinOp
             M=this.TLinOp.makeHHt();
         end
     end
+    
+    methods (Access = protected)
+        %% Copy
+        function this = copyElement(obj)
+            this = copyElement@LinOp(obj);
+            this.TLinOp = copyElement@LinOp(obj.TLinOp);
+        end
+    end
 end
 

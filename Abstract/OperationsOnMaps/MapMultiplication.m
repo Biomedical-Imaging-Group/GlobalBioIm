@@ -64,5 +64,14 @@ classdef MapMultiplication < Map
             M=MapMultiplication(this.M1*G,this.M2*G);
         end
     end
+    
+    
+    methods (Access = protected)
+        %% Copy
+      function this = copyElement(obj)
+          this = copyElement@Map(obj);
+          this.M1 = copyElement@Map(obj.M1);
+          this.M2 = copyElement@Map(obj.M2);
+      end
 end
 

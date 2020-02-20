@@ -1,4 +1,4 @@
-classdef (Abstract) Map < handle
+classdef (Abstract) Map < matlab.mixin.Copyable
     % Abstract class for Maps which maps elements from \\(\\mathrm{X}\\) to
     % \\(\\mathrm{Y}\\)
     % $$ \\mathrm{H}: \\mathrm{X}\\rightarrow \\mathrm{Y}.$$
@@ -420,6 +420,17 @@ classdef (Abstract) Map < handle
             else
                 x = this.memoCache.(fieldName).out;
             end
+        end
+        %% Deep Copy
+        function this = copyElement(obj)
+            % Perform a deep copy of \\(\\mathrm{H}\\) 
+            %
+            % Called by the function :meth:`copy`
+            this = copyElement@matlab.mixin.Copyable(obj);
+            this.memoCache = struct('apply', struct('in', [], 'out', []),...
+                'applyJacobianT', struct('in', [], 'out', []), ...
+                'applyInverse', struct('in', [], 'out', []));
+            this.precomputeCache = struct();
         end
     end
 end

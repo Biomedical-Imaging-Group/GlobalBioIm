@@ -73,5 +73,13 @@ classdef MapInversion < Map
             end
         end
     end
+      
+    methods (Access = protected)
+        %% Copy
+      function this = copyElement(obj)
+          this = copyElement@Map(obj);
+          this.M = copy(obj.M);
+      end
+    end
 end
 

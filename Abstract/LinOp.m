@@ -305,6 +305,15 @@ classdef LinOp < Map
             x = this.applyAdjoint(y);
         end
     end
-    
+    methods (Access = protected)
+         %% Copy
+         function this = copyElement(obj)
+             this = copyElement@Map(obj);
+             this.memoCache.applyAdjointInverse=struct('in', [], 'out', []);
+             this.memoCache.applyAdjoint=struct('in', [], 'out', []);
+             this.memoCache.applyHtH=struct('in', [], 'out', []);
+             this.memoCache.applyHHt=struct('in', [], 'out', []);
+      end
+    end  
 end
 

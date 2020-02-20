@@ -101,5 +101,14 @@ classdef OneToMany < LinOp
             end
         end
     end
+    methods (Access = protected)
+        %% Copy
+      function this = copyElement(obj)
+          this = copyElement@LinOp(obj);
+            for n = 1:this.numLinOp
+                 this.ALinOp{n} = copy(obj.ALinOp{n});
+            end
+      end
+    end
 end
 

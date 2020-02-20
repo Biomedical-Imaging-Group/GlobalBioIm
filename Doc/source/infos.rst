@@ -303,7 +303,7 @@ Deep Copy
 
 By default matlab performs shallow copy of handle objects such as :class:`Map` and inherited classes.
 It means that shallow copied object will share the same properties and memoize system cache during their whole life. 
-The function :meth:`copy` perform a deep copy preventing this sharing. Its behaviour can be changed by overloading the 
+The function :meth:`copy` perform a deep copy preventing this sharing. Its behavior can be changed by overloading the 
 method :meth:`copyElement`.
 
 .. code:: matlab

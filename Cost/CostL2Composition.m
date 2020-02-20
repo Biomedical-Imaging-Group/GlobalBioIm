@@ -34,7 +34,6 @@ classdef CostL2Composition <  CostComposition
         OpSumP;       % Operator used to compute the prox when H2 is the combination of a LinOpDownsample with a LinOpConv
         Lamb;         % Operator used to compute the prox when H2 is the combination of a LinOpSum with a LinOpConv
         H2H2t;        % operator used for prox computation
-        Id;           % an identity operator used with Woodbury Formula
         doWoodbury=0; % to correctly switch in the prox
         doSumConv=0;  % to correctly switch in the prox
         doDownConv=0; % to correctly switch in the prox
@@ -62,10 +61,9 @@ classdef CostL2Composition <  CostComposition
                 this.doSumConv=1;
             % If H2*H2' +Id is invertible --> use Woodbury formulae
             elseif isa(this.H2,'LinOpComposition') && isnumeric(this.H1.W) && this.H1.W==1
-                T=this.H2*this.H2'+ LinOpIdentity(this.H2.sizeout);
+                T=this.H2*this.H2'+ 1;
                 if T.isInvertible
                     this.H2H2t=this.H2*this.H2';
-                    this.Id=LinOpIdentity(this.H2.sizeout);
                     this.doWoodbury=1;
                 end
             end
@@ -194,7 +192,7 @@ classdef CostL2Composition <  CostComposition
                 else
                     tmp=alpha*this.H2.applyAdjoint(this.H1.W*this.H1.y)+x;                   
                 end
-                y=tmp - this.H2'*(this.H2H2t + 1/alpha*this.Id)^(-1)*this.H2*tmp;
+                y=tmp - this.H2'*(this.H2H2t + 1/alpha)^(-1)*this.H2*tmp;
             % Default implementation
             elseif this.isH2LinOp && ~this.isH2SemiOrtho
                 % TODO : reimplement similarly to the above Woodbury

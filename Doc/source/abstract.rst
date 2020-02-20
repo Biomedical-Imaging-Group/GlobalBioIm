@@ -12,7 +12,7 @@ Map
 .. autoclass:: Map
     :show-inheritance:
     :members: apply, applyJacobianT, applyInverse, makeComposition, plus, minus, mpower, times,
-      mtimes, size, apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_, times_
+      mtimes, size, apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_, times_,copyElement
 
 LinOp
 -----

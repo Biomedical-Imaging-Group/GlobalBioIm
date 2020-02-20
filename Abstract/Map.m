@@ -421,13 +421,16 @@ classdef (Abstract) Map < matlab.mixin.Copyable
                 x = this.memoCache.(fieldName).out;
             end
         end
-        %% Copy
-      function this = copyElement(obj)
-          this = copyElement@matlab.mixin.Copyable(obj);
-          this.memoCache = struct('apply', struct('in', [], 'out', []),...
-              'applyJacobianT', struct('in', [], 'out', []), ...
-              'applyInverse', struct('in', [], 'out', []));
-          this.precomputeCache = struct();
-      end
+        %% Deep Copy
+        function this = copyElement(obj)
+            % Perform a deep copy of \\(\\mathrm{H}\\) 
+            %
+            % Called by the function :meth:`copy`
+            this = copyElement@matlab.mixin.Copyable(obj);
+            this.memoCache = struct('apply', struct('in', [], 'out', []),...
+                'applyJacobianT', struct('in', [], 'out', []), ...
+                'applyInverse', struct('in', [], 'out', []));
+            this.precomputeCache = struct();
+        end
     end
 end

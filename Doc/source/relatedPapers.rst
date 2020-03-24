@@ -13,6 +13,18 @@ If you want to add your work in this list, do not hesitate to
 Papers with open-source code
 ----------------------------
 
+| **PIC: a data reduction algorithm for integral field spectrographs-Application to the SPHERE instrument**
+| Astronomy & Astrophysics, 635, pp. A90, 2020.
+  `[Paper] <https://www.aanda.org/articles/aa/abs/2020/03/aa36890-19/aa36890-19.html>`_
+  `[Code] <https://zenodo.org/record/3585632#.Xno1pvHjLUY>`_
+| A. Berdeu, F. Soulez, L. Denis, M. Langlois, and E. Thiébaut.
+
+| **Three-Dimensional Optical Diffraction Tomography With Lippmann-Schwinger Model** 
+| IEEE Transactions on Computational Imaging, 6, pp. 727-738, 2020. 
+  `[Paper] <https://ieeexplore.ieee.org/abstract/document/8970570>`_
+  `[Code] <https://github.com/ThanhAnPham/Lippmann-Schwinger>`_
+| T.-A. Pham, E. Soubies, A. Ayoub, J. Lim, D. Psaltis,  and M. Unser.
+
 | **Improving 3D MA-TIRF Reconstruction with Deconvolution and Background Estimation**
 | Proceedings of ISBI, 2019.
   `[Paper] <https://hal.inria.fr/hal-02017862>`_
@@ -41,8 +53,28 @@ Papers with open-source code
 Other papers
 ------------
 
+| **Joint Angular Refinement and Reconstruction for Single-Particle Cryo-EM** 
+| IEEE Transactions on Image Processing.
+  `[Paper] <https://arxiv.org/abs/2003.10062>`_
+| M. Zehni, L. Donati, E. Soubies, Z.J. Zhao, and M. Unser.
+
+| **Adaptive Regularization for Three-dimensional Optical Diffraction Tomography** 
+| Proceedings of ISBI, 2020.
+  `[Paper] <https://hal.archives-ouvertes.fr/hal-02444659/>`_
+| T.-A. Pham, E. Soubies, A. Ayoub, D. Psaltis, and M. Unser.
+
+| **Deep-learning projector for optical diffraction tomography** 
+| Optics Express, 28-3, pp. 3905-3921, 2020.
+  `[Paper] <https://www.osapublishing.org/oe/abstract.cfm?uri=oe-28-3-3905>`_
+| F. Yang, T. A. Pham, H. Gupta, M. Unser,  and J. Ma. 
+
+| **From Fienup’s phase retrieval techniques to regularized inversion for in-line holography: tutorial** 
+| JOSA A, 36-12, D62-D80, 2019.
+  `[Paper] <https://www.osapublishing.org/josaa/abstract.cfm?uri=josaa-36-12-d62>`_
+| F. Momey, L. Denis, T. Olivier, and C. Fournier. 
+
 | **Hybrid-Spline Dictionaries for Continuous-Domain Inverse Problems** 
-| IEEE Transactions on Signal Processing, 67-22, 5824-5836.
+| IEEE Transactions on Signal Processing, 67-22, 5824-5836, 2019.
   `[Paper] <https://ieeexplore.ieee.org/abstract/document/8859268>`_
 | T. Debarre, S. Aziznejad, and M. Unser. 
 

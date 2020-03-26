@@ -75,7 +75,7 @@ classdef OutputOptiSNR  < OutputOpti
                 assert(isscalar(iterVerb) && iterVerb>=0,'Parameter iterVerb must be a positive integer');
                 this.iterVerb=iterVerb;
             end
-            if nargin==4, this.costIndex=costIndex;end
+            if nargin>=4, this.costIndex=costIndex;end
             if ~isempty(this.xtrue)
                 this.xtrue=xtrue;
                 this.normXtrue=norm(this.xtrue(:));

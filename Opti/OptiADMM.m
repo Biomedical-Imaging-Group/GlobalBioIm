@@ -20,13 +20,13 @@ classdef OptiADMM < Opti
     %
     % **Note** The minimization of \\(\\mathcal{L}\\) over \\(\\mathrm{x}\\),
     % $$ F_0(\\mathrm{x}) + \\sum_{n=1}^N \\frac12\\rho_n\\Vert \\mathrm{H_nx -z_n}\\Vert^2, \\quad \\mathrm{z_n= y_n - w_n/\\rho_n} $$
-    % is performed  either using the conjugate-gradient :class:`OptiConjGrad` algoriothm, a direct inversion or the given solver
+    % is performed  either using the conjugate-gradient :class:`OptiConjGrad` algorithm, a direct inversion or the given solver
     %
     %  - If \\(F_0\\) is empty or is a :class:`CostL2`, then if the :class:`LinOp` \\(\\sum_{n=0}^N \\mathrm{H_n}^*\\mathrm{H_n}\\)
     %    is not invertible the :class:`OptiConjGrad` is used by default if no more efficient solver is provided.
     %    Here \\(\\mathrm{H_0}\\) is the :class:`LinOp` associated to \\(F_0\\).
     %
-    %  - Otherwithe the solver is required.
+    %  - Otherwise the solver is required.
     %
     % **Reference**
     %

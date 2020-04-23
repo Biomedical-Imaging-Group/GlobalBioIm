@@ -4,7 +4,7 @@ classdef CostL1 < Cost
     %
     % If nonneg is set to true, it adds positivity constraint on x:
     % $$C(x) := \\|\\mathrm{x} - \\mathrm{y}\\|_1 + i(\\mathrm{x} - \\mathrm{y}) $$
-    % where i() is the indicator function of $\\mathbb{R}^{+}
+    % where i() is the indicator function of $\\mathbb{R}^{+}$
     %
     % All attributes of parent class :class:`Cost` are inherited.
     %
@@ -98,7 +98,7 @@ classdef CostL1 < Cost
             % Reimplemented from parent class :class:`Cost`.
             % Subgradient of CostL1
             if ~this.nonneg
-                y = sign(x);
+                y = sign(x-this.y);
             else
                 this.applyGrad_@Cost(this,x);
             end

@@ -3,6 +3,7 @@ classdef OptiGradDsct < Opti
     %
     % :param C: a differentiable :class:`Cost` (i.e. with an implementation of :meth:`applyGrad`).
     % :param gam: descent step
+    % :param nagd: boolean (default false) to activate the Nesterov accelerated gradient descent
     %
     % All attributes of parent class :class:`Opti` are inherited. 
     %
@@ -37,30 +38,42 @@ classdef OptiGradDsct < Opti
 
 	% Full public properties
     properties
+        nagd=false;      % Nesterov accelerated gradient descent
     	gam=[];      % descent step
+        y;
     end
     
     methods
-    	%% Constructor
-    	function this=OptiGradDsct(F)
-    		this.name='Opti Gradient Descent';
-    		this.cost=F;
-    		if F.lip>0
-    			this.gam=1/F.lip;
+        %% Constructor
+        function this=OptiGradDsct(F)
+            this.name='Opti Gradient Descent';
+            this.cost=F;
+            if F.lip>0
+                this.gam=1/F.lip;
             end
-    	end 
+        end
         %% Run the algorithm
         function initialize(this,x0)
             % Reimplementation from :class:`Opti`.
             
             initialize@Opti(this,x0);
+            if this.nagd
+                this.y=x0;
+            end
             if isempty(this.gam), error('Parameter gam is not setted'); end
         end
         function flag=doIteration(this)
             % Reimplementation from :class:`Opti`.  Performs:
             % $$ \\mathrm{x}^{k+1} = \\mathrm{x}^k - \\gamma \\nabla C(\\mathrm{x}^k) $$
             
-            this.xopt=this.xopt-this.gam*this.cost.applyGrad(this.xopt);
+            if this.nagd
+                this.xopt=this.y - this.gam.*this.cost.applyGrad(this.y);
+                this.y = this.xopt +  (this.niter -1)/(this.niter+2)*(this.xopt - this.xold);
+            else
+                this.xopt=this.xopt-this.gam*this.cost.applyGrad(this.xopt);
+            end
+            
+           
             flag=this.OPTI_NEXT_IT;
         end
 	end

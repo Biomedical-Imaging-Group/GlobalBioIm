@@ -18,7 +18,7 @@ classdef OutputOpti < matlab.mixin.Copyable
     % :param name:  name of the :class:`OutputOpti`
     % :param computecost:  boolean, if true the cost function will be computed
     % :param evolcost: array to save the evolution of the cost function
-    % :param saveXopt: boolean (defaul true) to save the evolution of the optimized variable xopt.
+    % :param saveXopt: boolean (default false) to save the evolution of the optimized variable xopt.
     % :param evolxopt:  cell saving the optimization variable xopt
     % :param iterVerb:  message will be displayed every iterVerb iterations (must be a multiple of the :attr:`ItUpOut` parameter of classes :class:`Opti`)
     % :param costIndex: select a specific cost function among a sum in the case where the optimized cost function is a sum of cost functions

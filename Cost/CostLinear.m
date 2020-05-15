@@ -44,7 +44,7 @@ classdef CostLinear < Cost
         function y=apply_(this,x)
         	% Reimplemented from parent class :class:`Cost`. 
             % $$C(\\mathrm{x}) := \\mathrm{x}^T\\mathrm{y}$$
-                y=dot(conj(x(:)),this.y(:));
+                y=real(dot(x(:),this.y(:)));
         end
         function g=applyGrad_(this,x)
         	% Reimplemented from parent class :class:`Cost`. 

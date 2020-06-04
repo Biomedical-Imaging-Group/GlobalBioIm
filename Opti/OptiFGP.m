@@ -116,7 +116,7 @@ classdef OptiFGP < Opti
         function flag=doIteration(this)
             % Reimplementation from :class:`Opti`. For details see [1].
             
-            Pnew = this.F + (this.gam/(this.lambda))*this.D*(this.C.applyProx(this.F0.y - this.lambda*this.D'*(this.F),0));
+            Pnew = this.F + (this.gam/(this.lambda))*(this.D*(this.C.applyProx(this.F0.y - this.lambda*this.D'*(this.F),0)));
             Pnew = Pnew./repmat(max(1,sqrt(sum(Pnew.^2, this.ndims + 1))),[ones(1,this.ndims), this.ndims]);%Project L2 ball
             
             tnew = (1 + sqrt(1 + 4*this.t^2))/2;

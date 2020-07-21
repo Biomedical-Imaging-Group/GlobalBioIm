@@ -84,7 +84,7 @@ classdef LinOpSum <  LinOp
             this.imdims = this.sizein;
             this.imdims(~T)=1;
             
-            this.norm=sqrt(this.sizein(this.index));
+            this.norm=sqrt(prod(this.sizein(this.index)));
             
         end
     end

@@ -1,14 +1,15 @@
 classdef CostHyperBolic < Cost
-    % CostHyperBolic: Hyperbolic cost function
-    % $$C(\\mathrm{x}) := \\sum_{k=1}^K \\sqrt{\\sum_{l=1}^L (\\mathrm{x}-y)_{k,l}^2 + \\varepsilon_k^2} - \\sum_{k=1}^K\\varepsilon_k $$
+    % CostHyperBolic: Weighted Hyperbolic cost function
+    % $$C(\\mathrm{x}) := \\sum_{k=1}^K w_k \\sqrt{\\sum_{l=1}^L (\\mathrm{x}-y)_{k,l}^2 + \\varepsilon_k^2} - \\sum_{k=1}^K\\varepsilon_k $$
     %
     % :param index: dimensions along which the l2-norm will be applied (inner sum over l)
     % :param epsilon: \\(\\in \\mathbb{R}^K_+\\)  smoothing parameter (default
     %                 \\(10^{-3}\\))
+    % :param W: weighting :class:`LinOp` object or scalar (default 1)
     %
     % All attributes of parent class :class:`Cost` are inherited. 
     %
-    % **Example** C=CostHyperBolic(sz,epsilon,index,y)
+    % **Example** C=CostHyperBolic(sz,epsilon,index,y,W)
     %
     % See also :class:`Map`, :class:`Cost`, :class:`LinOp`
     
@@ -34,17 +35,24 @@ classdef CostHyperBolic < Cost
         index;
         sumOp;
         sumEpsilon;
+        W=1;    % weight matrix      
     end
     
     %% Constructor
     methods
-        function this = CostHyperBolic(sz,epsilon,index,y)
+        function this = CostHyperBolic(sz,epsilon,index,y,wght)
             if nargin<4, y=0; end
             this@Cost(sz,y);
             this.name='CostHyperBolic';
             this.isConvex=true;
             this.isDifferentiable=true;
            
+            if nargin==4
+                if isempty(wght), wght=1; end
+                assert((isnumeric(wght) && isscalar(wght))||isa(wght,'LinOp'),'weight WGHT must be scalar or LinOp');
+                this.W=wght;
+            end
+            
             if nargin<3|| isempty(index) %no sum
                 index=0;
             end
@@ -83,12 +91,17 @@ classdef CostHyperBolic < Cost
         function y=apply_(this,x)
             % Reimplemented from parent class :class:`Cost`.            
             F = this.memoize('computeF',@this.computeF_,x);
-            y = sum(F(:)) - this.sumEpsilon;
+            y = this.W*F ;
+            y = sum(y(:)) - this.sumEpsilon;
         end    
         function g=applyGrad_(this,x)
             % Reimplemented from parent class :class:`Cost`.             
             F = this.memoize('computeF',@this.computeF_,x);
-            g = x.*this.sumOp.applyAdjoint(1./F);  
+            if isa(this.W,'LinOp')
+                g = x.*this.sumOp.applyAdjoint(this.W.applyAdjoint(1./F));
+            else
+                g = x.*this.sumOp.applyAdjoint(this.W*(1./F));
+            end
         end
          function F = computeF_(this,x)
             % Reimplemented from parent class :class:`Cost`.             
@@ -107,6 +120,7 @@ classdef CostHyperBolic < Cost
          function this = copyElement(obj)
              this = copyElement@Cost(obj);
              this.sumOp = copy(obj.sumOp);
+             this.W = copy(obj.W);          
       end
     end  
 end

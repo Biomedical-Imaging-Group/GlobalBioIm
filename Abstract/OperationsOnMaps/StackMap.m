@@ -105,9 +105,9 @@ classdef StackMap < Map
         function M = makeComposition_(this,G)
             % Reimplemented from :class:`Map`  
             M = cell(this.numMaps,1);
-            
-            for i=1:this.numMaps
-                M{n} = this.mapsCell{i}*G;
+
+            for n = 1:this.numMaps
+                M{n} = this.mapsCell{n} * G;
             end
             M = StackMap(M,this.alpha);
         end

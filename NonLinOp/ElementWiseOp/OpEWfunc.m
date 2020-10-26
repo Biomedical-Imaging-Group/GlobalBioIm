@@ -3,14 +3,9 @@ classdef OpEWfunc < Map
     % the input
     % 
     % :param sz: input size
-    %
     % :param func: the function to apply element-wise
-    %
-    % :param func_grad: the derivative of the function to apply element-wise
-    % (default: non differentiable)
-    %
-    % :param func_inv: the inverse of the function to apply element-wise
-    % (default: non invertible)
+    % :param func_grad: the derivative of the function to apply element-wise (default: non differentiable)
+    % :param func_inv: the inverse of the function to apply element-wise (default: non invertible)
     %
     % All attributes of parent class :class:`Map` are inherited. 
     %

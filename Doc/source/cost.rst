@@ -7,6 +7,14 @@ Cost Functions (Cost)
 	
 .. automodule:: Cost
 
+CostConst
+---------
+    
+.. autoclass:: CostConst
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+      applyGrad_, applyProx_, applyProxFench_, set_y
+
 CostGoodRoughness
 -----------------
     
@@ -82,6 +90,15 @@ CostMixNormSchatt1
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
       applyGrad_, applyProx_, applyProxFench_, set_y
+
+CostRobustPenalization
+----------------------
+    
+.. autoclass:: CostRobustPenalization
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+      applyGrad_, applyProx_, applyProxFench_, set_y
+
     
 CostTV
 ------

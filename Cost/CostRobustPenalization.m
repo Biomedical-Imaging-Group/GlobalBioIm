@@ -5,54 +5,42 @@ classdef CostRobustPenalization < Cost
     % All attributes of parent class :class:`Cost` are inherited. 
     %
     % :param M: MAP to apply on the input (default Identity)
-    %
     % :param y: data vector (default 0)
+    % :param options: structure containing the different options of the robust penalization
     %
-    % :param options: structure containing the different options of the
-    % robust penalization
-    %
-    % :param options.method: objective function method to compute the cost
-    %       function
-    %   ->  'Andrews'
-    %   ->  'Beaton-Tukey'
-    %   ->  'Cauchy' (default)
-    %   ->  'Fair'
-    %   ->  'Huber'
-    %   ->  'Logistic'
-    %   ->  'Talwar-Hinich'
-    %   ->  'Welsch-Dennis'
-    %   
+    % :param options.method: objective function method to compute the cost function
+    %   - 'Andrews'
+    %   - 'Beaton-Tukey'
+    %   - 'Cauchy' (default)
+    %   - 'Fair'
+    %   - 'Huber'
+    %   - 'Logistic'
+    %   - 'Talwar-Hinich'
+    %   - 'Welsch-Dennis'
+    %  
     % :param options.mu: parameters to tune the method. Default:
-    %   ->  'Andrews'       -> 1.339
-    %   ->  'Beaton-Tukey'  -> 4.685
-    %   ->  'Cauchy'        -> 2.385
-    %   ->  'Fair'          -> 1.400
-    %   ->  'Huber'         -> 1.345
-    %   ->  'Logistic'      -> 1.205
-    %   ->  'Talwar-Hinich' -> 2.795
-    %   ->  'Welsch-Dennis' -> 2.985
+    %   - 'Andrews'       -> 1.339
+    %   - 'Beaton-Tukey'  -> 4.685
+    %   - 'Cauchy'        -> 2.385
+    %   - 'Fair'          -> 1.400
+    %   - 'Huber'         -> 1.345
+    %   - 'Logistic'      -> 1.205
+    %   - 'Talwar-Hinich' -> 2.795
+    %   - 'Welsch-Dennis' -> 2.985
     %
-    % :param options.flag_s: method to scale the residue before applying
-    %       the objective function (default: none)
-    %   ->  'none'	-> no scaling applied
-    %   ->  'MAD'   -> median absolute deviation
-    %   ->  'STD'   -> standard deviation
-    %   ->  numeric -> scaling (can be a matrix to have a different scaling
-    %       for each variables)
+    % :param options.flag_s: method to scale the residue before applying the objective function (default: none)
+    %   - 'none'	-> no scaling applied
+    %   - 'MAD'   -> median absolute deviation
+    %   - 'STD'   -> standard deviation
+    %   - numeric -> scaling (can be a matrix to have a different scaling for each variables)
     %
-    % :param options.noise_model: model of the noise to scale the residues
-    %   according to the input variable x
-    %   ->  'Poisson'   -> scaling_factor = \sqrt(x+var_0)
-    %   ->  'none'      -> no scaling according to a noise model
+    % :param options.noise_model: model of the noise to scale the residues according to the input variable x
+    %   - 'Poisson'   -> scaling_factor = \sqrt(x+var_0)
+    %   - 'none'      -> no scaling according to a noise model
     %
-    % :param options.var_0: value of the variance of the data at null flux
-    % (default 0)
-    %
-    % :param options.eta: ratio to scale the model in the corresponding
-    % unit for the Poisson noise
-    %
-    % :param options.flag_memoizeRes: memoize the computation of the
-    %       residues? (default: true)
+    % :param options.var_0: value of the variance of the data at null flux (default 0)
+    % :param options.eta: ratio to scale the model in the corresponding unit for the Poisson noise
+    % :param options.flag_memoizeRes: memoize the computation of the residues? (default: true)
     %
     % **Example** C=CostRobustPenalization(M, y)
     %

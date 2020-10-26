@@ -10,6 +10,27 @@ This section contains non-linear operator classes which all derive directly from
 Element-wise Operators
 ----------------------
 
+OpEWAbs
+.......
+
+.. autoclass:: OpEWAbs
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+
+OpEWfunc
+........
+
+.. autoclass:: OpEWfunc
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+
+OpEWInverse
+...........
+
+.. autoclass:: OpEWInverse
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+
 OpEWSqrt
 ........
 
@@ -24,9 +45,4 @@ OpEWSquaredMagnitude
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
 
-OpEWInverse
-...........
 
-.. autoclass:: OpEWInverse
-    :show-inheritance:
-    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,

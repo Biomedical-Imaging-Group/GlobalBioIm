@@ -25,6 +25,12 @@ Papers with open-source code
   `[Code] <https://github.com/ThanhAnPham/Lippmann-Schwinger>`_
 | T.-A. Pham, E. Soubies, A. Ayoub, J. Lim, D. Psaltis,  and M. Unser.
 
+| **Computational Super-Sectioning for Single-Slice Structured Illumination Microscopy**
+| IEEE Transactions on Computational Imaging, 5-2, pp. 240-250, 2019. 
+  `[Paper] <https://ieeexplore.ieee.org/document/8579117>`_
+  `[Code] <https://github.com/esoubies/SIM_Reconstruction>`_
+| E. Soubies and M. Unser.
+
 | **Improving 3D MA-TIRF Reconstruction with Deconvolution and Background Estimation**
 | Proceedings of ISBI, 2019.
   `[Paper] <https://hal.inria.fr/hal-02017862>`_
@@ -32,7 +38,7 @@ Papers with open-source code
 | E. Soubies, L. Blanc-Feraud, S. Schaub, and E. Van Obberghen-Schilling.
 
 | **Nanometric Axial Resolution of Fibronectin Assembly Units Achieved with an Efficient Reconstruction Approach for Multi-Angle-TIRF Microscopy**
-| Scientific Reports, 2019. 
+| Scientific Reports, 9, pp. 1-10, 2019. 
   `[Paper] <https://www.nature.com/articles/s41598-018-36119-3>`_
   `[Code] <https://github.com/esoubies/MA-TIRF_Reconstruction>`_
 | E. Soubies, A. Radwanska, D. Grall, L. Blanc-Feraud, E. Van Obberghen-Schilling, and S. Schaub.
@@ -44,7 +50,7 @@ Papers with open-source code
 | M. McCann, L. Vilaclara, and M. Unser.
 
 | **Efficient Inversion of Multiple-Scattering Model for Optical Diffraction Tomography** 
-| Optics Express 25-18, pp. 21786-21800, 2017. 
+| Optics Express, 25-18, pp. 21786-21800, 2017. 
   `[Paper] <https://www.osapublishing.org/oe/abstract.cfm?uri=oe-25-18-21786>`_
   `[Code] <https://github.com/ThanhAnPham/Lippmann-Schwinger>`_
 | E. Soubies, T.-A. Pham, and M. Unser.
@@ -53,10 +59,25 @@ Papers with open-source code
 Other papers
 ------------
 
+| **Sparsest Continuous Piecewise-Linear Representation of Data** 
+| ArXiv preprint
+  `[Paper] <https://arxiv.org/pdf/2003.10112>`_
+| T. Debarre, Q. Denoyelle,  M. Unser, and J. Fageot.
+
+| **Continuous-Domain Signal Reconstruction Using L_p-Norm Regularization** 
+| IEEE Transactions on Signal Processing, 68, pp.  4543 - 4554, 2020. 
+  `[Paper] <https://ieeexplore.ieee.org/abstract/document/9154609?casa_token=8F2-BoJZGOIAAAAA:jx8KCcedX2WaadDXaOrriCVo43d3-WFxUdkLdChnjAXniNQVA5wGVblYQHh3AGyFamElOcnjAe8U>`_
+| P. Bohra and  M. Unser.
+
 | **Joint Angular Refinement and Reconstruction for Single-Particle Cryo-EM** 
-| IEEE Transactions on Image Processing.
+| IEEE Transactions on Image Processing, 29, pp. 6151-6163, 2020. 
   `[Paper] <https://arxiv.org/abs/2003.10062>`_
 | M. Zehni, L. Donati, E. Soubies, Z.J. Zhao, and M. Unser.
+
+| **Hessian Splines for Scanning Transmission X-Ray Microscopy** 
+| Proceedings of ISBI, 2020.
+  `[Paper] <https://hal.archives-ouvertes.fr/hal-02444659/>`_
+| T. Debarre, B. Watts, B. Rösner, and M. Unser.
 
 | **Adaptive Regularization for Three-dimensional Optical Diffraction Tomography** 
 | Proceedings of ISBI, 2020.
@@ -74,7 +95,7 @@ Other papers
 | F. Momey, L. Denis, T. Olivier, and C. Fournier. 
 
 | **Hybrid-Spline Dictionaries for Continuous-Domain Inverse Problems** 
-| IEEE Transactions on Signal Processing, 67-22, 5824-5836, 2019.
+| IEEE Transactions on Signal Processing, 67-22, pp. 5824-5836, 2019.
   `[Paper] <https://ieeexplore.ieee.org/abstract/document/8859268>`_
 | T. Debarre, S. Aziznejad, and M. Unser. 
 
@@ -84,14 +105,9 @@ Other papers
 | A. Berdeu, O. Flasseur, L. Méès, L. Denis, F. Momey, T. Olivier, N. Grosjean, and C. Fournier.
 
 | **B-Spline-Based Exact Discretization of Continuous-Domain Inverse Problems with Generalized TV Regularization**
-| IEEE Transactions on Information Theory, 2019.
+| IEEE Transactions on Information Theory, 65-7, pp.4457 - 4470,  2019.
   `[Paper] <https://ieeexplore.ieee.org/abstract/document/8660432>`_
 | T. Debarre, J. Fageot, H. Gupta, and M. Unser. 
-
-| **Computational Super-Sectioning for Single-Slice Structured Illumination Microscopy**
-| IEEE Transactions on Computational Imaging, 5-2, pp. 240-250, 2019. 
-  `[Paper] <https://ieeexplore.ieee.org/document/8579117>`_
-| E. Soubies and M. Unser.
 
 | **Geometric Invariants for Sparse Unknown View Tomography**
 | Proceedings of ICASSP, 2019.
@@ -129,22 +145,22 @@ Other papers
 | T.-A. Pham, E. Soubies, J. Lim, A. Goy, F. Soulez, D. Psaltis and M. Unser.
 
 | **Deep Convolutional Neural Network for Inverse Problems in Imaging** 
-| IEEE Transactions on Image Processing, 2017.
+| IEEE Transactions on Image Processing, 26-9, pp. 4509 - 4522, 2017.
   `[Paper] <https://ieeexplore.ieee.org/document/7949028>`_
 | K.H. Jin, M.T. McCann, E. Froustey, and M. Unser.
 
 | **High-Quality Parallel-Ray X-Ray CT Back Projection Using Optimized Interpolation** 
-| IEEE Transactions on Image Processing, 2017.
+| IEEE Transactions on Image Processing, 26-10, pp. 4639 - 4647, 2017.
   `[Paper] <https://ieeexplore.ieee.org/document/7932483>`_
 | M.T. McCann and M. Unser.
 
 | **Compact lensless phase imager**
-| Optics Express, Optical Society of America, 2017, 25 (4), pp.889 - 895. 
+| Optics Express, Optical Society of America, 2017, 25-4, pp.4438-4445, 2017. 
   `[Paper] <https://hal-insu.archives-ouvertes.fr/insu-01632709>`_
 | M. Rostykus, F. Soulez, M. Unser, C. Moser.
 
 | **Compact in-line lensfree digital holographic microscope**
-| Methods, Elsevier, 2017, 
+| Methods, Elsevier, 136, pp. 17-23, 2017, 
   `[Paper] <https://hal-insu.archives-ouvertes.fr/insu-01696945>`_
 | M. Rostykus, F. Soulez, M. Unser, C. Moser.
 

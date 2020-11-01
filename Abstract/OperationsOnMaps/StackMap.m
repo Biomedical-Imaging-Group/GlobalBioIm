@@ -8,10 +8,10 @@ classdef StackMap < Map
     % **Example** H=StackMap(Maps,alpha)
     %
     % See also :class:`Map`, :class:`LinOpSummation`
-    
-    %%    Copyright (C) 2017 
+
+    %%    Copyright (C) 2017
     %     T-A. Pham thanh-an.pham@epfl.ch
-    %  
+    %
     %     This program is free software: you can redistribute it and/or modify
     %     it under the terms of the GNU General Public License as published by
     %     the Free Software Foundation, either version 3 of the License, or
@@ -24,7 +24,7 @@ classdef StackMap < Map
     %
     %     You should have received a copy of the GNU General Public License
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     properties(SetAccess = protected,GetAccess = public)
         mapsCell;    % Cell of summed Maps
         alpha;       % Correcponding coefficients
@@ -75,52 +75,58 @@ classdef StackMap < Map
                 this.isDifferentiable= this.mapsCell{n}.isDifferentiable && this.isDifferentiable;
             end
             if this.sizeout(end)==1
-               this.sizeout(end) = []; 
+               this.sizeout(end) = [];
             end
             this.sizeout = [this.sizeout,this.numMaps];
         end
     end
-    
+
     %% Core Methods containing implementations (Protected)
     % - apply_(this,x)
     % - applyJacobianT_(this, y, v)
     % - makeComposition_(this,G)
     methods (Access = protected)
         function y = apply_(this,x) 
-            % Reimplemented from :class:`Map`   
+            % Reimplemented from :class:`Map`
             y = cell(this.numMaps,1);
             for n = 1:this.numMaps
                 y{n} = this.alpha(n) .* this.mapsCell{n}.apply(x);
             end
             y = cat(length(this.sizeout),y{:});
-        end  
+        end
+
         function x = applyJacobianT_(this, y, v)
-            % Reimplemented from :class:`Map`   
+            % Reimplemented from :class:`Map`
+            full_dim = size(y);
+            plain_dim = full_dim(1:end - 1);
+            cat_dim = full_dim(end);
+            y_flattened = reshape(y, [], cat_dim);
             x = cell(this.numMaps,1);
             for n = 1:this.numMaps
-                x{n} = this.alpha(n) .* this.mapsCell{n}.applyJacobianT(y,v);
+                y_n = reshape(y_flattened(:, n), plain_dim);
+                x{n} = this.alpha(n) .* this.mapsCell{n}.applyJacobianT(y_n,v);
             end
             x = cat(length(this.sizeout),x{:});
-        end     
-        function M = makeComposition_(this,G)
-            % Reimplemented from :class:`Map`  
-            M = cell(this.numMaps,1);
+            x = sum(x, length(this.sizeout));
+        end
 
+        function M = makeComposition_(this,G)
+            % Reimplemented from :class:`Map`
+            M = cell(this.numMaps,1);
             for n = 1:this.numMaps
                 M{n} = this.mapsCell{n} * G;
             end
             M = StackMap(M,this.alpha);
         end
     end
-    
+
     methods (Access = protected)
         %% Copy
-      function this = copyElement(obj)
-          this = copyElement@Map(obj);
+        function this = copyElement(obj)
+            this = copyElement@Map(obj);
             for n = 1:this.numMaps
-                 this.mapsCell{n} = copy(obj.mapsCell{n});
+                this.mapsCell{n} = copy(obj.mapsCell{n});
             end
-      end
+        end
     end
 end
-

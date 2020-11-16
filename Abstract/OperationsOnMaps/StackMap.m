@@ -97,8 +97,8 @@ classdef StackMap < Map
 
         function x = applyJacobianT_(this, y, v)
             % Reimplemented from :class:`Map`
-            full_dim = size(y);
-            plain_dim = full_dim(1:end - 1);
+            full_dim = this.sizeout;
+            plain_dim = this.mapsCell{1}.sizeout;
             cat_dim = full_dim(end);
             y_flattened = reshape(y, [], cat_dim);
             x = cell(this.numMaps,1);

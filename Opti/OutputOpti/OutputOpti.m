@@ -63,7 +63,7 @@ classdef OutputOpti < matlab.mixin.Copyable
     
     methods
     	%% Constructor
-        function this=OutputOpti(varargin)%(computecost,xtrue,iterVerb,costIndex,snrOp) 
+        function this=OutputOpti(varargin)
             if nargin>=1
                 computecost = varargin{1};
                 if isscalar(computecost)
@@ -75,6 +75,9 @@ classdef OutputOpti < matlab.mixin.Copyable
             
             
             if nargin>=2
+	        if  ~isscalar( varargin{2}) 
+	             error('xtrue parameter OutputOpti is deprecated use OutputOptiSNR');
+                end
                 iterVerb =  varargin{2};
                 assert(isscalar(iterVerb) && iterVerb>=0 && mod(iterVerb,1)==0,'Parameter iterVerb must be a positive integer');
                 this.iterVerb=iterVerb;
@@ -82,7 +85,7 @@ classdef OutputOpti < matlab.mixin.Copyable
             
             if nargin>=3
                 costIndex =  varargin{3};
-                 assert(isnumeric(iterVerb) ,'CostIndex must be numeric');
+                 assert(isnumeric(costIndex) ,'CostIndex must be numeric');
                 this.costIndex=costIndex;
             end
                 

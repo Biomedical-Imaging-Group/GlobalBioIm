@@ -58,7 +58,7 @@ classdef OutputOptiSNR  < OutputOpti
     
     methods
         %% Constructor
-        function this=OutputOptiSNR (computecost,xtrue,iterVerb,costIndex,snrOp)
+        function this=OutputOptiSNR(computecost,xtrue,iterVerb,costIndex,snrOp)
             
             this.name = 'OutputOptiSNR';% name
             if nargin>=1
@@ -70,7 +70,7 @@ classdef OutputOptiSNR  < OutputOpti
                 this.computecost=computecost;
                 
             end
-            if nargin>=1
+            if nargin>=2
                 this.xtrue=xtrue;
             end
             if nargin>=3

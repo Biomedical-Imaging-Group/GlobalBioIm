@@ -53,15 +53,6 @@ classdef OutputOpti < matlab.mixin.Copyable
         evolxopt;          % cell saving the optimization variable xopt
         iternum;           % array saving the iteration number corresponding to evolcost, evolxopt and evolerr entries
         count;             % internal counter
-
-        %% To be removed (deprecated)
-        normXtrue;         % Norm of the true signal (to compute snr)
-        isgt=false;        % Boolean true if Ground Truth is provided
-        evolsnr;           % array saving the evolution of the error with the groud truth-
-        xtrue;             % Ground Truth
-        snrOp=[];          % Map to which the coefficients must be applied to compute reconstructed signal
-        OptiSNR_ = false;
-
     end
     properties
         computecost=false; % Boolean, if true the cost function will be computed
@@ -72,7 +63,7 @@ classdef OutputOpti < matlab.mixin.Copyable
     
     methods
     	%% Constructor
-        function this=OutputOpti(varargin)%(computecost,xtrue,iterVerb,costIndex,snrOp) 
+        function this=OutputOpti(varargin)
             if nargin>=1
                 computecost = varargin{1};
                 if isscalar(computecost)
@@ -84,10 +75,8 @@ classdef OutputOpti < matlab.mixin.Copyable
             
             
             if nargin>=2
-                if ~isscalar( varargin{2}) 
-                    warning('xtrue parameter OutputOpti is deprecated use OutputOptiSNR');
-                    this=this.OutputOptiSNR_(varargin{:});
-                    return
+	        if  ~isscalar( varargin{2}) 
+	             error('xtrue parameter OutputOpti is deprecated use OutputOptiSNR');
                 end
                 iterVerb =  varargin{2};
                 assert(isscalar(iterVerb) && iterVerb>=0 && mod(iterVerb,1)==0,'Parameter iterVerb must be a positive integer');
@@ -96,7 +85,7 @@ classdef OutputOpti < matlab.mixin.Copyable
             
             if nargin>=3
                 costIndex =  varargin{3};
-                 assert(isnumeric(iterVerb) ,'CostIndex must be numeric');
+                 assert(isnumeric(costIndex) ,'CostIndex must be numeric');
                 this.costIndex=costIndex;
             end
                 
@@ -119,11 +108,6 @@ classdef OutputOpti < matlab.mixin.Copyable
                 this.evolcost(this.count)=cc;
             end
             
-            if this.OptiSNR_ && this.isgt
-                snr=this.computeSNR(opti);
-                str=sprintf('%s | SNR: %4.4e dB',str,snr);
-                this.evolsnr(this.count)=snr;
-            end
             
             if this.saveXopt
                 this.evolxopt{this.count}=opti.xopt;
@@ -146,46 +130,7 @@ classdef OutputOpti < matlab.mixin.Copyable
                 cc = opti.cost*opti.xopt;
             end
         end
-        %% Deprecated functions
-        function  this= OutputOptiSNR_(this,computecost,xtrue,iterVerb,costIndex,snrOp)
-            this.OptiSNR_=true;
-            this.name = 'OutputOptiSNR';% name
-        
-            if isscalar(computecost)
-                computecost = (computecost ~= 0);
-            end
-            
-            assert(islogical(computecost),'Parameter computecost must be logical');
-            this.computecost=computecost;
-            
-            this.xtrue=xtrue;
-            
-            if nargin>=4
-                assert(isscalar(iterVerb) && iterVerb>=0,'Parameter iterVerb must be a positive integer');
-                this.iterVerb=iterVerb;
-            end
-            if nargin==5, this.costIndex=costIndex;end
-            if ~isempty(this.xtrue)
-                this.isgt=true;
-                this.xtrue=xtrue;
-                this.normXtrue=norm(this.xtrue(:));
-            end
-            if nargin==6, this.snrOp = snrOp;end
-            if ~isempty(this.snrOp)
-                assert(~isempty(this.xtrue), 'Ground truth must be provided in order to compute SNR');
-                assert(isa(this.snrOp, 'Map') && isequal(this.snrOp.sizeout, size(this.xtrue)), ...
-                    'The SNR operator must have the same output size as the ground truth');
-            elseif ~isempty(this.xtrue)
-                this.snrOp = LinOpDiag(size(this.xtrue)); % Identity operator by default
-            end
-        end
-    
-        function snr=computeSNR(this,opti)
-            % Evaluate the snr for the current iterate xopt of
-            % the given :class:`Opti` opti object
-            reconstruction = this.snrOp.apply(opti.xopt);
-            snr=20*log10(this.normXtrue/norm(this.xtrue(:)-reconstruction(:)));
-        end
+
     end
     methods (Access = protected)
         %% Copy

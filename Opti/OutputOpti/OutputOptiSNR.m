@@ -50,10 +50,10 @@ classdef OutputOptiSNR  < OutputOpti
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     properties (SetAccess = protected,GetAccess = public)
-        %     evolsnr;           % array saving the evolution of the error with the groud truth
-        %    xtrue;             % Ground Truth
-        %   snrOp=[];          % Map to which the coefficients must be applied to compute reconstructed signal
-        %   normXtrue;         % Norm of the true signal (to compute snr)
+        evolsnr;           % array saving the evolution of the error with the groud truth
+        xtrue;             % Ground Truth
+        snrOp=[];          % Map to which the coefficients must be applied to compute reconstructed signal
+        normXtrue;         % Norm of the true signal (to compute snr)
     end
     
     methods
@@ -61,16 +61,18 @@ classdef OutputOptiSNR  < OutputOpti
         function this=OutputOptiSNR (computecost,xtrue,iterVerb,costIndex,snrOp)
             
             this.name = 'OutputOptiSNR';% name
-            
-            if isscalar(computecost)
-                computecost = (computecost ~= 0);
+            if nargin>=1
+                if isscalar(computecost)
+                    computecost = (computecost ~= 0);
+                end
+                
+                assert(islogical(computecost),'Parameter computecost must be logical');
+                this.computecost=computecost;
+                
             end
-            
-            assert(islogical(computecost),'Parameter computecost must be logical');
-            this.computecost=computecost;
-            
-            this.xtrue=xtrue;
-            
+            if nargin>=1
+                this.xtrue=xtrue;
+            end
             if nargin>=3
                 assert(isscalar(iterVerb) && iterVerb>=0,'Parameter iterVerb must be a positive integer');
                 this.iterVerb=iterVerb;
@@ -88,8 +90,6 @@ classdef OutputOptiSNR  < OutputOpti
             elseif ~isempty(this.xtrue)
                 this.snrOp = LinOpDiag(size(this.xtrue)); % Identity operator by default
             end
-            
-            
         end
         %% Initialization
         function init(this)
@@ -116,7 +116,7 @@ classdef OutputOptiSNR  < OutputOpti
             
             if this.saveXopt
                 this.evolxopt{this.count}=opti.xopt;
-            end 
+            end
             this.iternum(this.count)=opti.niter;
             this.count=this.count+1;
             if opti.verbose && (opti.niter~=0 && (mod(opti.niter,this.iterVerb)==0) || (opti.niter==1 && this.iterVerb~=0))

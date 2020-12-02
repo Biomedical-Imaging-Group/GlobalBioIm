@@ -58,6 +58,8 @@ classdef OptiGradDsct < Opti
             
             initialize@Opti(this,x0);
             if this.nagd
+                this.needxold = true;
+                this.xold = x0;
                 this.y=x0;
             end
             if isempty(this.gam), error('Parameter gam is not setted'); end

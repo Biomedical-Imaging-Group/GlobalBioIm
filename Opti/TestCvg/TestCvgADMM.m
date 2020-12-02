@@ -15,7 +15,8 @@ classdef TestCvgADMM < TestCvg
     %
     % **Example** CvOpti=TestCvgADMM(eps_abs,eps_rel)
     %
-    % See also :class:`TestCvg`
+    % See also :class:`TestCvg`FBS.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
+
     
     %%    Copyright (C) 2018
     %     F. Soulez ferreol.soulez@univ-lyon1.fr
@@ -41,6 +42,7 @@ classdef TestCvgADMM < TestCvg
         evolResPrim
         evolResDual
         count=0;
+        yold=[];
     end
     
     methods
@@ -69,9 +71,11 @@ classdef TestCvgADMM < TestCvg
             for n = 1:length(opti.wn)
                 p = p + length(opti.yn{n});
                 r_norm = r_norm + norm(opti.Hnx{n}(:)-opti.yn{n}(:))^2;
-                tmp=opti.rho_n(n)*opti.Hn{n}.applyAdjoint(opti.yn{n} - opti.yold{n});
-                s_norm = s_norm + norm(tmp(:))^2;
-                Hnx_norm = Hnx_norm + norm(opti.Hnx{n}(:))^2;
+                if this.count>1
+                    tmp=opti.rho_n(n)*opti.Hn{n}.applyAdjoint(opti.yn{n} - this.yold{n});
+                    s_norm = s_norm + norm(tmp(:))^2;
+                end
+                Hnx_norm = Hnx_norm + norm(opti.Hnx{n}(:))^2;                    
                 y_norm = y_norm + norm(opti.yn{n}(:))^2;
                 tmp=opti.Hn{n}.applyAdjoint(opti.wn{n});
                 adjHnwn_norm = adjHnwn_norm + norm(tmp(:))^2;
@@ -81,11 +85,20 @@ classdef TestCvgADMM < TestCvg
             
             this.evolResPrim(this.count)=r_norm;
             this.evolResDual(this.count)=s_norm;
-            if (sqrt(r_norm) <= eps_primal) && (sqrt(s_norm) <= eps_dual)
+            
+            
+            if (this.count>1)&&(sqrt(r_norm) <= eps_primal) && (sqrt(s_norm) <= eps_dual)
                 stop = true;
-                endingMessage = [this.name,' convergence reached'];
+                endingMessage = [this.name,': ADMM convergence criteria reached:',newline, ... 
+                    'primal residuals: ' ,num2str(sqrt(r_norm)),' <= ',num2str(eps_primal), newline,... 
+                    'dual residuals: ' ,num2str(sqrt(s_norm)),' <= ',num2str(eps_dual)];
                 opti.endingMessage = endingMessage;
+            else
+                this.yold = opti.yn;
             end
+            
+            
+            
         end
     end
 end

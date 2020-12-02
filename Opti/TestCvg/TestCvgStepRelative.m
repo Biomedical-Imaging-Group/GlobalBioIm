@@ -33,6 +33,7 @@ classdef TestCvgStepRelative  < TestCvg
             this.name = 'TestCvgStepRelative';
             assert(isscalar(stepRelativeTol),'stepRelativeTol must be scalar');
             this.stepRelativeTol =stepRelativeTol;
+            this.needxold = true;
         end
         %% Update method
         function stop = testConvergence(this,opti)

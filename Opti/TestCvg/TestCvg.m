@@ -31,6 +31,7 @@ classdef TestCvg  < matlab.mixin.Copyable
     
     properties (SetAccess = protected,GetAccess = public)
         name = 'TestCvg';
+        needxold = false;
     end
     
     methods

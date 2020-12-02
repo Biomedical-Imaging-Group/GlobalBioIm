@@ -78,6 +78,7 @@ classdef OptiFBS < Opti
             this.cost=F+G;
             this.F=F;
             this.G=G;
+            this.needxold = true;
             if F.lip~=-1
                 this.gam=1/F.lip;
             end

@@ -218,8 +218,11 @@ classdef OptiADMM < Opti
                     this.xopt=this.CG.xopt;
                 end
             else
-                zn = this.yn{n}+this.wn{n};
+                for n=1:length(this.Fn)
+                    zn{n} = this.yn{n}+this.wn{n};
+                end
                 this.xopt=this.solver(zn,this.rho_n, this.xopt);
+                clear zn;
             end
             for n=1:length(this.wn)
                 this.Hnx{n}=this.Hn{n}.apply(this.xopt);

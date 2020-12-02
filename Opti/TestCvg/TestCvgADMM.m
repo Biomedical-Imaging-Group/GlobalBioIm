@@ -15,7 +15,7 @@ classdef TestCvgADMM < TestCvg
     %
     % **Example** CvOpti=TestCvgADMM(eps_abs,eps_rel)
     %
-    % See also :class:`TestCvg`FBS.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
+    % See also :class:`TestCvg`
 
     
     %%    Copyright (C) 2018

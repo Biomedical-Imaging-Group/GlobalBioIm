@@ -77,6 +77,7 @@ classdef OptiPrimalDualCondat < Opti
             this.Hn=Hn;
             this.F0=F0;
             this.G=G;
+            this.needxold = true;
             if ~isempty(F0), this.cost=F0;end
             if ~isempty(G)
                 if isempty(this.cost), this.cost=G;
@@ -128,7 +129,8 @@ classdef OptiPrimalDualCondat < Opti
             for n=1:length(this.Fn)
                 ytilde=this.Fn{n}.applyProxFench(this.y{n}+this.sig*this.Hn{n}.apply(2*xtilde-this.xold),this.sig);
                 this.y{n}=this.rho*ytilde +(1-this.rho)*this.y{n};
-            end            
+            end  
+
             flag=this.OPTI_NEXT_IT;
         end
     end

@@ -98,7 +98,7 @@ classdef OptiChambPock < Opti
     		this.F=F;
     		this.G=G;
             this.H=H;
-            
+            this.needxold =true;
             if this.H.norm>=0
                 this.sig=1/(this.tau*this.H.norm^2)-eps;
             end

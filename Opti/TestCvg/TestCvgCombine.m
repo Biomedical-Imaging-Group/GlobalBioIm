@@ -49,6 +49,7 @@ classdef TestCvgCombine < TestCvg
                     this.cvList = {this.cvList, varargin{n}.cvList };
                     this.testNumber = this.testNumber + varargin{n}.testNumber;
                 end
+                this.needxold = this.needxold || this.cvList{this.testNumber}.needxold;
             end
         end
         %% Update method

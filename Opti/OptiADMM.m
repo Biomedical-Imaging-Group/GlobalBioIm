@@ -54,7 +54,7 @@ classdef OptiADMM < Opti
     %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     % Protected Set and public Read properties
-    properties (SetAccess = protected,GetAccess = public)
+    properties (SetAccess = public,GetAccess = public)
         F0=[];               % func F0
         Fn;                  % Cell containing the Cost Fn
         Hn;                  % Cell containing the LinOp Hn
@@ -66,11 +66,9 @@ classdef OptiADMM < Opti
     %?TestCvg})  % This makes problems for doc compilation. For the moment
     %I let all the attributes public
         yn;    % Internal parameters
-        zn;
         wn;
         Hnx;
         b0=0;
-        yold=0;  % Parameter needed for termination criterion
         
         
         % To manage the new maxiterCG property of ADMM (from v1.1.2)
@@ -201,15 +199,13 @@ classdef OptiADMM < Opti
         end
         function flag=doIteration(this)
             % Reimplementation from :class:`Opti`. For details see [1].
-            this.yold = this.yn;
             for n=1:length(this.Fn)
                 this.yn{n}=this.Fn{n}.applyProx(this.Hnx{n} - this.wn{n},1/this.rho_n(n));
-                this.zn{n}=this.yn{n}+this.wn{n};
             end
             if isempty(this.solver)
-                b=this.rho_n(1)*this.Hn{1}.applyAdjoint(this.zn{1});
+                b=this.rho_n(1)*this.Hn{1}.applyAdjoint(this.yn{1}+this.wn{1});
                 for n=2:length(this.Hn)
-                    b=b+this.rho_n(n)*this.Hn{n}.applyAdjoint(this.zn{n});
+                    b=b+this.rho_n(n)*this.Hn{n}.applyAdjoint(this.yn{n}+this.wn{n});
                 end
                 if ~isempty(this.b0)
                     b=b+this.b0;
@@ -222,7 +218,11 @@ classdef OptiADMM < Opti
                     this.xopt=this.CG.xopt;
                 end
             else
-                this.xopt=this.solver(this.zn,this.rho_n, this.xopt);
+                for n=1:length(this.Fn)
+                    zn{n} = this.yn{n}+this.wn{n};
+                end
+                this.xopt=this.solver(zn,this.rho_n, this.xopt);
+                clear zn;
             end
             for n=1:length(this.wn)
                 this.Hnx{n}=this.Hn{n}.apply(this.xopt);

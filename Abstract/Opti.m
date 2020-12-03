@@ -43,7 +43,8 @@ classdef Opti < matlab.mixin.SetGet
         time;                % running time of the algorithm (last run)
         niter;               % iteration counter
         xopt=[];             % optimization variable
-        xold;
+        xold=[];
+        needxold=false;
     end
     % Full public properties
     properties
@@ -89,7 +90,9 @@ classdef Opti < matlab.mixin.SetGet
                     if this.ItUpOut>0 && (((mod(this.niter,this.ItUpOut)==0)|| (this.niter==1)))
                         this.OutOp.update(this);
                     end
-                    this.xold=this.xopt;
+                    if this.needxold
+                        this.xold=this.xopt;
+                    end
                 elseif  flag==this.OPTI_STOP,
                     break;
                 end
@@ -104,7 +107,12 @@ classdef Opti < matlab.mixin.SetGet
             
             if ~isempty(x0) % To restart from current state if wanted
                 this.xopt=x0;
-                this.xold= x0;
+                if this.CvOp.needxold
+                    this.needxold=true;
+                end
+                if this.needxold
+                    this.xold=x0;
+                end
             end
         end
         function flag=doIteration(this)

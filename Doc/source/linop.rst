@@ -127,3 +127,20 @@ LinOpSelectorPatch
     :show-inheritance:
     :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
       applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, makeInversion_
+
+LinOpPad
+.............
+
+.. autoclass:: LinOpPad
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, makeInversion_
+
+LinOpCrop
+.............
+
+.. autoclass:: LinOpCrop
+    :show-inheritance:
+    :members: apply_, applyJacobianT_, applyInverse_, plus_, minus_, mpower_, makeComposition_,
+      applyAdjoint_, applyHtH_, applyHHt_, applyAdjointInverse_, makeAdjoint_, makeHtH_, makeHHt_, makeInversion_
+

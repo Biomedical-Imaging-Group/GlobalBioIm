@@ -1,3 +1,5 @@
+.. _ref-gui:
+
 Graphical User Interface (GUI)
 ******************************
 

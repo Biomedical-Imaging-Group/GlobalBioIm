@@ -24,6 +24,7 @@ automatically from comments within M-files.
 Releases
 --------
 
+  - `v 1.2 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.2>`_ (January 2021). *Generate your script through the GUI* (:ref:`read more <ref-gui>`).
   - `v 1.1.2 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.1.2>`_ (April 2019).
   - `v 1.1.1 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.1.1>`_ (September 2018).
   - `v 1.1 <https://github.com/Biomedical-Imaging-Group/GlobalBioIm/releases/tag/v1.1>`_ (July 2018). *Speed up your codes using the library with GPU* (:ref:`read more <ref-gpu>`).

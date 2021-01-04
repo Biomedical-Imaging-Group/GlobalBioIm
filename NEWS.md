@@ -1,3 +1,36 @@
+## v1.2 release notes
+The v1.2 release contains a new graphical user interface (GUI) plus incremental improvements and bug fixes.
+
+#### Graphical User Interface
+The GUI allows to intuitively build tailored reconstruction algorithms with minimal effort. The proficiency of the GlobalBioIm GUI is, once the objective function is defined, to automatically propose algorithms that are adapted to the built cost function. Finally, the MATLAB script corresponding to the pipeline is automatically generated. See more at
+https://biomedical-imaging-group.github.io/GlobalBioIm/gui.html
+
+#### Improvements
+- improvement to save memory in ADMM
+- in Opti classes, previous iterate xold is no longer stored  when it is not necessary
+- move (deprecated) SNR stuffs from OutpuOpti to OutputSNR
+- add Element-wise function operator: OpEWfunc
+- add Element-wise Modulus operator: OpEWAbs
+- add CostRobustPenalization (Andrews, Beaton-Tukey, Cauchy, Fair, Huber, Logistic, Talwar-Hinich, Welsch-Dennis)
+- add the option to put weights in CostHyperBolic
+- add constant cost : CostConst
+- add option for Nesterov accelerated gradient descent in OptiGradDesc
+- add L infinity cost function
+- allow deep copy of objects
+- make protected most Map/Linop/Cost properties
+- add backtracking rule and reduced-step-size rule in OptiFBS
+- add LinOpSelectorPlanes
+- add memoize options in CostGoodRoughness (like in CostHyperBolic)
+- add attribute first index in LinOpSelector
+
+#### Bug Fixes
+- fix bug in the adjoint computation of StackMap
+- fix LinOpSum norm computation with multiple index
+- fix bug OptiFGP when running on GPU
+- fix issue in CostLinear with complex entries
+- in OptiConjGrad set_b method : also set CostLinear b to new value
+- fix pb to restart algorithms from the last iterate of the previous run
+
 ## v1.1.2 release notes
 The v1.1.2 release does not contain any major changes but mainly incremental improvements and bug fixes. 
 

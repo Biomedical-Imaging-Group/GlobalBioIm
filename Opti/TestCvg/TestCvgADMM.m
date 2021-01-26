@@ -83,8 +83,8 @@ classdef TestCvgADMM < TestCvg
             eps_primal = sqrt(p)*this.eps_abs + this.eps_rel*sqrt(max(Hnx_norm, y_norm));
             eps_dual = sqrt(length(opti.xopt))*this.eps_abs + this.eps_rel*sqrt(adjHnwn_norm);
             
-            this.evolResPrim(this.count)=r_norm;
-            this.evolResDual(this.count)=s_norm;
+            this.evolResPrim(this.count)=gather(r_norm);
+            this.evolResDual(this.count)=gather(s_norm);
             
             
             if (this.count>1)&&(sqrt(r_norm) <= eps_primal) && (sqrt(s_norm) <= eps_dual)

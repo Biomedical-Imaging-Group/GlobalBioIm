@@ -32,8 +32,7 @@ classdef CostPartialSummation <  CostSummation
         counter=0; % counter for subset update
         subset; % current subset of angles used to compute F grad
         Lsub;   % Number of costs used in partial gradient
-    end
-    properties
+        fixedorder;
         partialGrad=1; % activate partial gradient option, 0 : no; 1 : stochastic; 2 : equally spaced;
     end
     
@@ -49,9 +48,17 @@ classdef CostPartialSummation <  CostSummation
             % Set Lsub parameter
             this.Lsub = Lsub;
             this.counter = 0;
+            if this.partialGrad==3
+                this.fixedorder = randperm(this.numMaps);
+            end
             this.updateSubset();
         end
-        
+        function setPartialGrad(this,newpartialGrad)
+            this.partialGrad = newpartialGrad;
+            if this.partialGrad == 3
+                this.fixedorder = randperm(this.numMaps);
+            end
+        end
     end
     methods (Access = protected)
         function updateSubset(this)
@@ -64,6 +71,14 @@ classdef CostPartialSummation <  CostSummation
                     this.subset = sort(1 + mod(round(this.counter...
                         + (1:this.numMaps/this.Lsub:this.numMaps)),this.numMaps));
                     this.counter = this.counter + 1;
+                case 3
+                    this.subset = this.fixedorder(1 + this.Lsub*this.counter:min(this.Lsub*(1+this.counter),end));
+                    if this.Lsub*(1+this.counter) >=this.numMaps
+                        this.counter = 0;
+                    else
+                        this.counter = this.counter + 1;
+                    end
+                    
                 otherwise
                     error('Non existing partialGrad');
             end
@@ -76,11 +91,11 @@ classdef CostPartialSummation <  CostSummation
             % Reimplemented from :class:`Cost`
             if this.partialGrad > 0
                 y = 0;
-                for kk = 1:this.Lsub
+                for kk = 1:length(this.subset)
                     ind = this.subset(kk);
                     y = y + this.alpha(ind)*this.mapsCell{ind}*x;
                 end
-                y = y/this.Lsub;%to decide whether it is kept.
+                y = y/length(this.subset);%to decide whether it is kept.
             else
                 y = apply_@CostSummation(this,x);
             end
@@ -89,11 +104,11 @@ classdef CostPartialSummation <  CostSummation
             % Reimplemented from :class:`Cost`
             if this.partialGrad > 0
                 g = zeros_(size(x));
-                for kk = 1:this.Lsub
+                for kk = 1:length(this.subset)
                     ind = this.subset(kk);
                     g = g + this.alpha(ind)*this.mapsCell{ind}.applyGrad(x);
                 end
-                g = g/this.Lsub;%to decide whether it is kept. real AD HOC
+                g = g/length(this.subset);%to decide whether it is kept. real AD HOC
                 this.updateSubset();%because of hierarchical ADMM, I need it after
             else
                 g = applyGrad_@CostSummation(this,x);

@@ -13,6 +13,12 @@ If you want to add your work in this list, do not hesitate to
 Papers with open-source code
 ----------------------------
 
+| **Multi-Kernel Regression with Sparsity Constraint**
+| SIAM Journal on Mathematics of Data Science, 3-1, pp. 201–224, 2021.
+  `[Paper] <https://arxiv.org/abs/1811.00836>`_
+  `[Code] <https://github.com/Biomedical-Imaging-Group/Multi-Kernel-Regression-gTV->`_
+| S. Aziznejad, and M. Unser.
+
 | **PIC: a data reduction algorithm for integral field spectrographs-Application to the SPHERE instrument**
 | Astronomy & Astrophysics, 635, pp. A90, 2020.
   `[Paper] <https://www.aanda.org/articles/aa/abs/2020/03/aa36890-19/aa36890-19.html>`_
@@ -58,6 +64,16 @@ Papers with open-source code
 
 Other papers
 ------------
+
+| **Gauging diffraction patterns: field of view and bandwidth estimation in lensless** 
+| Applied Optics, 2021.
+  `[Paper] <https://www.osapublishing.org/ao/upcoming_pdf.cfm?id=414976>`_
+| F. Soulez
+
+| **UVTomo-GAN: An adversarial learning based approach for unknown view X-ray tomographic reconstruction** 
+| ArXiv preprint
+  `[Paper] <https://arxiv.org/abs/2102.04590>`_
+| M. Zehni, and Z. Zhao
 
 | **Sparsest Continuous Piecewise-Linear Representation of Data** 
 | ArXiv preprint

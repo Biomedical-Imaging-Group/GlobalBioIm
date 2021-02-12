@@ -56,6 +56,11 @@ classdef LinOpInversion < MapInversion & LinOp
             % Reimplemented from :class:`MapInversion`
             M = makeComposition_@MapInversion(this,G);
         end
+        %% Copy
+      	function this = copyElement(obj)
+            this = copyElement@LinOp(obj);
+            this.M = copy(obj.M);
+      	end
     end
 end
 

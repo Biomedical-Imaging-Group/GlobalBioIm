@@ -12,6 +12,11 @@ If you want to add your work in this list, do not hesitate to
 
 Papers with open-source code
 ----------------------------
+| **Gauging diffraction patterns: field of view and bandwidth estimation in lensless** 
+| Applied Optics, 60,  10, pp. B38-B48, 2021  
+  `[Paper] <https://www.osapublishing.org/ao/abstract.cfm?uri=ao-60-10-B38>`_
+  `[Code] <https://github.com/FerreolS/COMCI>`_
+| F. Soulez
 
 | **Multi-Kernel Regression with Sparsity Constraint**
 | SIAM Journal on Mathematics of Data Science, 3-1, pp. 201–224, 2021.
@@ -64,11 +69,6 @@ Papers with open-source code
 
 Other papers
 ------------
-
-| **Gauging diffraction patterns: field of view and bandwidth estimation in lensless** 
-| Applied Optics, 2021.
-  `[Paper] <https://www.osapublishing.org/ao/upcoming_pdf.cfm?id=414976>`_
-| F. Soulez
 
 | **UVTomo-GAN: An adversarial learning based approach for unknown view X-ray tomographic reconstruction** 
 | ArXiv preprint

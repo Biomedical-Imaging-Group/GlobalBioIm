@@ -33,6 +33,8 @@ classdef CostPartialSummation <  CostSummation
         subset; % current subset of angles used to compute F grad
         Lsub;   % Number of costs used in partial gradient
         fixedorder;
+    end
+    properties (SetAccess = public,GetAccess = public)
         partialGrad=1; % activate partial gradient option, 0 : no; 1 : stochastic; 2 : equally spaced;
     end
     

@@ -1,7 +1,7 @@
-# safelist
+i# safelist
 branches:
   only:
-  - master
+  - esoubies-patch-1
   
 language: python
 

@@ -25,4 +25,4 @@ deploy:
   local_dir: Doc/build/html
   committer_from_gh: true
   on:
-    branch: master
+    branch: esoubies-patch-1

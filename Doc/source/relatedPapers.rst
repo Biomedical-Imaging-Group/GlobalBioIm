@@ -12,6 +12,19 @@ If you want to add your work in this list, do not hesitate to
 
 Papers with open-source code
 ----------------------------
+
+| **REXPACO: an algorithm for high contrast reconstruction of the circumstellar environment by angular differential imaging** 
+| arXiv preprint, 2021  
+  `[Paper] <https://arxiv.org/abs/2104.09672>`_
+  `[Code] <https://github.com/olivier-flasseur/rexpaco_demo>`_
+| O. Flasseur, S. Thé, L. Denis, E. Thiébaut, and M. Langlois
+
+| **UVTomo-GAN: An adversarial learning based approach for unknown view X-ray tomographic reconstruction** 
+| Proceedings of ISBI, 2021.
+  `[Paper] <https://arxiv.org/abs/2102.04590>`_
+  `[Code] <https://github.com/MonaZI/UVTomogan>`_
+| M. Zehni, and Z. Zhao
+
 | **Gauging diffraction patterns: field of view and bandwidth estimation in lensless** 
 | Applied Optics, 60,  10, pp. B38-B48, 2021  
   `[Paper] <https://www.osapublishing.org/ao/abstract.cfm?uri=ao-60-10-B38>`_
@@ -70,10 +83,10 @@ Papers with open-source code
 Other papers
 ------------
 
-| **UVTomo-GAN: An adversarial learning based approach for unknown view X-ray tomographic reconstruction** 
-| ArXiv preprint
-  `[Paper] <https://arxiv.org/abs/2102.04590>`_
-| M. Zehni, and Z. Zhao
+| **Diffraction Tomography from single-molecule localization microscopy: Numerical feasibility** 
+| Proceedings of ISBI, 2021.
+  `[Paper] <https://hal.archives-ouvertes.fr/hal-03184774/>`_
+| T.-A. Pham, E. Soubies, F. Soulez, and M. Unser.
 
 | **Sparsest Continuous Piecewise-Linear Representation of Data** 
 | ArXiv preprint

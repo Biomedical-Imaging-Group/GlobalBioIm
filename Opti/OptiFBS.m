@@ -138,7 +138,7 @@ classdef OptiFBS < Opti
             end
             if this.fista  % if fista
                 if this.momRestart && dot(this.y(:) - this.xopt(:),this.xopt(:) - this.xold(:)) > 0
-                    fprint('Restarting\n');
+                    fprintf('Restarting\n');
                     this.y = this.xold;
                     this.tk = 1;
                 else

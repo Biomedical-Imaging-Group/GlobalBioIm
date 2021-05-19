@@ -67,17 +67,6 @@ classdef LinOpXRay < LinOp
 
 			this.y = y;
 			this.thetas = thetas;
-			
-			% make copies of private image processing toolbox functions so
-			% that we can call them directly
-			if isempty(which('iradonmex'))
-				filename = which('iradonmex', '-all');
-				privateDir = fullfile(fileparts(mfilename('fullpath')), 'private');
-				if ~exist(privateDir, 'dir')
-					mkdir(privateDir)
-				end
-				copyfile(filename{1}, privateDir)
-			end
 
 			% estimate norm, assuming shift invariance
 			d = zeros(x.size);
@@ -100,9 +89,7 @@ classdef LinOpXRay < LinOp
 		end
 
 		function g = applyAdjoint_(this,c) % apply the adjoint
-			xVects = (1:this.x.size(1)) - floor((this.x.size(1)+1)/2);
-			[X0, X1] = ndgrid(xVects);
-			g = iradonmex(size(X0,1), this.thetas - pi/2, X1./this.x.step(2), -X0./this.x.step(1), c, 1); % 1 - linear interp
+			g = iradon(c, this.thetas/pi*180 - 90, 'linear', 'none', 1, this.sizein(1));
 			g = g * this.x.step(1);	
 		end
 

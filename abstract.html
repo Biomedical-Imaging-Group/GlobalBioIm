@@ -1,0 +1,1382 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Abstract Classes &mdash; GlobalBioIm Library 1.1.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Linear Operators (LinOp)" href="linop.html" />
+    <link rel="prev" title="Conditions of Use" href="conditionsuse.html" /> 
+</head>
+
+<body class="wy-body-for-nav" style="text-align:justify">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> GlobalBioIm Library
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Biomedical-Imaging-Group/GlobalBioIm">Download or Clone (v 1.1.2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infos.html">Important Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">Graphical User Interface (GUI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="relatedPapers.html">Related Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conditionsuse.html">Conditions of Use</a></li>
+</ul>
+<p><span class="caption-text">Technical Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Abstract Classes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#map">Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linop">LinOp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cost">Cost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#opti">Opti</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#operationsonmaps">OperationsOnMaps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mapcomposition">MapComposition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mapinversion">MapInversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mapsummation">MapSummation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mapmultiplication">MapMultiplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linopadjoint">LinOpAdjoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linopcomposition">LinOpComposition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linopinversion">LinOpInversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linopsummation">LinOpSummation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#costcomposition">CostComposition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#costmultiplication">CostMultiplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#costsummation">CostSummation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#costpartialsummation">CostPartialSummation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="linop.html">Linear Operators (LinOp)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nonlinop.html">Non-Linear Operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cost.html">Cost Functions (Cost)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opti.html">Optimization Algorithms (Opti)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methodssummary.html">List of Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="propertiessummary.html">List of Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu.html">Speedup with GPU</a></li>
+</ul>
+<p><span class="caption-text">Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="http://bigwww.epfl.ch">Biomedical Imaging Group</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GlobalBioIm Library</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Abstract Classes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/abstract.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="abstract-classes">
+<h1>Abstract Classes<a class="headerlink" href="#abstract-classes" title="Permalink to this headline">¶</a></h1>
+<p>This section describes the abstract classes of the GlobalBioIm library. It provides general properties for
+every derived classes.</p>
+<span class="target" id="module-Abstract"></span><section id="map">
+<h2>Map<a class="headerlink" href="#map" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="Abstract.Map">
+<em class="property">class </em><code class="sig-prename descclassname">Abstract.</code><code class="sig-name descname">Map</code><a class="headerlink" href="#Abstract.Map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matlab.mixin.Copyable</span></code></p>
+<p>Abstract class for Maps which maps elements from \(\mathrm{X}\) to
+\(\mathrm{Y}\)
+$$ \mathrm{H}: \mathrm{X}\rightarrow \mathrm{Y}.$$
+where \(\mathrm{X}\) and \(\mathrm{Y}\) are either
+\(\mathbb{R}^N\) or \(\mathbb{C}^N\).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – name of the linear operator \(\mathbf{H}\)</p></li>
+<li><p><strong>sizein</strong> – dimension of the left hand side vector space \(\mathrm{X}\)</p></li>
+<li><p><strong>sizeout</strong> – dimension of the right hand side vector space \(\mathrm{Y}\)</p></li>
+<li><p><strong>norm</strong> – norm of the operator \(\|\mathrm{H}\|\) (if known, otherwise -1)</p></li>
+<li><p><strong>isInvertible</strong> – true if the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">applyInverse_()</span></code> is implemented</p></li>
+<li><p><strong>isDifferentiable</strong> – true if the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">applyJacobianT_()</span></code> is implemented</p></li>
+<li><p><strong>memoizeOpts</strong> – structure of boolean (one field per method, see details below).</p></li>
+<li><p><strong>doPrecomputation</strong> – boolean true to allow doing precomputations to save time (will generally require more memory).</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Note on the memoize option</strong> This option allows to store the result
+of a method such that if an identical call to this method is done,
+calculations are avoided. Example: memoizeOpts.apply=true will store
+the result of H*x.</p>
+<dl class="method">
+<dt id="Abstract.Map.apply">
+<code class="sig-name descname">apply</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes \(\mathrm{y}=\mathrm{H}(\mathrm{x})\) for the given
+\(\mathrm{x} \in \mathrm{X}\).</p>
+<p>Calls the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">apply_()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Map.applyJacobianT">
+<code class="sig-name descname">applyJacobianT</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em>, <em class="sig-param">v</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.applyJacobianT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute \(\mathrm{x}=[\mathrm{J}_{\mathrm{H}}(\mathrm{v})]^{\star}\mathrm{y}\)
+where</p>
+<ul class="simple">
+<li><p>\([\mathrm{J}_{\mathrm{H}}(\mathrm{v})]\) is the Jacobian matrix of
+the Map \(\mathrm{H}\) computed at \(\mathrm{v} \in \mathrm{X} \)</p></li>
+<li><p>\(\mathrm{y} \in \mathrm{Y} \)</p></li>
+</ul>
+<p>Calls the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">applyJacobianT_()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Map.applyInverse">
+<code class="sig-name descname">applyInverse</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.applyInverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes \(\mathrm{x} = \mathrm{H}^{-1} \mathrm{y}\) for the given
+\(\mathrm{y} \in \mathrm{Y}\). (if applicable)</p>
+<p>Calls the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">applyInverse_()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Map.makeComposition">
+<code class="sig-name descname">makeComposition</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.makeComposition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compose the Map \(\mathrm{H}\) with the given Map
+\(\mathrm{G}\). Returns a new map \(\mathrm{M=HG}\)</p>
+<p>Calls the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">makeComposition_()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Map.plus">
+<code class="sig-name descname">plus</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.plus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overload operator (+) for <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code> objects
+$$ \mathrm{M}(\mathrm{x}) := \mathrm{H}(\mathrm{x}) + \mathrm{G}(\mathrm{x})$$</p>
+<p>Calls the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">plus_()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Map.minus">
+<code class="sig-name descname">minus</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.minus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overload operator (-) for <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code> objects
+$$ \mathrm{M}(\mathrm{x}) := \mathrm{H}(\mathrm{x}) - \mathrm{G}(\mathrm{x})$$</p>
+<p>Calls the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">minus_()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Map.mpower">
+<code class="sig-name descname">mpower</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">p</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.mpower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code> which is the power p \(\mathrm{H}^{p}\) of the
+current \(\mathrm{H}\).</p>
+<p>Calls the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">mpower_()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Map.mtimes">
+<code class="sig-name descname">mtimes</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.mtimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overload operator (*) for <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code> objects
+$$ \mathrm{M}(\mathrm{x}) := \mathrm{H}(\mathrm{G}(\mathrm{x}))$$</p>
+<ul class="simple">
+<li><p>If \(\mathrm{G}\) is numeric of size sizein, then <code class="xref py py-meth docutils literal notranslate"><span class="pre">apply()</span></code> is called</p></li>
+<li><p>If \(\mathrm{G}\) is a <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>, then a <code class="xref py py-class docutils literal notranslate"><span class="pre">MapComposition</span></code> is intanciated</p></li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Map.times">
+<code class="sig-name descname">times</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.times" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code> which is the element-wise multiplication of the
+current \(\mathrm{H}\) with \(\mathrm{G}\)
+$$ \mathrm{M}(\mathrm{x}) := \mathrm{H}(\mathrm{x}) \times \mathrm{G}(\mathrm{x})$$</p>
+<p>Calls the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">times_()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Map.apply_">
+<code class="sig-name descname">apply_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.apply_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not implemented in this Abstract class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Map.applyJacobianT_">
+<code class="sig-name descname">applyJacobianT_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">y</em>, <em class="sig-param">v</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.applyJacobianT_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not implemented in this Abstract class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Map.applyInverse_">
+<code class="sig-name descname">applyInverse_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.applyInverse_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not implemented in this Abstract class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Map.plus_">
+<code class="sig-name descname">plus_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.plus_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a <code class="xref py py-class docutils literal notranslate"><span class="pre">MapSummation</span></code> object to sum the
+current <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code> \(\mathrm{H}\) with the given \(\mathrm{G}\).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Map.minus_">
+<code class="sig-name descname">minus_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.minus_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a <code class="xref py py-class docutils literal notranslate"><span class="pre">MapSummation</span></code> object to subtract to the
+current <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code> \(\mathrm{H}\), the given \(\mathrm{G}\).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Map.mpower_">
+<code class="sig-name descname">mpower_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">p</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.mpower_" title="Permalink to this definition">¶</a></dt>
+<dd><p>When \(p=-1\), constructs a <code class="xref py py-class docutils literal notranslate"><span class="pre">MapInversion</span></code> object which
+is the inverse Map of \(\mathrm{H}\).
+When \(p\neq-1\), this method is not implemented in this Abstract class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Map.times_">
+<code class="sig-name descname">times_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.times_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a <code class="xref py py-class docutils literal notranslate"><span class="pre">MapMultiplication</span></code> object to element-wise multiply the
+current <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code> \(\mathrm{H}\) with the given \(\mathrm{G}\).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Map.makeComposition_">
+<code class="sig-name descname">makeComposition_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.makeComposition_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a <code class="xref py py-class docutils literal notranslate"><span class="pre">MapComposition</span></code> object to compose the
+current Map \(\mathrm{H}\)  with the given \(\mathrm{G}\).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Map.copyElement">
+<code class="sig-name descname">copyElement</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.copyElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a deep copy of \(\mathrm{H}\)</p>
+<p>Called by the function <code class="xref py py-meth docutils literal notranslate"><span class="pre">copy()</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linop">
+<h2>LinOp<a class="headerlink" href="#linop" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="Abstract.LinOp">
+<em class="property">class </em><code class="sig-prename descclassname">Abstract.</code><code class="sig-name descname">LinOp</code><a class="headerlink" href="#Abstract.LinOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.Map</span></code></p>
+<p>Abstract class for linear operators
+$$ \mathrm{H}: \mathrm{X}\rightarrow \mathrm{Y}.$$
+where \(\mathrm{X}\) and \(\mathrm{Y}\) are either
+\(\mathbb{R}^N\) or \(\mathbb{C}^N\).</p>
+<p>All attributes of parent class <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code> are inherited</p>
+<p>See also <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="method">
+<dt id="Abstract.LinOp.applyAdjoint">
+<code class="sig-name descname">applyAdjoint</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyAdjoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes  \(\mathrm{y=H}^*\mathrm{y}\) for \(\mathrm{y} \in \mathrm{Y}\)</p>
+<p>Calls the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">applyAdjoint_()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.applyHtH">
+<code class="sig-name descname">applyHtH</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyHtH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes  \(\mathrm{y=H}^*\mathrm{Hx}\) for \(\mathrm{y} \in \mathrm{Y}\)</p>
+<p>Calls the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">applyHHt_()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.applyHHt">
+<code class="sig-name descname">applyHHt</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyHHt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes  \(\mathrm{y=HH}^*\mathrm{y}\) for \(\mathrm{y} \in \mathrm{Y}\)</p>
+<p>Calls the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">applyHHt_()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.transpose">
+<code class="sig-name descname">transpose</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.transpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code> which is the Adjoint \(\mathrm{H}^{\star}\) of the
+current \(\mathrm{H}\).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.ctranspose">
+<code class="sig-name descname">ctranspose</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.ctranspose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do the same as <code class="xref py py-meth docutils literal notranslate"><span class="pre">transpose()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.applyAdjointInverse">
+<code class="sig-name descname">applyAdjointInverse</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyAdjointInverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes \(\mathrm{y} = \mathrm{H}^{-\star} \mathrm{x}\) for the given
+\(\mathrm{x} \in \mathrm{X}\). (if applicable)</p>
+<p>Calls the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">applyAdjointInverse_()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.makeHtH">
+<code class="sig-name descname">makeHtH</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.makeHtH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compose the Adjoint Map \(\mathrm{H}^{\star}\) with
+\(\mathrm{H}\). Returns a new map \(\mathrm{M=H}^{\star} \mathrm{H}\)</p>
+<p>Calls the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">makeHtH_()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.makeHHt">
+<code class="sig-name descname">makeHHt</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.makeHHt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compose the  Map \(\mathrm{H}\)  with its adjoint
+\(\mathrm{H}^{\star}\). Returns a new map \(\mathrm{M=H}\mathrm{H}^{\star}\)</p>
+<p>Calls the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">makeHHt_()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.applyAdjoint_">
+<code class="sig-name descname">applyAdjoint_</code><span class="sig-paren">(</span><em class="sig-param">~</em>, <em class="sig-param">~</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyAdjoint_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not implemented in this Abstract class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.applyHtH_">
+<code class="sig-name descname">applyHtH_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyHtH_" title="Permalink to this definition">¶</a></dt>
+<dd><p>There is a default implementation in the abstract class <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code> which
+calls successively the <code class="xref py py-meth docutils literal notranslate"><span class="pre">apply()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">applyAdjoint()</span></code> methods. However, it
+can be reimplemented in derived classes if there exists a faster way to perform computation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.applyHHt_">
+<code class="sig-name descname">applyHHt_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyHHt_" title="Permalink to this definition">¶</a></dt>
+<dd><p>There is a default implementation in the abstract class <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code>
+which calls successively the <code class="xref py py-meth docutils literal notranslate"><span class="pre">applyAdjoint()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">apply()</span></code> methods.
+However, it can be reimplemented in derived classes if there exists a faster
+way to perform computation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.applyAdjointInverse_">
+<code class="sig-name descname">applyAdjointInverse_</code><span class="sig-paren">(</span><em class="sig-param">~</em>, <em class="sig-param">~</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyAdjointInverse_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not implemented in this Abstract class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.plus_">
+<code class="sig-name descname">plus_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.plus_" title="Permalink to this definition">¶</a></dt>
+<dd><p>If \(\mathrm{G}\) is a <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code>, constructs a <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOpSummation</span></code> object to sum the
+current <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code> \(\mathrm{H}\) with the given \(\mathrm{G}\).
+Otherwise the summation will be a <code class="xref py py-class docutils literal notranslate"><span class="pre">MapSummation</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.makeAdjoint_">
+<code class="sig-name descname">makeAdjoint_</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.makeAdjoint_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOpAdjoint</span></code> from the current
+current <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code> \(\mathrm{H}\)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.makeHtH_">
+<code class="sig-name descname">makeHtH_</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.makeHtH_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOpComposition</span></code> corresponding to
+\(\mathrm{H}^{\star}\mathrm{H}\)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.makeHHt_">
+<code class="sig-name descname">makeHHt_</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.makeHHt_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOpComposition</span></code> corresponding to
+\(\mathrm{H}\mathrm{H}^{\star}\)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.makeInversion_">
+<code class="sig-name descname">makeInversion_</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.makeInversion_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOpInversion</span></code> corresponding to
+\(\mathrm{H}^{-1}\)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.makeComposition_">
+<code class="sig-name descname">makeComposition_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.makeComposition_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from parent class <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>.
+If \(\mathrm{G}\) is a <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code>, constructs a <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOpComposition</span></code>
+object to compose the current LinOp (this) with the given <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code>\(\mathrm{G}\).
+Otherwise the composition will be a <code class="xref py py-class docutils literal notranslate"><span class="pre">MapComposition</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.LinOp.applyJacobianT_">
+<code class="sig-name descname">applyJacobianT_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">y</em>, <em class="sig-param">~</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyJacobianT_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the method applyAdjoint (hence do not need to be
+reimplemented in derived classes)</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="cost">
+<h2>Cost<a class="headerlink" href="#cost" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="Abstract.Cost">
+<em class="property">class </em><code class="sig-prename descclassname">Abstract.</code><code class="sig-name descname">Cost</code><span class="sig-paren">(</span><em class="sig-param">sz</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.Map</span></code></p>
+<p>Abstract class for Cost functions
+$$ C : \mathrm{X} \longrightarrow \mathbb{R}$$
+with the following special structure
+$$ C(\mathrm{x}) := F( \mathrm{x} , \mathrm{y} ) $$
+where \(F\) is a function takin two variables, both in \(\mathrm{X}\).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> – data vector  (default 0)</p></li>
+<li><p><strong>name</strong> – name of the cost function</p></li>
+<li><p><strong>lip</strong> – Lipschitz constant of the gradient (when applicable and known, otherwise -1)</p></li>
+<li><p><strong>isConvex</strong> – true if the cost is convex</p></li>
+<li><p><strong>isSeparable</strong> – true if the cost is separable (R^n basis)</p></li>
+</ul>
+</dd>
+</dl>
+<p>All attributes of parent class <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code> are inherited and
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">norm</span></code> is fixed to -1, <code class="xref py py-attr docutils literal notranslate"><span class="pre">sizeout</span></code> is fixed to   for all <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p>
+<p>See also <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code>.</p>
+<dl class="method">
+<dt id="Abstract.Cost.applyGrad">
+<code class="sig-name descname">applyGrad</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.applyGrad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the gradient of the cost function at  \(\mathrm{x} \in \mathrm{X}\) (when applicable)
+$$ \mathrm{g} = \nabla C(\mathrm{x}) $$</p>
+<p>Calls the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">applyGrad_()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Cost.applyProx">
+<code class="sig-name descname">applyProx</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">z</em>, <em class="sig-param">alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.applyProx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the proximity operator of the cost at \(\mathrm{z} \in \mathrm{X} \) (when applicable)
+$$ \mathrm{prox}_{\alpha C}(\mathrm{z}) =  \mathrm{arg} \, \mathrm{min}_{\mathrm{u} \in \mathrm{X}} \; \frac{1}{2\alpha} \| \mathrm{u} - \mathrm{z} \|_2^2 + C(\mathrm{u}). $$</p>
+<p>Calls the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">applyProx_()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Cost.applyProxFench">
+<code class="sig-name descname">applyProxFench</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">z</em>, <em class="sig-param">alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.applyProxFench" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the proximity operator of the Fenchel Transform \(C^*\) at \(\mathrm{z} \in \mathrm{Y} \) (when applicable)</p>
+<p>Calls the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">applyProxFench_()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Cost.applyGrad_">
+<code class="sig-name descname">applyGrad_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.applyGrad_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not implemented in this Abstract class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Cost.applyProx_">
+<code class="sig-name descname">applyProx_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">z</em>, <em class="sig-param">alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.applyProx_" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default, if the cost \(C\) <code class="xref py py-attr docutils literal notranslate"><span class="pre">isConvex</span></code>, computes the proximity operator of  \(C^*\)
+at \(\mathrm{z} \in \mathrm{X} \) using the
+Moreau’s identity which uses the <code class="xref py py-meth docutils literal notranslate"><span class="pre">applyProxFench()</span></code> method
+$$\mathrm{prox}_{\alpha C}(\mathrm{z}) = \mathrm{z} - \alpha \,\mathrm{prox}_{\frac{1}{\alpha}C^*}\left(\frac{\mathrm{z}}{\alpha}\right).$$</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Cost.applyProxFench_">
+<code class="sig-name descname">applyProxFench_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">z</em>, <em class="sig-param">alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.applyProxFench_" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default, if the cost \(C\) <code class="xref py py-attr docutils literal notranslate"><span class="pre">isConvex</span></code>, computes the proximity operator of the Fenchel Transform
+\(C^*\) at \(\mathrm{z} \in \mathrm{Y} \) using the
+Moreau’s identity which uses the <code class="xref py py-meth docutils literal notranslate"><span class="pre">applyProx()</span></code> method
+$$\mathrm{prox}_{\alpha C^*}(\mathrm{z}) = \mathrm{z} - \alpha \,\mathrm{prox}_{\frac{1}{\alpha}C}\left(\frac{\mathrm{z}}{\alpha}\right).$$</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Cost.plus_">
+<code class="sig-name descname">plus_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.plus_" title="Permalink to this definition">¶</a></dt>
+<dd><p>If \(\mathrm{G}\) is a <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code>, constructs a <code class="xref py py-class docutils literal notranslate"><span class="pre">CostSummation</span></code> object to sum the
+current <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code> \(C\) with the given \(G\).
+Otherwise the summation will be a <code class="xref py py-class docutils literal notranslate"><span class="pre">MapSummation</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Cost.minus_">
+<code class="sig-name descname">minus_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.minus_" title="Permalink to this definition">¶</a></dt>
+<dd><p>If \(\mathrm{G}\) is a <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code>, constructs a <code class="xref py py-class docutils literal notranslate"><span class="pre">CostSummation</span></code> object to subtract to the
+current <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code> \(C\), the given \(G\).
+Otherwise the summation will be a <code class="xref py py-class docutils literal notranslate"><span class="pre">MapSummation</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Cost.makeComposition_">
+<code class="sig-name descname">makeComposition_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.makeComposition_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from parent class <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>.
+Constructs a <code class="xref py py-class docutils literal notranslate"><span class="pre">CostComposition</span></code> object to compose the
+current Cost (this) with the given <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>\(\mathrm{G}\).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Cost.applyJacobianT_">
+<code class="sig-name descname">applyJacobianT_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">y</em>, <em class="sig-param">v</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.applyJacobianT_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the method applyGrad (hence do not need to be
+reimplemented in derived classes)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Cost.set_y">
+<code class="sig-name descname">set_y</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.set_y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the attribute \(\mathrm{y}\)</p>
+<ul class="simple">
+<li><p>has to be conformable with the <code class="xref py py-attr docutils literal notranslate"><span class="pre">sizein</span></code> of the cost</p></li>
+<li><p>can be a scalar.</p></li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="opti">
+<h2>Opti<a class="headerlink" href="#opti" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="Abstract.Opti">
+<em class="property">class </em><code class="sig-prename descclassname">Abstract.</code><code class="sig-name descname">Opti</code><a class="headerlink" href="#Abstract.Opti" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matlab.mixin.SetGet</span></code></p>
+<p>Abstract class for optimization algorithms to minimize <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code> objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – name of the algorithm</p></li>
+<li><p><strong>cost</strong> – minimized <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p></li>
+<li><p><strong>maxiter</strong> – maximal number of iterations (default 50)</p></li>
+<li><p><strong>verbose</strong> – bollean (default true) to activate verbose mode</p></li>
+<li><p><strong>OutOp</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">OutputOpti</span></code> object</p></li>
+<li><p><strong>ItUpOut</strong> – number of iterations between two calls to the update method of the  <code class="xref py py-class docutils literal notranslate"><span class="pre">OutputOpti</span></code> object <code class="xref py py-attr docutils literal notranslate"><span class="pre">OutOp</span></code> (default 0)</p></li>
+<li><p><strong>CvOp</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCvg</span></code> object</p></li>
+<li><p><strong>time</strong> – execution time of the algorithm</p></li>
+<li><p><strong>niter</strong> – iteration counter</p></li>
+<li><p><strong>xopt</strong> – optimization variable</p></li>
+</ul>
+</dd>
+</dl>
+<p>See also <code class="xref py py-class docutils literal notranslate"><span class="pre">OutputOpti</span></code> <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p>
+<dl class="method">
+<dt id="Abstract.Opti.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x0</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Opti.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x0</strong> – initial point in \(\in X\), if no argument restarts from the current value <code class="xref py py-attr docutils literal notranslate"><span class="pre">xopt</span></code>.</p>
+</dd>
+</dl>
+<p><strong>note</strong>: this method does not return anything, the result being stored in public attribute <code class="xref py py-attr docutils literal notranslate"><span class="pre">xopt</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Opti.initialize">
+<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x0</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Opti.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements initialization of the algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x0</strong> – initial point</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Opti.doIteration">
+<code class="sig-name descname">doIteration</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Opti.doIteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements algorithm iteration</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p>flag with values</p>
+<ul class="simple">
+<li><p>OPTI_NEXT_IT (= 0) to go to the next iteration</p></li>
+<li><p>OPTI_REDO_IT (= 1) to redo the iteration</p></li>
+<li><p>OPTI_STOP    (= 2) to stop algorithm</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Opti.updateParams">
+<code class="sig-name descname">updateParams</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Opti.updateParams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the parameters of the algorithm at each iteration
+(default: no update). This method can be overloaded to makes
+some parameters varying during iterations (e.g. descent step,
+lagrangian parameters…)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Opti.starting_verb">
+<code class="sig-name descname">starting_verb</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Opti.starting_verb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic method to display a starting message in verbose mode.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.Opti.ending_verb">
+<code class="sig-name descname">ending_verb</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Opti.ending_verb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic method to display a ending message in verbose mode.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="operationsonmaps">
+<span id="ref-op-on-maps"></span><h2>OperationsOnMaps<a class="headerlink" href="#operationsonmaps" title="Permalink to this headline">¶</a></h2>
+<p>The following classes implement basic operations between Map (LinOp and Cost).
+They are not abstract but generally they do not need to be instanciated.
+They are mainly used inside the methods of the abstract classes <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code> and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code> for the operator algebra machinery.</p>
+<span class="target" id="module-Abstract.OperationsOnMaps"></span><section id="mapcomposition">
+<h3>MapComposition<a class="headerlink" href="#mapcomposition" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Abstract.OperationsOnMaps.MapComposition">
+<em class="property">class </em><code class="sig-prename descclassname">Abstract.OperationsOnMaps.</code><code class="sig-name descname">MapComposition</code><span class="sig-paren">(</span><em class="sig-param">H1</em>, <em class="sig-param">H2</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapComposition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.Map</span></code></p>
+<p>MapComposition : Composition of Maps
+$$ \mathrm{H}(\mathrm{x}) = \mathrm{H}_1 \left( \mathrm{H}_2(\mathrm{x}) \right) $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>H1</strong> – left hand side <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p></li>
+<li><p><strong>H2</strong> – right hand side <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> H=MapComposition(H1,H2)</p>
+<p>See also <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.MapComposition.apply_">
+<code class="sig-name descname">apply_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapComposition.apply_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.MapComposition.applyJacobianT_">
+<code class="sig-name descname">applyJacobianT_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">y</em>, <em class="sig-param">v</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapComposition.applyJacobianT_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.MapComposition.applyInverse_">
+<code class="sig-name descname">applyInverse_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapComposition.applyInverse_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.MapComposition.makeComposition_">
+<code class="sig-name descname">makeComposition_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapComposition.makeComposition_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="mapinversion">
+<h3>MapInversion<a class="headerlink" href="#mapinversion" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Abstract.OperationsOnMaps.MapInversion">
+<em class="property">class </em><code class="sig-prename descclassname">Abstract.OperationsOnMaps.</code><code class="sig-name descname">MapInversion</code><span class="sig-paren">(</span><em class="sig-param">M</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapInversion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.Map</span></code></p>
+<p>MapInversion : Builds the inverse <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>M</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code> object</p>
+</dd>
+</dl>
+<p><strong>Example</strong> Minv=MapInversion(M)</p>
+<p>See also <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.MapInversion.apply_">
+<code class="sig-name descname">apply_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapInversion.apply_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.MapInversion.applyInverse_">
+<code class="sig-name descname">applyInverse_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapInversion.applyInverse_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.MapInversion.mpower_">
+<code class="sig-name descname">mpower_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">p</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapInversion.mpower_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.MapInversion.makeComposition_">
+<code class="sig-name descname">makeComposition_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapInversion.makeComposition_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from parent class <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="mapsummation">
+<h3>MapSummation<a class="headerlink" href="#mapsummation" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Abstract.OperationsOnMaps.MapSummation">
+<em class="property">class </em><code class="sig-prename descclassname">Abstract.OperationsOnMaps.</code><code class="sig-name descname">MapSummation</code><span class="sig-paren">(</span><em class="sig-param">Maps</em>, <em class="sig-param">alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapSummation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.Map</span></code></p>
+<p>MapSummation: Sum of Maps
+$$ \mathrm{H}(\mathrm{x}) = \sum_i \alpha_i \mathrm{H}_i(\mathrm{x}) $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Maps</strong> – cell of <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p></li>
+<li><p><strong>alpha</strong> – array of coefficients</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> H=MapSummation(Maps,alpha)</p>
+<p>See also <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOpSummation</span></code></p>
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.MapSummation.apply_">
+<code class="sig-name descname">apply_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapSummation.apply_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.MapSummation.applyJacobianT_">
+<code class="sig-name descname">applyJacobianT_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">y</em>, <em class="sig-param">v</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapSummation.applyJacobianT_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.MapSummation.makeComposition_">
+<code class="sig-name descname">makeComposition_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapSummation.makeComposition_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="mapmultiplication">
+<h3>MapMultiplication<a class="headerlink" href="#mapmultiplication" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Abstract.OperationsOnMaps.MapMultiplication">
+<em class="property">class </em><code class="sig-prename descclassname">Abstract.OperationsOnMaps.</code><code class="sig-name descname">MapMultiplication</code><span class="sig-paren">(</span><em class="sig-param">Map1</em>, <em class="sig-param">Map2</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapMultiplication" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.Map</span></code></p>
+<p>MapMultiplication: Multiplication of Maps
+$$ \mathrm{H}(\mathrm{x}) =  \mathrm{H}_1(\mathrm{x}) \times \mathrm{H}_2(\mathrm{x}) $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Map1</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code> object</p></li>
+<li><p><strong>Map2</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code> object</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> H=MapMultiplication(Map1,Map2)</p>
+<p>See also <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.MapMultiplication.apply_">
+<code class="sig-name descname">apply_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapMultiplication.apply_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.MapMultiplication.applyJacobianT_">
+<code class="sig-name descname">applyJacobianT_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">y</em>, <em class="sig-param">v</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapMultiplication.applyJacobianT_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.MapMultiplication.makeComposition_">
+<code class="sig-name descname">makeComposition_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapMultiplication.makeComposition_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopadjoint">
+<h3>LinOpAdjoint<a class="headerlink" href="#linopadjoint" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Abstract.OperationsOnMaps.LinOpAdjoint">
+<em class="property">class </em><code class="sig-prename descclassname">Abstract.OperationsOnMaps.</code><code class="sig-name descname">LinOpAdjoint</code><span class="sig-paren">(</span><em class="sig-param">TLinOp</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.LinOp</span></code></p>
+<p>Adjoint : Builds the adjoint LinOp</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>TLinOp</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code> object</p>
+</dd>
+</dl>
+<p><strong>Example</strong> Tadj=LinOpAdjoint(TLinOp)</p>
+<p>See also <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpAdjoint.apply_">
+<code class="sig-name descname">apply_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.apply_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpAdjoint.applyAdjoint_">
+<code class="sig-name descname">applyAdjoint_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.applyAdjoint_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpAdjoint.applyHtH_">
+<code class="sig-name descname">applyHtH_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.applyHtH_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpAdjoint.applyHHt_">
+<code class="sig-name descname">applyHHt_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.applyHHt_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpAdjoint.applyInverse_">
+<code class="sig-name descname">applyInverse_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.applyInverse_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpAdjoint.applyAdjointInverse_">
+<code class="sig-name descname">applyAdjointInverse_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.applyAdjointInverse_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpAdjoint.makeAdjoint_">
+<code class="sig-name descname">makeAdjoint_</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.makeAdjoint_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from parent class <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpAdjoint.makeHHt_">
+<code class="sig-name descname">makeHHt_</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.makeHHt_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from parent class <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpAdjoint.makeHtH_">
+<code class="sig-name descname">makeHtH_</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.makeHtH_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from parent class <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopcomposition">
+<h3>LinOpComposition<a class="headerlink" href="#linopcomposition" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Abstract.OperationsOnMaps.LinOpComposition">
+<em class="property">class </em><code class="sig-prename descclassname">Abstract.OperationsOnMaps.</code><code class="sig-name descname">LinOpComposition</code><span class="sig-paren">(</span><em class="sig-param">H1</em>, <em class="sig-param">H2</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.OperationsOnMaps.MapComposition</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.LinOp</span></code></p>
+<p>LinOpComposition : Composition of LinOps
+$$ \mathrm{H}(\mathrm{x}) = \mathrm{H}_1 \mathrm{H}_2\mathrm{x} $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>H1</strong> – left hand side <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code> (or a scalar)</p></li>
+<li><p><strong>H2</strong> – right hand side <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> H=LinOpComposition(H1,H2)</p>
+<p>See also <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">MapComposition</span></code></p>
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpComposition.apply_">
+<code class="sig-name descname">apply_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.apply_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpComposition.applyAdjoint_">
+<code class="sig-name descname">applyAdjoint_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.applyAdjoint_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpComposition.applyHtH_">
+<code class="sig-name descname">applyHtH_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.applyHtH_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpComposition.applyHHt_">
+<code class="sig-name descname">applyHHt_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.applyHHt_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpComposition.applyAdjointInverse_">
+<code class="sig-name descname">applyAdjointInverse_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.applyAdjointInverse_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpComposition.makeAdjoint_">
+<code class="sig-name descname">makeAdjoint_</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.makeAdjoint_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from parent class <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpComposition.makeHtH_">
+<code class="sig-name descname">makeHtH_</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.makeHtH_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpComposition.makeHHt_">
+<code class="sig-name descname">makeHHt_</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.makeHHt_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpComposition.makeComposition_">
+<code class="sig-name descname">makeComposition_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.makeComposition_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">MapComposition</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopinversion">
+<h3>LinOpInversion<a class="headerlink" href="#linopinversion" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Abstract.OperationsOnMaps.LinOpInversion">
+<em class="property">class </em><code class="sig-prename descclassname">Abstract.OperationsOnMaps.</code><code class="sig-name descname">LinOpInversion</code><span class="sig-paren">(</span><em class="sig-param">M</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpInversion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.OperationsOnMaps.MapInversion</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.LinOp</span></code></p>
+<p>LinOpInversion : Builds the inverse <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>M</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code> object</p>
+</dd>
+</dl>
+<p><strong>Example</strong> Minv=LinOpInversion(M)</p>
+<p>See also <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">MapInversion</span></code></p>
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpInversion.applyAdjoint_">
+<code class="sig-name descname">applyAdjoint_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpInversion.applyAdjoint_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpInversion.applyAdjointInverse_">
+<code class="sig-name descname">applyAdjointInverse_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpInversion.applyAdjointInverse_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpInversion.mpower_">
+<code class="sig-name descname">mpower_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">p</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpInversion.mpower_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">MapInversion</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpInversion.makeComposition_">
+<code class="sig-name descname">makeComposition_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpInversion.makeComposition_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">MapInversion</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopsummation">
+<h3>LinOpSummation<a class="headerlink" href="#linopsummation" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Abstract.OperationsOnMaps.LinOpSummation">
+<em class="property">class </em><code class="sig-prename descclassname">Abstract.OperationsOnMaps.</code><code class="sig-name descname">LinOpSummation</code><span class="sig-paren">(</span><em class="sig-param">LinOps</em>, <em class="sig-param">alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpSummation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.OperationsOnMaps.MapSummation</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.LinOp</span></code></p>
+<p>LinOpSummation: Sum of linear operators
+$$ \mathrm{H}(\mathrm{x}) = \sum_i \alpha_i \mathrm{H}_i(\mathrm{x}) $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>LinOps</strong> – cell of <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p></li>
+<li><p><strong>alpha</strong> – array of coefficients</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> L=LinOpSummation(LinOps,alpha)</p>
+<p>See also <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">MapOpSummation</span></code></p>
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpSummation.applyAdjoint_">
+<code class="sig-name descname">applyAdjoint_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpSummation.applyAdjoint_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpSummation.makeAdjoint_">
+<code class="sig-name descname">makeAdjoint_</code><span class="sig-paren">(</span><em class="sig-param">this</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpSummation.makeAdjoint_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.LinOpSummation.plus_">
+<code class="sig-name descname">plus_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpSummation.plus_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="costcomposition">
+<h3>CostComposition<a class="headerlink" href="#costcomposition" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Abstract.OperationsOnMaps.CostComposition">
+<em class="property">class </em><code class="sig-prename descclassname">Abstract.OperationsOnMaps.</code><code class="sig-name descname">CostComposition</code><span class="sig-paren">(</span><em class="sig-param">H1</em>, <em class="sig-param">H2</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostComposition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.OperationsOnMaps.MapComposition</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.Cost</span></code></p>
+<p>CostComposition: Compose a <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code> with a <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>
+$$ C(\mathrm{x}) := F( \mathrm{Hx}) $$
+where \(F\) is a <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code> and \(\mathrm{H}\) a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>H1</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p></li>
+<li><p><strong>H2</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> C = CostComposition(H1,H2)</p>
+<p>See also <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">MapComposition</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p>
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.CostComposition.applyGrad_">
+<code class="sig-name descname">applyGrad_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostComposition.applyGrad_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.CostComposition.applyProx_">
+<code class="sig-name descname">applyProx_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">z</em>, <em class="sig-param">alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostComposition.applyProx_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p>
+<p>If this.H2 is a <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOp</span></code> and \(\mathrm{H}
+\mathrm{H}^{\star}\) is a <code class="xref py py-class docutils literal notranslate"><span class="pre">LinOpScaledIdentity</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.CostComposition.makeComposition_">
+<code class="sig-name descname">makeComposition_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostComposition.makeComposition_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.CostComposition.set_y">
+<code class="sig-name descname">set_y</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostComposition.set_y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the attribute \(\mathrm{y}\)</p>
+<ul class="simple">
+<li><p>has to be conformable with the <code class="xref py py-attr docutils literal notranslate"><span class="pre">sizeout</span></code> of the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>\(\mathrm{H}\),</p></li>
+<li><p>can be anything if \(\mathrm{H}\) is not yet set (empty),</p></li>
+<li><p>can be a scalar.</p></li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="costmultiplication">
+<h3>CostMultiplication<a class="headerlink" href="#costmultiplication" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Abstract.OperationsOnMaps.CostMultiplication">
+<em class="property">class </em><code class="sig-prename descclassname">Abstract.OperationsOnMaps.</code><code class="sig-name descname">CostMultiplication</code><span class="sig-paren">(</span><em class="sig-param">C1</em>, <em class="sig-param">C2</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostMultiplication" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.Cost</span></code></p>
+<p>CostMultiplication: Multiplication of Costs
+$$C(\mathrm{x}) = C_1(\mathrm{x}) \times C_1(\mathrm{x}) $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>C1</strong> – a <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code> object or a scalar</p></li>
+<li><p><strong>C2</strong> – a <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code> object</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> F = MulCost(Cost1,Cost2)</p>
+<p>See also <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p>
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.CostMultiplication.apply_">
+<code class="sig-name descname">apply_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostMultiplication.apply_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.CostMultiplication.applyGrad_">
+<code class="sig-name descname">applyGrad_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostMultiplication.applyGrad_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.CostMultiplication.applyProx_">
+<code class="sig-name descname">applyProx_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em>, <em class="sig-param">alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostMultiplication.applyProx_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.CostMultiplication.makeComposition_">
+<code class="sig-name descname">makeComposition_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">G</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostMultiplication.makeComposition_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="costsummation">
+<h3>CostSummation<a class="headerlink" href="#costsummation" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Abstract.OperationsOnMaps.CostSummation">
+<em class="property">class </em><code class="sig-prename descclassname">Abstract.OperationsOnMaps.</code><code class="sig-name descname">CostSummation</code><span class="sig-paren">(</span><em class="sig-param">costs</em>, <em class="sig-param">alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostSummation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.OperationsOnMaps.MapSummation</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.Cost</span></code></p>
+<p>CostSummation : Sum of <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code>
+$$C(\mathrm{x}) = \sum_i \alpha_i C_i(\mathrm{x}) $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>costs</strong> – cell of <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p></li>
+<li><p><strong>alpha</strong> – array of coefficients</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> F = CostSummation(ACost,alpha)</p>
+<p>See also <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">MapOpSummation</span></code></p>
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.CostSummation.makePartialSummation">
+<code class="sig-name descname">makePartialSummation</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">Lsub</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostSummation.makePartialSummation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instanciation of <code class="xref py py-class docutils literal notranslate"><span class="pre">CostPartialSummation</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>Lsub</strong> – number of <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code> used for computation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.CostSummation.applyGrad_">
+<code class="sig-name descname">applyGrad_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostSummation.applyGrad_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.CostSummation.applyProx_">
+<code class="sig-name descname">applyProx_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">z</em>, <em class="sig-param">alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostSummation.applyProx_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code> in the case of the sum
+between a <code class="xref py py-class docutils literal notranslate"><span class="pre">CostRectangle</span></code> \(i_C \) and a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code> \(f \) which is separable [1]
+$$ \mathrm{prox}_{\alpha(i_C +f)}(z) = \mathrm{prox}_{i_c} \circ \mathrm{prox}_{\alpha f}(z) $$</p>
+<p><strong>Reference</strong></p>
+<p>[1] “A Douglas?Rachford splitting approach to nonsmooth convex variational signal recovery”
+P. L. Combettes, and J.C. Pesquet, Journal of Selected Topics in Signal Processing, 1(4), 564-574, 2007</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="costpartialsummation">
+<h3>CostPartialSummation<a class="headerlink" href="#costpartialsummation" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Abstract.OperationsOnMaps.CostPartialSummation">
+<em class="property">class </em><code class="sig-prename descclassname">Abstract.OperationsOnMaps.</code><code class="sig-name descname">CostPartialSummation</code><span class="sig-paren">(</span><em class="sig-param">costs</em>, <em class="sig-param">alpha</em>, <em class="sig-param">Lsub</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostPartialSummation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Abstract.OperationsOnMaps.CostSummation</span></code></p>
+<p>CostPartialSummation : Sum of <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code> with apply, applyGrad,…
+computed from a subset of Cost
+$$C(\mathrm{x}) = \sum_i \alpha_i C_i(\mathrm{x}) $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>costs</strong> – cell of <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p></li>
+<li><p><strong>alpha</strong> – array of coefficients</p></li>
+<li><p><strong>Lsub</strong> – number of <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code> used for computation</p></li>
+<li><p><strong>partialGrad</strong> – parameter for subset selection (0: no partial
+gradient; 1: stochastic gradient descent; 2: equally spaced indices)</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> F = CostPartialSummation(ACost,alpha,Lsub)</p>
+<p>See also <code class="xref py py-class docutils literal notranslate"><span class="pre">Map</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">MapOpSummation</span></code></p>
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.CostPartialSummation.setLsub">
+<code class="sig-name descname">setLsub</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">Lsub</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostPartialSummation.setLsub" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set Lsub parameter</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.CostPartialSummation.apply_">
+<code class="sig-name descname">apply_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostPartialSummation.apply_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Abstract.OperationsOnMaps.CostPartialSummation.applyGrad_">
+<code class="sig-name descname">applyGrad_</code><span class="sig-paren">(</span><em class="sig-param">this</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostPartialSummation.applyGrad_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reimplemented from <code class="xref py py-class docutils literal notranslate"><span class="pre">Cost</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="linop.html" class="btn btn-neutral float-right" title="Linear Operators (LinOp)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="conditionsuse.html" class="btn btn-neutral float-left" title="Conditions of Use" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2017, Biomedical Imaging Group (EPFL).
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

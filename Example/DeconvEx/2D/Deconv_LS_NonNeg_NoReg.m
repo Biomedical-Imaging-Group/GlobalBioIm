@@ -46,7 +46,7 @@ R_POS=CostNonNeg(sz);    % Non-Negativity
 F=LS*H;
 F.doPrecomputation=1;
 
-% -- FISTA LS + NonNeg
+%% -- FISTA LS + NonNeg
 FBS=OptiFBS(F,R_POS);
 FBS.OutOp=OutputOptiSNR(1,im,10);
 FBS.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  
@@ -55,7 +55,7 @@ FBS.fista=true;         % activate fista
 FBS.maxiter=200;        % max number of iterations
 FBS.run(zeros(size(y)));% run the algorithm (Note that gam is fixed automatically to 1/F.lip here since F.lip is defined and since we do not have setted gam) 
 
-% -- Douglas-Rachford LS + NonNeg
+%% -- Douglas-Rachford LS + NonNeg
 DR=OptiDouglasRachford(F,R_POS,[],10,1.5);
 DR.OutOp=OutputOptiSNR(1,im,10);
 DR.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4), 'StepRelative',1e-4);  

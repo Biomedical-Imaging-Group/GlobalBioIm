@@ -52,7 +52,7 @@ R_N12=CostMixNorm21([sz,2],3); % Mixed Norm 2-1
 G=LinOpGrad(sz);               % Operator Gradient
 lamb=5e-3;                     % Hyperparameter  
 
-% -- ADMM KL + TV + NonNeg
+%% -- ADMM KL + TV + NonNeg
 Fn={CostKullLeib([],y,1e-6),lamb*R_N12,R_POS};
 Hn={H,G,LinOpDiag(sz)};
 rho_n=[1e-3,1e-3,1e-3];
@@ -62,7 +62,7 @@ ADMM.ItUpOut=2;                                  % call OutputOpti update every 
 ADMM.maxiter=200;                                 % max number of iterations
 ADMM.run(y);                                      % run the algorithm
 
-% -- PrimalDual Condat KL + TV + NonNeg
+%% -- PrimalDual Condat KL + TV + NonNeg
 Fn={lamb*R_N12,F};
 Hn={G,H};
 PDC=OptiPrimalDualCondat([],R_POS,Fn,Hn);
@@ -74,7 +74,7 @@ PDC.ItUpOut=2;        % call OutputOpti update every ItUpOut iterations
 PDC.maxiter=200;      % max number of iterations
 PDC.run(y);           % run the algorithm 
 
-% -- Richardson-Lucy-TV  KL + TV + NonNeg (implicit)
+%% -- Richardson-Lucy-TV  KL + TV + NonNeg (implicit)
 RLTV=OptiRichLucy(F*H,1,lamb);
 RLTV.OutOp=OutputOptiSNR(1,im,40);
 RLTV.ItUpOut=2;   % call OutputOpti update every ItUpOut iterations
@@ -94,7 +94,7 @@ VMLMB.run(y);                                  % run the algorithm
 
 
 
-% -- Display
+%% -- Display
 imdisp(ADMM.xopt,'KL+TV+POS (ADMM)',1);
 imdisp(PDC.xopt,'KL+TV+POS (Condat)',1);
 imdisp(RLTV.xopt,'KL+TV+POS (RL-TV)',1);

@@ -108,9 +108,8 @@ classdef CostMixNormSchatt1 < Cost
                 E=max(abs(E)-alpha,0).*sign(E);
                 y=reshape(this.svdRecomp(E,V),this.sizein);
             elseif this.p==2
-                [E,V]=this.svdDecomp(x);
-                E=E./(1+alpha);
-                y=reshape(this.svdRecomp(E,V),this.sizein);
+                Frob = sqrt(sum(x.^2,3)+x(:,:,2).^2);
+                y = max(1-1./Frob,0).*x;
             else
                 y=applyProx_@Cost(this,x,alpha);
             end

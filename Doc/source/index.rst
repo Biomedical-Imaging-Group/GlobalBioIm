@@ -48,7 +48,7 @@ Contents
    :maxdepth: 1
    :caption: General
 
-   Download or Clone (v 1.1.2) <https://github.com/Biomedical-Imaging-Group/GlobalBioIm>
+   Download or Clone (v 1.2) <https://github.com/Biomedical-Imaging-Group/GlobalBioIm>
    infos
    examples
    gui

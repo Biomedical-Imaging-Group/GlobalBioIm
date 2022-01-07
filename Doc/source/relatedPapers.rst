@@ -14,7 +14,7 @@ Papers with open-source code
 ----------------------------
 
 | **[11] REXPACO: an algorithm for high contrast reconstruction of the circumstellar environment by angular differential imaging** 
-| arXiv preprint, 2021  
+| Astronomy & Astrophysics, 651-A62, pp. 24, 2021  
   `[Paper] <https://arxiv.org/abs/2104.09672>`_
   `[Code] <https://github.com/olivier-flasseur/rexpaco_demo>`_
 | O. Flasseur, S. Thé, L. Denis, E. Thiébaut, and M. Langlois
@@ -26,7 +26,7 @@ Papers with open-source code
 | M. Zehni, and Z. Zhao
 
 | **[9] Gauging diffraction patterns: field of view and bandwidth estimation in lensless** 
-| Applied Optics, 60,  10, pp. B38-B48, 2021  
+| Applied Optics, 60-10, pp. B38-B48, 2021  
   `[Paper] <https://www.osapublishing.org/ao/abstract.cfm?uri=ao-60-10-B38>`_
   `[Code] <https://github.com/FerreolS/COMCI>`_
 | F. Soulez
@@ -93,8 +93,8 @@ Other papers
   `[Paper] <https://arxiv.org/abs/2107.03679>`_
 | T. Hong, T.-A. Pham, E. Treister, and M. Unser.
 
-| **[24] Sparsest Continuous Piecewise-Linear Representation of Data** 
-| ArXiv preprint
+| **[24] Sparsest piecewise-linear regression of one-dimensional data** 
+| Journal of Computational and Applied Mathematics, 2021.
   `[Paper] <https://arxiv.org/pdf/2003.10112>`_
 | T. Debarre, Q. Denoyelle,  M. Unser, and J. Fageot.
 

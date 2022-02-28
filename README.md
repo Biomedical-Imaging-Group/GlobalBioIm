@@ -3,6 +3,24 @@
 
 This Matlab toolbox provides a set of tools (operators, cost functions, optimization algorithms) for solving inverse problems.
 
+
+  <table>
+  <tr>
+    <td>
+      <p align="center">
+      <img width="200" src="https://github.com/Biomedical-Imaging-Group/GlobalBioIm/blob/master/Doc/source/EPFL_Logo_Digital_RGB_PROD.jpg"/>
+      <img width="400" src="https://github.com/Biomedical-Imaging-Group/GlobalBioIm/blob/master/Doc/source/Logo-CIBM_variation-colour-CMYK-300dpi.jpg"/>
+        </p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      GlobalBioIm acknowledges the support of the <a href="https://epfl.ch">École Polytechnique Fédérale de Lausanne</a>, in Lausanne, Switzerland, and the <a href="https://cibm.ch">CIBM Center for Biomedical Imaging</a>, in Switzerland.
+    </td>
+  </tr>
+</table>
+
+
 ## Getting started 
 
 Download or clone this repository and run the script *setGlobalBioImPath.m* which will update your Matlab path with the library.

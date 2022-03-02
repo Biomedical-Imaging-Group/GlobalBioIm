@@ -8,8 +8,8 @@ This Matlab toolbox provides a set of tools (operators, cost functions, optimiza
   <tr>
     <td>
       <p align="center">
-      <img width="200" src="https://github.com/Biomedical-Imaging-Group/GlobalBioIm/blob/master/Doc/source/EPFL_Logo_Digital_RGB_PROD.jpg"/>
-      <img width="400" src="https://github.com/Biomedical-Imaging-Group/GlobalBioIm/blob/master/Doc/source/Logo-CIBM_variation-colour-CMYK-300dpi.jpg"/>
+      <img width="200" src="https://github.com/poldap/GlobalBioIm/blob/master/Doc/source/EPFL_Logo_Digital_RGB_PROD.png"/>
+      <img width="400" src="https://github.com/poldap/GlobalBioIm/blob/master/Doc/source/Logo-CIBM_variation-colour-72dpi.png"/>
         </p>
     </td>
   </tr>

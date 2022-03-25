@@ -35,7 +35,7 @@ E. Soubies, F. Soulez, M. McCann,  T-A. Pham, L. Donati, T. Debarre, D. Sage, an
   <tr>
     <td>
       <p align="center">
-      <a href="https://erc.europa.eu/"> <img width="200" src="https://github.com/poldap/GlobalBioIm/blob/master/Doc/source/Logo-ERC.png"/> </a>
+      <a href="https://erc.europa.eu/"> <img width="100" src="https://github.com/poldap/GlobalBioIm/blob/master/Doc/source/Logo-ERC.png"/> </a>
       <a href="https://epfl.ch"> <img width="200" src="https://github.com/poldap/GlobalBioIm/blob/master/Doc/source/EPFL_Logo_Digital_RGB_PROD.png"/> </a>
       <a href="https://cibm.ch"> <img width="400" src="https://github.com/poldap/GlobalBioIm/blob/master/Doc/source/Logo-CIBM_variation-colour-72dpi.png"/> </a>
         </p>

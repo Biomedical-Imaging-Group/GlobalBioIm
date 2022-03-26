@@ -13,23 +13,29 @@ If you want to add your work in this list, do not hesitate to
 Papers with open-source code
 ----------------------------
 
+| **[12] A constrained method for lensless coherent imaging of thin samples** 
+| Applied Optics, 61-9, pp. F34--F46, 2022  
+  `[Paper] <https://opg.optica.org/ao/fulltext.cfm?uri=ao-61-9-F34&id=467948>`_
+  `[Code] <https://github.com/FerreolS/COMCI>`_
+| F. Soulez, M. Rostykus, C. Moser, and M. Unser.
+
 | **[11] REXPACO: an algorithm for high contrast reconstruction of the circumstellar environment by angular differential imaging** 
 | Astronomy & Astrophysics, 651-A62, pp. 24, 2021  
   `[Paper] <https://arxiv.org/abs/2104.09672>`_
   `[Code] <https://github.com/olivier-flasseur/rexpaco_demo>`_
-| O. Flasseur, S. Thé, L. Denis, E. Thiébaut, and M. Langlois
+| O. Flasseur, S. Thé, L. Denis, E. Thiébaut, and M. Langlois.
 
 | **[10] UVTomo-GAN: An adversarial learning based approach for unknown view X-ray tomographic reconstruction** 
 | Proceedings of ISBI, 2021.
   `[Paper] <https://arxiv.org/abs/2102.04590>`_
   `[Code] <https://github.com/MonaZI/UVTomogan>`_
-| M. Zehni, and Z. Zhao
+| M. Zehni, and Z. Zhao.
 
 | **[9] Gauging diffraction patterns: field of view and bandwidth estimation in lensless** 
 | Applied Optics, 60-10, pp. B38-B48, 2021  
   `[Paper] <https://www.osapublishing.org/ao/abstract.cfm?uri=ao-60-10-B38>`_
   `[Code] <https://github.com/FerreolS/COMCI>`_
-| F. Soulez
+| F. Soulez.
 
 | **[8] Multi-Kernel Regression with Sparsity Constraint**
 | SIAM Journal on Mathematics of Data Science, 3-1, pp. 201–224, 2021.
@@ -83,18 +89,38 @@ Papers with open-source code
 Other papers
 ------------
 
-| **[26] An Adversarial Learning Based Approach for Unknown View Tomographic Reconstruction**
+| **[30] A Statistical Framework to Investigate the Optimality of Neural Networks for Inverse Problems**
+| ArXiv preprint
+  `[Paper] <https://arxiv.org/abs/2203.09920>`_
+| P. Bohra, P. Pla, J-F. Giovannelli, and M. Unser.
+
+| **[29] Coupled Splines for Sparse Curve Fitting**
+| ArXiv preprint
+  `[Paper] <https://arxiv.org/abs/2202.01641>`_
+| I. L. Jover, T. Debarre, S. Aziznejad, and M. Unser.
+
+| **[28] An Adversarial Learning Based Approach for Unknown View Tomographic Reconstruction**
 | ArXiv preprint
   `[Paper] <https://arxiv.org/abs/2108.09873>`_
-| M. Zehni, and Z. Zhao
+| M. Zehni, and Z. Zhao.
 
-| **[25] Diffraction Tomography with Helmholtz Equation: Efficient and Robust Multigrid-Based Solver**
+| **[27] Diffraction Tomography with Helmholtz Equation: Efficient and Robust Multigrid-Based Solver**
 | ArXiv preprint
   `[Paper] <https://arxiv.org/abs/2107.03679>`_
 | T. Hong, T.-A. Pham, E. Treister, and M. Unser.
 
+| **[26] First observation of a quadruple asteroid-Detection of a third moon around (130) Elektra with SPHERE/IFS** 
+| Astronomy & Astrophysics, 658, 2022.
+  `[Paper] <https://www.aanda.org/articles/aa/abs/2022/02/aa42623-21/aa42623-21.html>`_
+| A. Berdeu, M. Langlois, and V. Vachier.
+
+| **[25] Automatic numerical focus plane estimation in digital holographic microscopy using calibration beads** 
+| Applied optics, 61-5, 2022.
+  `[Paper] <https://opg.optica.org/ao/viewmedia.cfm?uri=ao-61-5-B345>`_
+| D. Brault, C. Fournier,  T. Olivier, N. Faure, S. Dixneuf, L. Thibon, L. Mees,  and L. Denis.
+
 | **[24] Sparsest piecewise-linear regression of one-dimensional data** 
-| Journal of Computational and Applied Mathematics, 2021.
+| Journal of Computational and Applied Mathematics, 406, 2022.
   `[Paper] <https://arxiv.org/pdf/2003.10112>`_
 | T. Debarre, Q. Denoyelle,  M. Unser, and J. Fageot.
 

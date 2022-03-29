@@ -41,6 +41,19 @@ Reference
 | E. Soubies, F. Soulez, M. T. McCann, T-A. Pham, L. Donati, T. Debarre, D. Sage, and M. Unser.
 
 
+Acknowledgements
+----------------
+
+.. image:: Logo-ERC.png
+   :width: 15 %
+.. image:: EPFL_Logo_Digital_RGB_PROD.png
+   :width: 32 %
+.. image:: Logo-CIBM_variation-colour-72dpi.png
+   :width: 48 %
+
+GlobalBioIm acknowledges the support of the `European Research Council <https://erc.europa.eu/>`_, the  `École Polytechnique Fédérale de Lausanne <https://epfl.ch>`_, in Lausanne, Switzerland, and the `CIBM Center for Biomedical Imaging <https://cibm.ch>`_, in Switzerland.
+
+
 Contents
 ********
 

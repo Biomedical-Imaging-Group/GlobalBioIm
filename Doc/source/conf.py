@@ -16,15 +16,15 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
+import os
+import sys
 
 
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
-# needs_sphinx = '1.0'
+#needs_sphinx = '4'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -35,9 +35,11 @@ extensions = ['sphinx.ext.mathjax',
     'sphinxcontrib.matlab', 
     'sphinxcontrib.yt',  
     'sphinx.ext.viewcode']
+primary_domain = 'mat'
 
     
-matlab_src_dir = '..'
+#sys.path.insert(0, os.path.abspath(os.path.join('..', '..')))
+matlab_src_dir = os.path.abspath('../..')
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -70,7 +72,7 @@ release = u'1.2'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+#language = 'Matlab'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -104,7 +106,7 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 
 # -- Options for HTMLHelp output ------------------------------------------

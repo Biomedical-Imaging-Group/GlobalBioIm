@@ -89,40 +89,45 @@ Papers with open-source code
 Other papers
 ------------
 
-| **[30] A Statistical Framework to Investigate the Optimality of Neural Networks for Inverse Problems**
+| **[31] A Statistical Framework to Investigate the Optimality of Neural Networks for Inverse Problems**
 | ArXiv preprint
   `[Paper] <https://arxiv.org/abs/2203.09920>`_
 | P. Bohra, P. Pla, J-F. Giovannelli, and M. Unser.
 
-| **[29] Coupled Splines for Sparse Curve Fitting**
-| ArXiv preprint
-  `[Paper] <https://arxiv.org/abs/2202.01641>`_
-| I. L. Jover, T. Debarre, S. Aziznejad, and M. Unser.
-
-| **[28] An Adversarial Learning Based Approach for Unknown View Tomographic Reconstruction**
-| ArXiv preprint
-  `[Paper] <https://arxiv.org/abs/2108.09873>`_
-| M. Zehni, and Z. Zhao.
-
-| **[27] Diffraction Tomography with Helmholtz Equation: Efficient and Robust Multigrid-Based Solver**
+| **[30] Diffraction Tomography with Helmholtz Equation: Efficient and Robust Multigrid-Based Solver**
 | ArXiv preprint
   `[Paper] <https://arxiv.org/abs/2107.03679>`_
 | T. Hong, T.-A. Pham, E. Treister, and M. Unser.
 
-| **[26] First observation of a quadruple asteroid-Detection of a third moon around (130) Elektra with SPHERE/IFS** 
+| **[29] An Adversarial Learning Based Approach for Unknown View Tomographic Reconstruction**
+| IEEE Transactions on Computational Imaging, 8, pp. 705 - 720, 2022. 
+  `[Paper] <https://arxiv.org/abs/2108.09873>`_
+| M. Zehni, and Z. Zhao.
+
+| **[28] Coupled Splines for Sparse Curve Fitting**
+| IEEE Transactions on Image Processing, 31, pp. 4707 - 4718, 2022.
+  `[Paper] <https://arxiv.org/abs/2202.01641>`_
+| I. L. Jover, T. Debarre, S. Aziznejad, and M. Unser.
+
+| **[27] First observation of a quadruple asteroid-Detection of a third moon around (130) Elektra with SPHERE/IFS** 
 | Astronomy & Astrophysics, 658, 2022.
   `[Paper] <https://www.aanda.org/articles/aa/abs/2022/02/aa42623-21/aa42623-21.html>`_
 | A. Berdeu, M. Langlois, and V. Vachier.
 
-| **[25] Automatic numerical focus plane estimation in digital holographic microscopy using calibration beads** 
+| **[26] Automatic numerical focus plane estimation in digital holographic microscopy using calibration beads** 
 | Applied optics, 61-5, 2022.
   `[Paper] <https://opg.optica.org/ao/viewmedia.cfm?uri=ao-61-5-B345>`_
 | D. Brault, C. Fournier,  T. Olivier, N. Faure, S. Dixneuf, L. Thibon, L. Mees,  and L. Denis.
 
-| **[24] Sparsest piecewise-linear regression of one-dimensional data** 
+| **[25] Sparsest piecewise-linear regression of one-dimensional data** 
 | Journal of Computational and Applied Mathematics, 406, 2022.
   `[Paper] <https://arxiv.org/pdf/2003.10112>`_
 | T. Debarre, Q. Denoyelle,  M. Unser, and J. Fageot.
+
+| **[24] Comparison of linear and nonlinear deconvolution algorithms for co-optimization of depth-of-field enhancing binary phase masks**
+| OSA Continuum, 4, pp. 589-601,  2021
+  `[Paper] <https://opg.optica.org/osac/fulltext.cfm?uri=osac-4-2-589&id=447089>`_
+| O. Lévêque, C. Kulcsár, and F. Goudail.
 
 | **[23] Joint reconstruction of an in-focus image and of the background signal in in-line holographic microscopy**
 | Optics and Lasers in Engineering, 146, 2021. 

@@ -3,6 +3,9 @@
 Graphical User Interface (GUI)
 ******************************
 
+.. Hack to force MathJax insertion
+.. math::
+
 GlobalBioIm is ditributed together with a user-friendly Matlab interface that allows
 to intuitively build tailored reconstruction algorithms with minimal effort. 
 

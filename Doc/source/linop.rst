@@ -1,6 +1,9 @@
 Linear Operators (LinOp)
 ************************
 
+.. Hack to force MathJax insertion
+.. math::
+
 This section contains linear operator classes which all derive from the abstract class :class:`LinOp`.
 
 .. automodule:: LinOp

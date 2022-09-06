@@ -1,9 +1,10 @@
-.. include global.rst
-
 Cost Functions (Cost)
 =====================
 
-	This section contains cost functions classes which all derive from the abstract class :class:`Cost`.
+.. Hack to force MathJax insertion
+.. math::
+
+This section contains cost functions classes which all derive from the abstract class :class:`Cost`.
 	
 .. automodule:: Cost
 

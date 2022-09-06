@@ -1,5 +1,10 @@
+.. include global.rst
+
 Abstract Classes
 ****************
+
+.. Hack to force MathJax insertion
+.. math::
 
 This section describes the abstract classes of the GlobalBioIm library. It provides general properties for 
 every derived classes.

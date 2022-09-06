@@ -1,6 +1,9 @@
 List of Methods
 ***************
 
+.. Hack to force MathJax insertion
+.. math::
+
 This section gives an overview of all the methods for each abstract class (and thus all inherited classes). All the 
 core methods (i.e. with "_") can be reimplemented in any derived class (if relevant). Otherwise the default implementation
 of the mother class is used.

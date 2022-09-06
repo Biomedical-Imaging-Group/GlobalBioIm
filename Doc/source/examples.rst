@@ -4,6 +4,9 @@
 Examples
 ********
 
+.. Hack to force MathJax insertion
+.. math::
+
 3D Deconvolution
 ----------------
 

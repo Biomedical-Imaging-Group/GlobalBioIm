@@ -1,6 +1,9 @@
 List of Properties
 ******************
 
+.. Hack to force MathJax insertion
+.. math::
+
 This section gives an overview of all the properties for each abstract class (and thus all inherited classes). Each
 derived class can have further new properties which can be found in the technical documentation dedicated to each class.
 

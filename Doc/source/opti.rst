@@ -1,9 +1,10 @@
-.. include global.rst
-
 Optimization Algorithms (Opti)
 ==============================
 
-	This section contains optimization algorithms classes which all derive from the abstract class :class:`Opti`.
+.. Hack to force MathJax insertion
+.. math::
+
+This section contains optimization algorithms classes which all derive from the abstract class :class:`Opti`.
 	
 .. automodule:: Opti
 

@@ -1,6 +1,9 @@
 Important Information
 *********************
 
+.. Hack to force MathJax insertion
+.. math::
+
 This section contains useful information for developers/users who want to 
 
    - Implement new classes :class:`Map`, :class:`LinOp`, :class:`Cost`, or :class:`Opti`

@@ -1,4 +1,5 @@
 sphinx==5.1.1
 sphinxcontrib-matlabdomain==0.14
+sphinx-mathjax-offline
 sphinx_rtd_theme 
 sphinxcontrib.yt

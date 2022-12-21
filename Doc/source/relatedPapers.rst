@@ -16,41 +16,53 @@ If you want to add your work in this list, do not hesitate to
 Papers with open-source code
 ----------------------------
 
-| **[12] A constrained method for lensless coherent imaging of thin samples** 
+| **[14] Mechanical artifacts in optical projection tomography: classification and automatic calibration** 
+| Optics Continuum, 1-12, pp. 2577--2589, 2022  
+  `[Paper] <https://opg.optica.org/optcon/fulltext.cfm?uri=optcon-1-12-2577###>`_
+  `[Code] <https://zenodo.org/record/7315108#.Y6M2xtLMLW0>`_
+| Y. Liu, J. Dong, T-a. Pham, F. Marelli, and M. Unser.
+
+| **[13] A constrained method for lensless coherent imaging of thin samples** 
 | Applied Optics, 61-9, pp. F34--F46, 2022  
   `[Paper] <https://opg.optica.org/ao/fulltext.cfm?uri=ao-61-9-F34&id=467948>`_
   `[Code] <https://github.com/FerreolS/COMCI>`_
 | F. Soulez, M. Rostykus, C. Moser, and M. Unser.
 
-| **[11] REXPACO: an algorithm for high contrast reconstruction of the circumstellar environment by angular differential imaging** 
+| **[12] REXPACO: an algorithm for high contrast reconstruction of the circumstellar environment by angular differential imaging** 
 | Astronomy & Astrophysics, 651-A62, pp. 24, 2021  
   `[Paper] <https://arxiv.org/abs/2104.09672>`_
   `[Code] <https://github.com/olivier-flasseur/rexpaco_demo>`_
 | O. Flasseur, S. Thé, L. Denis, E. Thiébaut, and M. Langlois.
 
-| **[10] UVTomo-GAN: An adversarial learning based approach for unknown view X-ray tomographic reconstruction** 
+| **[11] UVTomo-GAN: An adversarial learning based approach for unknown view X-ray tomographic reconstruction** 
 | Proceedings of ISBI, 2021.
   `[Paper] <https://arxiv.org/abs/2102.04590>`_
   `[Code] <https://github.com/MonaZI/UVTomogan>`_
 | M. Zehni, and Z. Zhao.
 
-| **[9] Gauging diffraction patterns: field of view and bandwidth estimation in lensless** 
+| **[10] Gauging diffraction patterns: field of view and bandwidth estimation in lensless** 
 | Applied Optics, 60-10, pp. B38-B48, 2021  
   `[Paper] <https://www.osapublishing.org/ao/abstract.cfm?uri=ao-60-10-B38>`_
   `[Code] <https://github.com/FerreolS/COMCI>`_
 | F. Soulez.
 
-| **[8] Multi-Kernel Regression with Sparsity Constraint**
+| **[9] Multi-Kernel Regression with Sparsity Constraint**
 | SIAM Journal on Mathematics of Data Science, 3-1, pp. 201–224, 2021.
   `[Paper] <https://arxiv.org/abs/1811.00836>`_
   `[Code] <https://github.com/Biomedical-Imaging-Group/Multi-Kernel-Regression-gTV->`_
 | S. Aziznejad, and M. Unser.
 
-| **[7] PIC: a data reduction algorithm for integral field spectrographs-Application to the SPHERE instrument**
+| **[8] PIC: a data reduction algorithm for integral field spectrographs-Application to the SPHERE instrument**
 | Astronomy & Astrophysics, 635, pp. A90, 2020.
   `[Paper] <https://www.aanda.org/articles/aa/abs/2020/03/aa36890-19/aa36890-19.html>`_
   `[Code] <https://zenodo.org/record/3585632#.Xno1pvHjLUY>`_
 | A. Berdeu, F. Soulez, L. Denis, M. Langlois, and E. Thiébaut.
+
+| **[7] Joint Angular Refinement and Reconstruction for Single-Particle Cryo-EM** 
+| IEEE Transactions on Image Processing, 29, pp. 6151-6163, 2020. 
+  `[Paper] <https://arxiv.org/abs/2003.10062>`_
+  `[Code] <https://github.com/Biomedical-Imaging-Group/CryoEM-Joint-Refinement>`_
+| M. Zehni, L. Donati, E. Soubies, Z.J. Zhao, and M. Unser.
 
 | **[6] Three-Dimensional Optical Diffraction Tomography With Lippmann-Schwinger Model** 
 | IEEE Transactions on Computational Imaging, 6, pp. 727-738, 2020. 
@@ -102,60 +114,60 @@ Other papers
   `[Paper] <https://arxiv.org/abs/2107.03679>`_
 | T. Hong, T.-A. Pham, E. Treister, and M. Unser.
 
-| **[29] An Adversarial Learning Based Approach for Unknown View Tomographic Reconstruction**
+| **[29] Accurate unsupervised estimation of aberrations in digital holographic microscopy for improved quantitative reconstruction**
+| Optics Express, 30-21, pp. 38383-38404, 2022. 
+  `[Paper] <https://opg.optica.org/oe/fulltext.cfm?uri=oe-30-21-38383&id=507598###>`_
+| D. Brault, T. Olivier, F. Soulez, S. Joshi, N. Faure, and C. Fournier
+
+| **[28] An Adversarial Learning Based Approach for Unknown View Tomographic Reconstruction**
 | IEEE Transactions on Computational Imaging, 8, pp. 705 - 720, 2022. 
   `[Paper] <https://arxiv.org/abs/2108.09873>`_
 | M. Zehni, and Z. Zhao.
 
-| **[28] Coupled Splines for Sparse Curve Fitting**
+| **[27] Coupled Splines for Sparse Curve Fitting**
 | IEEE Transactions on Image Processing, 31, pp. 4707 - 4718, 2022.
   `[Paper] <https://arxiv.org/abs/2202.01641>`_
 | I. L. Jover, T. Debarre, S. Aziznejad, and M. Unser.
 
-| **[27] First observation of a quadruple asteroid-Detection of a third moon around (130) Elektra with SPHERE/IFS** 
+| **[26] First observation of a quadruple asteroid-Detection of a third moon around (130) Elektra with SPHERE/IFS** 
 | Astronomy & Astrophysics, 658, 2022.
   `[Paper] <https://www.aanda.org/articles/aa/abs/2022/02/aa42623-21/aa42623-21.html>`_
 | A. Berdeu, M. Langlois, and V. Vachier.
 
-| **[26] Automatic numerical focus plane estimation in digital holographic microscopy using calibration beads** 
+| **[25] Automatic numerical focus plane estimation in digital holographic microscopy using calibration beads** 
 | Applied optics, 61-5, 2022.
   `[Paper] <https://opg.optica.org/ao/viewmedia.cfm?uri=ao-61-5-B345>`_
 | D. Brault, C. Fournier,  T. Olivier, N. Faure, S. Dixneuf, L. Thibon, L. Mees,  and L. Denis.
 
-| **[25] Sparsest piecewise-linear regression of one-dimensional data** 
+| **[24] Sparsest piecewise-linear regression of one-dimensional data** 
 | Journal of Computational and Applied Mathematics, 406, 2022.
   `[Paper] <https://arxiv.org/pdf/2003.10112>`_
 | T. Debarre, Q. Denoyelle,  M. Unser, and J. Fageot.
 
-| **[24] Comparison of linear and nonlinear deconvolution algorithms for co-optimization of depth-of-field enhancing binary phase masks**
+| **[23] Comparison of linear and nonlinear deconvolution algorithms for co-optimization of depth-of-field enhancing binary phase masks**
 | OSA Continuum, 4, pp. 589-601,  2021
   `[Paper] <https://opg.optica.org/osac/fulltext.cfm?uri=osac-4-2-589&id=447089>`_
 | O. Lévêque, C. Kulcsár, and F. Goudail.
 
-| **[23] Joint reconstruction of an in-focus image and of the background signal in in-line holographic microscopy**
+| **[22] Joint reconstruction of an in-focus image and of the background signal in in-line holographic microscopy**
 | Optics and Lasers in Engineering, 146, 2021. 
   `[Paper] <https://www.sciencedirect.com/science/article/pii/S0143816621001615>`_
 | A. Berdeu, T. Olivier, F. Momey, L. Denis, F. Pinston, N. Faure, C. Fournier.
 
-| **[22] Optical diffraction tomography from single-molecule localization microscopy**
+| **[21] Optical diffraction tomography from single-molecule localization microscopy**
 | Optics Communications, 499, 2021.
   `[Paper] <https://www.sciencedirect.com/science/article/pii/S0030401821005393>`_
 | T.-A. Pham, E. Soubies, F. Soulez, and M. Unser.
 
-| **[21] Diffraction Tomography from single-molecule localization microscopy: Numerical feasibility** 
+| **[20] Diffraction Tomography from single-molecule localization microscopy: Numerical feasibility** 
 | Proceedings of ISBI, 2021.
   `[Paper] <https://hal.archives-ouvertes.fr/hal-03184774/>`_
 | T.-A. Pham, E. Soubies, F. Soulez, and M. Unser.
 
-| **[20] Continuous-Domain Signal Reconstruction Using L_p-Norm Regularization** 
+| **[19] Continuous-Domain Signal Reconstruction Using L_p-Norm Regularization** 
 | IEEE Transactions on Signal Processing, 68, pp.  4543 - 4554, 2020. 
   `[Paper] <https://ieeexplore.ieee.org/abstract/document/9154609?casa_token=8F2-BoJZGOIAAAAA:jx8KCcedX2WaadDXaOrriCVo43d3-WFxUdkLdChnjAXniNQVA5wGVblYQHh3AGyFamElOcnjAe8U>`_
 | P. Bohra and  M. Unser.
-
-| **[19] Joint Angular Refinement and Reconstruction for Single-Particle Cryo-EM** 
-| IEEE Transactions on Image Processing, 29, pp. 6151-6163, 2020. 
-  `[Paper] <https://arxiv.org/abs/2003.10062>`_
-| M. Zehni, L. Donati, E. Soubies, Z.J. Zhao, and M. Unser.
 
 | **[18] Hessian Splines for Scanning Transmission X-Ray Microscopy** 
 | Proceedings of ISBI, 2020.

@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Abstract Classes &mdash; GlobalBioIm Library 1.2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="_static/mathjax/tex-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Linear Operators (LinOp)" href="linop.html" />
+    <link rel="prev" title="Conditions of Use" href="conditionsuse.html" /> 
+</head>
+
+<body class="wy-body-for-nav" style="text-align:justify"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> GlobalBioIm Library
+          </a>
+              <div class="version">
+                1.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Biomedical-Imaging-Group/GlobalBioIm">Download or Clone (v 1.2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infos.html">Important Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">Graphical User Interface (GUI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="relatedPapers.html">Related Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conditionsuse.html">Conditions of Use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Technical Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Abstract Classes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#map">Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linop">LinOp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cost">Cost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#opti">Opti</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#operationsonmaps">OperationsOnMaps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mapcomposition">MapComposition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mapinversion">MapInversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mapsummation">MapSummation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mapmultiplication">MapMultiplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linopadjoint">LinOpAdjoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linopcomposition">LinOpComposition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linopinversion">LinOpInversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linopsummation">LinOpSummation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#costcomposition">CostComposition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#costmultiplication">CostMultiplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#costsummation">CostSummation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#costpartialsummation">CostPartialSummation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="linop.html">Linear Operators (LinOp)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nonlinop.html">Non-Linear Operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cost.html">Cost Functions (Cost)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opti.html">Optimization Algorithms (Opti)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methodssummary.html">List of Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="propertiessummary.html">List of Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu.html">Speedup with GPU</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="http://bigwww.epfl.ch">Biomedical Imaging Group</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GlobalBioIm Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Abstract Classes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/abstract.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="abstract-classes">
+<h1>Abstract Classes<a class="headerlink" href="#abstract-classes" title="Permalink to this heading"></a></h1>
+<div class="math notranslate nohighlight">
+\[\]</div>
+<p>This section describes the abstract classes of the GlobalBioIm library. It provides general properties for
+every derived classes.</p>
+<span class="target" id="module-Abstract"></span><section id="map">
+<h2>Map<a class="headerlink" href="#map" title="Permalink to this heading"></a></h2>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Abstract.Map">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Abstract.</span></span><span class="sig-name descname"><span class="pre">Map</span></span><a class="headerlink" href="#Abstract.Map" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">matlab.mixin.Copyable</span></code></p>
+<p>Abstract class for Maps which maps elements from \(\mathrm{X}\) to
+\(\mathrm{Y}\)
+$$ \mathrm{H}: \mathrm{X}\rightarrow \mathrm{Y}.$$
+where \(\mathrm{X}\) and \(\mathrm{Y}\) are either
+\(\mathbb{R}^N\) or \(\mathbb{C}^N\).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – name of the linear operator \(\mathbf{H}\)</p></li>
+<li><p><strong>sizein</strong> – dimension of the left hand side vector space \(\mathrm{X}\)</p></li>
+<li><p><strong>sizeout</strong> – dimension of the right hand side vector space \(\mathrm{Y}\)</p></li>
+<li><p><strong>norm</strong> – norm of the operator \(\|\mathrm{H}\|\) (if known, otherwise -1)</p></li>
+<li><p><strong>isInvertible</strong> – true if the method <a class="reference internal" href="#Abstract.Map.applyInverse_" title="Abstract.Map.applyInverse_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyInverse_()</span></code></a> is implemented</p></li>
+<li><p><strong>isDifferentiable</strong> – true if the method <a class="reference internal" href="#Abstract.Map.applyJacobianT_" title="Abstract.Map.applyJacobianT_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyJacobianT_()</span></code></a> is implemented</p></li>
+<li><p><strong>memoizeOpts</strong> – structure of boolean (one field per method, see details below).</p></li>
+<li><p><strong>doPrecomputation</strong> – boolean true to allow doing precomputations to save time (will generally require more memory).</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Note on the memoize option</strong> This option allows to store the result
+of a method such that if an identical call to this method is done,
+calculations are avoided. Example: memoizeOpts.apply=true will store
+the result of H*x.</p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.apply" title="Permalink to this definition"></a></dt>
+<dd><p>Computes \(\mathrm{y}=\mathrm{H}(\mathrm{x})\) for the given
+\(\mathrm{x} \in \mathrm{X}\).</p>
+<p>Calls the method <a class="reference internal" href="#Abstract.Map.apply_" title="Abstract.Map.apply_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">apply_()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.applyJacobianT">
+<span class="sig-name descname"><span class="pre">applyJacobianT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.applyJacobianT" title="Permalink to this definition"></a></dt>
+<dd><p>Compute \(\mathrm{x}=[\mathrm{J}_{\mathrm{H}}(\mathrm{v})]^{\star}\mathrm{y}\)
+where</p>
+<ul class="simple">
+<li><p>\([\mathrm{J}_{\mathrm{H}}(\mathrm{v})]\) is the Jacobian matrix of
+the Map \(\mathrm{H}\) computed at \(\mathrm{v} \in \mathrm{X} \)</p></li>
+<li><p>\(\mathrm{y} \in \mathrm{Y} \)</p></li>
+</ul>
+<p>Calls the method <a class="reference internal" href="#Abstract.Map.applyJacobianT_" title="Abstract.Map.applyJacobianT_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyJacobianT_()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.applyInverse">
+<span class="sig-name descname"><span class="pre">applyInverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.applyInverse" title="Permalink to this definition"></a></dt>
+<dd><p>Computes \(\mathrm{x} = \mathrm{H}^{-1} \mathrm{y}\) for the given
+\(\mathrm{y} \in \mathrm{Y}\). (if applicable)</p>
+<p>Calls the method <a class="reference internal" href="#Abstract.Map.applyInverse_" title="Abstract.Map.applyInverse_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyInverse_()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.makeComposition">
+<span class="sig-name descname"><span class="pre">makeComposition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.makeComposition" title="Permalink to this definition"></a></dt>
+<dd><p>Compose the Map \(\mathrm{H}\) with the given Map
+\(\mathrm{G}\). Returns a new map \(\mathrm{M=HG}\)</p>
+<p>Calls the method <a class="reference internal" href="#Abstract.Map.makeComposition_" title="Abstract.Map.makeComposition_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">makeComposition_()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.plus">
+<span class="sig-name descname"><span class="pre">plus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.plus" title="Permalink to this definition"></a></dt>
+<dd><p>Overload operator (+) for <a class="reference internal" href="#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></a> objects
+$$ \mathrm{M}(\mathrm{x}) := \mathrm{H}(\mathrm{x}) + \mathrm{G}(\mathrm{x})$$</p>
+<p>Calls the method <a class="reference internal" href="#Abstract.Map.plus_" title="Abstract.Map.plus_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">plus_()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.minus">
+<span class="sig-name descname"><span class="pre">minus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.minus" title="Permalink to this definition"></a></dt>
+<dd><p>Overload operator (-) for <a class="reference internal" href="#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></a> objects
+$$ \mathrm{M}(\mathrm{x}) := \mathrm{H}(\mathrm{x}) - \mathrm{G}(\mathrm{x})$$</p>
+<p>Calls the method <a class="reference internal" href="#Abstract.Map.minus_" title="Abstract.Map.minus_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">minus_()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.mpower">
+<span class="sig-name descname"><span class="pre">mpower</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">p</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.mpower" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a new <a class="reference internal" href="#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></a> which is the power p \(\mathrm{H}^{p}\) of the
+current \(\mathrm{H}\).</p>
+<p>Calls the method <a class="reference internal" href="#Abstract.Map.mpower_" title="Abstract.Map.mpower_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">mpower_()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.mtimes">
+<span class="sig-name descname"><span class="pre">mtimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.mtimes" title="Permalink to this definition"></a></dt>
+<dd><p>Overload operator (*) for <a class="reference internal" href="#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></a> objects
+$$ \mathrm{M}(\mathrm{x}) := \mathrm{H}(\mathrm{G}(\mathrm{x}))$$</p>
+<ul class="simple">
+<li><p>If \(\mathrm{G}\) is numeric of size sizein, then <a class="reference internal" href="#Abstract.Map.apply" title="Abstract.Map.apply"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">apply()</span></code></a> is called</p></li>
+<li><p>If \(\mathrm{G}\) is a <a class="reference internal" href="#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></a>, then a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapComposition</span></code> is intanciated</p></li>
+</ul>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.times">
+<span class="sig-name descname"><span class="pre">times</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.times" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a new <a class="reference internal" href="#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></a> which is the element-wise multiplication of the
+current \(\mathrm{H}\) with \(\mathrm{G}\)
+$$ \mathrm{M}(\mathrm{x}) := \mathrm{H}(\mathrm{x}) \times \mathrm{G}(\mathrm{x})$$</p>
+<p>Calls the method <a class="reference internal" href="#Abstract.Map.times_" title="Abstract.Map.times_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">times_()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Not implemented in this Abstract class</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.applyJacobianT_">
+<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.applyJacobianT_" title="Permalink to this definition"></a></dt>
+<dd><p>Not implemented in this Abstract class</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.applyInverse_">
+<span class="sig-name descname"><span class="pre">applyInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.applyInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Not implemented in this Abstract class</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.plus_">
+<span class="sig-name descname"><span class="pre">plus_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.plus_" title="Permalink to this definition"></a></dt>
+<dd><p>Constructs a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapSummation</span></code> object to sum the
+current <a class="reference internal" href="#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></a> \(\mathrm{H}\) with the given \(\mathrm{G}\).</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.minus_">
+<span class="sig-name descname"><span class="pre">minus_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.minus_" title="Permalink to this definition"></a></dt>
+<dd><p>Constructs a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapSummation</span></code> object to subtract to the
+current <a class="reference internal" href="#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></a> \(\mathrm{H}\), the given \(\mathrm{G}\).</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.mpower_">
+<span class="sig-name descname"><span class="pre">mpower_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">p</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.mpower_" title="Permalink to this definition"></a></dt>
+<dd><p>When \(p=-1\), constructs a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapInversion</span></code> object which
+is the inverse Map of \(\mathrm{H}\).
+When \(p\neq-1\), this method is not implemented in this Abstract class</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.times_">
+<span class="sig-name descname"><span class="pre">times_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.times_" title="Permalink to this definition"></a></dt>
+<dd><p>Constructs a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapMultiplication</span></code> object to element-wise multiply the
+current <a class="reference internal" href="#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></a> \(\mathrm{H}\) with the given \(\mathrm{G}\).</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.makeComposition_">
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.makeComposition_" title="Permalink to this definition"></a></dt>
+<dd><p>Constructs a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapComposition</span></code> object to compose the
+current Map \(\mathrm{H}\)  with the given \(\mathrm{G}\).</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Map.copyElement">
+<span class="sig-name descname"><span class="pre">copyElement</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Map.copyElement" title="Permalink to this definition"></a></dt>
+<dd><p>Perform a deep copy of \(\mathrm{H}\)</p>
+<p>Called by the function <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">copy()</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linop">
+<h2>LinOp<a class="headerlink" href="#linop" title="Permalink to this heading"></a></h2>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Abstract.LinOp">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Abstract.</span></span><span class="sig-name descname"><span class="pre">LinOp</span></span><a class="headerlink" href="#Abstract.LinOp" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Map</span></code></p>
+<p>Abstract class for linear operators
+$$ \mathrm{H}: \mathrm{X}\rightarrow \mathrm{Y}.$$
+where \(\mathrm{X}\) and \(\mathrm{Y}\) are either
+\(\mathbb{R}^N\) or \(\mathbb{C}^N\).</p>
+<p>All attributes of parent class <a class="reference internal" href="#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></a> are inherited</p>
+<p>See also <a class="reference internal" href="#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></a></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.applyAdjoint">
+<span class="sig-name descname"><span class="pre">applyAdjoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyAdjoint" title="Permalink to this definition"></a></dt>
+<dd><p>Computes  \(\mathrm{y=H}^*\mathrm{y}\) for \(\mathrm{y} \in \mathrm{Y}\)</p>
+<p>Calls the method <a class="reference internal" href="#Abstract.LinOp.applyAdjoint_" title="Abstract.LinOp.applyAdjoint_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyAdjoint_()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.applyHtH">
+<span class="sig-name descname"><span class="pre">applyHtH</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyHtH" title="Permalink to this definition"></a></dt>
+<dd><p>Computes  \(\mathrm{y=H}^*\mathrm{Hx}\) for \(\mathrm{y} \in \mathrm{Y}\)</p>
+<p>Calls the method <a class="reference internal" href="#Abstract.LinOp.applyHHt_" title="Abstract.LinOp.applyHHt_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyHHt_()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.applyHHt">
+<span class="sig-name descname"><span class="pre">applyHHt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyHHt" title="Permalink to this definition"></a></dt>
+<dd><p>Computes  \(\mathrm{y=HH}^*\mathrm{y}\) for \(\mathrm{y} \in \mathrm{Y}\)</p>
+<p>Calls the method <a class="reference internal" href="#Abstract.LinOp.applyHHt_" title="Abstract.LinOp.applyHHt_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyHHt_()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.transpose">
+<span class="sig-name descname"><span class="pre">transpose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.transpose" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a new <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> which is the Adjoint \(\mathrm{H}^{\star}\) of the
+current \(\mathrm{H}\).</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.ctranspose">
+<span class="sig-name descname"><span class="pre">ctranspose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.ctranspose" title="Permalink to this definition"></a></dt>
+<dd><p>Do the same as <a class="reference internal" href="#Abstract.LinOp.transpose" title="Abstract.LinOp.transpose"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">transpose()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.applyAdjointInverse">
+<span class="sig-name descname"><span class="pre">applyAdjointInverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyAdjointInverse" title="Permalink to this definition"></a></dt>
+<dd><p>Computes \(\mathrm{y} = \mathrm{H}^{-\star} \mathrm{x}\) for the given
+\(\mathrm{x} \in \mathrm{X}\). (if applicable)</p>
+<p>Calls the method <a class="reference internal" href="#Abstract.LinOp.applyAdjointInverse_" title="Abstract.LinOp.applyAdjointInverse_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyAdjointInverse_()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.makeHtH">
+<span class="sig-name descname"><span class="pre">makeHtH</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.makeHtH" title="Permalink to this definition"></a></dt>
+<dd><p>Compose the Adjoint Map \(\mathrm{H}^{\star}\) with
+\(\mathrm{H}\). Returns a new map \(\mathrm{M=H}^{\star} \mathrm{H}\)</p>
+<p>Calls the method <a class="reference internal" href="#Abstract.LinOp.makeHtH_" title="Abstract.LinOp.makeHtH_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">makeHtH_()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.makeHHt">
+<span class="sig-name descname"><span class="pre">makeHHt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.makeHHt" title="Permalink to this definition"></a></dt>
+<dd><p>Compose the  Map \(\mathrm{H}\)  with its adjoint
+\(\mathrm{H}^{\star}\). Returns a new map \(\mathrm{M=H}\mathrm{H}^{\star}\)</p>
+<p>Calls the method <a class="reference internal" href="#Abstract.LinOp.makeHHt_" title="Abstract.LinOp.makeHHt_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">makeHHt_()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">~</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Not implemented in this Abstract class</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.applyHtH_">
+<span class="sig-name descname"><span class="pre">applyHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>There is a default implementation in the abstract class <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> which
+calls successively the <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">apply()</span></code> and <a class="reference internal" href="#Abstract.LinOp.applyAdjoint" title="Abstract.LinOp.applyAdjoint"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyAdjoint()</span></code></a> methods. However, it
+can be reimplemented in derived classes if there exists a faster way to perform computation.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.applyHHt_">
+<span class="sig-name descname"><span class="pre">applyHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>There is a default implementation in the abstract class <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>
+which calls successively the <a class="reference internal" href="#Abstract.LinOp.applyAdjoint" title="Abstract.LinOp.applyAdjoint"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyAdjoint()</span></code></a> and <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">apply()</span></code> methods.
+However, it can be reimplemented in derived classes if there exists a faster
+way to perform computation.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.applyAdjointInverse_">
+<span class="sig-name descname"><span class="pre">applyAdjointInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">~</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyAdjointInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Not implemented in this Abstract class</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.plus_">
+<span class="sig-name descname"><span class="pre">plus_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.plus_" title="Permalink to this definition"></a></dt>
+<dd><p>If \(\mathrm{G}\) is a <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, constructs a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpSummation</span></code> object to sum the
+current <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> \(\mathrm{H}\) with the given \(\mathrm{G}\).
+Otherwise the summation will be a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapSummation</span></code>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.makeAdjoint_">
+<span class="sig-name descname"><span class="pre">makeAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.makeAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Constructs a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpAdjoint</span></code> from the current
+current <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> \(\mathrm{H}\)</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.makeHtH_">
+<span class="sig-name descname"><span class="pre">makeHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.makeHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Constructs a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpComposition</span></code> corresponding to
+\(\mathrm{H}^{\star}\mathrm{H}\)</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.makeHHt_">
+<span class="sig-name descname"><span class="pre">makeHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.makeHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Constructs a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpComposition</span></code> corresponding to
+\(\mathrm{H}\mathrm{H}^{\star}\)</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.makeInversion_">
+<span class="sig-name descname"><span class="pre">makeInversion_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.makeInversion_" title="Permalink to this definition"></a></dt>
+<dd><p>Constructs a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpInversion</span></code> corresponding to
+\(\mathrm{H}^{-1}\)</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.makeComposition_">
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.makeComposition_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></a>.
+If \(\mathrm{G}\) is a <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, constructs a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpComposition</span></code>
+object to compose the current LinOp (this) with the given <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>\(\mathrm{G}\).
+Otherwise the composition will be a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapComposition</span></code>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.LinOp.applyJacobianT_">
+<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">~</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.LinOp.applyJacobianT_" title="Permalink to this definition"></a></dt>
+<dd><p>Uses the method applyAdjoint (hence do not need to be
+reimplemented in derived classes)</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="cost">
+<h2>Cost<a class="headerlink" href="#cost" title="Permalink to this heading"></a></h2>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Abstract.Cost">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Abstract.</span></span><span class="sig-name descname"><span class="pre">Cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Map</span></code></p>
+<p>Abstract class for Cost functions
+$$ C : \mathrm{X} \longrightarrow \mathbb{R}$$
+with the following special structure
+$$ C(\mathrm{x}) := F( \mathrm{x} , \mathrm{y} ) $$
+where \(F\) is a function takin two variables, both in \(\mathrm{X}\).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> – data vector  (default 0)</p></li>
+<li><p><strong>name</strong> – name of the cost function</p></li>
+<li><p><strong>lip</strong> – Lipschitz constant of the gradient (when applicable and known, otherwise -1)</p></li>
+<li><p><strong>isConvex</strong> – true if the cost is convex</p></li>
+<li><p><strong>isSeparable</strong> – true if the cost is separable (R^n basis)</p></li>
+</ul>
+</dd>
+</dl>
+<p>All attributes of parent class <a class="reference internal" href="#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></a> are inherited and
+<code class="xref mat mat-attr docutils literal notranslate"><span class="pre">norm</span></code> is fixed to -1, <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">sizeout</span></code> is fixed to   for all <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
+<p>See also <a class="reference internal" href="#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></a>, <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Cost.applyGrad">
+<span class="sig-name descname"><span class="pre">applyGrad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.applyGrad" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the gradient of the cost function at  \(\mathrm{x} \in \mathrm{X}\) (when applicable)
+$$ \mathrm{g} = \nabla C(\mathrm{x}) $$</p>
+<p>Calls the method <a class="reference internal" href="#Abstract.Cost.applyGrad_" title="Abstract.Cost.applyGrad_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyGrad_()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Cost.applyProx">
+<span class="sig-name descname"><span class="pre">applyProx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">z</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.applyProx" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the proximity operator of the cost at \(\mathrm{z} \in \mathrm{X} \) (when applicable)
+$$ \mathrm{prox}_{\alpha C}(\mathrm{z}) =  \mathrm{arg} \, \mathrm{min}_{\mathrm{u} \in \mathrm{X}} \; \frac{1}{2\alpha} \| \mathrm{u} - \mathrm{z} \|_2^2 + C(\mathrm{u}). $$</p>
+<p>Calls the method <a class="reference internal" href="#Abstract.Cost.applyProx_" title="Abstract.Cost.applyProx_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyProx_()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Cost.applyProxFench">
+<span class="sig-name descname"><span class="pre">applyProxFench</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">z</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.applyProxFench" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the proximity operator of the Fenchel Transform \(C^*\) at \(\mathrm{z} \in \mathrm{Y} \) (when applicable)</p>
+<p>Calls the method <a class="reference internal" href="#Abstract.Cost.applyProxFench_" title="Abstract.Cost.applyProxFench_"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyProxFench_()</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Cost.applyGrad_">
+<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.applyGrad_" title="Permalink to this definition"></a></dt>
+<dd><p>Not implemented in this Abstract class</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Cost.applyProx_">
+<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">z</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.applyProx_" title="Permalink to this definition"></a></dt>
+<dd><p>By default, if the cost \(C\) <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">isConvex</span></code>, computes the proximity operator of  \(C^*\)
+at \(\mathrm{z} \in \mathrm{X} \) using the
+Moreau’s identity which uses the <a class="reference internal" href="#Abstract.Cost.applyProxFench" title="Abstract.Cost.applyProxFench"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyProxFench()</span></code></a> method
+$$\mathrm{prox}_{\alpha C}(\mathrm{z}) = \mathrm{z} - \alpha \,\mathrm{prox}_{\frac{1}{\alpha}C^*}\left(\frac{\mathrm{z}}{\alpha}\right).$$</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Cost.applyProxFench_">
+<span class="sig-name descname"><span class="pre">applyProxFench_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">z</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.applyProxFench_" title="Permalink to this definition"></a></dt>
+<dd><p>By default, if the cost \(C\) <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">isConvex</span></code>, computes the proximity operator of the Fenchel Transform
+\(C^*\) at \(\mathrm{z} \in \mathrm{Y} \) using the
+Moreau’s identity which uses the <a class="reference internal" href="#Abstract.Cost.applyProx" title="Abstract.Cost.applyProx"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyProx()</span></code></a> method
+$$\mathrm{prox}_{\alpha C^*}(\mathrm{z}) = \mathrm{z} - \alpha \,\mathrm{prox}_{\frac{1}{\alpha}C}\left(\frac{\mathrm{z}}{\alpha}\right).$$</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Cost.plus_">
+<span class="sig-name descname"><span class="pre">plus_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.plus_" title="Permalink to this definition"></a></dt>
+<dd><p>If \(\mathrm{G}\) is a <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, constructs a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostSummation</span></code> object to sum the
+current <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> \(C\) with the given \(G\).
+Otherwise the summation will be a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapSummation</span></code>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Cost.minus_">
+<span class="sig-name descname"><span class="pre">minus_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.minus_" title="Permalink to this definition"></a></dt>
+<dd><p>If \(\mathrm{G}\) is a <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, constructs a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostSummation</span></code> object to subtract to the
+current <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> \(C\), the given \(G\).
+Otherwise the summation will be a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapSummation</span></code>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Cost.makeComposition_">
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.makeComposition_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></a>.
+Constructs a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostComposition</span></code> object to compose the
+current Cost (this) with the given <a class="reference internal" href="#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></a>\(\mathrm{G}\).</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Cost.applyJacobianT_">
+<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.applyJacobianT_" title="Permalink to this definition"></a></dt>
+<dd><p>Uses the method applyGrad (hence do not need to be
+reimplemented in derived classes)</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Cost.set_y">
+<span class="sig-name descname"><span class="pre">set_y</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Cost.set_y" title="Permalink to this definition"></a></dt>
+<dd><p>Set the attribute \(\mathrm{y}\)</p>
+<ul class="simple">
+<li><p>has to be conformable with the <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">sizein</span></code> of the cost</p></li>
+<li><p>can be a scalar.</p></li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="opti">
+<h2>Opti<a class="headerlink" href="#opti" title="Permalink to this heading"></a></h2>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Abstract.Opti">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Abstract.</span></span><span class="sig-name descname"><span class="pre">Opti</span></span><a class="headerlink" href="#Abstract.Opti" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">matlab.mixin.SetGet</span></code></p>
+<p>Abstract class for optimization algorithms to minimize <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – name of the algorithm</p></li>
+<li><p><strong>cost</strong> – minimized <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p></li>
+<li><p><strong>maxiter</strong> – maximal number of iterations (default 50)</p></li>
+<li><p><strong>verbose</strong> – bollean (default true) to activate verbose mode</p></li>
+<li><p><strong>OutOp</strong> – <a class="reference internal" href="opti.html#module-Opti.OutputOpti" title="Opti.OutputOpti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">OutputOpti</span></code></a> object</p></li>
+<li><p><strong>ItUpOut</strong> – number of iterations between two calls to the update method of the  <a class="reference internal" href="opti.html#module-Opti.OutputOpti" title="Opti.OutputOpti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">OutputOpti</span></code></a> object <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">OutOp</span></code> (default 0)</p></li>
+<li><p><strong>CvOp</strong> – <a class="reference internal" href="opti.html#module-Opti.TestCvg" title="Opti.TestCvg"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">TestCvg</span></code></a> object</p></li>
+<li><p><strong>time</strong> – execution time of the algorithm</p></li>
+<li><p><strong>niter</strong> – iteration counter</p></li>
+<li><p><strong>xopt</strong> – optimization variable</p></li>
+</ul>
+</dd>
+</dl>
+<p>See also <a class="reference internal" href="opti.html#module-Opti.OutputOpti" title="Opti.OutputOpti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">OutputOpti</span></code></a> <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Opti.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Opti.run" title="Permalink to this definition"></a></dt>
+<dd><p>Run the algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x0</strong> – initial point in \(\in X\), if no argument restarts from the current value <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">xopt</span></code>.</p>
+</dd>
+</dl>
+<p><strong>note</strong>: this method does not return anything, the result being stored in public attribute <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">xopt</span></code>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Opti.initialize">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Opti.initialize" title="Permalink to this definition"></a></dt>
+<dd><p>Implements initialization of the algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x0</strong> – initial point</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Opti.doIteration">
+<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Opti.doIteration" title="Permalink to this definition"></a></dt>
+<dd><p>Implements algorithm iteration</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p>flag with values</p>
+<ul class="simple">
+<li><p>OPTI_NEXT_IT (= 0) to go to the next iteration</p></li>
+<li><p>OPTI_REDO_IT (= 1) to redo the iteration</p></li>
+<li><p>OPTI_STOP    (= 2) to stop algorithm</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Opti.updateParams">
+<span class="sig-name descname"><span class="pre">updateParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Opti.updateParams" title="Permalink to this definition"></a></dt>
+<dd><p>Updates the parameters of the algorithm at each iteration
+(default: no update). This method can be overloaded to makes
+some parameters varying during iterations (e.g. descent step,
+lagrangian parameters…)</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Opti.starting_verb">
+<span class="sig-name descname"><span class="pre">starting_verb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Opti.starting_verb" title="Permalink to this definition"></a></dt>
+<dd><p>Generic method to display a starting message in verbose mode.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.Opti.ending_verb">
+<span class="sig-name descname"><span class="pre">ending_verb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.Opti.ending_verb" title="Permalink to this definition"></a></dt>
+<dd><p>Generic method to display a ending message in verbose mode.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="operationsonmaps">
+<span id="ref-op-on-maps"></span><h2>OperationsOnMaps<a class="headerlink" href="#operationsonmaps" title="Permalink to this heading"></a></h2>
+<p>The following classes implement basic operations between Map (LinOp and Cost).
+They are not abstract but generally they do not need to be instanciated.
+They are mainly used inside the methods of the abstract classes <a class="reference internal" href="#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></a>, <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> and
+<a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> for the operator algebra machinery.</p>
+<span class="target" id="module-Abstract.OperationsOnMaps"></span><section id="mapcomposition">
+<h3>MapComposition<a class="headerlink" href="#mapcomposition" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapComposition">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Abstract.OperationsOnMaps.</span></span><span class="sig-name descname"><span class="pre">MapComposition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">H1</span></em>, <em class="sig-param"><span class="pre">H2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapComposition" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Map</span></code></p>
+<p>MapComposition : Composition of Maps
+$$ \mathrm{H}(\mathrm{x}) = \mathrm{H}_1 \left( \mathrm{H}_2(\mathrm{x}) \right) $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>H1</strong> – left hand side <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p></li>
+<li><p><strong>H2</strong> – right hand side <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> H=MapComposition(H1,H2)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapComposition.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapComposition.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapComposition.applyJacobianT_">
+<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapComposition.applyJacobianT_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapComposition.applyInverse_">
+<span class="sig-name descname"><span class="pre">applyInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapComposition.applyInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapComposition.makeComposition_">
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapComposition.makeComposition_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="mapinversion">
+<h3>MapInversion<a class="headerlink" href="#mapinversion" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapInversion">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Abstract.OperationsOnMaps.</span></span><span class="sig-name descname"><span class="pre">MapInversion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">M</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapInversion" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Map</span></code></p>
+<p>MapInversion : Builds the inverse <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>M</strong> – <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> object</p>
+</dd>
+</dl>
+<p><strong>Example</strong> Minv=MapInversion(M)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapInversion.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapInversion.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapInversion.applyInverse_">
+<span class="sig-name descname"><span class="pre">applyInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapInversion.applyInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapInversion.mpower_">
+<span class="sig-name descname"><span class="pre">mpower_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">p</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapInversion.mpower_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapInversion.makeComposition_">
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapInversion.makeComposition_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="mapsummation">
+<h3>MapSummation<a class="headerlink" href="#mapsummation" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapSummation">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Abstract.OperationsOnMaps.</span></span><span class="sig-name descname"><span class="pre">MapSummation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">Maps</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapSummation" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Map</span></code></p>
+<p>MapSummation: Sum of Maps
+$$ \mathrm{H}(\mathrm{x}) = \sum_i \alpha_i \mathrm{H}_i(\mathrm{x}) $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Maps</strong> – cell of <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p></li>
+<li><p><strong>alpha</strong> – array of coefficients</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> H=MapSummation(Maps,alpha)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="#Abstract.OperationsOnMaps.LinOpSummation" title="Abstract.OperationsOnMaps.LinOpSummation"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpSummation</span></code></a></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapSummation.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapSummation.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapSummation.applyJacobianT_">
+<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapSummation.applyJacobianT_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapSummation.makeComposition_">
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapSummation.makeComposition_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="mapmultiplication">
+<h3>MapMultiplication<a class="headerlink" href="#mapmultiplication" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapMultiplication">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Abstract.OperationsOnMaps.</span></span><span class="sig-name descname"><span class="pre">MapMultiplication</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">Map1</span></em>, <em class="sig-param"><span class="pre">Map2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapMultiplication" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Map</span></code></p>
+<p>MapMultiplication: Multiplication of Maps
+$$ \mathrm{H}(\mathrm{x}) =  \mathrm{H}_1(\mathrm{x}) \times \mathrm{H}_2(\mathrm{x}) $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Map1</strong> – <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> object</p></li>
+<li><p><strong>Map2</strong> – <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> object</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> H=MapMultiplication(Map1,Map2)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapMultiplication.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapMultiplication.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapMultiplication.applyJacobianT_">
+<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapMultiplication.applyJacobianT_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.MapMultiplication.makeComposition_">
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.MapMultiplication.makeComposition_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopadjoint">
+<h3>LinOpAdjoint<a class="headerlink" href="#linopadjoint" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpAdjoint">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Abstract.OperationsOnMaps.</span></span><span class="sig-name descname"><span class="pre">LinOpAdjoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">TLinOp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Abstract.LinOp" title="Abstract.LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.LinOp</span></code></a></p>
+<p>Adjoint : Builds the adjoint LinOp</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>TLinOp</strong> – <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> object</p>
+</dd>
+</dl>
+<p><strong>Example</strong> Tadj=LinOpAdjoint(TLinOp)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpAdjoint.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpAdjoint.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpAdjoint.applyHtH_">
+<span class="sig-name descname"><span class="pre">applyHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.applyHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpAdjoint.applyHHt_">
+<span class="sig-name descname"><span class="pre">applyHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.applyHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpAdjoint.applyInverse_">
+<span class="sig-name descname"><span class="pre">applyInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.applyInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpAdjoint.applyAdjointInverse_">
+<span class="sig-name descname"><span class="pre">applyAdjointInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.applyAdjointInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpAdjoint.makeAdjoint_">
+<span class="sig-name descname"><span class="pre">makeAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.makeAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpAdjoint.makeHHt_">
+<span class="sig-name descname"><span class="pre">makeHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.makeHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpAdjoint.makeHtH_">
+<span class="sig-name descname"><span class="pre">makeHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpAdjoint.makeHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopcomposition">
+<h3>LinOpComposition<a class="headerlink" href="#linopcomposition" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpComposition">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Abstract.OperationsOnMaps.</span></span><span class="sig-name descname"><span class="pre">LinOpComposition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">H1</span></em>, <em class="sig-param"><span class="pre">H2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Abstract.OperationsOnMaps.MapComposition" title="Abstract.OperationsOnMaps.MapComposition"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.OperationsOnMaps.MapComposition</span></code></a>, <a class="reference internal" href="#Abstract.LinOp" title="Abstract.LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.LinOp</span></code></a></p>
+<p>LinOpComposition : Composition of LinOps
+$$ \mathrm{H}(\mathrm{x}) = \mathrm{H}_1 \mathrm{H}_2\mathrm{x} $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>H1</strong> – left hand side <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> (or a scalar)</p></li>
+<li><p><strong>H2</strong> – right hand side <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> H=LinOpComposition(H1,H2)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, <a class="reference internal" href="#Abstract.OperationsOnMaps.MapComposition" title="Abstract.OperationsOnMaps.MapComposition"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapComposition</span></code></a></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpComposition.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpComposition.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpComposition.applyHtH_">
+<span class="sig-name descname"><span class="pre">applyHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.applyHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpComposition.applyHHt_">
+<span class="sig-name descname"><span class="pre">applyHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.applyHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpComposition.applyAdjointInverse_">
+<span class="sig-name descname"><span class="pre">applyAdjointInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.applyAdjointInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpComposition.makeAdjoint_">
+<span class="sig-name descname"><span class="pre">makeAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.makeAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpComposition.makeHtH_">
+<span class="sig-name descname"><span class="pre">makeHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.makeHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpComposition.makeHHt_">
+<span class="sig-name descname"><span class="pre">makeHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.makeHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpComposition.makeComposition_">
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpComposition.makeComposition_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="#Abstract.OperationsOnMaps.MapComposition" title="Abstract.OperationsOnMaps.MapComposition"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapComposition</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopinversion">
+<h3>LinOpInversion<a class="headerlink" href="#linopinversion" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpInversion">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Abstract.OperationsOnMaps.</span></span><span class="sig-name descname"><span class="pre">LinOpInversion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">M</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpInversion" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Abstract.OperationsOnMaps.MapInversion" title="Abstract.OperationsOnMaps.MapInversion"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.OperationsOnMaps.MapInversion</span></code></a>, <a class="reference internal" href="#Abstract.LinOp" title="Abstract.LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.LinOp</span></code></a></p>
+<p>LinOpInversion : Builds the inverse <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>M</strong> – <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> object</p>
+</dd>
+</dl>
+<p><strong>Example</strong> Minv=LinOpInversion(M)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, <a class="reference internal" href="#Abstract.OperationsOnMaps.MapInversion" title="Abstract.OperationsOnMaps.MapInversion"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapInversion</span></code></a></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpInversion.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpInversion.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpInversion.applyAdjointInverse_">
+<span class="sig-name descname"><span class="pre">applyAdjointInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpInversion.applyAdjointInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpInversion.mpower_">
+<span class="sig-name descname"><span class="pre">mpower_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">p</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpInversion.mpower_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="#Abstract.OperationsOnMaps.MapInversion" title="Abstract.OperationsOnMaps.MapInversion"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapInversion</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpInversion.makeComposition_">
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpInversion.makeComposition_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="#Abstract.OperationsOnMaps.MapInversion" title="Abstract.OperationsOnMaps.MapInversion"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapInversion</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopsummation">
+<h3>LinOpSummation<a class="headerlink" href="#linopsummation" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpSummation">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Abstract.OperationsOnMaps.</span></span><span class="sig-name descname"><span class="pre">LinOpSummation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">LinOps</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpSummation" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Abstract.OperationsOnMaps.MapSummation" title="Abstract.OperationsOnMaps.MapSummation"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.OperationsOnMaps.MapSummation</span></code></a>, <a class="reference internal" href="#Abstract.LinOp" title="Abstract.LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.LinOp</span></code></a></p>
+<p>LinOpSummation: Sum of linear operators
+$$ \mathrm{H}(\mathrm{x}) = \sum_i \alpha_i \mathrm{H}_i(\mathrm{x}) $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>LinOps</strong> – cell of <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p></li>
+<li><p><strong>alpha</strong> – array of coefficients</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> L=LinOpSummation(LinOps,alpha)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapOpSummation</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpSummation.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpSummation.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpSummation.makeAdjoint_">
+<span class="sig-name descname"><span class="pre">makeAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpSummation.makeAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.LinOpSummation.plus_">
+<span class="sig-name descname"><span class="pre">plus_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.LinOpSummation.plus_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="costcomposition">
+<h3>CostComposition<a class="headerlink" href="#costcomposition" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostComposition">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Abstract.OperationsOnMaps.</span></span><span class="sig-name descname"><span class="pre">CostComposition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">H1</span></em>, <em class="sig-param"><span class="pre">H2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostComposition" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Abstract.OperationsOnMaps.MapComposition" title="Abstract.OperationsOnMaps.MapComposition"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.OperationsOnMaps.MapComposition</span></code></a>, <a class="reference internal" href="#Abstract.Cost" title="Abstract.Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.Cost</span></code></a></p>
+<p>CostComposition: Compose a <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> with a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>
+$$ C(\mathrm{x}) := F( \mathrm{Hx}) $$
+where \(F\) is a <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> and \(\mathrm{H}\) a
+<code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>H1</strong> – <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p></li>
+<li><p><strong>H2</strong> – <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> C = CostComposition(H1,H2)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="#Abstract.OperationsOnMaps.MapComposition" title="Abstract.OperationsOnMaps.MapComposition"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapComposition</span></code></a>, <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostComposition.applyGrad_">
+<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostComposition.applyGrad_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostComposition.applyProx_">
+<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">z</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostComposition.applyProx_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
+<p>If this.H2 is a <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> and \(\mathrm{H}
+\mathrm{H}^{\star}\) is a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpScaledIdentity</span></code></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostComposition.makeComposition_">
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostComposition.makeComposition_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostComposition.set_y">
+<span class="sig-name descname"><span class="pre">set_y</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostComposition.set_y" title="Permalink to this definition"></a></dt>
+<dd><p>Set the attribute \(\mathrm{y}\)</p>
+<ul class="simple">
+<li><p>has to be conformable with the <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">sizeout</span></code> of the
+<code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>\(\mathrm{H}\),</p></li>
+<li><p>can be anything if \(\mathrm{H}\) is not yet set (empty),</p></li>
+<li><p>can be a scalar.</p></li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="costmultiplication">
+<h3>CostMultiplication<a class="headerlink" href="#costmultiplication" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostMultiplication">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Abstract.OperationsOnMaps.</span></span><span class="sig-name descname"><span class="pre">CostMultiplication</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">C1</span></em>, <em class="sig-param"><span class="pre">C2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostMultiplication" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Abstract.Cost" title="Abstract.Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.Cost</span></code></a></p>
+<p>CostMultiplication: Multiplication of Costs
+$$C(\mathrm{x}) = C_1(\mathrm{x}) \times C_1(\mathrm{x}) $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>C1</strong> – a <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> object or a scalar</p></li>
+<li><p><strong>C2</strong> – a <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> object</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> F = MulCost(Cost1,Cost2)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostMultiplication.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostMultiplication.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostMultiplication.applyGrad_">
+<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostMultiplication.applyGrad_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostMultiplication.applyProx_">
+<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostMultiplication.applyProx_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostMultiplication.makeComposition_">
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostMultiplication.makeComposition_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="costsummation">
+<h3>CostSummation<a class="headerlink" href="#costsummation" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostSummation">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Abstract.OperationsOnMaps.</span></span><span class="sig-name descname"><span class="pre">CostSummation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">costs</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostSummation" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Abstract.OperationsOnMaps.MapSummation" title="Abstract.OperationsOnMaps.MapSummation"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.OperationsOnMaps.MapSummation</span></code></a>, <a class="reference internal" href="#Abstract.Cost" title="Abstract.Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.Cost</span></code></a></p>
+<p>CostSummation : Sum of <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>
+$$C(\mathrm{x}) = \sum_i \alpha_i C_i(\mathrm{x}) $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>costs</strong> – cell of <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p></li>
+<li><p><strong>alpha</strong> – array of coefficients</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> F = CostSummation(ACost,alpha)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapOpSummation</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostSummation.makePartialSummation">
+<span class="sig-name descname"><span class="pre">makePartialSummation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">Lsub</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostSummation.makePartialSummation" title="Permalink to this definition"></a></dt>
+<dd><p>Instanciation of <a class="reference internal" href="#Abstract.OperationsOnMaps.CostPartialSummation" title="Abstract.OperationsOnMaps.CostPartialSummation"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostPartialSummation</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>Lsub</strong> – number of <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> used for computation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostSummation.applyGrad_">
+<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostSummation.applyGrad_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostSummation.applyProx_">
+<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">z</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostSummation.applyProx_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> in the case of the sum
+between a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostRectangle</span></code> \(i_C \) and a
+<a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> \(f \) which is separable [1]
+$$ \mathrm{prox}_{\alpha(i_C +f)}(z) = \mathrm{prox}_{i_c} \circ \mathrm{prox}_{\alpha f}(z) $$</p>
+<p><strong>Reference</strong></p>
+<p>[1] “A Douglas?Rachford splitting approach to nonsmooth convex variational signal recovery”
+P. L. Combettes, and J.C. Pesquet, Journal of Selected Topics in Signal Processing, 1(4), 564-574, 2007</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="costpartialsummation">
+<h3>CostPartialSummation<a class="headerlink" href="#costpartialsummation" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostPartialSummation">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Abstract.OperationsOnMaps.</span></span><span class="sig-name descname"><span class="pre">CostPartialSummation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">costs</span></em>, <em class="sig-param"><span class="pre">alpha</span></em>, <em class="sig-param"><span class="pre">Lsub</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostPartialSummation" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Abstract.OperationsOnMaps.CostSummation" title="Abstract.OperationsOnMaps.CostSummation"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.OperationsOnMaps.CostSummation</span></code></a></p>
+<p>CostPartialSummation : Sum of <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> with apply, applyGrad,…
+computed from a subset of Cost
+$$C(\mathrm{x}) = \sum_i \alpha_i C_i(\mathrm{x}) $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>costs</strong> – cell of <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p></li>
+<li><p><strong>alpha</strong> – array of coefficients</p></li>
+<li><p><strong>Lsub</strong> – number of <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> used for computation</p></li>
+<li><p><strong>partialGrad</strong> – parameter for subset selection (0: no partial
+gradient; 1: stochastic gradient descent; 2: equally spaced indices)</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> F = CostPartialSummation(ACost,alpha,Lsub)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">MapOpSummation</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostPartialSummation.setLsub">
+<span class="sig-name descname"><span class="pre">setLsub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">Lsub</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostPartialSummation.setLsub" title="Permalink to this definition"></a></dt>
+<dd><p>Set Lsub parameter</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostPartialSummation.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostPartialSummation.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Abstract.OperationsOnMaps.CostPartialSummation.applyGrad_">
+<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Abstract.OperationsOnMaps.CostPartialSummation.applyGrad_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="conditionsuse.html" class="btn btn-neutral float-left" title="Conditions of Use" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="linop.html" class="btn btn-neutral float-right" title="Linear Operators (LinOp)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, Biomedical Imaging Group (EPFL).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

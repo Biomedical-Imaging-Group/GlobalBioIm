@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Non-Linear Operators &mdash; GlobalBioIm Library 1.2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="_static/mathjax/tex-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Cost Functions (Cost)" href="cost.html" />
+    <link rel="prev" title="Linear Operators (LinOp)" href="linop.html" /> 
+</head>
+
+<body class="wy-body-for-nav" style="text-align:justify"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> GlobalBioIm Library
+          </a>
+              <div class="version">
+                1.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Biomedical-Imaging-Group/GlobalBioIm">Download or Clone (v 1.2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infos.html">Important Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">Graphical User Interface (GUI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="relatedPapers.html">Related Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conditionsuse.html">Conditions of Use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Technical Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="abstract.html">Abstract Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linop.html">Linear Operators (LinOp)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Non-Linear Operators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#element-wise-operators">Element-wise Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#opewabs">OpEWAbs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#opewfunc">OpEWfunc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#opewinverse">OpEWInverse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#opewsqrt">OpEWSqrt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#opewsquaredmagnitude">OpEWSquaredMagnitude</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cost.html">Cost Functions (Cost)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opti.html">Optimization Algorithms (Opti)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methodssummary.html">List of Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="propertiessummary.html">List of Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu.html">Speedup with GPU</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="http://bigwww.epfl.ch">Biomedical Imaging Group</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GlobalBioIm Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Non-Linear Operators</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/nonlinop.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="non-linear-operators">
+<h1>Non-Linear Operators<a class="headerlink" href="#non-linear-operators" title="Permalink to this heading"></a></h1>
+<div class="math notranslate nohighlight">
+\[\]</div>
+<p>This section contains non-linear operator classes which all derive directly from the abstract class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
+<span class="target" id="module-NonLinOp"></span><span class="target" id="module-NonLinOp.ElementWiseOp"></span><section id="element-wise-operators">
+<h2>Element-wise Operators<a class="headerlink" href="#element-wise-operators" title="Permalink to this heading"></a></h2>
+<section id="opewabs">
+<h3>OpEWAbs<a class="headerlink" href="#opewabs" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWAbs">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">NonLinOp.ElementWiseOp.</span></span><span class="sig-name descname"><span class="pre">OpEWAbs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWAbs" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Map</span></code></p>
+<p>Element-wise Modulus operator: compute the pointwise complex modulus</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sz</strong> – input size</p>
+</dd>
+</dl>
+<p>All attributes of parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> are inherited.</p>
+<p><strong>Example</strong> Mod = OpEWAbs(sz)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWAbs.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWAbs.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWAbs.applyJacobianT_">
+<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWAbs.applyJacobianT_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="opewfunc">
+<h3>OpEWfunc<a class="headerlink" href="#opewfunc" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWfunc">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">NonLinOp.ElementWiseOp.</span></span><span class="sig-name descname"><span class="pre">OpEWfunc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">func</span></em>, <em class="sig-param"><span class="pre">func_grad</span></em>, <em class="sig-param"><span class="pre">func_inv</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWfunc" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Map</span></code></p>
+<p>Element-wise function operator: compute the point-wise function of
+the input</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sz</strong> – input size</p></li>
+<li><p><strong>func</strong> – the function to apply element-wise</p></li>
+<li><p><strong>func_grad</strong> – the derivative of the function to apply element-wise (default: non differentiable)</p></li>
+<li><p><strong>func_inv</strong> – the inverse of the function to apply element-wise (default: non invertible)</p></li>
+</ul>
+</dd>
+</dl>
+<p>All attributes of parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> are inherited.</p>
+<p><strong>Example</strong> Mod = OpEWfunc(sz, func, func_grad, func_inv)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWfunc.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWfunc.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWfunc.applyJacobianT_">
+<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWfunc.applyJacobianT_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWfunc.applyInverse_">
+<span class="sig-name descname"><span class="pre">applyInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWfunc.applyInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="opewinverse">
+<h3>OpEWInverse<a class="headerlink" href="#opewinverse" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWInverse">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">NonLinOp.ElementWiseOp.</span></span><span class="sig-name descname"><span class="pre">OpEWInverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWInverse" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Map</span></code></p>
+<p>Element-wise Inverse operator: compute the pointwise inverse
+$$[\mathrm{H}(x)]_k = \frac{1}{x_k} $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sz</strong> – input size</p>
+</dd>
+</dl>
+<p>All attributes of parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> are inherited.</p>
+<p><strong>Example</strong> H=OpEWInverse(sz)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWInverse.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWInverse.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWInverse.applyJacobianT_">
+<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWInverse.applyJacobianT_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="opewsqrt">
+<h3>OpEWSqrt<a class="headerlink" href="#opewsqrt" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWSqrt">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">NonLinOp.ElementWiseOp.</span></span><span class="sig-name descname"><span class="pre">OpEWSqrt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSqrt" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Map</span></code></p>
+<p>Element-wise square root operator: 
+$$[\mathrm{H}(x)]_k = \sqrt{(x_k)} $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sz</strong> – input size</p>
+</dd>
+</dl>
+<p>All attributes of parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> are inherited.</p>
+<p><strong>Example</strong> H=OpEWSquareRoot(sz)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWSqrt.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSqrt.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWSqrt.applyJacobianT_">
+<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSqrt.applyJacobianT_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="opewsquaredmagnitude">
+<h3>OpEWSquaredMagnitude<a class="headerlink" href="#opewsquaredmagnitude" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWSquaredMagnitude">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">NonLinOp.ElementWiseOp.</span></span><span class="sig-name descname"><span class="pre">OpEWSquaredMagnitude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSquaredMagnitude" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Map</span></code></p>
+<p>Element-wise SquaredMagnitude operator: compute the pointwise N power magnitude
+$$[\mathrm{H}(x)]_k = \vert x_k \vert^2 $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sz</strong> – input size</p>
+</dd>
+</dl>
+<p>All attributes of parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> are inherited.</p>
+<p><strong>Example</strong> H= OpEWSquaredMagnitude(sz)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWSquaredMagnitude.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSquaredMagnitude.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWSquaredMagnitude.applyJacobianT_">
+<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSquaredMagnitude.applyJacobianT_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="linop.html" class="btn btn-neutral float-left" title="Linear Operators (LinOp)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cost.html" class="btn btn-neutral float-right" title="Cost Functions (Cost)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, Biomedical Imaging Group (EPFL).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

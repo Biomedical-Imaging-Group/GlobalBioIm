@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>List of Methods &mdash; GlobalBioIm Library 1.2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="_static/mathjax/tex-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="List of Properties" href="propertiessummary.html" />
+    <link rel="prev" title="Optimization Algorithms (Opti)" href="opti.html" /> 
+</head>
+
+<body class="wy-body-for-nav" style="text-align:justify"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> GlobalBioIm Library
+          </a>
+              <div class="version">
+                1.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Biomedical-Imaging-Group/GlobalBioIm">Download or Clone (v 1.2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infos.html">Important Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">Graphical User Interface (GUI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="relatedPapers.html">Related Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conditionsuse.html">Conditions of Use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Technical Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="abstract.html">Abstract Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linop.html">Linear Operators (LinOp)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nonlinop.html">Non-Linear Operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cost.html">Cost Functions (Cost)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opti.html">Optimization Algorithms (Opti)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">List of Methods</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#map">Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linop">LinOp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cost">Cost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#opti">Opti</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="propertiessummary.html">List of Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu.html">Speedup with GPU</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="http://bigwww.epfl.ch">Biomedical Imaging Group</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GlobalBioIm Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">List of Methods</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/methodssummary.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="list-of-methods">
+<h1>List of Methods<a class="headerlink" href="#list-of-methods" title="Permalink to this heading"></a></h1>
+<div class="math notranslate nohighlight">
+\[\]</div>
+<p>This section gives an overview of all the methods for each abstract class (and thus all inherited classes). All the
+core methods (i.e. with “_”) can be reimplemented in any derived class (if relevant). Otherwise the default implementation
+of the mother class is used.</p>
+<p><strong>Note</strong> the <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyJacobianT()</span></code> method of <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> becomes sealed (i.e. not re-implementable in derived classes) from
+the level of <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> and <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>. The reason is that for these classes, the Jacobian is respectively the
+adjoint and the gradient. Instead, the methods <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyAdjoint()</span></code> and <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyGrad()</span></code> are implemented.</p>
+<section id="map">
+<h2>Map<a class="headerlink" href="#map" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 20%" />
+<col style="width: 55%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Interface Methods</p></th>
+<th class="head"><p>Core Methods</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>apply()</p></td>
+<td><p>apply_()</p></td>
+<td><div class="line-block">
+<div class="line">Apply the <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> to the given input x</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>applyJacobianT()</p></td>
+<td><p>applyJacobianT_()</p></td>
+<td><div class="line-block">
+<div class="line">Apply the transpose of the Jacobian operator at x</div>
+<div class="line">to a given vector v.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>applyInverse()</p></td>
+<td><p>applyInverse_()</p></td>
+<td><div class="line-block">
+<div class="line">Apply the inverse <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> to the given input x</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>makeInversion()</p></td>
+<td><p>makeInversion_()</p></td>
+<td><div class="line-block">
+<div class="line">Build the inverse <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>makeComposition()</p></td>
+<td><p>makeComposition_()</p></td>
+<td><div class="line-block">
+<div class="line">Compose a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> with another <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>plus()</p></td>
+<td><p>plus_()</p></td>
+<td><div class="line-block">
+<div class="line">overload + operator for Maps.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>minus()</p></td>
+<td><p>minus_()</p></td>
+<td><div class="line-block">
+<div class="line">overload - operator for Maps.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>mpower()</p></td>
+<td><p>mpower_()</p></td>
+<td><div class="line-block">
+<div class="line">overload ^ operator for Maps (i.e. M.^-1 build the</div>
+<div class="line">inverse <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>).</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>mtimes()</p></td>
+<td><p>N/A</p></td>
+<td><div class="line-block">
+<div class="line">overload * operator for Maps. If the input x is</div>
+<div class="line">an array, calls apply(x). If it is a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+<div class="line">object, calls makeComposition(x).</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>times()</p></td>
+<td><p>times_()</p></td>
+<td><div class="line-block">
+<div class="line">overload .* operator for Maps.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>size()</p></td>
+<td><p>N/A</p></td>
+<td><div class="line-block">
+<div class="line">overload size function for Maps.</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="linop">
+<h2>LinOp<a class="headerlink" href="#linop" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 23%" />
+<col style="width: 53%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Interface Methods</p></th>
+<th class="head"><p>Core Methods</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>apply()</p></td>
+<td><p>apply_()</p></td>
+<td><div class="line-block">
+<div class="line">Inherited from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>applyAdjoint()</p></td>
+<td><p>applyAdjoint_()</p></td>
+<td><div class="line-block">
+<div class="line">Apply the adjoint operator to point x</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>applyHtH()</p></td>
+<td><p>applyHtH_()</p></td>
+<td><div class="line-block">
+<div class="line">Apply the HtH operator to point x</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>applyHHt()</p></td>
+<td><p>applyHHt_()</p></td>
+<td><div class="line-block">
+<div class="line">Apply the HHt operator to point x</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>applyAdjointInverse()</p></td>
+<td><p>applyAdjointInverse_()</p></td>
+<td><div class="line-block">
+<div class="line">Apply the inverse of adjoint operator to point x</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>makeAdjoint()</p></td>
+<td><p>makeAdjoint_()</p></td>
+<td><div class="line-block">
+<div class="line">Build a <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> that implements the adjoint.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>makeHtH()</p></td>
+<td><p>makeHtH_()</p></td>
+<td><div class="line-block">
+<div class="line">Build a <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> that implements HtH.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>makeHHt()</p></td>
+<td><p>makeHHt_()</p></td>
+<td><div class="line-block">
+<div class="line">Build a <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> that implements HHt.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>applyInverse()</p></td>
+<td><p>applyInverse_()</p></td>
+<td><div class="line-block">
+<div class="line">Inherited from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>makeInversion()</p></td>
+<td><p>makeInversion_()</p></td>
+<td><div class="line-block">
+<div class="line">Inherited from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>makeComposition()</p></td>
+<td><p>makeComposition_()</p></td>
+<td><div class="line-block">
+<div class="line">Inherited from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>plus()</p></td>
+<td><p>plus_()</p></td>
+<td><div class="line-block">
+<div class="line">Inherited from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>minus()</p></td>
+<td><p>minus_()</p></td>
+<td><div class="line-block">
+<div class="line">Inherited from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>mpower()</p></td>
+<td><p>mpower_()</p></td>
+<td><div class="line-block">
+<div class="line">Inherited from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>mtimes()</p></td>
+<td><p>N/A</p></td>
+<td><div class="line-block">
+<div class="line">Inherited from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>times()</p></td>
+<td><p>times_()</p></td>
+<td><div class="line-block">
+<div class="line">overload .* operator for Maps.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>size()</p></td>
+<td><p>N/A</p></td>
+<td><div class="line-block">
+<div class="line">Inherited from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cost">
+<h2>Cost<a class="headerlink" href="#cost" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 20%" />
+<col style="width: 55%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Interface Methods</p></th>
+<th class="head"><p>Core Methods</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>apply()</p></td>
+<td><p>apply_()</p></td>
+<td><div class="line-block">
+<div class="line">Inherited from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>applyGrad()</p></td>
+<td><p>applyGrad_()</p></td>
+<td><div class="line-block">
+<div class="line">Apply the gradient of the cost to the given x.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>applyProx()</p></td>
+<td><p>applyProx_()</p></td>
+<td><div class="line-block">
+<div class="line">Apply the prox of the cost to the given x.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>applyProxFench()</p></td>
+<td><p>applyProxFench_()</p></td>
+<td><div class="line-block">
+<div class="line">Apply the prox of the Fenchel transform of the</div>
+<div class="line">cost to the given x.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>applyInverse()</p></td>
+<td><p>applyInverse_()</p></td>
+<td><div class="line-block">
+<div class="line">Inherited from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>makeComposition()</p></td>
+<td><p>makeComposition_()</p></td>
+<td><div class="line-block">
+<div class="line">Inherited from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>plus()</p></td>
+<td><p>plus_()</p></td>
+<td><div class="line-block">
+<div class="line">Inherited from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>minus()</p></td>
+<td><p>minus_()</p></td>
+<td><div class="line-block">
+<div class="line">Inherited from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>mpower()</p></td>
+<td><p>mpower_()</p></td>
+<td><div class="line-block">
+<div class="line">Inherited from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>mtimes()</p></td>
+<td><p>N/A</p></td>
+<td><div class="line-block">
+<div class="line">Inherited from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>times()</p></td>
+<td><p>times_()</p></td>
+<td><div class="line-block">
+<div class="line">overload .* operator for Maps.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>size()</p></td>
+<td><p>N/A</p></td>
+<td><div class="line-block">
+<div class="line">Inherited from <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="opti">
+<h2>Opti<a class="headerlink" href="#opti" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 68%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Interface Methods</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>run()</p></td>
+<td><div class="line-block">
+<div class="line">Run the algorithm from a given initial point.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>initialize()</p></td>
+<td><div class="line-block">
+<div class="line">Initialize the algorithm (e.g. auxilliary var).</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>doIteration()</p></td>
+<td><div class="line-block">
+<div class="line">Performs one iteration of the algorithm.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>updateParams()</p></td>
+<td><div class="line-block">
+<div class="line">Update algorithm parameters (e.g. descent step).</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>starting_verb()</p></td>
+<td><div class="line-block">
+<div class="line">Display starting message.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>ending_verb()</p></td>
+<td><div class="line-block">
+<div class="line">Display ending message.</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="opti.html" class="btn btn-neutral float-left" title="Optimization Algorithms (Opti)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="propertiessummary.html" class="btn btn-neutral float-right" title="List of Properties" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, Biomedical Imaging Group (EPFL).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

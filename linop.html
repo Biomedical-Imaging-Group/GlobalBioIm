@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linear Operators (LinOp) &mdash; GlobalBioIm Library 1.2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="_static/mathjax/tex-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Non-Linear Operators" href="nonlinop.html" />
+    <link rel="prev" title="Abstract Classes" href="abstract.html" /> 
+</head>
+
+<body class="wy-body-for-nav" style="text-align:justify"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> GlobalBioIm Library
+          </a>
+              <div class="version">
+                1.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Biomedical-Imaging-Group/GlobalBioIm">Download or Clone (v 1.2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infos.html">Important Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">Graphical User Interface (GUI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="relatedPapers.html">Related Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conditionsuse.html">Conditions of Use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Technical Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="abstract.html">Abstract Classes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Linear Operators (LinOp)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#linopbroadcast">LinOpBroadcast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linopbroadcastmatrix">LinOpBroadcastMatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linopconv">LinOpConv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linopdiag">LinOpDiag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linopdct">LinOpDCT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linopgrad">LinOpGrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linophess">LinOpHess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linopmatrix">LinOpMatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linopsdft">LinOpSDFT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linopshape">LinOpShape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linopsum">LinOpSum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linopxray">LinOpXRay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#selectorlinops">SelectorLinOps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#linopselector">LinOpSelector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linopdownsample">LinOpDownsample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linopselectorpatch">LinOpSelectorPatch</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nonlinop.html">Non-Linear Operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cost.html">Cost Functions (Cost)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opti.html">Optimization Algorithms (Opti)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methodssummary.html">List of Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="propertiessummary.html">List of Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu.html">Speedup with GPU</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="http://bigwww.epfl.ch">Biomedical Imaging Group</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GlobalBioIm Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Linear Operators (LinOp)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/linop.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="linear-operators-linop">
+<h1>Linear Operators (LinOp)<a class="headerlink" href="#linear-operators-linop" title="Permalink to this heading"></a></h1>
+<div class="math notranslate nohighlight">
+\[\]</div>
+<p>This section contains linear operator classes which all derive from the abstract class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+<span class="target" id="module-LinOp"></span><section id="linopbroadcast">
+<h2>LinOpBroadcast<a class="headerlink" href="#linopbroadcast" title="Permalink to this heading"></a></h2>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcast">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">LinOp.</span></span><span class="sig-name descname"><span class="pre">LinOpBroadcast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">index</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcast" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.LinOp</span></code></p>
+<p>LinOpSum: Broacasting linear operator which broadcast the elements of a variable along
+given directions.
+$$\mathrm{H} : \mathrm{x} \mapsto \mathrm{y_{k,l}} = \mathrm{x}_{k} $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sz</strong> – size of \(\mathrm{y}\) the output of the <a class="reference internal" href="#LinOp.LinOpBroadcast" title="LinOp.LinOpBroadcast"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpBroadcast</span></code></a>.</p></li>
+<li><p><strong>index</strong> – dimensions along which vector will be broadcasted</p></li>
+</ul>
+</dd>
+</dl>
+<p>LinOpBroadcast is the Adjoint of the LinOpSum operator</p>
+<p>All attributes of parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> are inherited.</p>
+<p><strong>Example</strong> S=LinOpBroadcast(sz,index)</p>
+<p>See also <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcast.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcast.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.
+$$\mathrm{H}^* : \mathrm{x} \mapsto \mathrm{y_{k,l}} =  \mathrm{x}_{k} \; \forall l$$</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcast.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcast.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.
+$$\mathrm{H} : \mathrm{x} \mapsto \mathrm{y_k} = \sum_l \mathrm{x}_{k,l} $$</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcast.applyHtH_">
+<span class="sig-name descname"><span class="pre">applyHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcast.applyHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcast.makeAdjoint_">
+<span class="sig-name descname"><span class="pre">makeAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcast.makeAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcast.makeHtH_">
+<span class="sig-name descname"><span class="pre">makeHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcast.makeHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopbroadcastmatrix">
+<h2>LinOpBroadcastMatrix<a class="headerlink" href="#linopbroadcastmatrix" title="Permalink to this heading"></a></h2>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcastMatrix">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">LinOp.</span></span><span class="sig-name descname"><span class="pre">LinOpBroadcastMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">M</span></em>, <em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">index</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcastMatrix" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.LinOp</span></code></p>
+<p>LinOpBroadCastMatrix which applies a matrix along a given dimension</p>
+<p>Build a LinOp from a given matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>M</strong> – of size M x N</p></li>
+<li><p><strong>sz</strong> – input size of the <code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpBroadCastMatrix</span></code></p></li>
+<li><p><strong>index</strong> – dimension along which the matrix is applied (sz(index) must be equal to N)</p></li>
+</ul>
+</dd>
+</dl>
+<p>All attributes of parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> are inherited.</p>
+<p>If M is 2x3, sz=[2 3 2] and index=2, then the matrix M is applied to
+each x(i,:,j) leading to an output of size [2 2 2].</p>
+<p><strong>Example</strong> H=LinOpBroadcastMatrix(M,sz,index)</p>
+<p>See also <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcastMatrix.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcastMatrix.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcastMatrix.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcastMatrix.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcastMatrix.applyInverse_">
+<span class="sig-name descname"><span class="pre">applyInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcastMatrix.applyInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcastMatrix.applyHtH_">
+<span class="sig-name descname"><span class="pre">applyHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcastMatrix.applyHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcastMatrix.applyHHt_">
+<span class="sig-name descname"><span class="pre">applyHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcastMatrix.applyHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcastMatrix.makeAdjoint_">
+<span class="sig-name descname"><span class="pre">makeAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcastMatrix.makeAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcastMatrix.makeHtH_">
+<span class="sig-name descname"><span class="pre">makeHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcastMatrix.makeHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcastMatrix.makeHHt_">
+<span class="sig-name descname"><span class="pre">makeHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcastMatrix.makeHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcastMatrix.makeInversion_">
+<span class="sig-name descname"><span class="pre">makeInversion_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcastMatrix.makeInversion_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcastMatrix.plus_">
+<span class="sig-name descname"><span class="pre">plus_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcastMatrix.plus_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpBroadcastMatrix.makeComposition_">
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpBroadcastMatrix.makeComposition_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopconv">
+<h2>LinOpConv<a class="headerlink" href="#linopconv" title="Permalink to this heading"></a></h2>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="LinOp.LinOpConv">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">LinOp.</span></span><span class="sig-name descname"><span class="pre">LinOpConv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">varargin</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpConv" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.LinOp</span></code></p>
+<p>LinOpConv: Convolution operator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mtf</strong> – Fourier transform of Point Spread Function</p></li>
+<li><p><strong>isReal</strong> – if true (default) the result of the convolution should be real</p></li>
+<li><p><strong>index</strong> – dimensions along which the convolution is performed (the MTF/PSF must have a comformable size</p></li>
+<li><p><strong>'MTF'</strong> – keyword to provide MTF (default)</p></li>
+<li><p><strong>'PSF'</strong> – keyword to provide PSF instead of MTF</p></li>
+<li><p><strong>'Centered'</strong> – if the PSF is centered in the image</p></li>
+<li><p><strong>'Pad'</strong> – if the PSF must be padded to the size SZ with the value padvalue (default 0)</p></li>
+<li><p><strong>'useRFT'</strong> – keyword to use the real-to-half-complex fourier transformation (works with a given ‘PSF’, not ‘MTF’)</p></li>
+</ul>
+</dd>
+</dl>
+<p>All attributes of parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> are inherited.</p>
+<p><strong>Example</strong> H=LinOpConv(mtf,isReal,index)</p>
+<p><strong>Example</strong> H=LinOpConv(‘MTF’,mtf,isReal,index)</p>
+<p><strong>Example</strong> H=LinOpConv(‘PSF’, psf,isReal,index)</p>
+<p><strong>Example</strong> H=LinOpConv(‘PSF’, psf,isReal,index,’useRFT’)</p>
+<p><strong>Example</strong> H=LinOpConv(‘PSF’, psf,isReal,index,’Centered’)</p>
+<p><strong>Example</strong> H=LinOpConv(‘PSF’, psf,isReal,index,’Pad’,sz,padvalue)</p>
+<p><strong>Example</strong> H=LinOpConv(‘PSF’, psf,isReal,index,’Centered’,’Pad’,sz,padvalue)</p>
+<p><strong>Note</strong> the order of keywords do not matters. For example the two following lines are equivalent</p>
+<p>H=LinOpConv(‘PSF’, psf,isReal,index,’Pad’,sz,padvalue,’useRFT’)</p>
+<p>H=LinOpConv(‘PSF’, psf,isReal,index,’useRFT’,’Pad’,sz,padvalue)</p>
+<p>See also <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpConv.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpConv.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpConv.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpConv.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpConv.applyHtH_">
+<span class="sig-name descname"><span class="pre">applyHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpConv.applyHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpConv.applyHHt_">
+<span class="sig-name descname"><span class="pre">applyHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpConv.applyHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpConv.applyInverse_">
+<span class="sig-name descname"><span class="pre">applyInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpConv.applyInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpConv.applyAdjointInverse_">
+<span class="sig-name descname"><span class="pre">applyAdjointInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpConv.applyAdjointInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpConv.plus_">
+<span class="sig-name descname"><span class="pre">plus_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpConv.plus_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpConv.makeAdjoint_">
+<span class="sig-name descname"><span class="pre">makeAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpConv.makeAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpConv.makeHtH_">
+<span class="sig-name descname"><span class="pre">makeHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpConv.makeHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpConv.makeHHt_">
+<span class="sig-name descname"><span class="pre">makeHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpConv.makeHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpConv.makeInversion_">
+<span class="sig-name descname"><span class="pre">makeInversion_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpConv.makeInversion_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpConv.makeComposition_">
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">H</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpConv.makeComposition_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopdiag">
+<h2>LinOpDiag<a class="headerlink" href="#linopdiag" title="Permalink to this heading"></a></h2>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="LinOp.LinOpDiag">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">LinOp.</span></span><span class="sig-name descname"><span class="pre">LinOpDiag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">diag</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDiag" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.LinOp</span></code></p>
+<p>LinOpDiag: Diagonal operator
+$$ \mathrm{Hx}= \mathrm{\mathbf{diag}(w)x}$$
+where \(\mathrm{w} \in \mathbb{R}^N\) or \(\mathbb{C}^N\) is a
+vector containing the diagonal elements of \(\mathrm{H}\).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>diag</strong> – elements of the diagonal (Non-singleton dimensions of diag and sz must be consistent)</p></li>
+<li><p><strong>sz</strong> – size (if not the size of the given diag).</p></li>
+</ul>
+</dd>
+</dl>
+<p>All attributes of parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> are inherited.</p>
+<p>If size(diag)=[2 1] and sz=[2 2], then LinOpDiag multiplies each
+column of a given 2x2 matrix with the diag vector (see bsxfun).</p>
+<p><strong>Example</strong> D=LinOpDiag(sz,diag)</p>
+<p>See also <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDiag.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDiag.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDiag.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDiag.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDiag.applyHtH_">
+<span class="sig-name descname"><span class="pre">applyHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDiag.applyHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDiag.applyHHt_">
+<span class="sig-name descname"><span class="pre">applyHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDiag.applyHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDiag.applyInverse_">
+<span class="sig-name descname"><span class="pre">applyInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDiag.applyInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDiag.applyAdjointInverse_">
+<span class="sig-name descname"><span class="pre">applyAdjointInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDiag.applyAdjointInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDiag.plus_">
+<span class="sig-name descname"><span class="pre">plus_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDiag.plus_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDiag.makeAdjoint_">
+<span class="sig-name descname"><span class="pre">makeAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDiag.makeAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDiag.makeHHt_">
+<span class="sig-name descname"><span class="pre">makeHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDiag.makeHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDiag.makeHtH_">
+<span class="sig-name descname"><span class="pre">makeHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDiag.makeHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDiag.mpower_">
+<span class="sig-name descname"><span class="pre">mpower_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">p</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDiag.mpower_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDiag.makeInversion_">
+<span class="sig-name descname"><span class="pre">makeInversion_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDiag.makeInversion_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDiag.makeComposition_">
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDiag.makeComposition_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopdct">
+<h2>LinOpDCT<a class="headerlink" href="#linopdct" title="Permalink to this heading"></a></h2>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="LinOp.LinOpDCT">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">LinOp.</span></span><span class="sig-name descname"><span class="pre">LinOpDCT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDCT" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.LinOp</span></code></p>
+<p>LinOpDCT : Discrete cosine transform</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sz</strong> – sizein of the operator.</p>
+</dd>
+</dl>
+<p>All attributes of parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> are inherited.</p>
+<p><strong>Note</strong> Currently only implemented in 2D</p>
+<p><strong>Example</strong> DCT=LinOpDCT(sz)</p>
+<p>See also <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, dct2, idct2,</p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDCT.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDCT.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDCT.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDCT.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDCT.applyInverse_">
+<span class="sig-name descname"><span class="pre">applyInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDCT.applyInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDCT.applyHtH_">
+<span class="sig-name descname"><span class="pre">applyHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDCT.applyHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDCT.applyHHt_">
+<span class="sig-name descname"><span class="pre">applyHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDCT.applyHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDCT.applyAdjointInverse_">
+<span class="sig-name descname"><span class="pre">applyAdjointInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDCT.applyAdjointInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDCT.makeHHt_">
+<span class="sig-name descname"><span class="pre">makeHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDCT.makeHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDCT.makeHtH_">
+<span class="sig-name descname"><span class="pre">makeHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDCT.makeHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpDCT.makeInversion_">
+<span class="sig-name descname"><span class="pre">makeInversion_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpDCT.makeInversion_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopgrad">
+<h2>LinOpGrad<a class="headerlink" href="#linopgrad" title="Permalink to this heading"></a></h2>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="LinOp.LinOpGrad">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">LinOp.</span></span><span class="sig-name descname"><span class="pre">LinOpGrad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">index</span></em>, <em class="sig-param"><span class="pre">bc</span></em>, <em class="sig-param"><span class="pre">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpGrad" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.LinOp</span></code></p>
+<p>LinOpGrad:  Gradient linear operator (Finite differences)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sz</strong> – sizein of the gradient operator</p></li>
+<li><p><strong>index</strong> – dimension along which the gradient is computed (all by default)</p></li>
+<li><p><strong>bc</strong> – boundary condition: ‘circular’ (default), ‘zeros’, ‘mirror’</p></li>
+<li><p><strong>res</strong> – vector containing the resolution along each dimension (default all 1)</p></li>
+<li><p><strong>useRFT</strong> – use RFT when defining the <a class="reference internal" href="#LinOp.LinOpConv" title="LinOp.LinOpConv"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpConv</span></code></a> associated to \(\mathrm{H^TH}\)</p></li>
+</ul>
+</dd>
+</dl>
+<p>All attributes of parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> are inherited.</p>
+<dl class="simple">
+<dt><strong>Note</strong> When circular boundary conditions are selected, the method</dt><dd><p>makeHtH (or equivalently the composition <code class="docutils literal notranslate"><span class="pre">H'*H</span></code>) returns a convolution
+linear operator <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd>
+</dl>
+<p><strong>Example</strong> G = LinOpGrad(sz,index,bc,res)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpGrad.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpGrad.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpGrad.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpGrad.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpGrad.applyHtH_">
+<span class="sig-name descname"><span class="pre">applyHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpGrad.applyHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpGrad.makeHtH_">
+<span class="sig-name descname"><span class="pre">makeHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpGrad.makeHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linophess">
+<h2>LinOpHess<a class="headerlink" href="#linophess" title="Permalink to this heading"></a></h2>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="LinOp.LinOpHess">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">LinOp.</span></span><span class="sig-name descname"><span class="pre">LinOpHess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">bc</span></em>, <em class="sig-param"><span class="pre">index</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpHess" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.LinOp</span></code></p>
+<p>LinOpHess: Hessian linear operator (finite differences)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sz</strong> – sizein of the gradient operator</p></li>
+<li><p><strong>bc</strong> – boundary condition: ‘circular’ (default), ‘mirror’</p></li>
+<li><p><strong>useRFT</strong> – use RFT when defining the <a class="reference internal" href="#LinOp.LinOpConv" title="LinOp.LinOpConv"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpConv</span></code></a> associated to \(\mathrm{H^TH}\)</p></li>
+<li><p><strong>index</strong> – dimension along which the hessian is computed (all by default)</p></li>
+</ul>
+</dd>
+</dl>
+<p>The output size is [sz,lidx(lidx+1)/2] where lidx is the length of
+the index vector. The last dimension of length lidx(lidx+1)/2
+represents the coefficients of upper-right part of the symmetric hessian 
+matrix ordered from top to bottom and left to right. For instance:</p>
+<ul class="simple">
+<li><p>in 3D with index=[1 2 3], [d^2F/dxx;d^2F/dxy;d^2F/dxz;d^2F/dyy;d^2F/dyz;d^2F/dzz]</p></li>
+<li><p>in 3D with index=[2 3], [d^2F/dyy;d^2F/dyz;d^2F/dzz]</p></li>
+</ul>
+<p>All attributes of parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> are inherited.</p>
+<p><strong>Note</strong> When circular boundary conditions are selected, the method
+makeHtH (or equivalently the composition <code class="docutils literal notranslate"><span class="pre">H'*H</span></code>) returns a convolution
+linear operator <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+<p><strong>Example</strong> H = LinOpHess(sz,bc,index)</p>
+<p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpHess.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpHess.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpHess.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpHess.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpHess.makeHtH_">
+<span class="sig-name descname"><span class="pre">makeHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpHess.makeHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopmatrix">
+<h2>LinOpMatrix<a class="headerlink" href="#linopmatrix" title="Permalink to this heading"></a></h2>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="LinOp.LinOpMatrix">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">LinOp.</span></span><span class="sig-name descname"><span class="pre">LinOpMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">M</span></em>, <em class="sig-param"><span class="pre">index</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpMatrix" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.LinOp</span></code></p>
+<p>LinOpMatrix : Matrix operator</p>
+<p>Build a LinOp from a given matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>M</strong> – matrix</p></li>
+<li><p><strong>index</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<p>All attributes of parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> are inherited.</p>
+<p><strong>Example</strong> H=LinOpMatrix(M,index)</p>
+<p>See also <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpMatrix.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpMatrix.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpMatrix.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpMatrix.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopsdft">
+<h2>LinOpSDFT<a class="headerlink" href="#linopsdft" title="Permalink to this heading"></a></h2>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="LinOp.LinOpSDFT">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">LinOp.</span></span><span class="sig-name descname"><span class="pre">LinOpSDFT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">index</span></em>, <em class="sig-param"><span class="pre">unitary</span></em>, <em class="sig-param"><span class="pre">pad</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpSDFT" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.LinOp</span></code></p>
+<p>LinOpSDFT : Sliced Discrete Fourier operator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sz</strong> – sizein of the operator.</p></li>
+<li><p><strong>unitary</strong> – boolean true when normalized DFT (default false)</p></li>
+<li><p><strong>pad</strong> – padding size (see the doc of fftn function).</p></li>
+<li><p><strong>index</strong> – index along wich dimension are computed the FFT (default all)</p></li>
+</ul>
+</dd>
+</dl>
+<p>All attributes of parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> are inherited.</p>
+<p><strong>Example</strong> SDFT=LinOpSDFT(sz,index,unitary, pad)</p>
+<p>See also <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, fftn, ifftn, Sfft, iSfft</p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpSDFT.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpSDFT.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpSDFT.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpSDFT.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpSDFT.applyInverse_">
+<span class="sig-name descname"><span class="pre">applyInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpSDFT.applyInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpSDFT.applyHtH_">
+<span class="sig-name descname"><span class="pre">applyHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpSDFT.applyHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpSDFT.applyHHt_">
+<span class="sig-name descname"><span class="pre">applyHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpSDFT.applyHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpSDFT.applyAdjointInverse_">
+<span class="sig-name descname"><span class="pre">applyAdjointInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpSDFT.applyAdjointInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpSDFT.makeHHt_">
+<span class="sig-name descname"><span class="pre">makeHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpSDFT.makeHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpSDFT.makeHtH_">
+<span class="sig-name descname"><span class="pre">makeHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpSDFT.makeHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpSDFT.makeInversion_">
+<span class="sig-name descname"><span class="pre">makeInversion_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpSDFT.makeInversion_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopshape">
+<h2>LinOpShape<a class="headerlink" href="#linopshape" title="Permalink to this heading"></a></h2>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="LinOp.LinOpShape">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">LinOp.</span></span><span class="sig-name descname"><span class="pre">LinOpShape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sizein</span></em>, <em class="sig-param"><span class="pre">sizeout</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpShape" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.LinOp</span></code></p>
+<p>LinOpShape: reshaping operator</p>
+<p>Reshape an array of size sizein in a array of size sizeout</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sizein</strong> – input size</p></li>
+<li><p><strong>sizeout</strong> – output size</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example</strong> R=LinOpShape(sizein,sizeout)</p>
+<p>See also <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpShape.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpShape.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpShape.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpShape.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpShape.applyHHt_">
+<span class="sig-name descname"><span class="pre">applyHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpShape.applyHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpShape.applyHtH_">
+<span class="sig-name descname"><span class="pre">applyHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpShape.applyHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpShape.applyInverse_">
+<span class="sig-name descname"><span class="pre">applyInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpShape.applyInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpShape.applyAdjointInverse_">
+<span class="sig-name descname"><span class="pre">applyAdjointInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpShape.applyAdjointInverse_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpShape.makeHHt_">
+<span class="sig-name descname"><span class="pre">makeHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpShape.makeHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpShape.makeHtH_">
+<span class="sig-name descname"><span class="pre">makeHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpShape.makeHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopsum">
+<h2>LinOpSum<a class="headerlink" href="#linopsum" title="Permalink to this heading"></a></h2>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="LinOp.LinOpSum">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">LinOp.</span></span><span class="sig-name descname"><span class="pre">LinOpSum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">index</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpSum" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.LinOp</span></code></p>
+<p>LinOpSum: Summation linear operator which sums the elements of a variable along
+given directions.
+$$\mathrm{H} : \mathrm{x} \mapsto \mathrm{y_k} = \sum_l \mathrm{x}_{k,l} $$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sz</strong> – size of \(\mathrm{x}\) on which the <a class="reference internal" href="#LinOp.LinOpSum" title="LinOp.LinOpSum"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpSum</span></code></a> applies.</p></li>
+<li><p><strong>index</strong> – dimensions along which the sum will be performed (inner sum over l)</p></li>
+</ul>
+</dd>
+</dl>
+<p>All attributes of parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> are inherited.</p>
+<p><strong>Example</strong> S=LinOpSum(sz,index)</p>
+<p>See also <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpSum.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpSum.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpSum.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpSum.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.
+$$\mathrm{H}^* : \mathrm{x} \mapsto \mathrm{y_{k,l}} =  \mathrm{x}_{k} \; \forall l$$</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpSum.makeAdjoint_">
+<span class="sig-name descname"><span class="pre">makeAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpSum.makeAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpSum.applyHHt_">
+<span class="sig-name descname"><span class="pre">applyHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpSum.applyHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpSum.makeHHt_">
+<span class="sig-name descname"><span class="pre">makeHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpSum.makeHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpSum.makeComposition_">
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">H</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpSum.makeComposition_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopxray">
+<h2>LinOpXRay<a class="headerlink" href="#linopxray" title="Permalink to this heading"></a></h2>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="LinOp.LinOpXRay">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">LinOp.</span></span><span class="sig-name descname"><span class="pre">LinOpXRay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">thetas</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpXRay" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.LinOp</span></code></p>
+<p>LinOpXray: 2D, parallel x-ray operator based on MATLAB’s <code class="docutils literal notranslate"><span class="pre">radon</span></code> function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – structure defining the reconstruction domain (always 2D)</p></li>
+<li><p><strong>x.size</strong> – 1x2 vector giving dimensions of the domain in pixels, must be of the form <code class="docutils literal notranslate"><span class="pre">N*ones(1,2)</span></code>.</p></li>
+<li><p><strong>x.step</strong> – 1x2 vector giving the spacing of the pixels
+(in an apropirate unit of length, e.g. milimeteres).</p></li>
+<li><p><strong>thetas</strong> – 1x(number of projections) vector giving the projection directions in radians.
+Specifically, <code class="docutils literal notranslate"><span class="pre">[cos(theta)</span> <span class="pre">sin(theta)]</span></code> points in the direction of the positive axis in the projection coordinate system.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Note</strong> We take rows as $$x$$ and columns as $$y$$ in the reconstruction domain.
+<strong>Note</strong> The center of the reconstruction (and rotation axis) is assumed to be at <code class="docutils literal notranslate"><span class="pre">floor((x.size+1)/2)</span></code>.</p>
+<p><strong>Note</strong> The center of each projection is at <code class="docutils literal notranslate"><span class="pre">ceil(sizeout/2)</span></code>.</p>
+<p><strong>Note</strong> Be warned that the adjoint is only accurate to around 20 dB for
+for images of size 500x500 px. The error is smaller for larger
+images.</p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpXRay.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpXRay.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>apply the operator</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpXRay.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpXRay.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>apply the adjoint</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.LinOpXRay.applyHtH_">
+<span class="sig-name descname"><span class="pre">applyHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.LinOpXRay.applyHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>apply the HtH matrix</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-LinOp.SelectorLinOps"></span></section>
+<section id="selectorlinops">
+<h2>SelectorLinOps<a class="headerlink" href="#selectorlinops" title="Permalink to this heading"></a></h2>
+<section id="linopselector">
+<h3>LinOpSelector<a class="headerlink" href="#linopselector" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="LinOp.SelectorLinOps.LinOpSelector">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">LinOp.SelectorLinOps.</span></span><span class="sig-name descname"><span class="pre">LinOpSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sel</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.SelectorLinOps.LinOpSelector" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.LinOp</span></code></p>
+<p>Selector linear operator which extracts specific entries of a vector
+$$\mathrm{H} : \mathrm{x} \mapsto \mathrm{x}_{\mathrm{sel}} $$
+where \(\mathrm{sel}\) is a subset of selected indexes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sel</strong> – boolean with true at selected positions</p>
+</dd>
+</dl>
+<p>All attributes of parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> are inherited.</p>
+<p><strong>Note</strong> The output of the <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">apply()</span></code> method will be a colunm
+vector whatever the given parameter sel. For specific selectors
+(i.e., downsampling or patch see <a class="reference internal" href="#LinOp.SelectorLinOps.LinOpDownsample" title="LinOp.SelectorLinOps.LinOpDownsample"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpDownsample</span></code></a> and
+<a class="reference internal" href="#LinOp.SelectorLinOps.LinOpSelectorPatch" title="LinOp.SelectorLinOps.LinOpSelectorPatch"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpSelectorPatch</span></code></a>)</p>
+<p><strong>Example</strong> S=LinOpSelector(sel)</p>
+<p>See also <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, <a class="reference internal" href="#LinOp.SelectorLinOps.LinOpSelectorPatch" title="LinOp.SelectorLinOps.LinOpSelectorPatch"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpSelectorPatch</span></code></a>,
+<a class="reference internal" href="#LinOp.SelectorLinOps.LinOpDownsample" title="LinOp.SelectorLinOps.LinOpDownsample"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpDownsample</span></code></a>.</p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.SelectorLinOps.LinOpSelector.apply_">
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.SelectorLinOps.LinOpSelector.apply_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#LinOp.SelectorLinOps.LinOpSelector" title="LinOp.SelectorLinOps.LinOpSelector"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpSelector</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.SelectorLinOps.LinOpSelector.applyAdjoint_">
+<span class="sig-name descname"><span class="pre">applyAdjoint_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.SelectorLinOps.LinOpSelector.applyAdjoint_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#LinOp.SelectorLinOps.LinOpSelector" title="LinOp.SelectorLinOps.LinOpSelector"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpSelector</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.SelectorLinOps.LinOpSelector.applyHtH_">
+<span class="sig-name descname"><span class="pre">applyHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.SelectorLinOps.LinOpSelector.applyHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#LinOp.SelectorLinOps.LinOpSelector" title="LinOp.SelectorLinOps.LinOpSelector"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpSelector</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.SelectorLinOps.LinOpSelector.applyHHt_">
+<span class="sig-name descname"><span class="pre">applyHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.SelectorLinOps.LinOpSelector.applyHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.SelectorLinOps.LinOpSelector.makeHHt_">
+<span class="sig-name descname"><span class="pre">makeHHt_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.SelectorLinOps.LinOpSelector.makeHHt_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.SelectorLinOps.LinOpSelector.makeHtH_">
+<span class="sig-name descname"><span class="pre">makeHtH_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.SelectorLinOps.LinOpSelector.makeHtH_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopdownsample">
+<h3>LinOpDownsample<a class="headerlink" href="#linopdownsample" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="LinOp.SelectorLinOps.LinOpDownsample">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">LinOp.SelectorLinOps.</span></span><span class="sig-name descname"><span class="pre">LinOpDownsample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">df</span></em>, <em class="sig-param"><span class="pre">first</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.SelectorLinOps.LinOpDownsample" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#LinOp.SelectorLinOps.LinOpSelector" title="LinOp.SelectorLinOps.LinOpSelector"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp.SelectorLinOps.LinOpSelector</span></code></a></p>
+<p>Downsampling linear operator 
+$$\mathrm{H} : \mathrm{x} \mapsto \mathrm{y}_k =\mathrm{x}_{(k-1)d+1} $$
+where \(d \) is the downsampling factor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sz</strong> – size of \(\mathrm{x}\) on which the <a class="reference internal" href="#LinOp.SelectorLinOps.LinOpDownsample" title="LinOp.SelectorLinOps.LinOpDownsample"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpDownsample</span></code></a> applies.</p></li>
+<li><p><strong>df</strong> – array containing the downsampling factor in each direction
+(must divide the corresponding entry of sz)</p></li>
+<li><p><strong>first</strong> – array containing the index of the first element in each direction</p></li>
+</ul>
+</dd>
+</dl>
+<p>All attributes of the parent class <a class="reference internal" href="#LinOp.SelectorLinOps.LinOpSelector" title="LinOp.SelectorLinOps.LinOpSelector"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpSelector</span></code></a> 
+are inherited.</p>
+<p><strong>Example</strong> D=LinOpDownsample(sz,df,first)</p>
+<p>See also <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, <a class="reference internal" href="#LinOp.SelectorLinOps.LinOpSelector" title="LinOp.SelectorLinOps.LinOpSelector"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpSelector</span></code></a>,
+<a class="reference internal" href="#LinOp.SelectorLinOps.LinOpSelectorPatch" title="LinOp.SelectorLinOps.LinOpSelectorPatch"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpSelectorPatch</span></code></a>.</p>
+<dl class="mat method">
+<dt class="sig sig-object mat" id="LinOp.SelectorLinOps.LinOpDownsample.makeComposition_">
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">H</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.SelectorLinOps.LinOpDownsample.makeComposition_" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplemented from parent class <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="linopselectorpatch">
+<h3>LinOpSelectorPatch<a class="headerlink" href="#linopselectorpatch" title="Permalink to this heading"></a></h3>
+<dl class="mat class">
+<dt class="sig sig-object mat" id="LinOp.SelectorLinOps.LinOpSelectorPatch">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">LinOp.SelectorLinOps.</span></span><span class="sig-name descname"><span class="pre">LinOpSelectorPatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">idxmin</span></em>, <em class="sig-param"><span class="pre">idxmax</span></em>, <em class="sig-param"><span class="pre">squeezeflag</span></em><span class="sig-paren">)</span><a class="headerlink" href="#LinOp.SelectorLinOps.LinOpSelectorPatch" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#LinOp.SelectorLinOps.LinOpSelector" title="LinOp.SelectorLinOps.LinOpSelector"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp.SelectorLinOps.LinOpSelector</span></code></a></p>
+<p>Patch Selector linear operator which extracts a patch from the given
+vector
+$$\mathrm{H} : \mathrm{x} \mapsto \mathrm{x}_{[i_{min}:i_{max}]}$$
+where \( i_{min} \) and \( i_{max} \) are indexes corresponding
+to the first and last elements of the patch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sz</strong> – size of \(\mathrm{x}\) on which the <a class="reference internal" href="#LinOp.SelectorLinOps.LinOpSelectorPatch" title="LinOp.SelectorLinOps.LinOpSelectorPatch"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpSelectorPatch</span></code></a> applies.</p></li>
+<li><p><strong>idxmin</strong> – array containing the first kept index in each direction</p></li>
+<li><p><strong>idxmax</strong> – array containing the last kept index in each direction</p></li>
+<li><p><strong>squeezeflag</strong> – true to squeeze  singleton dimensions (default: false)</p></li>
+</ul>
+</dd>
+</dl>
+<p>All attributes of parent class <a class="reference internal" href="#LinOp.SelectorLinOps.LinOpSelector" title="LinOp.SelectorLinOps.LinOpSelector"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpSelector</span></code></a> are inherited.</p>
+<p><strong>Example</strong> S=LinOpSelectorPatch(sz,idxmin,idxmax)</p>
+<p>See also <a class="reference internal" href="#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, <a class="reference internal" href="#LinOp.SelectorLinOps.LinOpSelector" title="LinOp.SelectorLinOps.LinOpSelector"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpSelector</span></code></a>,
+<code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpDownsampling</span></code>.</p>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="abstract.html" class="btn btn-neutral float-left" title="Abstract Classes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nonlinop.html" class="btn btn-neutral float-right" title="Non-Linear Operators" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, Biomedical Imaging Group (EPFL).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

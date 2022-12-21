@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Examples &mdash; GlobalBioIm Library 1.2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="_static/mathjax/tex-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Graphical User Interface (GUI)" href="gui.html" />
+    <link rel="prev" title="Important Information" href="infos.html" /> 
+</head>
+
+<body class="wy-body-for-nav" style="text-align:justify"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> GlobalBioIm Library
+          </a>
+              <div class="version">
+                1.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Biomedical-Imaging-Group/GlobalBioIm">Download or Clone (v 1.2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infos.html">Important Information</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#d-deconvolution">3D Deconvolution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">Graphical User Interface (GUI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="relatedPapers.html">Related Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conditionsuse.html">Conditions of Use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Technical Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="abstract.html">Abstract Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linop.html">Linear Operators (LinOp)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nonlinop.html">Non-Linear Operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cost.html">Cost Functions (Cost)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opti.html">Optimization Algorithms (Opti)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methodssummary.html">List of Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="propertiessummary.html">List of Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu.html">Speedup with GPU</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="http://bigwww.epfl.ch">Biomedical Imaging Group</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GlobalBioIm Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Examples</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/examples.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="examples">
+<span id="ref-examples"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h1>
+<div class="math notranslate nohighlight">
+\[\]</div>
+<section id="d-deconvolution">
+<h2>3D Deconvolution<a class="headerlink" href="#d-deconvolution" title="Permalink to this heading"></a></h2>
+<p>We consider the C. elegans embryo real dataset (\(672 \times 712 \times 104 \)) that can be downloaded <a class="reference external" href="http://bigwww.epfl.ch/deconvolution/bio/">here</a> and that is shown in Figure 1.
+This sample contains</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>nuclei (DAPI channel-blue)</p></li>
+<li><p>protein spots  (CY3 channel-red)</p></li>
+<li><p>microtubules (FITC channel-green).</p></li>
+</ul>
+</div></blockquote>
+<p>The PSF for each channel, generated from a theoretical model, is also provided <a class="reference external" href="http://bigwww.epfl.ch/deconvolution/bio/">here</a>.
+In what follows, each channel is deconvolved separately using the same code.</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="_images/ConvData.png"><img alt="C. Elegans embryo" src="_images/ConvData.png" style="width: 443.79999999999995px; height: 457.79999999999995px;" /></a>
+<figcaption>
+<p><span class="caption-text">Fig 1. C. Elegans embryo. Blue: chromosomes in the nuclei. Green: microtubules. Red: a protein
+stained with CY3.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p>We start by reading the data</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">%% Reading data</span><span class="w"></span>
+<span class="n">psf</span><span class="p">=</span><span class="nb">double</span><span class="p">(</span><span class="n">loadtiff</span><span class="p">(</span><span class="n">psfname</span><span class="p">));</span><span class="n">psf</span><span class="p">=</span><span class="n">psf</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">psf</span><span class="p">(:));</span><span class="w"></span>
+<span class="n">y</span><span class="p">=</span><span class="nb">double</span><span class="p">(</span><span class="n">loadtiff</span><span class="p">(</span><span class="n">dataname</span><span class="p">));</span><span class="n">maxy</span><span class="p">=</span><span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">(:));</span><span class="n">y</span><span class="p">=</span><span class="n">y</span><span class="o">/</span><span class="n">maxy</span><span class="p">;</span><span class="w"></span>
+<span class="n">sz</span><span class="p">=</span><span class="nb">size</span><span class="p">(</span><span class="n">y</span><span class="p">);</span><span class="w"></span>
+</pre></div>
+</div>
+<p>We then resize the PSF and enforce compliance with the periodic assumption of the FFT. This is particularly relevant in the axial direction where  there is signal at the boundaries of the volume.
+Note that the function <em>fft_best_dim</em> (Util/ folder) returns sizes that are
+suited to efficient FFT operations.</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">padsz</span><span class="p">=[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">52</span><span class="p">];</span><span class="w"></span>
+<span class="n">sznew</span><span class="p">=</span><span class="n">fft_best_dim</span><span class="p">(</span><span class="n">sz</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">padsz</span><span class="p">);</span><span class="w"></span>
+<span class="n">halfPad</span><span class="p">=(</span><span class="n">sznew</span><span class="o">-</span><span class="n">sz</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span><span class="w"></span>
+<span class="n">psf</span><span class="p">=</span><span class="n">padarray</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span><span class="n">halfPad</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">&#39;both&#39;</span><span class="p">);</span><span class="w"></span>
+</pre></div>
+</div>
+<p>We now define our data-fidelity term, TV regularization, and nonnegativity constraint.</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">%% Least-squares data-fidelity term</span><span class="w"></span>
+<span class="n">H</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="nb">fftn</span><span class="p">(</span><span class="nb">fftshift</span><span class="p">(</span><span class="n">psf</span><span class="p">)));</span><span class="w">                      </span><span class="c">% Convolution operator</span><span class="w"></span>
+<span class="n">H</span><span class="p">.</span><span class="n">memoizeOpts</span><span class="p">.</span><span class="n">apply</span><span class="p">=</span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="n">S</span><span class="p">=</span><span class="n">LinOpSelectorPatch</span><span class="p">(</span><span class="n">sznew</span><span class="p">,</span><span class="n">halfPad</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">sznew</span><span class="o">-</span><span class="n">halfPad</span><span class="p">);</span><span class="w">   </span><span class="c">% Selector operator</span><span class="w"></span>
+<span class="n">L2</span><span class="p">=</span><span class="n">CostL2</span><span class="p">(</span><span class="n">S</span><span class="p">.</span><span class="n">sizeout</span><span class="p">,</span><span class="n">y</span><span class="p">);</span><span class="w">                                </span><span class="c">% L2 cost function</span><span class="w"></span>
+<span class="n">LS</span><span class="p">=</span><span class="n">L2</span><span class="o">*</span><span class="n">S</span><span class="p">;</span><span class="w">                                               </span><span class="c">% Least-squares data term</span><span class="w"></span>
+<span class="c">%% TV regularization</span><span class="w"></span>
+<span class="n">Freg</span><span class="p">=</span><span class="n">CostMixNorm21</span><span class="p">([</span><span class="n">sznew</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="mi">4</span><span class="p">);</span><span class="w">      </span><span class="c">% TV regularizer: Mixed norm 2-1</span><span class="w"></span>
+<span class="n">Opreg</span><span class="p">=</span><span class="n">LinOpGrad</span><span class="p">(</span><span class="n">sznew</span><span class="p">);</span><span class="w">               </span><span class="c">% TV regularizer: Operator gradient</span><span class="w"></span>
+<span class="n">Opreg</span><span class="p">.</span><span class="n">memoizeOpts</span><span class="p">.</span><span class="n">apply</span><span class="p">=</span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="n">lamb</span><span class="p">=</span><span class="mf">2e-6</span><span class="p">;</span><span class="w">                            </span><span class="c">% Regularization parameter</span><span class="w"></span>
+<span class="c">%% Nonnegativity constraint</span><span class="w"></span>
+<span class="n">pos</span><span class="p">=</span><span class="n">CostNonNeg</span><span class="p">(</span><span class="n">sznew</span><span class="p">);</span><span class="w">                </span><span class="c">% Nonnegativity: Indicator function</span><span class="w"></span>
+<span class="n">Id</span><span class="p">=</span><span class="n">LinOpIdentity</span><span class="p">(</span><span class="n">sznew</span><span class="p">);</span><span class="w">              </span><span class="c">% Identity operator</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Here, our cost function is
+$$ \mathcal{C}(\mathrm{x}) = \frac12 \|\mathrm{SHx - y} \|_2^2 + \lambda \|\nabla \mathrm{x} \|_{2,1} + i_{\geq 0}(\mathrm{x}),$$
+where \(\lambda &gt;0\) is the regularization parameter, \(\mathrm{S}\) an operator that selects the “unpadded” (valid)
+part of the convolution result \(\mathrm{Hx}\), and the two other terms are the TV regularization and the nonnegativity
+constraint, respectively. We are now ready to instanciate and run our algorithm (here, ADMM) to minimize our functional.</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">dispIt</span><span class="p">=</span><span class="mi">30</span><span class="p">;</span><span class="w">                     </span><span class="c">% Verbose every 30 iterations</span><span class="w"></span>
+<span class="n">maxIt</span><span class="p">=</span><span class="mi">300</span><span class="p">;</span><span class="w">                     </span><span class="c">% Maximal number of iterations</span><span class="w"></span>
+<span class="n">Fn</span><span class="p">={</span><span class="n">LS</span><span class="p">,</span><span class="n">lamb</span><span class="o">*</span><span class="n">Freg</span><span class="p">,</span><span class="n">pos</span><span class="p">};</span><span class="w">         </span><span class="c">% Functionals F_n constituting the cost</span><span class="w"></span>
+<span class="n">Hn</span><span class="p">={</span><span class="n">H</span><span class="p">,</span><span class="n">Opreg</span><span class="p">,</span><span class="n">Id</span><span class="p">};</span><span class="w">               </span><span class="c">% Associated operators H_n</span><span class="w"></span>
+<span class="n">rho_n</span><span class="p">=[</span><span class="mf">1e-3</span><span class="p">,</span><span class="mf">1e-3</span><span class="p">,</span><span class="mf">1e-3</span><span class="p">];</span><span class="w">        </span><span class="c">% Multipliers rho_n</span><span class="w"></span>
+<span class="n">ADMM</span><span class="p">=</span><span class="n">OptiADMM</span><span class="p">([],</span><span class="n">Fn</span><span class="p">,</span><span class="n">Hn</span><span class="p">,</span><span class="n">rho_n</span><span class="p">);</span><span class="w"> </span><span class="c">% Declare optimizer</span><span class="w"></span>
+<span class="n">ADMM</span><span class="p">.</span><span class="n">OutOp</span><span class="p">=</span><span class="n">OutputOpti</span><span class="p">(</span><span class="mi">1</span><span class="p">,[],</span><span class="nb">round</span><span class="p">(</span><span class="n">maxIt</span><span class="o">/</span><span class="mi">10</span><span class="p">),[</span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="p">]);</span><span class="w"> </span><span class="c">% build the output object</span><span class="w"></span>
+<span class="n">ADMM</span><span class="p">.</span><span class="n">CvOp</span><span class="p">=</span><span class="n">TestCvgCombine</span><span class="p">(</span><span class="n">TestCvgCostRelative</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">),</span><span class="w"> </span><span class="s">&#39;StepRelative&#39;</span><span class="p">,</span><span class="mf">1e-4</span><span class="p">);</span><span class="w"> </span><span class="c">% Set the convergence tests</span><span class="w"></span>
+<span class="n">ADMM</span><span class="p">.</span><span class="n">ItUpOut</span><span class="p">=</span><span class="n">dispIt</span><span class="p">;</span><span class="w"></span>
+<span class="n">ADMM</span><span class="p">.</span><span class="n">maxiter</span><span class="p">=</span><span class="n">maxIt</span><span class="p">;</span><span class="w"></span>
+<span class="n">ADMM</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="nb">zeros</span><span class="p">(</span><span class="n">sznew</span><span class="p">));</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Here, three splittings have been done: \(\mathrm{u_1=Hx}, \; \mathrm{u_2=\nabla x}\), and \(\mathrm{u_3=x}\).
+We do not need to provide a solver to the ADMM algorithm (5th argument) since the operator algebra ensures that the operator
+$$\rho_1 \mathrm{H^*H} + \rho_2 \nabla^* \nabla + \rho_3 \mathrm{I}$$
+results in a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpConv</span></code> that is invertible. Hence, ADMM builds this operator automatically and uses its inverse for the
+linear step  of the algorithm (minimization over \(\mathrm{x}\)).</p>
+<p>The deconvolved image is shown in Figure 2.</p>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="_images/Deconv3D.png"><img alt="Deconvolution result." src="_images/Deconv3D.png" style="width: 439.59999999999997px; height: 459.2px;" /></a>
+<figcaption>
+<p><span class="caption-text">Fig 2. Deconvolved C. Elegans embryo.</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="infos.html" class="btn btn-neutral float-left" title="Important Information" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gui.html" class="btn btn-neutral float-right" title="Graphical User Interface (GUI)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, Biomedical Imaging Group (EPFL).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

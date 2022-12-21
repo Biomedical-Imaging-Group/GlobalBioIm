@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Graphical User Interface (GUI) &mdash; GlobalBioIm Library 1.2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="_static/mathjax/tex-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Related Papers" href="relatedPapers.html" />
+    <link rel="prev" title="Examples" href="examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav" style="text-align:justify"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> GlobalBioIm Library
+          </a>
+              <div class="version">
+                1.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Biomedical-Imaging-Group/GlobalBioIm">Download or Clone (v 1.2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infos.html">Important Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Graphical User Interface (GUI)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#demo-video">Demo Video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#panels-description">Panels Description</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#main-panel">Main Panel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#forward-model-panel">Forward-Model Panel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cost-function-panel">Cost Function Panel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optimization-panel">Optimization Panel</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dialog-boxes">Dialog Boxes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#set-parameters-window">Set Parameters Window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#log-window-check-pipeline">Log Window (Check Pipeline)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#recap-parameters-window">Recap Parameters Window</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="relatedPapers.html">Related Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conditionsuse.html">Conditions of Use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Technical Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="abstract.html">Abstract Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linop.html">Linear Operators (LinOp)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nonlinop.html">Non-Linear Operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cost.html">Cost Functions (Cost)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opti.html">Optimization Algorithms (Opti)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methodssummary.html">List of Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="propertiessummary.html">List of Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu.html">Speedup with GPU</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="http://bigwww.epfl.ch">Biomedical Imaging Group</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GlobalBioIm Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Graphical User Interface (GUI)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/gui.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="graphical-user-interface-gui">
+<span id="ref-gui"></span><h1>Graphical User Interface (GUI)<a class="headerlink" href="#graphical-user-interface-gui" title="Permalink to this heading"></a></h1>
+<div class="math notranslate nohighlight">
+\[\]</div>
+<p>GlobalBioIm is ditributed together with a user-friendly Matlab interface that allows
+to intuitively build tailored reconstruction algorithms with minimal effort.</p>
+<p>To use it, run the <strong>GUI_GlobalBioIm.mlapp</strong> file in the <strong>GUI/</strong> folder of the library.</p>
+<section id="demo-video">
+<h2>Demo Video<a class="headerlink" href="#demo-video" title="Permalink to this heading"></a></h2>
+<p><em>This is a temporary explanatory video on how to use the GUI of GlobalBioIm on a concrete example (i.e. multi-channel deconvolution). A more concise, better-quality video is in preparation and will come out soon.</em></p>
+<iframe width="640" height="360" style="margin-bottom: 25px" src="https://www.youtube.com/embed/kWQj2Z0K5yc" frameborder="0" allowfullscreen="1">&nbsp;</iframe></section>
+<section id="panels-description">
+<h2>Panels Description<a class="headerlink" href="#panels-description" title="Permalink to this heading"></a></h2>
+<p>The GUI is composed of four panels that are described in the following sections.</p>
+<section id="main-panel">
+<h3>Main Panel<a class="headerlink" href="#main-panel" title="Permalink to this heading"></a></h3>
+<p>The Main panel allows to create a new pipeline or to load an existing one. It also contains a description field that can be edited to provide information about the pipeline.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/DocGUI-1.png"><img alt="Main Panel" src="_images/DocGUI-1.png" style="width: 687.7px; height: 386.75px;" /></a>
+</figure>
+</section>
+<section id="forward-model-panel">
+<h3>Forward-Model Panel<a class="headerlink" href="#forward-model-panel" title="Permalink to this heading"></a></h3>
+<p>This panel offers the possibility to create a forward model by composing elementary operators. Here, operators can be added, removed, or interchanged within the composition. Moreover, each operator comes with its own parameters that can be set by pushing the <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Set</span> <span class="pre">Parameters</span></code> button. Finally, the validity of the generated forward model can be checked through the button <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Check</span> <span class="pre">Pipeline</span></code>.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/DocGUI-2.png"><img alt="Forward-Model Panel" src="_images/DocGUI-2.png" style="width: 687.7px; height: 386.75px;" /></a>
+</figure>
+</section>
+<section id="cost-function-panel">
+<h3>Cost Function Panel<a class="headerlink" href="#cost-function-panel" title="Permalink to this heading"></a></h3>
+<p>This panel provides tools to build a cost function formed out of the sum of a data-fidelity term and a regularization term. Its use is similar to the use of the Forward Model panel.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/DocGUI-3.png"><img alt="Cost Function Panel" src="_images/DocGUI-3.png" style="width: 687.7px; height: 386.75px;" /></a>
+</figure>
+</section>
+<section id="optimization-panel">
+<h3>Optimization Panel<a class="headerlink" href="#optimization-panel" title="Permalink to this heading"></a></h3>
+<p>Last, but not least, the Optimization panel allows to select an algorithm to minimize the built cost function. The proficiency of the GlobalBioIm GUI is to propose <strong>only</strong> algorithms that are <strong>adapted</strong> to the built cost function. This specific list of algorithms can be easily obtained by clicking on the button <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Refresh</span> <span class="pre">Algorithm</span> <span class="pre">List</span></code>.  Then, once an algorithm has been selected, its parameters can be set using the <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Set</span> <span class="pre">Parameters</span></code> button. Finally, the Optimization panel offers the possibility to set some general parameters (<em>e.g.</em> display mode, GPU option) and to <strong>RUN</strong> or <strong>Generate</strong> (and save) the Matlab script that is associated to the pipeline.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/DocGUI-4.png"><img alt="Optimization Panel" src="_images/DocGUI-4.png" style="width: 687.7px; height: 386.75px;" /></a>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For some algorithms (e.g. ADMM) there exists a variety of possible instanciation which depend, for instance, on the splitting strategy. For such algorithms, the GlobalBioIm GUI proposes a couple of instanciations that may not be the optimal ones. However, it tries as much as possible to propose instantiations that do not require nested iterates.</p>
+</div>
+</section>
+</section>
+<section id="dialog-boxes">
+<h2>Dialog Boxes<a class="headerlink" href="#dialog-boxes" title="Permalink to this heading"></a></h2>
+<p>In addition to the four panels, the graphical interface can open (dynamically) additional windows.</p>
+<section id="set-parameters-window">
+<h3>Set Parameters Window<a class="headerlink" href="#set-parameters-window" title="Permalink to this heading"></a></h3>
+<p>Each selected operator, data-fidelity, regularizer, or algorithm comes with its own <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Set</span> <span class="pre">Parameters</span></code> button. When pushed,
+a new window opens and displays the list of parameters of the object. The user can then set/modify those parameters. Two examples
+with a variety of types of parameters are presented below.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/DocGUI-5.png"><img alt="Set Parameters Window" src="_images/DocGUI-5.png" style="width: 687.7px; height: 386.75px;" /></a>
+</figure>
+<p>When the button <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Apply</span> <span class="pre">Changes</span></code> is pushed, the syntax of the parameters is checked. If everything is correct, the <em>Set Parameters</em> window is closed and the parameters are saved. Otherwise a <em>Log</em> window opens as illustrated in the following example.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/DocGUI-6.png"><img alt="Set Parameters Window" src="_images/DocGUI-6.png" style="width: 687.7px; height: 386.75px;" /></a>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><em>Set Parameters</em> windows can only be closed through the associated <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Apply</span> <span class="pre">Changes</span></code> button.</p>
+</div>
+</section>
+<section id="log-window-check-pipeline">
+<h3>Log Window (Check Pipeline)<a class="headerlink" href="#log-window-check-pipeline" title="Permalink to this heading"></a></h3>
+<p>Whenever the buttons <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Check</span> <span class="pre">Pipeline</span></code> or <code class="xref mat mat-class docutils literal notranslate"><span class="pre">RUN</span></code> are pushed, the complete script (automatically generated) is checked. If errors are detected, a <em>Log</em> window opens with the list of errors. If no error, the script is run (when the <code class="xref mat mat-class docutils literal notranslate"><span class="pre">RUN</span></code> button is pushed) or a <em>Log</em> window indicating no error opens (when the <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Check</span> <span class="pre">Pipeline</span></code> is pushed).</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/DocGUI-7.png"><img alt="Log Window" src="_images/DocGUI-7.png" style="width: 687.7px; height: 386.75px;" /></a>
+</figure>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The errors reported in the <em>Log</em> window must be treated in the order they appear. Frequently, a cascade of errors is reported and they can all be resolved by fixing the very first one. In the above example, all the errors are due to wrong paths to the psf (error #1 of foward model) and data (error #1 of cost function) files. Updating these two paths fix all the errors.</p>
+<p><strong>Good practice:</strong> Fix the very first error and then check the pipeline again. Repeat this as long as there are errors.</p>
+</div>
+</section>
+<section id="recap-parameters-window">
+<h3>Recap Parameters Window<a class="headerlink" href="#recap-parameters-window" title="Permalink to this heading"></a></h3>
+<p>In order to avoid opening all the <em>Set Parameters</em> windows when a user wants to change the parameters of a loaded pipeline, the GlobalBioIm GUI has a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Recap</span> <span class="pre">of</span> <span class="pre">Selected</span> <span class="pre">Parameters</span></code> button. It opens a window that gathers all the parameters of the selected operators, data-fidelity, regularizers, and algorithms. If the <em>discard default parameters</em> option is activated, the parameters that have been let to their default value will not appear in the <em>Recap</em> window (see below).</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/DocGUI-8.png"><img alt="Log Window" src="_images/DocGUI-8.png" style="width: 687.7px; height: 386.75px;" /></a>
+</figure>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="relatedPapers.html" class="btn btn-neutral float-right" title="Related Papers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, Biomedical Imaging Group (EPFL).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

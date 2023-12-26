@@ -16,6 +16,12 @@ If you want to add your work in this list, do not hesitate to
 Papers with open-source code
 ----------------------------
 
+| **[15] Surpassing Challenges in Structured-Illumination Microscopy with FlexSIM** 
+| bioRxiv preprint, 
+  `[Paper] <https://www.biorxiv.org/content/10.1101/2023.12.20.572677v1>`_
+  `[Code] <https://github.com/esoubies/FlexSIM>`_
+| E. Soubies, A. Nogueron, F. Pelletier,  T. Mangeat,  C. Leterrier,  M. Unser, and  D. Sage
+
 | **[14] Mechanical artifacts in optical projection tomography: classification and automatic calibration** 
 | Optics Continuum, 1-12, pp. 2577--2589, 2022  
   `[Paper] <https://opg.optica.org/optcon/fulltext.cfm?uri=optcon-1-12-2577###>`_
@@ -104,44 +110,59 @@ Papers with open-source code
 Other papers
 ------------
 
-| **[31] A Statistical Framework to Investigate the Optimality of Neural Networks for Inverse Problems**
+| **[34] A Mini-Batch Quasi-Newton Proximal Method for Constrained Total-Variation Nonlinear Image Reconstruction**
 | ArXiv preprint
-  `[Paper] <https://arxiv.org/abs/2203.09920>`_
-| P. Bohra, P. Pla, J-F. Giovannelli, and M. Unser.
+  `[Paper] <https://arxiv.org/abs/2307.02043>`_
+| T. Hong, T.-A. Pham,  I. Yavneh, and M. Unser.
 
-| **[30] Diffraction Tomography with Helmholtz Equation: Efficient and Robust Multigrid-Based Solver**
+| **[33] Diffraction Tomography with Helmholtz Equation: Efficient and Robust Multigrid-Based Solver**
 | ArXiv preprint
   `[Paper] <https://arxiv.org/abs/2107.03679>`_
 | T. Hong, T.-A. Pham, E. Treister, and M. Unser.
 
-| **[29] Accurate unsupervised estimation of aberrations in digital holographic microscopy for improved quantitative reconstruction**
+| **[32] Multispectral in-line hologram reconstruction with aberration compensation applied to Gram-stained bacteria microscopy**
+| Scientific Reports, 13, 14437, 2023.
+  `[Paper] <https://www.nature.com/articles/s41598-023-41079-4>`_
+| D. Brault, T. Olivier, N. Faure, S. Dixneuf, C. Kolytcheff, E. Charmette, F. Soulez & C. Fournier.
+
+| **[31] A Statistical Framework to Investigate the Optimality of Neural Networks for Inverse Problems**
+| IEEE Transactions on Signal Processing, 71, pp. 2043 - 2055, 2023.
+  `[Paper] <https://arxiv.org/abs/2203.09920>`_
+| P. Bohra, P. Pla, J-F. Giovannelli, and M. Unser.
+
+| **[30] Accurate unsupervised estimation of aberrations in digital holographic microscopy for improved quantitative reconstruction**
 | Optics Express, 30-21, pp. 38383-38404, 2022. 
   `[Paper] <https://opg.optica.org/oe/fulltext.cfm?uri=oe-30-21-38383&id=507598###>`_
 | D. Brault, T. Olivier, F. Soulez, S. Joshi, N. Faure, and C. Fournier
 
-| **[28] An Adversarial Learning Based Approach for Unknown View Tomographic Reconstruction**
+| **[29] An Adversarial Learning Based Approach for Unknown View Tomographic Reconstruction**
 | IEEE Transactions on Computational Imaging, 8, pp. 705 - 720, 2022. 
   `[Paper] <https://arxiv.org/abs/2108.09873>`_
 | M. Zehni, and Z. Zhao.
 
-| **[27] Coupled Splines for Sparse Curve Fitting**
+| **[28] Coupled Splines for Sparse Curve Fitting**
 | IEEE Transactions on Image Processing, 31, pp. 4707 - 4718, 2022.
   `[Paper] <https://arxiv.org/abs/2202.01641>`_
 | I. L. Jover, T. Debarre, S. Aziznejad, and M. Unser.
 
-| **[26] First observation of a quadruple asteroid-Detection of a third moon around (130) Elektra with SPHERE/IFS** 
+| **[27] First observation of a quadruple asteroid-Detection of a third moon around (130) Elektra with SPHERE/IFS** 
 | Astronomy & Astrophysics, 658, 2022.
   `[Paper] <https://www.aanda.org/articles/aa/abs/2022/02/aa42623-21/aa42623-21.html>`_
 | A. Berdeu, M. Langlois, and V. Vachier.
 
-| **[25] Automatic numerical focus plane estimation in digital holographic microscopy using calibration beads** 
+| **[26] Automatic numerical focus plane estimation in digital holographic microscopy using calibration beads** 
 | Applied optics, 61-5, 2022.
   `[Paper] <https://opg.optica.org/ao/viewmedia.cfm?uri=ao-61-5-B345>`_
 | D. Brault, C. Fournier,  T. Olivier, N. Faure, S. Dixneuf, L. Thibon, L. Mees,  and L. Denis.
 
+| **[25] TV-based spline reconstruction with Fourier measurements: Uniqueness and convergence of grid-based methods** 
+| Journal of Computational and Applied Mathematics, 422, 2022.
+  `[Paper] <https://www.sciencedirect.com/science/article/pii/S0377042722005350>`_
+| T. Debarre, Q. Denoyelle, and J. Fageot.
+
 | **[24] Sparsest piecewise-linear regression of one-dimensional data** 
 | Journal of Computational and Applied Mathematics, 406, 2022.
-  `[Paper] <https://arxiv.org/pdf/2003.10112>`_
+  `[Paper] <https://www.sciencedirect.com/science/article/pii/S0377042721006130>`_
 | T. Debarre, Q. Denoyelle,  M. Unser, and J. Fageot.
 
 | **[23] Comparison of linear and nonlinear deconvolution algorithms for co-optimization of depth-of-field enhancing binary phase masks**

@@ -14,9 +14,10 @@ To use it, run the **GUI_GlobalBioIm.mlapp** file in the **GUI/** folder of the 
 Demo Video
 ----------
 
+`[Youtube link] <https://www.youtube.com/watch?time_continue=8&v=kWQj2Z0K5yc&feature=emb_logo>`_
+
 *This is a temporary explanatory video on how to use the GUI of GlobalBioIm on a concrete example (i.e. multi-channel deconvolution). A more concise, better-quality video is in preparation and will come out soon.*
 
-.. youtube:: https://www.youtube.com/watch?time_continue=8&v=kWQj2Z0K5yc&feature=emb_logo
 
 Panels Description
 ------------------

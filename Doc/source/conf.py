@@ -33,7 +33,7 @@ extensions = ['sphinx.ext.mathjax','sphinx-mathjax-offline',
     'sphinx.ext.ifconfig',
     'sphinx.ext.autodoc', 
     'sphinxcontrib.matlab', 
-    'sphinxcontrib.yt',  
+   # 'sphinxcontrib.yt',  
     'sphinx.ext.viewcode']
 primary_domain = 'mat'
 

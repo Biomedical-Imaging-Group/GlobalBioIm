@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Non-Linear Operators &mdash; GlobalBioIm Library 1.2 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script async="async" src="_static/mathjax/tex-chtml.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=61243dd2"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="_static/mathjax/tex-chtml.js?v=20daa33d"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -29,14 +31,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> GlobalBioIm Library
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GlobalBioIm Library
           </a>
               <div class="version">
                 1.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -91,7 +97,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Non-Linear Operators</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/nonlinop.rst.txt" rel="nofollow"> View page source</a>
@@ -103,52 +109,57 @@
            <div itemprop="articleBody">
              
   <section id="non-linear-operators">
-<h1>Non-Linear Operators<a class="headerlink" href="#non-linear-operators" title="Permalink to this heading"></a></h1>
+<h1>Non-Linear Operators<a class="headerlink" href="#non-linear-operators" title="Link to this heading"></a></h1>
 <div class="math notranslate nohighlight">
 \[\]</div>
 <p>This section contains non-linear operator classes which all derive directly from the abstract class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
-<span class="target" id="module-NonLinOp"></span><span class="target" id="module-NonLinOp.ElementWiseOp"></span><section id="element-wise-operators">
-<h2>Element-wise Operators<a class="headerlink" href="#element-wise-operators" title="Permalink to this heading"></a></h2>
+<section id="element-wise-operators">
+<span id="module-NonLinOp.ElementWiseOp"></span><span id="module-NonLinOp"></span><h2>Element-wise Operators<a class="headerlink" href="#element-wise-operators" title="Link to this heading"></a></h2>
 <section id="opewabs">
-<h3>OpEWAbs<a class="headerlink" href="#opewabs" title="Permalink to this heading"></a></h3>
+<h3>OpEWAbs<a class="headerlink" href="#opewabs" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWAbs">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">NonLinOp.ElementWiseOp.</span></span><span class="sig-name descname"><span class="pre">OpEWAbs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWAbs" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Map</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">NonLinOp.ElementWiseOp.</span></span><span class="sig-name descname"><span class="pre">OpEWAbs</span></span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWAbs" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="abstract.html#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.Map</span></code></a></p>
 <p>Element-wise Modulus operator: compute the pointwise complex modulus</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>sz</strong> – input size</p>
 </dd>
 </dl>
 <p>All attributes of parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> are inherited.</p>
 <p><strong>Example</strong> Mod = OpEWAbs(sz)</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWAbs.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWAbs.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWAbs.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWAbs.applyJacobianT_">
-<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWAbs.applyJacobianT_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWAbs.applyJacobianT_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="opewfunc">
-<h3>OpEWfunc<a class="headerlink" href="#opewfunc" title="Permalink to this heading"></a></h3>
+<h3>OpEWfunc<a class="headerlink" href="#opewfunc" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWfunc">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">NonLinOp.ElementWiseOp.</span></span><span class="sig-name descname"><span class="pre">OpEWfunc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">func</span></em>, <em class="sig-param"><span class="pre">func_grad</span></em>, <em class="sig-param"><span class="pre">func_inv</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWfunc" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Map</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">NonLinOp.ElementWiseOp.</span></span><span class="sig-name descname"><span class="pre">OpEWfunc</span></span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWfunc" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="abstract.html#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.Map</span></code></a></p>
 <p>Element-wise function operator: compute the point-wise function of
 the input</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sz</strong> – input size</p></li>
 <li><p><strong>func</strong> – the function to apply element-wise</p></li>
@@ -160,117 +171,137 @@ the input</p>
 <p>All attributes of parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> are inherited.</p>
 <p><strong>Example</strong> Mod = OpEWfunc(sz, func, func_grad, func_inv)</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWfunc.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWfunc.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWfunc.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWfunc.applyJacobianT_">
-<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWfunc.applyJacobianT_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWfunc.applyJacobianT_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWfunc.applyInverse_">
-<span class="sig-name descname"><span class="pre">applyInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWfunc.applyInverse_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyInverse_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWfunc.applyInverse_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="opewinverse">
-<h3>OpEWInverse<a class="headerlink" href="#opewinverse" title="Permalink to this heading"></a></h3>
+<h3>OpEWInverse<a class="headerlink" href="#opewinverse" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWInverse">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">NonLinOp.ElementWiseOp.</span></span><span class="sig-name descname"><span class="pre">OpEWInverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWInverse" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Map</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">NonLinOp.ElementWiseOp.</span></span><span class="sig-name descname"><span class="pre">OpEWInverse</span></span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWInverse" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="abstract.html#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.Map</span></code></a></p>
 <p>Element-wise Inverse operator: compute the pointwise inverse
 $$[\mathrm{H}(x)]_k = \frac{1}{x_k} $$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>sz</strong> – input size</p>
 </dd>
 </dl>
 <p>All attributes of parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> are inherited.</p>
 <p><strong>Example</strong> H=OpEWInverse(sz)</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWInverse.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWInverse.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWInverse.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWInverse.applyJacobianT_">
-<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWInverse.applyJacobianT_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWInverse.applyJacobianT_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="opewsqrt">
-<h3>OpEWSqrt<a class="headerlink" href="#opewsqrt" title="Permalink to this heading"></a></h3>
+<h3>OpEWSqrt<a class="headerlink" href="#opewsqrt" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWSqrt">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">NonLinOp.ElementWiseOp.</span></span><span class="sig-name descname"><span class="pre">OpEWSqrt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSqrt" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Map</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">NonLinOp.ElementWiseOp.</span></span><span class="sig-name descname"><span class="pre">OpEWSqrt</span></span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSqrt" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="abstract.html#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.Map</span></code></a></p>
 <p>Element-wise square root operator: 
 $$[\mathrm{H}(x)]_k = \sqrt{(x_k)} $$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>sz</strong> – input size</p>
 </dd>
 </dl>
 <p>All attributes of parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> are inherited.</p>
 <p><strong>Example</strong> H=OpEWSquareRoot(sz)</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWSqrt.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSqrt.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSqrt.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWSqrt.applyJacobianT_">
-<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSqrt.applyJacobianT_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSqrt.applyJacobianT_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="opewsquaredmagnitude">
-<h3>OpEWSquaredMagnitude<a class="headerlink" href="#opewsquaredmagnitude" title="Permalink to this heading"></a></h3>
+<h3>OpEWSquaredMagnitude<a class="headerlink" href="#opewsquaredmagnitude" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWSquaredMagnitude">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">NonLinOp.ElementWiseOp.</span></span><span class="sig-name descname"><span class="pre">OpEWSquaredMagnitude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSquaredMagnitude" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Map</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">NonLinOp.ElementWiseOp.</span></span><span class="sig-name descname"><span class="pre">OpEWSquaredMagnitude</span></span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSquaredMagnitude" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="abstract.html#Abstract.Map" title="Abstract.Map"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.Map</span></code></a></p>
 <p>Element-wise SquaredMagnitude operator: compute the pointwise N power magnitude
 $$[\mathrm{H}(x)]_k = \vert x_k \vert^2 $$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>sz</strong> – input size</p>
 </dd>
 </dl>
 <p>All attributes of parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> are inherited.</p>
 <p><strong>Example</strong> H= OpEWSquaredMagnitude(sz)</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWSquaredMagnitude.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSquaredMagnitude.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSquaredMagnitude.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="NonLinOp.ElementWiseOp.OpEWSquaredMagnitude.applyJacobianT_">
-<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSquaredMagnitude.applyJacobianT_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyJacobianT_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#NonLinOp.ElementWiseOp.OpEWSquaredMagnitude.applyJacobianT_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>

@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Examples &mdash; GlobalBioIm Library 1.2 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script async="async" src="_static/mathjax/tex-chtml.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=61243dd2"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="_static/mathjax/tex-chtml.js?v=33773a5a"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -29,14 +31,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> GlobalBioIm Library
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GlobalBioIm Library
           </a>
               <div class="version">
                 1.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -84,7 +90,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Examples</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/examples.rst.txt" rel="nofollow"> View page source</a>
@@ -96,11 +102,11 @@
            <div itemprop="articleBody">
              
   <section id="examples">
-<span id="ref-examples"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h1>
+<span id="ref-examples"></span><h1>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h1>
 <div class="math notranslate nohighlight">
 \[\]</div>
 <section id="d-deconvolution">
-<h2>3D Deconvolution<a class="headerlink" href="#d-deconvolution" title="Permalink to this heading"></a></h2>
+<h2>3D Deconvolution<a class="headerlink" href="#d-deconvolution" title="Link to this heading"></a></h2>
 <p>We consider the C. elegans embryo real dataset (\(672 \times 712 \times 104 \)) that can be downloaded <a class="reference external" href="http://bigwww.epfl.ch/deconvolution/bio/">here</a> and that is shown in Figure 1.
 This sample contains</p>
 <blockquote>
@@ -116,40 +122,40 @@ In what follows, each channel is deconvolved separately using the same code.</p>
 <a class="reference internal image-reference" href="_images/ConvData.png"><img alt="C. Elegans embryo" src="_images/ConvData.png" style="width: 443.79999999999995px; height: 457.79999999999995px;" /></a>
 <figcaption>
 <p><span class="caption-text">Fig 1. C. Elegans embryo. Blue: chromosomes in the nuclei. Green: microtubules. Red: a protein
-stained with CY3.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+stained with CY3.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>We start by reading the data</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">%% Reading data</span><span class="w"></span>
-<span class="n">psf</span><span class="p">=</span><span class="nb">double</span><span class="p">(</span><span class="n">loadtiff</span><span class="p">(</span><span class="n">psfname</span><span class="p">));</span><span class="n">psf</span><span class="p">=</span><span class="n">psf</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">psf</span><span class="p">(:));</span><span class="w"></span>
-<span class="n">y</span><span class="p">=</span><span class="nb">double</span><span class="p">(</span><span class="n">loadtiff</span><span class="p">(</span><span class="n">dataname</span><span class="p">));</span><span class="n">maxy</span><span class="p">=</span><span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">(:));</span><span class="n">y</span><span class="p">=</span><span class="n">y</span><span class="o">/</span><span class="n">maxy</span><span class="p">;</span><span class="w"></span>
-<span class="n">sz</span><span class="p">=</span><span class="nb">size</span><span class="p">(</span><span class="n">y</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">%% Reading data</span>
+<span class="n">psf</span><span class="p">=</span><span class="nb">double</span><span class="p">(</span><span class="n">loadtiff</span><span class="p">(</span><span class="n">psfname</span><span class="p">));</span><span class="n">psf</span><span class="p">=</span><span class="n">psf</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">psf</span><span class="p">(:));</span>
+<span class="n">y</span><span class="p">=</span><span class="nb">double</span><span class="p">(</span><span class="n">loadtiff</span><span class="p">(</span><span class="n">dataname</span><span class="p">));</span><span class="n">maxy</span><span class="p">=</span><span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">(:));</span><span class="n">y</span><span class="p">=</span><span class="n">y</span><span class="o">/</span><span class="n">maxy</span><span class="p">;</span>
+<span class="n">sz</span><span class="p">=</span><span class="nb">size</span><span class="p">(</span><span class="n">y</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>We then resize the PSF and enforce compliance with the periodic assumption of the FFT. This is particularly relevant in the axial direction where  there is signal at the boundaries of the volume.
 Note that the function <em>fft_best_dim</em> (Util/ folder) returns sizes that are
 suited to efficient FFT operations.</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">padsz</span><span class="p">=[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">52</span><span class="p">];</span><span class="w"></span>
-<span class="n">sznew</span><span class="p">=</span><span class="n">fft_best_dim</span><span class="p">(</span><span class="n">sz</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">padsz</span><span class="p">);</span><span class="w"></span>
-<span class="n">halfPad</span><span class="p">=(</span><span class="n">sznew</span><span class="o">-</span><span class="n">sz</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span><span class="w"></span>
-<span class="n">psf</span><span class="p">=</span><span class="n">padarray</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span><span class="n">halfPad</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">&#39;both&#39;</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">padsz</span><span class="p">=[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">52</span><span class="p">];</span>
+<span class="n">sznew</span><span class="p">=</span><span class="n">fft_best_dim</span><span class="p">(</span><span class="n">sz</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">padsz</span><span class="p">);</span>
+<span class="n">halfPad</span><span class="p">=(</span><span class="n">sznew</span><span class="o">-</span><span class="n">sz</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+<span class="n">psf</span><span class="p">=</span><span class="n">padarray</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span><span class="n">halfPad</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">&#39;both&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>We now define our data-fidelity term, TV regularization, and nonnegativity constraint.</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">%% Least-squares data-fidelity term</span><span class="w"></span>
-<span class="n">H</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="nb">fftn</span><span class="p">(</span><span class="nb">fftshift</span><span class="p">(</span><span class="n">psf</span><span class="p">)));</span><span class="w">                      </span><span class="c">% Convolution operator</span><span class="w"></span>
-<span class="n">H</span><span class="p">.</span><span class="n">memoizeOpts</span><span class="p">.</span><span class="n">apply</span><span class="p">=</span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
-<span class="n">S</span><span class="p">=</span><span class="n">LinOpSelectorPatch</span><span class="p">(</span><span class="n">sznew</span><span class="p">,</span><span class="n">halfPad</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">sznew</span><span class="o">-</span><span class="n">halfPad</span><span class="p">);</span><span class="w">   </span><span class="c">% Selector operator</span><span class="w"></span>
-<span class="n">L2</span><span class="p">=</span><span class="n">CostL2</span><span class="p">(</span><span class="n">S</span><span class="p">.</span><span class="n">sizeout</span><span class="p">,</span><span class="n">y</span><span class="p">);</span><span class="w">                                </span><span class="c">% L2 cost function</span><span class="w"></span>
-<span class="n">LS</span><span class="p">=</span><span class="n">L2</span><span class="o">*</span><span class="n">S</span><span class="p">;</span><span class="w">                                               </span><span class="c">% Least-squares data term</span><span class="w"></span>
-<span class="c">%% TV regularization</span><span class="w"></span>
-<span class="n">Freg</span><span class="p">=</span><span class="n">CostMixNorm21</span><span class="p">([</span><span class="n">sznew</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="mi">4</span><span class="p">);</span><span class="w">      </span><span class="c">% TV regularizer: Mixed norm 2-1</span><span class="w"></span>
-<span class="n">Opreg</span><span class="p">=</span><span class="n">LinOpGrad</span><span class="p">(</span><span class="n">sznew</span><span class="p">);</span><span class="w">               </span><span class="c">% TV regularizer: Operator gradient</span><span class="w"></span>
-<span class="n">Opreg</span><span class="p">.</span><span class="n">memoizeOpts</span><span class="p">.</span><span class="n">apply</span><span class="p">=</span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
-<span class="n">lamb</span><span class="p">=</span><span class="mf">2e-6</span><span class="p">;</span><span class="w">                            </span><span class="c">% Regularization parameter</span><span class="w"></span>
-<span class="c">%% Nonnegativity constraint</span><span class="w"></span>
-<span class="n">pos</span><span class="p">=</span><span class="n">CostNonNeg</span><span class="p">(</span><span class="n">sznew</span><span class="p">);</span><span class="w">                </span><span class="c">% Nonnegativity: Indicator function</span><span class="w"></span>
-<span class="n">Id</span><span class="p">=</span><span class="n">LinOpIdentity</span><span class="p">(</span><span class="n">sznew</span><span class="p">);</span><span class="w">              </span><span class="c">% Identity operator</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">%% Least-squares data-fidelity term</span>
+<span class="n">H</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="nb">fftn</span><span class="p">(</span><span class="nb">fftshift</span><span class="p">(</span><span class="n">psf</span><span class="p">)));</span><span class="w">                      </span><span class="c">% Convolution operator</span>
+<span class="n">H</span><span class="p">.</span><span class="n">memoizeOpts</span><span class="p">.</span><span class="n">apply</span><span class="p">=</span><span class="nb">true</span><span class="p">;</span>
+<span class="n">S</span><span class="p">=</span><span class="n">LinOpSelectorPatch</span><span class="p">(</span><span class="n">sznew</span><span class="p">,</span><span class="n">halfPad</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">sznew</span><span class="o">-</span><span class="n">halfPad</span><span class="p">);</span><span class="w">   </span><span class="c">% Selector operator</span>
+<span class="n">L2</span><span class="p">=</span><span class="n">CostL2</span><span class="p">(</span><span class="n">S</span><span class="p">.</span><span class="n">sizeout</span><span class="p">,</span><span class="n">y</span><span class="p">);</span><span class="w">                                </span><span class="c">% L2 cost function</span>
+<span class="n">LS</span><span class="p">=</span><span class="n">L2</span><span class="o">*</span><span class="n">S</span><span class="p">;</span><span class="w">                                               </span><span class="c">% Least-squares data term</span>
+<span class="c">%% TV regularization</span>
+<span class="n">Freg</span><span class="p">=</span><span class="n">CostMixNorm21</span><span class="p">([</span><span class="n">sznew</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="mi">4</span><span class="p">);</span><span class="w">      </span><span class="c">% TV regularizer: Mixed norm 2-1</span>
+<span class="n">Opreg</span><span class="p">=</span><span class="n">LinOpGrad</span><span class="p">(</span><span class="n">sznew</span><span class="p">);</span><span class="w">               </span><span class="c">% TV regularizer: Operator gradient</span>
+<span class="n">Opreg</span><span class="p">.</span><span class="n">memoizeOpts</span><span class="p">.</span><span class="n">apply</span><span class="p">=</span><span class="nb">true</span><span class="p">;</span>
+<span class="n">lamb</span><span class="p">=</span><span class="mf">2e-6</span><span class="p">;</span><span class="w">                            </span><span class="c">% Regularization parameter</span>
+<span class="c">%% Nonnegativity constraint</span>
+<span class="n">pos</span><span class="p">=</span><span class="n">CostNonNeg</span><span class="p">(</span><span class="n">sznew</span><span class="p">);</span><span class="w">                </span><span class="c">% Nonnegativity: Indicator function</span>
+<span class="n">Id</span><span class="p">=</span><span class="n">LinOpIdentity</span><span class="p">(</span><span class="n">sznew</span><span class="p">);</span><span class="w">              </span><span class="c">% Identity operator</span>
 </pre></div>
 </div>
 <p>Here, our cost function is
@@ -157,17 +163,17 @@ $$ \mathcal{C}(\mathrm{x}) = \frac12 \|\mathrm{SHx - y} \|_2^2 + \lambda \|\nabl
 where \(\lambda &gt;0\) is the regularization parameter, \(\mathrm{S}\) an operator that selects the “unpadded” (valid)
 part of the convolution result \(\mathrm{Hx}\), and the two other terms are the TV regularization and the nonnegativity
 constraint, respectively. We are now ready to instanciate and run our algorithm (here, ADMM) to minimize our functional.</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">dispIt</span><span class="p">=</span><span class="mi">30</span><span class="p">;</span><span class="w">                     </span><span class="c">% Verbose every 30 iterations</span><span class="w"></span>
-<span class="n">maxIt</span><span class="p">=</span><span class="mi">300</span><span class="p">;</span><span class="w">                     </span><span class="c">% Maximal number of iterations</span><span class="w"></span>
-<span class="n">Fn</span><span class="p">={</span><span class="n">LS</span><span class="p">,</span><span class="n">lamb</span><span class="o">*</span><span class="n">Freg</span><span class="p">,</span><span class="n">pos</span><span class="p">};</span><span class="w">         </span><span class="c">% Functionals F_n constituting the cost</span><span class="w"></span>
-<span class="n">Hn</span><span class="p">={</span><span class="n">H</span><span class="p">,</span><span class="n">Opreg</span><span class="p">,</span><span class="n">Id</span><span class="p">};</span><span class="w">               </span><span class="c">% Associated operators H_n</span><span class="w"></span>
-<span class="n">rho_n</span><span class="p">=[</span><span class="mf">1e-3</span><span class="p">,</span><span class="mf">1e-3</span><span class="p">,</span><span class="mf">1e-3</span><span class="p">];</span><span class="w">        </span><span class="c">% Multipliers rho_n</span><span class="w"></span>
-<span class="n">ADMM</span><span class="p">=</span><span class="n">OptiADMM</span><span class="p">([],</span><span class="n">Fn</span><span class="p">,</span><span class="n">Hn</span><span class="p">,</span><span class="n">rho_n</span><span class="p">);</span><span class="w"> </span><span class="c">% Declare optimizer</span><span class="w"></span>
-<span class="n">ADMM</span><span class="p">.</span><span class="n">OutOp</span><span class="p">=</span><span class="n">OutputOpti</span><span class="p">(</span><span class="mi">1</span><span class="p">,[],</span><span class="nb">round</span><span class="p">(</span><span class="n">maxIt</span><span class="o">/</span><span class="mi">10</span><span class="p">),[</span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="p">]);</span><span class="w"> </span><span class="c">% build the output object</span><span class="w"></span>
-<span class="n">ADMM</span><span class="p">.</span><span class="n">CvOp</span><span class="p">=</span><span class="n">TestCvgCombine</span><span class="p">(</span><span class="n">TestCvgCostRelative</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">),</span><span class="w"> </span><span class="s">&#39;StepRelative&#39;</span><span class="p">,</span><span class="mf">1e-4</span><span class="p">);</span><span class="w"> </span><span class="c">% Set the convergence tests</span><span class="w"></span>
-<span class="n">ADMM</span><span class="p">.</span><span class="n">ItUpOut</span><span class="p">=</span><span class="n">dispIt</span><span class="p">;</span><span class="w"></span>
-<span class="n">ADMM</span><span class="p">.</span><span class="n">maxiter</span><span class="p">=</span><span class="n">maxIt</span><span class="p">;</span><span class="w"></span>
-<span class="n">ADMM</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="nb">zeros</span><span class="p">(</span><span class="n">sznew</span><span class="p">));</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">dispIt</span><span class="p">=</span><span class="mi">30</span><span class="p">;</span><span class="w">                     </span><span class="c">% Verbose every 30 iterations</span>
+<span class="n">maxIt</span><span class="p">=</span><span class="mi">300</span><span class="p">;</span><span class="w">                     </span><span class="c">% Maximal number of iterations</span>
+<span class="n">Fn</span><span class="p">={</span><span class="n">LS</span><span class="p">,</span><span class="n">lamb</span><span class="o">*</span><span class="n">Freg</span><span class="p">,</span><span class="n">pos</span><span class="p">};</span><span class="w">         </span><span class="c">% Functionals F_n constituting the cost</span>
+<span class="n">Hn</span><span class="p">={</span><span class="n">H</span><span class="p">,</span><span class="n">Opreg</span><span class="p">,</span><span class="n">Id</span><span class="p">};</span><span class="w">               </span><span class="c">% Associated operators H_n</span>
+<span class="n">rho_n</span><span class="p">=[</span><span class="mf">1e-3</span><span class="p">,</span><span class="mf">1e-3</span><span class="p">,</span><span class="mf">1e-3</span><span class="p">];</span><span class="w">        </span><span class="c">% Multipliers rho_n</span>
+<span class="n">ADMM</span><span class="p">=</span><span class="n">OptiADMM</span><span class="p">([],</span><span class="n">Fn</span><span class="p">,</span><span class="n">Hn</span><span class="p">,</span><span class="n">rho_n</span><span class="p">);</span><span class="w"> </span><span class="c">% Declare optimizer</span>
+<span class="n">ADMM</span><span class="p">.</span><span class="n">OutOp</span><span class="p">=</span><span class="n">OutputOpti</span><span class="p">(</span><span class="mi">1</span><span class="p">,[],</span><span class="nb">round</span><span class="p">(</span><span class="n">maxIt</span><span class="o">/</span><span class="mi">10</span><span class="p">),[</span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="p">]);</span><span class="w"> </span><span class="c">% build the output object</span>
+<span class="n">ADMM</span><span class="p">.</span><span class="n">CvOp</span><span class="p">=</span><span class="n">TestCvgCombine</span><span class="p">(</span><span class="n">TestCvgCostRelative</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">),</span><span class="w"> </span><span class="s">&#39;StepRelative&#39;</span><span class="p">,</span><span class="mf">1e-4</span><span class="p">);</span><span class="w"> </span><span class="c">% Set the convergence tests</span>
+<span class="n">ADMM</span><span class="p">.</span><span class="n">ItUpOut</span><span class="p">=</span><span class="n">dispIt</span><span class="p">;</span>
+<span class="n">ADMM</span><span class="p">.</span><span class="n">maxiter</span><span class="p">=</span><span class="n">maxIt</span><span class="p">;</span>
+<span class="n">ADMM</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="nb">zeros</span><span class="p">(</span><span class="n">sznew</span><span class="p">));</span>
 </pre></div>
 </div>
 <p>Here, three splittings have been done: \(\mathrm{u_1=Hx}, \; \mathrm{u_2=\nabla x}\), and \(\mathrm{u_3=x}\).
@@ -179,7 +185,7 @@ linear step  of the algorithm (minimization over \(\mathrm{x}\)).</p>
 <figure class="align-center" id="id3">
 <a class="reference internal image-reference" href="_images/Deconv3D.png"><img alt="Deconvolution result." src="_images/Deconv3D.png" style="width: 439.59999999999997px; height: 459.2px;" /></a>
 <figcaption>
-<p><span class="caption-text">Fig 2. Deconvolved C. Elegans embryo.</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+<p><span class="caption-text">Fig 2. Deconvolved C. Elegans embryo.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>

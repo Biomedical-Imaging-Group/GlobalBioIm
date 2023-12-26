@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cost Functions (Cost) &mdash; GlobalBioIm Library 1.2 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script async="async" src="_static/mathjax/tex-chtml.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=61243dd2"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="_static/mathjax/tex-chtml.js?v=20daa33d"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -29,14 +31,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> GlobalBioIm Library
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GlobalBioIm Library
           </a>
               <div class="version">
                 1.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -70,7 +76,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#costmixnormschatt1">CostMixNormSchatt1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#costrobustpenalization">CostRobustPenalization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#costtv">CostTV</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-Cost.IndicatorFunctions">IndicatorFunctions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#indicatorfunctions">IndicatorFunctions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#costindicator">CostIndicator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#costrectangle">CostRectangle</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#costreals">CostReals</a></li>
@@ -106,7 +112,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Cost Functions (Cost)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/cost.rst.txt" rel="nofollow"> View page source</a>
@@ -118,21 +124,21 @@
            <div itemprop="articleBody">
              
   <section id="cost-functions-cost">
-<h1>Cost Functions (Cost)<a class="headerlink" href="#cost-functions-cost" title="Permalink to this heading"></a></h1>
+<h1>Cost Functions (Cost)<a class="headerlink" href="#cost-functions-cost" title="Link to this heading"></a></h1>
 <div class="math notranslate nohighlight">
 \[\]</div>
 <p>This section contains cost functions classes which all derive from the abstract class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
-<span class="target" id="module-Cost"></span><section id="costconst">
-<h2>CostConst<a class="headerlink" href="#costconst" title="Permalink to this heading"></a></h2>
+<section id="costconst">
+<span id="module-Cost"></span><h2>CostConst<a class="headerlink" href="#costconst" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.CostConst">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostConst</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sizein</span></em>, <em class="sig-param"><span class="pre">const</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostConst" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Cost</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostConst</span></span><a class="headerlink" href="#Cost.CostConst" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
 <p>CostConst: Constant cost whatever the input. Can be used to generate
 a null cost in particular situations.</p>
 <p>All attributes of parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> are inherited.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sizein</strong> – size of the input vector</p></li>
 <li><p><strong>const</strong> – the output constant value (default 0)</p></li>
@@ -143,39 +149,44 @@ a null cost in particular situations.</p>
 <p><strong>Example</strong> C=CostConst(sz, const)</p>
 <p><strong>Example</strong> C=CostMod2(sz)</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostConst.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">~</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostConst.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">~</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostConst.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostConst.applyGrad_">
-<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">~</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostConst.applyGrad_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">~</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostConst.applyGrad_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostConst.applyProx_">
-<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">~</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostConst.applyProx_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">~</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostConst.applyProx_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="costgoodroughness">
-<h2>CostGoodRoughness<a class="headerlink" href="#costgoodroughness" title="Permalink to this heading"></a></h2>
+<h2>CostGoodRoughness<a class="headerlink" href="#costgoodroughness" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.CostGoodRoughness">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostGoodRoughness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">G</span></em>, <em class="sig-param"><span class="pre">bet</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostGoodRoughness" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Cost</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostGoodRoughness</span></span><a class="headerlink" href="#Cost.CostGoodRoughness" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
 <p>CostGoodRoughness: see [1]
 $$C(\mathrm{x}) := \sum_k \frac{\vert (\nabla \mathrm{x})_{.,k} \vert^2}{\sqrt{\vert \mathrm{x} \vert^2 + \beta}} $$
 with \( \vert (\nabla \mathrm{x})_{.,k} \vert^2 \)  the gradient
 magnitude at pixel k.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>G</strong> – <code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpGrad</span></code> object</p></li>
 <li><p><strong>bet</strong> – smoothing parameter (default 1e-1)</p></li>
@@ -189,31 +200,36 @@ magnitude at pixel k.</p>
 approaches applied to three?dimensional confocal and wide?field fluorescence microscopy. 
 Journal of microscopy, 193(1), 50-61.</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpGrad</span></code></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostGoodRoughness.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostGoodRoughness.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostGoodRoughness.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostGoodRoughness.applyGrad_">
-<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostGoodRoughness.applyGrad_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostGoodRoughness.applyGrad_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="costhyperbolic">
-<h2>CostHyperBolic<a class="headerlink" href="#costhyperbolic" title="Permalink to this heading"></a></h2>
+<h2>CostHyperBolic<a class="headerlink" href="#costhyperbolic" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.CostHyperBolic">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostHyperBolic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">epsilon</span></em>, <em class="sig-param"><span class="pre">index</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">wght</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostHyperBolic" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Cost</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostHyperBolic</span></span><a class="headerlink" href="#Cost.CostHyperBolic" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
 <p>CostHyperBolic: Weighted Hyperbolic cost function
 $$C(\mathrm{x}) := \sum_{k=1}^K w_k \sqrt{\sum_{l=1}^L (\mathrm{x}-y)_{k,l}^2 + \varepsilon_k^2} - \sum_{k=1}^K\varepsilon_k $$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>index</strong> – dimensions along which the l2-norm will be applied (inner sum over l)</p></li>
 <li><p><strong>epsilon</strong> – \(\in \mathbb{R}^K_+\)  smoothing parameter (default
@@ -225,27 +241,32 @@ $$C(\mathrm{x}) := \sum_{k=1}^K w_k \sqrt{\sum_{l=1}^L (\mathrm{x}-y)_{k,l}^2 + 
 <p>All attributes of parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> are inherited.</p>
 <p><strong>Example</strong> C=CostHyperBolic(sz,epsilon,index,y,W)</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostHyperBolic.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostHyperBolic.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostHyperBolic.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostHyperBolic.applyGrad_">
-<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostHyperBolic.applyGrad_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostHyperBolic.applyGrad_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="costkullleib">
-<h2>CostKullLeib<a class="headerlink" href="#costkullleib" title="Permalink to this heading"></a></h2>
+<h2>CostKullLeib<a class="headerlink" href="#costkullleib" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.CostKullLeib">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostKullLeib</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">bet</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostKullLeib" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Cost</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostKullLeib</span></span><a class="headerlink" href="#Cost.CostKullLeib" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
 <p>CostKullLeib: KullbackLeibler divergence
 $$ C(\mathrm{x}) :=\sum_n D_{KL}(\mathrm{x}_n)$$
 where
@@ -255,59 +276,66 @@ $$ D_{KL}(\mathrm{z}_n) := \left\lbrace \begin{array}[ll]
 \end{array} \right.$$</p>
 <p>All attributes of parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> are inherited.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>bet</strong> – smoothing parameter \(\beta\) (default 0)</p>
 </dd>
 </dl>
 <p><strong>Example</strong> C=CostKullLeib(sz,y,bet)</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostKullLeib.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostKullLeib.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostKullLeib.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostKullLeib.applyGrad_">
-<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostKullLeib.applyGrad_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostKullLeib.applyGrad_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostKullLeib.applyProx_">
-<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostKullLeib.applyProx_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostKullLeib.applyProx_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="costlinear">
-<h2>CostLinear<a class="headerlink" href="#costlinear" title="Permalink to this heading"></a></h2>
+<h2>CostLinear<a class="headerlink" href="#costlinear" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.CostLinear">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostLinear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostLinear" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Cost</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostLinear</span></span><a class="headerlink" href="#Cost.CostLinear" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
 <p>CostLinear: Linear cost function
 $$C(\mathrm{x}) := \mathrm{x}^T\mathrm{y}$$</p>
 <p>All attributes of parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> are inherited.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>y</strong> – data vector  (default 0)</p>
 </dd>
 </dl>
 <p><strong>Example</strong> C=CostLinear(sz,y)</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostLinear.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostLinear.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostLinear.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>. 
 $$C(\mathrm{x}) := \mathrm{x}^T\mathrm{y}$$</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostLinear.applyGrad_">
-<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostLinear.applyGrad_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostLinear.applyGrad_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>. 
 Constant gradient: 
 $$ \nabla C(\mathrm{x}) = \mathrm{y}$$</p>
@@ -315,20 +343,23 @@ $$ \nabla C(\mathrm{x}) = \mathrm{y}$$</p>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostLinear.applyProx_">
-<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostLinear.applyProx_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostLinear.applyProx_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> 
 $$ \mathrm{prox}_{\alpha C}(\mathrm{x}) =\mathrm{x} - \alpha \mathrm{y} $$</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="costl1">
-<h2>CostL1<a class="headerlink" href="#costl1" title="Permalink to this heading"></a></h2>
+<h2>CostL1<a class="headerlink" href="#costl1" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.CostL1">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostL1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">nonneg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL1" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Cost</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostL1</span></span><a class="headerlink" href="#Cost.CostL1" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
 <p>CostL1: L1 norm cost function
 $$C(x) := \|\mathrm{x} - \mathrm{y}\|_1 $$</p>
 <p>If nonneg is set to true, it adds positivity constraint on x:
@@ -337,40 +368,45 @@ where i() is the indicator function of $\mathbb{R}^{+}$</p>
 <p>All attributes of parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> are inherited.</p>
 <p><strong>Example</strong> C=CostL1(sz,y,nonneg)</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostL1.applyProx_">
-<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL1.applyProx_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL1.applyProx_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.
 $$ \mathrm{prox}_{\alpha C}(\mathrm{x}) = \mathrm{sign(x-y)} \mathrm{max}(\vert x-y \vert- \alpha,0)+  \mathrm{y} $$</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostL1.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL1.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL1.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostL1.applyGrad_">
-<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL1.applyGrad_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL1.applyGrad_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.
 Subgradient of CostL1</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="costl2">
-<h2>CostL2<a class="headerlink" href="#costl2" title="Permalink to this heading"></a></h2>
+<h2>CostL2<a class="headerlink" href="#costl2" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.CostL2">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostL2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">wght</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Cost</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostL2</span></span><a class="headerlink" href="#Cost.CostL2" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
 <p>CostL2: Weighted L2 norm cost function
 $$C(\mathrm{x}) := \frac12\|\mathrm{x} - \mathrm{y}\|^2_W = \frac12 (\mathrm{x} - \mathrm{y})^T W (\mathrm{x} - \mathrm{y}) $$</p>
 <p>All attributes of parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> are inherited.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>y</strong> – data vector  (default 0)</p></li>
 <li><p><strong>W</strong> – weighting <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> object or scalar (default 1)</p></li>
@@ -379,15 +415,17 @@ $$C(\mathrm{x}) := \frac12\|\mathrm{x} - \mathrm{y}\|^2_W = \frac12 (\mathrm{x} 
 </dl>
 <p><strong>Example</strong> C=CostL2(sz,y,W)</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostL2.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostL2.applyGrad_">
-<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2.applyGrad_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2.applyGrad_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.
 $$ \nabla C(\mathrm{x}) = \mathrm{W (x - y)} $$
 It is L-Lipschitz continuous with \( L \leq \|\mathrm{W}\|\).</p>
@@ -395,7 +433,7 @@ It is L-Lipschitz continuous with \( L \leq \|\mathrm{W}\|\).</p>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostL2.applyProx_">
-<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2.applyProx_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2.applyProx_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>   
 $$ \mathrm{prox}_{\alpha C}(\mathrm{x}) = \frac{\mathrm{x} + \alpha \mathrm{Wy}}{1 + \alpha \mathrm{W}} $$
 where the division is component-wise.</p>
@@ -403,25 +441,28 @@ where the division is component-wise.</p>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostL2.makeComposition_">
-<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2.makeComposition_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2.makeComposition_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>. Instantiates a
 <a class="reference internal" href="#Cost.CostL2Composition" title="Cost.CostL2Composition"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostL2Composition</span></code></a>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="costl2composition">
-<h2>CostL2Composition<a class="headerlink" href="#costl2composition" title="Permalink to this heading"></a></h2>
+<h2>CostL2Composition<a class="headerlink" href="#costl2composition" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.CostL2Composition">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostL2Composition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">H1</span></em>, <em class="sig-param"><span class="pre">H2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2Composition" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostL2Composition</span></span><a class="headerlink" href="#Cost.CostL2Composition" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="abstract.html#Abstract.OperationsOnMaps.CostComposition" title="Abstract.OperationsOnMaps.CostComposition"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.OperationsOnMaps.CostComposition</span></code></a></p>
 <p>CostL2Composition: Composition of a <a class="reference internal" href="#Cost.CostL2" title="Cost.CostL2"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostL2</span></code></a> with a
 <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>
 $$C(\mathrm{x}) := \frac12\|\mathrm{Hx} - \mathrm{y}\|^2_W = \frac12 (\mathrm{Hx} - \mathrm{y})^T W (\mathrm{Hx} - \mathrm{y}) $$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>H1</strong> – <a class="reference internal" href="#Cost.CostL2" title="Cost.CostL2"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostL2</span></code></a> object</p></li>
 <li><p><strong>H2</strong> – <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> object</p></li>
@@ -431,9 +472,11 @@ $$C(\mathrm{x}) := \frac12\|\mathrm{Hx} - \mathrm{y}\|^2_W = \frac12 (\mathrm{Hx
 <p>All attributes of parent class <a class="reference internal" href="#Cost.CostL2" title="Cost.CostL2"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostL2</span></code></a> and <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostComposition</span></code> are inherited.</p>
 <p><strong>Example</strong> C=CostL2Composition(H1,H2)</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, <a class="reference internal" href="#Cost.CostL2" title="Cost.CostL2"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostL2</span></code></a>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostComposition</span></code>, <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostL2Composition.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2Composition.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2Composition.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostComposition</span></code>.
 $$ C(\mathrm{x}) = \frac12\|\mathrm{Hx} - \mathrm{y}\|^2_W  $$</p>
 <p>If <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">doPrecomputation</span></code> is true, \(\mathrm{W}\) is a scaled identity and \(\mathrm{H}\)
@@ -446,7 +489,7 @@ $$ C(\mathrm{x}) = \frac12 \langle \mathrm{W H^{\star}Hx,x} \rangle - \langle \m
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostL2Composition.applyGrad_">
-<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2Composition.applyGrad_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2Composition.applyGrad_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostComposition</span></code>.
 $$ \nabla C(\mathrm{x}) = \mathrm{J_{H}^* W (Hx - y)} $$</p>
 <p>If <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">doPrecomputation</span></code> is true, \(\mathrm{W}\) is a scaled identity and \(\mathrm{H}\)
@@ -457,7 +500,7 @@ $$ \nabla C(\mathrm{x}) = \mathrm{W H^{\star}Hx} -  \mathrm{H^* Wy}  $$</p>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostL2Composition.applyProx_">
-<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2Composition.applyProx_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2Composition.applyProx_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostComposition</span></code>.</p>
 <dl class="simple">
 <dt>Implemented </dt><dd><ul class="simple">
@@ -484,40 +527,45 @@ Structured-Illumination Microscopy” (2018)</p>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostL2Composition.makeComposition_">
-<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2Composition.makeComposition_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostL2Composition.makeComposition_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>. Instantiates a new
 <a class="reference internal" href="#Cost.CostL2Composition" title="Cost.CostL2Composition"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostL2Composition</span></code></a> with the updated composed
 <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="costmixnorm21">
-<h2>CostMixNorm21<a class="headerlink" href="#costmixnorm21" title="Permalink to this heading"></a></h2>
+<h2>CostMixNorm21<a class="headerlink" href="#costmixnorm21" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.CostMixNorm21">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostMixNorm21</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">index</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostMixNorm21" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Cost</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostMixNorm21</span></span><a class="headerlink" href="#Cost.CostMixNorm21" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
 <p>CostMixNorm21: Mixed norm 2-1 cost function
 $$C(\mathrm{x}) := \sum_{k=1}^K \sqrt{\sum_{l=1}^L (\mathrm{x}-y)_{k,l}^2}= \sum_{k=1}^K \Vert (\mathrm{x-y})_{k\cdot} \Vert_2$$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>index</strong> – dimensions along which the l2-norm will be applied (inner sum over l)</p>
 </dd>
 </dl>
 <p>All attributes of parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> are inherited.</p>
 <p><strong>Example</strong> C=CostMixNorm21(sz,index,y)</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostMixNorm21.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostMixNorm21.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostMixNorm21.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostMixNorm21.applyProx_">
-<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostMixNorm21.applyProx_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostMixNorm21.applyProx_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>
 $$ \mathrm{prox}_{\alpha C}(\mathrm{x}_{k\cdot} ) = \left\lbrace
 \begin{array}{ll}
@@ -533,40 +581,45 @@ where the division is component-wise.</p>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostMixNorm21.makeComposition_">
-<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostMixNorm21.makeComposition_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">makeComposition_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostMixNorm21.makeComposition_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>. Instantiates a
 <a class="reference internal" href="#Cost.CostL2Composition" title="Cost.CostL2Composition"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostL2Composition</span></code></a>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="costmixnorm21nonneg">
-<h2>CostMixNorm21NonNeg<a class="headerlink" href="#costmixnorm21nonneg" title="Permalink to this heading"></a></h2>
+<h2>CostMixNorm21NonNeg<a class="headerlink" href="#costmixnorm21nonneg" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.CostMixNorm21NonNeg">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostMixNorm21NonNeg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">index</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostMixNorm21NonNeg" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Cost</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostMixNorm21NonNeg</span></span><a class="headerlink" href="#Cost.CostMixNorm21NonNeg" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
 <p>CostMixNorm21: Mixed norm 2-1 with non negativity constraints cost function
 $$C(\mathrm{x}) :=  \left\lbrace \begin{array}{ll} \sum_{k=1}^K \sqrt{\sum_{l=1}^L (\mathrm{x}-y)_{k,l}^2} &amp; \text{ if } \mathrm{x-y} \geq 0 \newline
 + \infty &amp; \text{ otherwise.} \end{array} \right. $$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>index</strong> – dimensions along which the l2-norm will be applied (inner sum over l)</p>
 </dd>
 </dl>
 <p>All attributes of parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> are inherited.</p>
 <p><strong>Example</strong> C=CostMixNorm21(sz,index,y)</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostMixNorm21NonNeg.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostMixNorm21NonNeg.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostMixNorm21NonNeg.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostMixNorm21NonNeg.applyProx_">
-<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostMixNorm21NonNeg.applyProx_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostMixNorm21NonNeg.applyProx_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>
 $$ \mathrm{prox}_{\alpha C}(\mathrm{x}_{k\cdot} ) = \left\lbrace
 \begin{array}{ll}
@@ -580,15 +633,18 @@ $$ \mathrm{prox}_{\alpha C}(\mathrm{x}_{k\cdot} ) = \left\lbrace
 where the division is component-wise.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="costmixnormschatt1">
-<h2>CostMixNormSchatt1<a class="headerlink" href="#costmixnormschatt1" title="Permalink to this heading"></a></h2>
+<h2>CostMixNormSchatt1<a class="headerlink" href="#costmixnormschatt1" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.CostMixNormSchatt1">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostMixNormSchatt1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">p</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostMixNormSchatt1" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Cost</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostMixNormSchatt1</span></span><a class="headerlink" href="#Cost.CostMixNormSchatt1" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
 <p>CostMixNormSchatt1 Mixed Schatten-l1 Norm [1]
 $$C(\mathrm{x}) :=   \sum_n  \| \mathrm{x}_{n\cdot} \|_{Sp}, $$
 for \(p \in [1,+\infty]\). Here, \(\|\cdot\|_{Sp}\)  denotes the p-order Shatten norm 
@@ -597,7 +653,7 @@ $$ \|\mathrm{X}\|_{Sp} = \left[\sum_k (\sigma_k(\mathrm{X}))^p\right]^{1/p},$$
 where \(\sigma_k(\mathrm{X})\) is the k-th singular value of \(\mathrm{X}\). In other words it is the lp-norm
 of the signular values of  \(\mathrm{X}\).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>p</strong> – order of the Shatten norm (default 1)</p>
 </dd>
 </dl>
@@ -621,32 +677,37 @@ and then the \(\ell_1\) norm on the three other dimensions.</p></li>
 for linear inverse problems. IEEE transactions on image processing, 22(5), 1873-1888.</p>
 <p><strong>Example</strong> C=CostMixNormSchatt1(sz,p,y)</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostMixNormSchatt1.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostMixNormSchatt1.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostMixNormSchatt1.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostMixNormSchatt1.applyProx_">
-<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostMixNormSchatt1.applyProx_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostMixNormSchatt1.applyProx_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="costrobustpenalization">
-<h2>CostRobustPenalization<a class="headerlink" href="#costrobustpenalization" title="Permalink to this heading"></a></h2>
+<h2>CostRobustPenalization<a class="headerlink" href="#costrobustpenalization" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.CostRobustPenalization">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostRobustPenalization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">M</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">options</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostRobustPenalization" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Cost</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostRobustPenalization</span></span><a class="headerlink" href="#Cost.CostRobustPenalization" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
 <p>CostRobustPenalization: Robust penalization cost function
 $$C(\mathrm{x}) := sum rho((A.x-y)/s)$$</p>
 <p>All attributes of parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> are inherited.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>M</strong> – MAP to apply on the input (default Identity)</p></li>
 <li><p><strong>y</strong> – data vector (default 0)</p></li>
@@ -687,32 +748,37 @@ $$C(\mathrm{x}) := sum rho((A.x-y)/s)$$</p>
 <p><strong>Example</strong> C=CostRobustPenalization(M, y, options)</p>
 <p><strong>Example</strong> C=CostRobustPenalization(M, y, [])</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostRobustPenalization.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostRobustPenalization.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostRobustPenalization.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostRobustPenalization.applyGrad_">
-<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostRobustPenalization.applyGrad_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyGrad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostRobustPenalization.applyGrad_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="costtv">
-<h2>CostTV<a class="headerlink" href="#costtv" title="Permalink to this heading"></a></h2>
+<h2>CostTV<a class="headerlink" href="#costtv" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.CostTV">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostTV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">varargin</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostTV" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.</span></span><span class="sig-name descname"><span class="pre">CostTV</span></span><a class="headerlink" href="#Cost.CostTV" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="abstract.html#Abstract.OperationsOnMaps.CostComposition" title="Abstract.OperationsOnMaps.CostComposition"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Abstract.OperationsOnMaps.CostComposition</span></code></a></p>
 <p>CostTV : Composition of a <a class="reference internal" href="#Cost.CostTV" title="Cost.CostTV"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostTV</span></code></a> with a
 <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>
 $$C(\mathrm{x}) := \sum_{k=1}^K \sqrt{\sum_{l=1}^L (\mathrm{H_2 x}-y)_{k,l}^2}= \sum_{k=1}^K \Vert (\mathrm{H_2 x-y})_{k\cdot} \Vert_2$$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>H1</strong> – <a class="reference internal" href="#Cost.CostMixNorm21" title="Cost.CostMixNorm21"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostMixNorm21</span></code></a> object</p></li>
 <li><p><strong>H2</strong> – <code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpGrad</span></code> object</p></li>
@@ -723,31 +789,36 @@ $$C(\mathrm{x}) := \sum_{k=1}^K \sqrt{\sum_{l=1}^L (\mathrm{H_2 x}-y)_{k,l}^2}= 
 <p><strong>Example</strong> C=CostTV(sz)</p>
 <p><strong>Example</strong> C=CostTV(H1,H2); with H1=CostMixNorm21(sz,index,y); and H2=LinOpGrad(sz);</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, <a class="reference internal" href="#Cost.CostL2" title="Cost.CostL2"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostL2</span></code></a>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostComposition</span></code>, <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostTV.setProxAlgo">
-<span class="sig-name descname"><span class="pre">setProxAlgo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">bounds</span></em>, <em class="sig-param"><span class="pre">maxiter</span></em>, <em class="sig-param"><span class="pre">xtol</span></em>, <em class="sig-param"><span class="pre">Outop</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostTV.setProxAlgo" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">setProxAlgo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">bounds</span></em>, <em class="sig-param"><span class="pre">maxiter</span></em>, <em class="sig-param"><span class="pre">xtol</span></em>, <em class="sig-param"><span class="pre">Outop</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostTV.setProxAlgo" title="Link to this definition"></a></dt>
 <dd><p>Set the parameters of <code class="xref mat mat-class docutils literal notranslate"><span class="pre">OptiFGP</span></code> used to compute the proximity
 operator.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.CostTV.applyProx_">
-<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostTV.applyProx_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">alpha</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.CostTV.applyProx_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostComposition</span></code>.
 Computed using the iterative <code class="xref mat mat-class docutils literal notranslate"><span class="pre">OptiFGP</span></code></p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
-<section id="module-Cost.IndicatorFunctions">
-<span id="indicatorfunctions"></span><h2>IndicatorFunctions<a class="headerlink" href="#module-Cost.IndicatorFunctions" title="Permalink to this heading"></a></h2>
+<section id="indicatorfunctions">
+<h2>IndicatorFunctions<a class="headerlink" href="#indicatorfunctions" title="Link to this heading"></a></h2>
 <section id="costindicator">
-<h3>CostIndicator<a class="headerlink" href="#costindicator" title="Permalink to this heading"></a></h3>
+<span id="module-Cost.IndicatorFunctions"></span><h3>CostIndicator<a class="headerlink" href="#costindicator" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.IndicatorFunctions.CostIndicator">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.IndicatorFunctions.</span></span><span class="sig-name descname"><span class="pre">CostIndicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.IndicatorFunctions.CostIndicator" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Cost</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.IndicatorFunctions.</span></span><span class="sig-name descname"><span class="pre">CostIndicator</span></span><a class="headerlink" href="#Cost.IndicatorFunctions.CostIndicator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
 <p>CostIndicator: Indicator cost function
 $$ C(\mathrm{x}) = \left\lbrace \begin{array}[l] \text{0~if } \mathrm{x -y} \in \mathrm{C},  
 \newline + \infty \text{ otherwise.} \end{array} \right. $$
@@ -760,10 +831,10 @@ indicator cost functions</p>
 
 </section>
 <section id="costrectangle">
-<h3>CostRectangle<a class="headerlink" href="#costrectangle" title="Permalink to this heading"></a></h3>
+<h3>CostRectangle<a class="headerlink" href="#costrectangle" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.IndicatorFunctions.CostRectangle">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.IndicatorFunctions.</span></span><span class="sig-name descname"><span class="pre">CostRectangle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">xmin</span></em>, <em class="sig-param"><span class="pre">xmax</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.IndicatorFunctions.CostRectangle" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.IndicatorFunctions.</span></span><span class="sig-name descname"><span class="pre">CostRectangle</span></span><a class="headerlink" href="#Cost.IndicatorFunctions.CostRectangle" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#Cost.IndicatorFunctions.CostIndicator" title="Cost.IndicatorFunctions.CostIndicator"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost.IndicatorFunctions.CostIndicator</span></code></a></p>
 <p>CostRectangle:  Rectangle Indicator function
 $$ C(x) = \left\lbrace \begin{array}[l]
@@ -771,7 +842,7 @@ $$ C(x) = \left\lbrace \begin{array}[l]
 \text{ and }  \mathrm{imag(xmin)} \leq \mathrm{imag(x-y)} \leq \mathrm{imag(xmax)},  \newline
 + \infty \text{ otherwise.} \end{array} \right. $$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>xmin</strong> – minimum value (default -inf + 0i)</p></li>
 <li><p><strong>xmax</strong> – maximum value (default +inf + 0i)</p></li>
@@ -781,33 +852,38 @@ $$ C(x) = \left\lbrace \begin{array}[l]
 <p>All attributes of parent class <a class="reference internal" href="#Cost.IndicatorFunctions.CostIndicator" title="Cost.IndicatorFunctions.CostIndicator"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostIndicator</span></code></a> are inherited</p>
 <p><strong>Example</strong> C=CostRectangle(sz,xmin,xmax,y)</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, <a class="reference internal" href="#Cost.IndicatorFunctions.CostIndicator" title="Cost.IndicatorFunctions.CostIndicator"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostIndicator</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.IndicatorFunctions.CostRectangle.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.IndicatorFunctions.CostRectangle.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.IndicatorFunctions.CostRectangle.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.IndicatorFunctions.CostRectangle.applyProx_">
-<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">~</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.IndicatorFunctions.CostRectangle.applyProx_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">~</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.IndicatorFunctions.CostRectangle.applyProx_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="costreals">
-<h3>CostReals<a class="headerlink" href="#costreals" title="Permalink to this heading"></a></h3>
+<h3>CostReals<a class="headerlink" href="#costreals" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.IndicatorFunctions.CostReals">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.IndicatorFunctions.</span></span><span class="sig-name descname"><span class="pre">CostReals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">xmin</span></em>, <em class="sig-param"><span class="pre">xmax</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.IndicatorFunctions.CostReals" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.IndicatorFunctions.</span></span><span class="sig-name descname"><span class="pre">CostReals</span></span><a class="headerlink" href="#Cost.IndicatorFunctions.CostReals" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#Cost.IndicatorFunctions.CostRectangle" title="Cost.IndicatorFunctions.CostRectangle"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost.IndicatorFunctions.CostRectangle</span></code></a></p>
 <p>CostReals: Reals Indicator function
 $$ C(x) = \left\lbrace \begin{array}[l]
 \text{0~if } \mathrm{xmin} \leq \mathrm{x-y} \leq \mathrm{xmax} \newline
 + \infty \text{ otherwise.} \end{array} \right. $$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>xmin</strong> – minimum value (default -inf)</p></li>
 <li><p><strong>xmax</strong> – maximum value (default +inf)</p></li>
@@ -821,10 +897,10 @@ $$ C(x) = \left\lbrace \begin{array}[l]
 
 </section>
 <section id="costnonneg">
-<h3>CostNonNeg<a class="headerlink" href="#costnonneg" title="Permalink to this heading"></a></h3>
+<h3>CostNonNeg<a class="headerlink" href="#costnonneg" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.IndicatorFunctions.CostNonNeg">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.IndicatorFunctions.</span></span><span class="sig-name descname"><span class="pre">CostNonNeg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.IndicatorFunctions.CostNonNeg" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.IndicatorFunctions.</span></span><span class="sig-name descname"><span class="pre">CostNonNeg</span></span><a class="headerlink" href="#Cost.IndicatorFunctions.CostNonNeg" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#Cost.IndicatorFunctions.CostReals" title="Cost.IndicatorFunctions.CostReals"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost.IndicatorFunctions.CostReals</span></code></a></p>
 <p>CostNonNeg : Non negativity indicator 
 $$ C(x) = \left\lbrace \begin{array}[l]
@@ -838,10 +914,10 @@ $$ C(x) = \left\lbrace \begin{array}[l]
 
 </section>
 <section id="costcomplexring">
-<h3>CostComplexRing<a class="headerlink" href="#costcomplexring" title="Permalink to this heading"></a></h3>
+<h3>CostComplexRing<a class="headerlink" href="#costcomplexring" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.IndicatorFunctions.CostComplexRing">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.IndicatorFunctions.</span></span><span class="sig-name descname"><span class="pre">CostComplexRing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">inner</span></em>, <em class="sig-param"><span class="pre">outer</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.IndicatorFunctions.CostComplexRing" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.IndicatorFunctions.</span></span><span class="sig-name descname"><span class="pre">CostComplexRing</span></span><a class="headerlink" href="#Cost.IndicatorFunctions.CostComplexRing" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#Cost.IndicatorFunctions.CostIndicator" title="Cost.IndicatorFunctions.CostIndicator"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost.IndicatorFunctions.CostIndicator</span></code></a></p>
 <p>CostComplexRing: Implements
 the indicator function operator on the complex ring
@@ -849,7 +925,7 @@ $$ C(x) = \left\lbrace \begin{array}[l]
 \text{0~if } \mathrm{inner}  \leq \vert x-y\vert \leq \mathrm{outer}  \newline
 + \infty \text{ otherwise.} \end{array} \right. $$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>inner</strong> – inner radius of the ring (default 0)</p></li>
 <li><p><strong>outer</strong> – outer radius of the ring (default 1)</p></li>
@@ -859,27 +935,32 @@ $$ C(x) = \left\lbrace \begin{array}[l]
 <p>All attributes of parent class <a class="reference internal" href="#Cost.IndicatorFunctions.CostIndicator" title="Cost.IndicatorFunctions.CostIndicator"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostIndicator</span></code></a> are inherited</p>
 <p><strong>Example</strong> CostComplexRing(inner, outer, sz,y)</p>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, <a class="reference internal" href="#Cost.IndicatorFunctions.CostIndicator" title="Cost.IndicatorFunctions.CostIndicator"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostIndicator</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.IndicatorFunctions.CostComplexRing.applyProx_">
-<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">~</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.IndicatorFunctions.CostComplexRing.applyProx_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">applyProx_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">~</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.IndicatorFunctions.CostComplexRing.applyProx_" title="Link to this definition"></a></dt>
 <dd><p>apply the operator
 Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Cost.IndicatorFunctions.CostComplexRing.apply_">
-<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.IndicatorFunctions.CostComplexRing.apply_" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.IndicatorFunctions.CostComplexRing.apply_" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="costcomplexcircle">
-<h3>CostComplexCircle<a class="headerlink" href="#costcomplexcircle" title="Permalink to this heading"></a></h3>
+<h3>CostComplexCircle<a class="headerlink" href="#costcomplexcircle" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.IndicatorFunctions.CostComplexCircle">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.IndicatorFunctions.</span></span><span class="sig-name descname"><span class="pre">CostComplexCircle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">radius</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.IndicatorFunctions.CostComplexCircle" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.IndicatorFunctions.</span></span><span class="sig-name descname"><span class="pre">CostComplexCircle</span></span><a class="headerlink" href="#Cost.IndicatorFunctions.CostComplexCircle" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#Cost.IndicatorFunctions.CostComplexRing" title="Cost.IndicatorFunctions.CostComplexRing"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost.IndicatorFunctions.CostComplexRing</span></code></a></p>
 <p>CostComplexCircle: Implements the indicator on the complex circle of radius c
 $$ C(x) = \left\lbrace \begin{array}[l]
@@ -887,7 +968,7 @@ $$ C(x) = \left\lbrace \begin{array}[l]
 + \infty \text{ otherwise.} \end{array} \right. $$</p>
 <p>All attributes of parent class <a class="reference internal" href="#Cost.IndicatorFunctions.CostComplexRing" title="Cost.IndicatorFunctions.CostComplexRing"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostComplexRing</span></code></a> are inherited</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>radius</strong> – radius of the circle (default 1)</p>
 </dd>
 </dl>
@@ -897,10 +978,10 @@ $$ C(x) = \left\lbrace \begin{array}[l]
 
 </section>
 <section id="costcomplexdisk">
-<h3>CostComplexDisk<a class="headerlink" href="#costcomplexdisk" title="Permalink to this heading"></a></h3>
+<h3>CostComplexDisk<a class="headerlink" href="#costcomplexdisk" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Cost.IndicatorFunctions.CostComplexDisk">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.IndicatorFunctions.</span></span><span class="sig-name descname"><span class="pre">CostComplexDisk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sz</span></em>, <em class="sig-param"><span class="pre">radius</span></em>, <em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Cost.IndicatorFunctions.CostComplexDisk" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Cost.IndicatorFunctions.</span></span><span class="sig-name descname"><span class="pre">CostComplexDisk</span></span><a class="headerlink" href="#Cost.IndicatorFunctions.CostComplexDisk" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#Cost.IndicatorFunctions.CostComplexRing" title="Cost.IndicatorFunctions.CostComplexRing"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost.IndicatorFunctions.CostComplexRing</span></code></a></p>
 <p>CostComplexDisk: Implements the indocator function on the complex disk of radius c
 $$ C(x) = \left\lbrace \begin{array}[l]
@@ -908,7 +989,7 @@ $$ C(x) = \left\lbrace \begin{array}[l]
 + \infty \text{ otherwise.} \end{array} \right. $$</p>
 <p>All attributes of parent class <a class="reference internal" href="#Cost.IndicatorFunctions.CostComplexRing" title="Cost.IndicatorFunctions.CostComplexRing"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostComplexRing</span></code></a> are inherited</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>radius</strong> – radius of the disk (default 1)</p>
 </dd>
 </dl>

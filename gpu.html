@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Speedup with GPU &mdash; GlobalBioIm Library 1.2 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=61243dd2"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -28,14 +30,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> GlobalBioIm Library
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GlobalBioIm Library
           </a>
               <div class="version">
                 1.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -85,7 +91,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Speedup with GPU</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/gpu.rst.txt" rel="nofollow"> View page source</a>
@@ -97,9 +103,9 @@
            <div itemprop="articleBody">
              
   <section id="speedup-with-gpu">
-<span id="ref-gpu"></span><h1>Speedup with GPU<a class="headerlink" href="#speedup-with-gpu" title="Permalink to this heading"></a></h1>
+<span id="ref-gpu"></span><h1>Speedup with GPU<a class="headerlink" href="#speedup-with-gpu" title="Link to this heading"></a></h1>
 <section id="main-functions">
-<h2>Main functions<a class="headerlink" href="#main-functions" title="Permalink to this heading"></a></h2>
+<h2>Main functions<a class="headerlink" href="#main-functions" title="Link to this heading"></a></h2>
 <p>Any script implemented using the library can be easily switched to GPU computation.
 To that end, one only needs two simple functions:</p>
 <blockquote>
@@ -121,20 +127,20 @@ To that end, one only needs two simple functions:</p>
 But if x is a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">double</span></code> and <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">useGPU</span></code> is set to 1, then <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">x=gpuCpuConverter(x)</span></code> will convert x to a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">gpuarray</span></code>
 (and send it to the graphic card). Hence, for each created/loaded variable “x” which is sufficiently large
 (i.e. not for small vectors), one has to add the following line to the script</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="p">=</span><span class="n">gpuCpuConverter</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="p">=</span><span class="n">gpuCpuConverter</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>Then, the switch between CPU and GPU computation is simply controlled by <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">useGPU()</span></code> which can be placed at the beginning of the script.</p>
 </section>
 <section id="functions-which-generate-data">
-<h2>Functions which generate data<a class="headerlink" href="#functions-which-generate-data" title="Permalink to this heading"></a></h2>
+<h2>Functions which generate data<a class="headerlink" href="#functions-which-generate-data" title="Link to this heading"></a></h2>
 <p>Matlab functions such as <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">ones()</span></code> and <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">zeros()</span></code> require a memory allocation. When GPU is activated, it is faster to generate directly
 these data on the graphic card instead of allocating CPU memory and then transfering them to the GPU. In order to make things transparents and
 keep the code clear, all the occurences of <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">ones()</span></code> and <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">zeros()</span></code> (i.e. within scripts but also within library classes) should be replaced by
 <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">ones_()</span></code> and <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">zeros_()</span></code>. These two functions have been defined in order to allocate the memory on the CPU or directly on the GPU according to the state of <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">useGPU</span></code>.</p>
 </section>
 <section id="concrete-example">
-<h2>Concrete example<a class="headerlink" href="#concrete-example" title="Permalink to this heading"></a></h2>
+<h2>Concrete example<a class="headerlink" href="#concrete-example" title="Link to this heading"></a></h2>
 <p>The 3D deconvolution example provided in the “Example/” folder of the library shows a concrete use of the GPU functionality.</p>
 </section>
 </section>

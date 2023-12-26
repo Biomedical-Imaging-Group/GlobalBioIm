@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Optimization Algorithms (Opti) &mdash; GlobalBioIm Library 1.2 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script async="async" src="_static/mathjax/tex-chtml.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=61243dd2"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="_static/mathjax/tex-chtml.js?v=20daa33d"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -29,14 +31,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> GlobalBioIm Library
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GlobalBioIm Library
           </a>
               <div class="version">
                 1.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -108,7 +114,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Optimization Algorithms (Opti)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/opti.rst.txt" rel="nofollow"> View page source</a>
@@ -120,20 +126,20 @@
            <div itemprop="articleBody">
              
   <section id="optimization-algorithms-opti">
-<h1>Optimization Algorithms (Opti)<a class="headerlink" href="#optimization-algorithms-opti" title="Permalink to this heading"></a></h1>
+<h1>Optimization Algorithms (Opti)<a class="headerlink" href="#optimization-algorithms-opti" title="Link to this heading"></a></h1>
 <div class="math notranslate nohighlight">
 \[\]</div>
 <p>This section contains optimization algorithms classes which all derive from the abstract class <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>.</p>
-<span class="target" id="module-Opti"></span><section id="optiadmm">
-<h2>OptiADMM<a class="headerlink" href="#optiadmm" title="Permalink to this heading"></a></h2>
+<section id="optiadmm">
+<span id="module-Opti"></span><h2>OptiADMM<a class="headerlink" href="#optiadmm" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.OptiADMM">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiADMM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">F0</span></em>, <em class="sig-param"><span class="pre">Fn</span></em>, <em class="sig-param"><span class="pre">Hn</span></em>, <em class="sig-param"><span class="pre">rho_n</span></em>, <em class="sig-param"><span class="pre">solver</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiADMM" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Opti</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiADMM</span></span><a class="headerlink" href="#Opti.OptiADMM" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a></p>
 <p>Alternating Direction Method of Multipliers [1] algorithm which minimizes <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> of the form
 $$ C(\mathrm{x}) = F_0(\mathrm{x}) + \sum_{n=1}^N F_n(\mathrm{H_n x}) $$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>F_0</strong> – <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> object</p></li>
 <li><p><strong>F_n</strong> – cell of N <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> with an implementation of the <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">prox()</span></code> for each one</p></li>
@@ -167,31 +173,36 @@ Here \(\mathrm{H_0}\) is the <a class="reference internal" href="linop.html#modu
 method of multipliers.” Foundations and Trends in Machine Learning, 2011.</p>
 <p><strong>Example</strong> ADMM=OptiADMM(F0,Fn,Hn,rho_n,solver)</p>
 <p>See also <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>, <a class="reference internal" href="#Opti.OptiConjGrad" title="Opti.OptiConjGrad"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">OptiConjGrad</span></code></a> <a class="reference internal" href="#module-Opti.OutputOpti" title="Opti.OutputOpti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">OutputOpti</span></code></a>, <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiADMM.initialize">
-<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiADMM.initialize" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiADMM.initialize" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiADMM.doIteration">
-<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiADMM.doIteration" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiADMM.doIteration" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>. For details see [1].</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="optichambpock">
-<h2>OptiChambPock<a class="headerlink" href="#optichambpock" title="Permalink to this heading"></a></h2>
+<h2>OptiChambPock<a class="headerlink" href="#optichambpock" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.OptiChambPock">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiChambPock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">F</span></em>, <em class="sig-param"><span class="pre">H</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiChambPock" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Opti</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiChambPock</span></span><a class="headerlink" href="#Opti.OptiChambPock" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a></p>
 <p>Chambolle-Pock optimization algorithm [1] which minimizes <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> of the form
 $$ C(\mathrm{x}) = F(\mathrm{Hx}) + G(\mathrm{x}) $$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>F</strong> – a <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> with an implementation of the <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">prox()</span></code>.</p></li>
 <li><p><strong>G</strong> – a <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> with an implementation of the <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">prox()</span></code>.</p></li>
@@ -233,32 +244,37 @@ $$ \sigma \times \tau \times \Vert \mathrm{H} \Vert^2 \leq 1 $$</p></li>
 applications to imaging.” Journal of Mathematical Imaging and Vision 40.1, pp 120-145 (2011).</p>
 <p><strong>Example</strong> CP=OptiChambPock(F,H,G)</p>
 <p>See also <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a> <a class="reference internal" href="#module-Opti.OutputOpti" title="Opti.OutputOpti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">OutputOpti</span></code></a> <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiChambPock.initialize">
-<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiChambPock.initialize" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiChambPock.initialize" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiChambPock.doIteration">
-<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiChambPock.doIteration" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiChambPock.doIteration" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>. For details see [1].</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="opticonjgrad">
-<h2>OptiConjGrad<a class="headerlink" href="#opticonjgrad" title="Permalink to this heading"></a></h2>
+<h2>OptiConjGrad<a class="headerlink" href="#opticonjgrad" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.OptiConjGrad">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiConjGrad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">A</span></em>, <em class="sig-param"><span class="pre">b</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiConjGrad" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Opti</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiConjGrad</span></span><a class="headerlink" href="#Opti.OptiConjGrad" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a></p>
 <p>Conjugate gradient optimization algorithm which solves the linear
 system \(\mathrm{Ax=b}\) by minimizing
 $$ C(\mathrm{x})= \frac12 \mathrm{x^TAx - b^Tx} $$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>A</strong> – symmetric definite positive <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p></li>
 <li><p><strong>b</strong> – right-hand term</p></li>
@@ -268,33 +284,38 @@ $$ C(\mathrm{x})= \frac12 \mathrm{x^TAx - b^Tx} $$</p>
 <p>All attributes of parent class <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a> are inherited.</p>
 <p><strong>Example</strong> CG=OptiConjGrad(A,b,OutOp)</p>
 <p>See also <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>, <a class="reference internal" href="#module-Opti.OutputOpti" title="Opti.OutputOpti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">OutputOpti</span></code></a> <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiConjGrad.initialize">
-<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiConjGrad.initialize" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiConjGrad.initialize" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiConjGrad.doIteration">
-<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiConjGrad.doIteration" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiConjGrad.doIteration" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>. For a detailled
 algorithm scheme see <a class="reference external" href="https://en.wikipedia.org/wiki/Conjugate_gradient_method#The_resulting_algorithm">here</a></p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="optidouglasrachford">
-<h2>OptiDouglasRachford<a class="headerlink" href="#optidouglasrachford" title="Permalink to this heading"></a></h2>
+<h2>OptiDouglasRachford<a class="headerlink" href="#optidouglasrachford" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.OptiDouglasRachford">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiDouglasRachford</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">F1</span></em>, <em class="sig-param"><span class="pre">F2</span></em>, <em class="sig-param"><span class="pre">L</span></em>, <em class="sig-param"><span class="pre">gamma</span></em>, <em class="sig-param"><span class="pre">lambda</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiDouglasRachford" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Opti</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiDouglasRachford</span></span><a class="headerlink" href="#Opti.OptiDouglasRachford" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a></p>
 <p>Douglas Rachford splitting optimization algorithm which minimizes
 <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> of the form
 $$ C(\mathrm{x}) = F_1(\mathrm{x}) + F_2(\mathrm{L x}) $$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>F_1</strong> – a <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> with an implementation of the <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">prox()</span></code>.</p></li>
 <li><p><strong>F_2</strong> – a <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> with an implementation of the <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">prox()</span></code>.</p></li>
@@ -307,31 +328,36 @@ $$ C(\mathrm{x}) = F_1(\mathrm{x}) + F_2(\mathrm{L x}) $$</p>
 <p>All attributes of parent class <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a> are inherited.</p>
 <p><strong>Example</strong> DR=OptiDouglasRachford(F1, F2, L, gamma, lambda)</p>
 <p>See also <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>, <a class="reference internal" href="#module-Opti.OutputOpti" title="Opti.OutputOpti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">OutputOpti</span></code></a>, <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiDouglasRachford.initialize">
-<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiDouglasRachford.initialize" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiDouglasRachford.initialize" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiDouglasRachford.doIteration">
-<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiDouglasRachford.doIteration" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiDouglasRachford.doIteration" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="optifbs">
-<h2>OptiFBS<a class="headerlink" href="#optifbs" title="Permalink to this heading"></a></h2>
+<h2>OptiFBS<a class="headerlink" href="#optifbs" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.OptiFBS">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiFBS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">F</span></em>, <em class="sig-param"><span class="pre">G</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiFBS" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Opti</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiFBS</span></span><a class="headerlink" href="#Opti.OptiFBS" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a></p>
 <p>Forward-Backward Splitting optimization algorithm [1] which minimizes <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> of the form
 $$ C(\mathrm{x}) = F(\mathrm{x}) + G(\mathrm{x}) $$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>F</strong> – a differentiable <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> (i.e. with an implementation of <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyGrad()</span></code>).</p></li>
 <li><p><strong>G</strong> – a <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> with an implementation of the <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyProx()</span></code>.</p></li>
@@ -360,32 +386,37 @@ SIAM Journal on Imaging Science, vol 2, no. 1, pp 182-202 (2009)</p>
 Found. Comput. Math. 15, 3 (June 2015), 715-732.</p>
 <p><strong>Example</strong> FBS=OptiFBS(F,G)</p>
 <p>See also <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a> <a class="reference internal" href="#module-Opti.OutputOpti" title="Opti.OutputOpti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">OutputOpti</span></code></a> <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiFBS.initialize">
-<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiFBS.initialize" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiFBS.initialize" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiFBS.doIteration">
-<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiFBS.doIteration" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiFBS.doIteration" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>. For details see [1-3].</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="optifgp">
-<h2>OptiFGP<a class="headerlink" href="#optifgp" title="Permalink to this heading"></a></h2>
+<h2>OptiFGP<a class="headerlink" href="#optifgp" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.OptiFGP">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiFGP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">F0</span></em>, <em class="sig-param"><span class="pre">TV</span></em>, <em class="sig-param"><span class="pre">bounds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiFGP" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Opti</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiFGP</span></span><a class="headerlink" href="#Opti.OptiFGP" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a></p>
 <p>Fast Gradient Proximal which computes the TV proximity operator which
 minimizes <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> of the form
 $$ C(\mathrm{x}) = \frac12\|\mathrm{x} - \mathrm{y}\|^2_2 + \lambda \|\mathrm{x} \|_{TV} $$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>F_0</strong> – <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostL2</span></code> object</p></li>
 <li><p><strong>TV</strong> – <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostTV</span></code></p></li>
@@ -401,42 +432,47 @@ $$ C(\mathrm{x}) = \frac12\|\mathrm{x} - \mathrm{y}\|^2_2 + \lambda \|\mathrm{x}
 and deblurring problems. IEEE Transactions on Image Processing, 18(11), 2419-2434.</p>
 <p><strong>Example</strong> FGP=OptiFGP(F0,TV,bounds)</p>
 <p>See also <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>, <a class="reference internal" href="#module-Opti.OutputOpti" title="Opti.OutputOpti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">OutputOpti</span></code></a> <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiFGP.setLambda">
-<span class="sig-name descname"><span class="pre">setLambda</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">new_l</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiFGP.setLambda" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">setLambda</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">new_l</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiFGP.setLambda" title="Link to this definition"></a></dt>
 <dd><p>Set the regularization parameter lambda</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiFGP.setBounds">
-<span class="sig-name descname"><span class="pre">setBounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">new_b</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiFGP.setBounds" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">setBounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">new_b</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiFGP.setBounds" title="Link to this definition"></a></dt>
 <dd><p>Set constraints bounds</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiFGP.initialize">
-<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiFGP.initialize" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiFGP.initialize" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiFGP.doIteration">
-<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiFGP.doIteration" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiFGP.doIteration" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>. For details see [1].</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="optigraddsct">
-<h2>OptiGradDsct<a class="headerlink" href="#optigraddsct" title="Permalink to this heading"></a></h2>
+<h2>OptiGradDsct<a class="headerlink" href="#optigraddsct" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.OptiGradDsct">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiGradDsct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">F</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiGradDsct" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Opti</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiGradDsct</span></span><a class="headerlink" href="#Opti.OptiGradDsct" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a></p>
 <p>Gradient Descent optimization algorithm to minimize a differentiable <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> \(C(\mathrm{x})\)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>C</strong> – a differentiable <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> (i.e. with an implementation of <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyGrad()</span></code>).</p></li>
 <li><p><strong>gam</strong> – descent step</p></li>
@@ -453,32 +489,37 @@ parameter \(\gamma\) is automatically set to \(1/L\).</p>
 <p>[1] Nesterov, Yurii. “Introductory lectures on convex programming.” Lecture Notes (1998): 119-120.</p>
 <p><strong>Example</strong> GD=OptiGradDsct(F)</p>
 <p>See also <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a> <a class="reference internal" href="#module-Opti.OutputOpti" title="Opti.OutputOpti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">OutputOpti</span></code></a> <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiGradDsct.initialize">
-<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiGradDsct.initialize" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiGradDsct.initialize" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiGradDsct.doIteration">
-<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiGradDsct.doIteration" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiGradDsct.doIteration" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>.  Performs:
 $$ \mathrm{x}^{k+1} = \mathrm{x}^k - \gamma \nabla C(\mathrm{x}^k) $$</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="optiprimaldualcondat">
-<h2>OptiPrimalDualCondat<a class="headerlink" href="#optiprimaldualcondat" title="Permalink to this heading"></a></h2>
+<h2>OptiPrimalDualCondat<a class="headerlink" href="#optiprimaldualcondat" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.OptiPrimalDualCondat">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiPrimalDualCondat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">F0</span></em>, <em class="sig-param"><span class="pre">G</span></em>, <em class="sig-param"><span class="pre">Fn</span></em>, <em class="sig-param"><span class="pre">Hn</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiPrimalDualCondat" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Opti</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiPrimalDualCondat</span></span><a class="headerlink" href="#Opti.OptiPrimalDualCondat" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a></p>
 <p>Primal-Dual algorithm proposed by L. Condat in [1] which minimizes <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> of the form
 $$ C(\mathrm{x})= F_0(\mathrm{x}) + G(\mathrm{x}) + \sum_n F_n(\mathrm{H_nx}) $$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>F_0</strong> – a differentiable <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> (i.e. with an implementation of <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">grad()</span></code>).</p></li>
 <li><p><strong>G</strong> – a <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> with an implementation of the <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">prox()</span></code>.</p></li>
@@ -510,33 +551,38 @@ to ensure convergence (see [1, Theorem 5.1]).</p></li>
 Composite Terms”, Journal of Optimization Theory and Applications, vol 158, no 2, pp 460-479 (2013).</p>
 <p><strong>Example</strong> A=OptiPrimalDualCondat(F0,G,Fn,Hn)</p>
 <p>See also <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>, <a class="reference internal" href="#module-Opti.OutputOpti" title="Opti.OutputOpti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">OutputOpti</span></code></a>, <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiPrimalDualCondat.initialize">
-<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiPrimalDualCondat.initialize" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiPrimalDualCondat.initialize" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiPrimalDualCondat.doIteration">
-<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiPrimalDualCondat.doIteration" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiPrimalDualCondat.doIteration" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>. For details see [1].
 Update xtilde</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="optirichlucy">
-<h2>OptiRichLucy<a class="headerlink" href="#optirichlucy" title="Permalink to this heading"></a></h2>
+<h2>OptiRichLucy<a class="headerlink" href="#optirichlucy" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.OptiRichLucy">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiRichLucy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">F</span></em>, <em class="sig-param"><span class="pre">TV</span></em>, <em class="sig-param"><span class="pre">lamb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiRichLucy" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Opti</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiRichLucy</span></span><a class="headerlink" href="#Opti.OptiRichLucy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a></p>
 <p>Richardson-Lucy algorithm [1,2] which minimizes the KullbackLeibler
 divergence <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostKullLeib</span></code> (with TV regularization [3]).
 $$ C(\mathrm{x})= F(\mathrm{x}) + \lambda \Vert \mathrm{x} \Vert_{\mathrm{TV}} $$</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>F</strong> – <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostKullLeib</span></code> object or a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostComposition</span></code>
 with a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostKullLeib</span></code> and a <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a></p></li>
@@ -559,33 +605,38 @@ Deconvolution.” Microscopy research and technique (2006).</p>
 <p><strong>Example</strong> RL=OptiRichLucy(F,TV,lamb)</p>
 <p>See also <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>, <a class="reference internal" href="#module-Opti.OutputOpti" title="Opti.OutputOpti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">OutputOpti</span></code></a>, <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>,
 <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostKullLeib</span></code></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiRichLucy.initialize">
-<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiRichLucy.initialize" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiRichLucy.initialize" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiRichLucy.doIteration">
-<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiRichLucy.doIteration" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiRichLucy.doIteration" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>. For details see [1-3].</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="optivmlmb">
-<h2>OptiVMLMB<a class="headerlink" href="#optivmlmb" title="Permalink to this heading"></a></h2>
+<h2>OptiVMLMB<a class="headerlink" href="#optivmlmb" title="Link to this heading"></a></h2>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.OptiVMLMB">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiVMLMB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">C</span></em>, <em class="sig-param"><span class="pre">xmin</span></em>, <em class="sig-param"><span class="pre">xmax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiVMLMB" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">sphinxcontrib.mat_types.Opti</span></code></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.</span></span><span class="sig-name descname"><span class="pre">OptiVMLMB</span></span><a class="headerlink" href="#Opti.OptiVMLMB" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a></p>
 <p>Variable Metric Limited Memory Bounded (VMLMB) from OptimPackLegacy [1].
 This algorithm
 minimizes a cost \(C(\mathrm{x})\) which is differentiable with bound
 constraints and/or preconditioning.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>C</strong> – minimized cost</p></li>
 <li><p><strong>xmin</strong> – min bound (optional)</p></li>
@@ -604,28 +655,33 @@ SPIE Conf. Astronomical Data Analysis II, 4847, 174-183 (2002).
 See OptimPackLegacy <a class="reference external" href="https://github.com/emmt/OptimPackLegacy">repository</a>.</p>
 <p><strong>Example</strong> VMLMB=OptiVMLMB(C,xmin,xmax)</p>
 <p>See also <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>, <a class="reference internal" href="#Opti.OptiConjGrad" title="Opti.OptiConjGrad"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">OptiConjGrad</span></code></a> <a class="reference internal" href="#module-Opti.OutputOpti" title="Opti.OutputOpti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">OutputOpti</span></code></a>, <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiVMLMB.initialize">
-<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiVMLMB.initialize" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">x0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiVMLMB.initialize" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OptiVMLMB.doIteration">
-<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiVMLMB.doIteration" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">doIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OptiVMLMB.doIteration" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation from <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>. For details see [1].</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
-<span class="target" id="module-Opti.OutputOpti"></span></section>
+</section>
 <section id="outputopti">
-<h2>OutputOpti<a class="headerlink" href="#outputopti" title="Permalink to this heading"></a></h2>
+<span id="module-Opti.OutputOpti"></span><h2>OutputOpti<a class="headerlink" href="#outputopti" title="Link to this heading"></a></h2>
 <section id="outputopti-default">
-<h3>OutputOpti (Default)<a class="headerlink" href="#outputopti-default" title="Permalink to this heading"></a></h3>
+<h3>OutputOpti (Default)<a class="headerlink" href="#outputopti-default" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.OutputOpti.OutputOpti">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.OutputOpti.</span></span><span class="sig-name descname"><span class="pre">OutputOpti</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">varargin</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OutputOpti.OutputOpti" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.OutputOpti.</span></span><span class="sig-name descname"><span class="pre">OutputOpti</span></span><a class="headerlink" href="#Opti.OutputOpti.OutputOpti" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">matlab.mixin.Copyable</span></code></p>
 <p>OutputOpti class for algorithms displayings and savings</p>
 <p>At each <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">ItUpOut</span></code> iterations of an optimization algorithm (see <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a> generic class),
@@ -647,7 +703,7 @@ defined computations, e.g.,</p>
 </ul>
 </div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> – name of the <a class="reference internal" href="#Opti.OutputOpti.OutputOpti" title="Opti.OutputOpti.OutputOpti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">OutputOpti</span></code></a></p></li>
 <li><p><strong>computecost</strong> – boolean, if true the cost function will be computed</p></li>
@@ -664,33 +720,38 @@ defined computations, e.g.,</p>
 be generic for all Optimization routines. Hence the update method has access (in reading mode) 
 to all the properties of <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a> objects.</p>
 <p>See also <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OutputOpti.OutputOpti.init">
-<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OutputOpti.OutputOpti.init" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OutputOpti.OutputOpti.init" title="Link to this definition"></a></dt>
 <dd><p>Initialize the arrays and counters.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OutputOpti.OutputOpti.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OutputOpti.OutputOpti.update" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OutputOpti.OutputOpti.update" title="Link to this definition"></a></dt>
 <dd><p>Computes SNR, cost and display evolution.</p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OutputOpti.OutputOpti.computeCost">
-<span class="sig-name descname"><span class="pre">computeCost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OutputOpti.OutputOpti.computeCost" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">computeCost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OutputOpti.OutputOpti.computeCost" title="Link to this definition"></a></dt>
 <dd><p>Evaluate the cost function at the current iterate xopt of
 the given <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a> opti object</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="outputopticonjgrad">
-<h3>OutputOptiConjGrad<a class="headerlink" href="#outputopticonjgrad" title="Permalink to this heading"></a></h3>
+<h3>OutputOptiConjGrad<a class="headerlink" href="#outputopticonjgrad" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.OutputOpti.OutputOptiConjGrad">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.OutputOpti.</span></span><span class="sig-name descname"><span class="pre">OutputOptiConjGrad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">computecost</span></em>, <em class="sig-param"><span class="pre">yty</span></em>, <em class="sig-param"><span class="pre">xtrue</span></em>, <em class="sig-param"><span class="pre">iterVerb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OutputOpti.OutputOptiConjGrad" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.OutputOpti.</span></span><span class="sig-name descname"><span class="pre">OutputOptiConjGrad</span></span><a class="headerlink" href="#Opti.OutputOpti.OutputOptiConjGrad" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti.OutputOpti.OutputOptiSNR</span></code></p>
 <p>OutputOptiConjGrad class displayings and savings dedicated to for OptiConjGrad</p>
 <p>The conjugate gradient algorithm minimizes the function
@@ -701,7 +762,7 @@ by setting:
 $$\mathrm{A} = \mathrm{H^T W H} \quad \text{and}\quad \mathrm{b = H^T W y}$$
 An OutputOptiConjGrad object compute the cost F instead of the cost C.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>computecost</strong> – boolean, if true the cost function will be computed</p></li>
 <li><p><strong>xtrue</strong> – ground truth to compute the error with the solution (if provided)</p></li>
@@ -711,24 +772,29 @@ An OutputOptiConjGrad object compute the cost F instead of the cost C.</p>
 </dd>
 </dl>
 <p>See also <code class="xref mat mat-class docutils literal notranslate"><span class="pre">OptiConjGrad</span></code> <a class="reference internal" href="#Opti.OutputOpti.OutputOpti" title="Opti.OutputOpti.OutputOpti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">OutputOpti</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.OutputOpti.OutputOptiConjGrad.computeCost">
-<span class="sig-name descname"><span class="pre">computeCost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OutputOpti.OutputOptiConjGrad.computeCost" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">computeCost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.OutputOpti.OutputOptiConjGrad.computeCost" title="Link to this definition"></a></dt>
 <dd><p>Evaluate the cost function at the current iterate xopt of
 the given <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a> opti object</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
-<span class="target" id="module-Opti.TestCvg"></span></section>
+</section>
 </section>
 <section id="testcvg">
-<h2>TestCvg<a class="headerlink" href="#testcvg" title="Permalink to this heading"></a></h2>
+<span id="module-Opti.TestCvg"></span><h2>TestCvg<a class="headerlink" href="#testcvg" title="Link to this heading"></a></h2>
 <section id="testcvg-default">
-<h3>TestCvg (Default)<a class="headerlink" href="#testcvg-default" title="Permalink to this heading"></a></h3>
+<h3>TestCvg (Default)<a class="headerlink" href="#testcvg-default" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.TestCvg.TestCvg">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.TestCvg.</span></span><span class="sig-name descname"><span class="pre">TestCvg</span></span><a class="headerlink" href="#Opti.TestCvg.TestCvg" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.TestCvg.</span></span><span class="sig-name descname"><span class="pre">TestCvg</span></span><a class="headerlink" href="#Opti.TestCvg.TestCvg" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">matlab.mixin.Copyable</span></code></p>
 <p>TestCvg class  monitor convergence criterion during optimization</p>
 <p>At each iterations of an optimization algorithm (see <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a> generic class),
@@ -739,21 +805,26 @@ defined computations</p>
 be generic for all Optimization routines. Hence the update method has access (in reading mode)
 to all the properties of <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a> objects.</p>
 <p>See also <a class="reference internal" href="#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.TestCvg.TestCvg.testConvergence">
-<span class="sig-name descname"><span class="pre">testConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvg.testConvergence" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">testConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvg.testConvergence" title="Link to this definition"></a></dt>
 <dd><p>Default implementation: do nothing (algorithm will break with
 max iterations).</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="testcvgcombine">
-<h3>TestCvgCombine<a class="headerlink" href="#testcvgcombine" title="Permalink to this heading"></a></h3>
+<h3>TestCvgCombine<a class="headerlink" href="#testcvgcombine" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.TestCvg.TestCvgCombine">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.TestCvg.</span></span><span class="sig-name descname"><span class="pre">TestCvgCombine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">varargin</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgCombine" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.TestCvg.</span></span><span class="sig-name descname"><span class="pre">TestCvgCombine</span></span><a class="headerlink" href="#Opti.TestCvg.TestCvgCombine" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#Opti.TestCvg.TestCvg" title="Opti.TestCvg.TestCvg"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti.TestCvg.TestCvg</span></code></a></p>
 <p>TestCvgCombine:
 Combine several <a class="reference internal" href="#Opti.TestCvg.TestCvg" title="Opti.TestCvg.TestCvg"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">TestCvg</span></code></a> objects.</p>
@@ -767,24 +838,29 @@ for simple test</p></li>
 </ul>
 </div></blockquote>
 <p>See also <a class="reference internal" href="#Opti.TestCvg.TestCvg" title="Opti.TestCvg.TestCvg"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">TestCvg</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.TestCvg.TestCvgCombine.testConvergence">
-<span class="sig-name descname"><span class="pre">testConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgCombine.testConvergence" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">testConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgCombine.testConvergence" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#Opti.TestCvg.TestCvg" title="Opti.TestCvg.TestCvg"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">TestCvg</span></code></a>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="testcvgcostabsolute">
-<h3>TestCvgCostAbsolute<a class="headerlink" href="#testcvgcostabsolute" title="Permalink to this heading"></a></h3>
+<h3>TestCvgCostAbsolute<a class="headerlink" href="#testcvgcostabsolute" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.TestCvg.TestCvgCostAbsolute">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.TestCvg.</span></span><span class="sig-name descname"><span class="pre">TestCvgCostAbsolute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">costAbsoluteTol</span></em>, <em class="sig-param"><span class="pre">costIndex</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgCostAbsolute" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.TestCvg.</span></span><span class="sig-name descname"><span class="pre">TestCvgCostAbsolute</span></span><a class="headerlink" href="#Opti.TestCvg.TestCvgCostAbsolute" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#Opti.TestCvg.TestCvg" title="Opti.TestCvg.TestCvg"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti.TestCvg.TestCvg</span></code></a></p>
 <p>TestCvgCostAbsolute stops the optimization when the cost function is below the value COSTABSOLUTETOL</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>costAbsoluteTol</strong> – absolute tolerance on cost function</p></li>
 <li><p><strong>costIndex</strong> – select a specific cost function among a sum in the case where the optimized cost function is a sum of cost functions</p></li>
@@ -793,29 +869,34 @@ for simple test</p></li>
 </dl>
 <p><strong>Example</strong> CvOpti=TestCvgCostAbsolute(costAbsoluteTol, costIndex )</p>
 <p>See also <a class="reference internal" href="#Opti.TestCvg.TestCvg" title="Opti.TestCvg.TestCvg"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">TestCvg</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.TestCvg.TestCvgCostAbsolute.testConvergence">
-<span class="sig-name descname"><span class="pre">testConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgCostAbsolute.testConvergence" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">testConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgCostAbsolute.testConvergence" title="Link to this definition"></a></dt>
 <dd><p>Tests algorithm convergence</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>boolean true if \( C(\mathrm{x^k}) &lt; \mathrm{costAbsoluteTol}\)</p>
 </dd>
 </dl>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="testcvgcostrelative">
-<h3>TestCvgCostRelative<a class="headerlink" href="#testcvgcostrelative" title="Permalink to this heading"></a></h3>
+<h3>TestCvgCostRelative<a class="headerlink" href="#testcvgcostrelative" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.TestCvg.TestCvgCostRelative">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.TestCvg.</span></span><span class="sig-name descname"><span class="pre">TestCvgCostRelative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">costRelativeTol</span></em>, <em class="sig-param"><span class="pre">costIndex</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgCostRelative" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.TestCvg.</span></span><span class="sig-name descname"><span class="pre">TestCvgCostRelative</span></span><a class="headerlink" href="#Opti.TestCvg.TestCvgCostRelative" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#Opti.TestCvg.TestCvg" title="Opti.TestCvg.TestCvg"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti.TestCvg.TestCvg</span></code></a></p>
 <p>TestCvgCostRelative stops the optimization when the cost function is below the value COSTRELATIVETOL</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>costRelativeTol</strong> – relative tolerance on cost function</p></li>
 <li><p><strong>costIndex</strong> – select a specific cost function among a sum in the case where the optimized cost function is a sum of cost functions</p></li>
@@ -824,90 +905,105 @@ for simple test</p></li>
 </dl>
 <p><strong>Example</strong> CvOpti=TestCvgCostRelative(costRelativeTol, costIndex )</p>
 <p>See also <a class="reference internal" href="#Opti.TestCvg.TestCvg" title="Opti.TestCvg.TestCvg"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">TestCvg</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.TestCvg.TestCvgCostRelative.testConvergence">
-<span class="sig-name descname"><span class="pre">testConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgCostRelative.testConvergence" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">testConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgCostRelative.testConvergence" title="Link to this definition"></a></dt>
 <dd><p>Tests algorithm convergence from the relative difference between two successive value of the cost function</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>boolean true if
 $$ \frac{\left| C(\mathrm{x}^{k}) - C(\mathrm{x}^{k-1})\right|}{\left|C(\mathrm{x}^{k-1})\right|} &lt; \mathrm{costRelativeTol}$$</p>
 </dd>
 </dl>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="testcvgsteprelative">
-<h3>TestCvgStepRelative<a class="headerlink" href="#testcvgsteprelative" title="Permalink to this heading"></a></h3>
+<h3>TestCvgStepRelative<a class="headerlink" href="#testcvgsteprelative" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.TestCvg.TestCvgStepRelative">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.TestCvg.</span></span><span class="sig-name descname"><span class="pre">TestCvgStepRelative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">stepRelativeTol</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgStepRelative" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.TestCvg.</span></span><span class="sig-name descname"><span class="pre">TestCvgStepRelative</span></span><a class="headerlink" href="#Opti.TestCvg.TestCvgStepRelative" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#Opti.TestCvg.TestCvg" title="Opti.TestCvg.TestCvg"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti.TestCvg.TestCvg</span></code></a></p>
 <p>TestCvgStepRelative stops the optimization when the step  is below
 the value STEPRELATIVETOL</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>stepRelativeTol</strong> – relative tolerance on step</p>
 </dd>
 </dl>
 <p><strong>Example</strong> CvOpti=TestCvgStepRelative(stepRelativeTol )</p>
 <p>See also <a class="reference internal" href="#Opti.TestCvg.TestCvg" title="Opti.TestCvg.TestCvg"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">TestCvg</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.TestCvg.TestCvgStepRelative.testConvergence">
-<span class="sig-name descname"><span class="pre">testConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgStepRelative.testConvergence" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">testConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgStepRelative.testConvergence" title="Link to this definition"></a></dt>
 <dd><p>Tests algorithm convergence from the relative difference between two successive value of the step function</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>boolean true if
 $$ \frac{\| \mathrm{x}^{k} - \mathrm{x}^{k-1}\|}{\|\mathrm{x}^{k-1}\|} &lt; \text{stepRelativeTol}.$$</p>
 </dd>
 </dl>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="testcvgmaxsnr">
-<h3>TestCvgMaxSnr<a class="headerlink" href="#testcvgmaxsnr" title="Permalink to this heading"></a></h3>
+<h3>TestCvgMaxSnr<a class="headerlink" href="#testcvgmaxsnr" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.TestCvg.TestCvgMaxSnr">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.TestCvg.</span></span><span class="sig-name descname"><span class="pre">TestCvgMaxSnr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">ref</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgMaxSnr" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.TestCvg.</span></span><span class="sig-name descname"><span class="pre">TestCvgMaxSnr</span></span><a class="headerlink" href="#Opti.TestCvg.TestCvgMaxSnr" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#Opti.TestCvg.TestCvg" title="Opti.TestCvg.TestCvg"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti.TestCvg.TestCvg</span></code></a></p>
 <p>TestCvgMaxSnr stops the optimization when the SNR is decreasing</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>ref</strong> – reference signal</p>
 </dd>
 </dl>
 <p><strong>Example</strong> CvOpti=TestCvgMaxSnr(ref )</p>
 <p>See also <a class="reference internal" href="#Opti.TestCvg.TestCvg" title="Opti.TestCvg.TestCvg"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">TestCvg</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.TestCvg.TestCvgMaxSnr.testConvergence">
-<span class="sig-name descname"><span class="pre">testConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgMaxSnr.testConvergence" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">testConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgMaxSnr.testConvergence" title="Link to this definition"></a></dt>
 <dd><p>Tests algorithm convergence using the SNR with</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>boolean true if
 $$ 20\log\left(\frac{\| \mathrm{ref}\|}{\| \mathrm{x}^{k} - \mathrm{ref}\|}\right)&lt; 20\log\left(\frac{\| \mathrm{ref}\|}{\| \mathrm{x}^{k-1} - \mathrm{ref}\|}\right)$$</p>
 </dd>
 </dl>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>
 <section id="testcvgadmm">
-<h3>TestCvgADMM<a class="headerlink" href="#testcvgadmm" title="Permalink to this heading"></a></h3>
+<h3>TestCvgADMM<a class="headerlink" href="#testcvgadmm" title="Link to this heading"></a></h3>
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Opti.TestCvg.TestCvgADMM">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.TestCvg.</span></span><span class="sig-name descname"><span class="pre">TestCvgADMM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">eps_abs</span></em>, <em class="sig-param"><span class="pre">eps_rel</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgADMM" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Opti.TestCvg.</span></span><span class="sig-name descname"><span class="pre">TestCvgADMM</span></span><a class="headerlink" href="#Opti.TestCvg.TestCvgADMM" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#Opti.TestCvg.TestCvg" title="Opti.TestCvg.TestCvg"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti.TestCvg.TestCvg</span></code></a></p>
 <p>Test convergence by monitoring the primal and dual rediduals in ADMM
 as described in [1].</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>eps_abs</strong> – absolute tolerance (default 0, see [1])</p></li>
 <li><p><strong>eps_rel</strong> – relative tolerance (default 1e-3 see [1])</p></li>
@@ -921,12 +1017,17 @@ method of multipliers.” Foundations and Trends in Machine Learning, 2011.</p>
 apply the adjoint of Hn at every iteration, which may be costly</p>
 <p><strong>Example</strong> CvOpti=TestCvgADMM(eps_abs,eps_rel)</p>
 <p>See also <a class="reference internal" href="#Opti.TestCvg.TestCvg" title="Opti.TestCvg.TestCvg"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">TestCvg</span></code></a></p>
-<dl class="mat method">
+<div class="members docutils container">
+<dl>
+<dt>Method Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Opti.TestCvg.TestCvgADMM.testConvergence">
-<span class="sig-name descname"><span class="pre">testConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgADMM.testConvergence" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">testConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">this</span></em>, <em class="sig-param"><span class="pre">opti</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Opti.TestCvg.TestCvgADMM.testConvergence" title="Link to this definition"></a></dt>
 <dd><p>Reimplemented from parent class <a class="reference internal" href="#Opti.TestCvg.TestCvg" title="Opti.TestCvg.TestCvg"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">TestCvg</span></code></a>.</p>
 </dd></dl>
 
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 </section>

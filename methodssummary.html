@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>List of Methods &mdash; GlobalBioIm Library 1.2 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script async="async" src="_static/mathjax/tex-chtml.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=61243dd2"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="_static/mathjax/tex-chtml.js?v=33773a5a"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -29,14 +31,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> GlobalBioIm Library
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GlobalBioIm Library
           </a>
               <div class="version">
                 1.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -87,7 +93,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">List of Methods</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/methodssummary.rst.txt" rel="nofollow"> View page source</a>
@@ -99,7 +105,7 @@
            <div itemprop="articleBody">
              
   <section id="list-of-methods">
-<h1>List of Methods<a class="headerlink" href="#list-of-methods" title="Permalink to this heading"></a></h1>
+<h1>List of Methods<a class="headerlink" href="#list-of-methods" title="Link to this heading"></a></h1>
 <div class="math notranslate nohighlight">
 \[\]</div>
 <p>This section gives an overview of all the methods for each abstract class (and thus all inherited classes). All the
@@ -109,13 +115,8 @@ of the mother class is used.</p>
 the level of <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a> and <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>. The reason is that for these classes, the Jacobian is respectively the
 adjoint and the gradient. Instead, the methods <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyAdjoint()</span></code> and <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyGrad()</span></code> are implemented.</p>
 <section id="map">
-<h2>Map<a class="headerlink" href="#map" title="Permalink to this heading"></a></h2>
+<h2>Map<a class="headerlink" href="#map" title="Link to this heading"></a></h2>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 25%" />
-<col style="width: 20%" />
-<col style="width: 55%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Interface Methods</p></th>
 <th class="head"><p>Core Methods</p></th>
@@ -208,13 +209,8 @@ adjoint and the gradient. Instead, the methods <code class="xref mat mat-meth do
 </table>
 </section>
 <section id="linop">
-<h2>LinOp<a class="headerlink" href="#linop" title="Permalink to this heading"></a></h2>
+<h2>LinOp<a class="headerlink" href="#linop" title="Link to this heading"></a></h2>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 25%" />
-<col style="width: 23%" />
-<col style="width: 53%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Interface Methods</p></th>
 <th class="head"><p>Core Methods</p></th>
@@ -345,13 +341,8 @@ adjoint and the gradient. Instead, the methods <code class="xref mat mat-meth do
 </table>
 </section>
 <section id="cost">
-<h2>Cost<a class="headerlink" href="#cost" title="Permalink to this heading"></a></h2>
+<h2>Cost<a class="headerlink" href="#cost" title="Link to this heading"></a></h2>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 25%" />
-<col style="width: 20%" />
-<col style="width: 55%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Interface Methods</p></th>
 <th class="head"><p>Core Methods</p></th>
@@ -448,12 +439,8 @@ adjoint and the gradient. Instead, the methods <code class="xref mat mat-meth do
 </table>
 </section>
 <section id="opti">
-<h2>Opti<a class="headerlink" href="#opti" title="Permalink to this heading"></a></h2>
+<h2>Opti<a class="headerlink" href="#opti" title="Link to this heading"></a></h2>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 32%" />
-<col style="width: 68%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Interface Methods</p></th>
 <th class="head"><p>Description</p></th>

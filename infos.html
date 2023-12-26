@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Important Information &mdash; GlobalBioIm Library 1.2 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script async="async" src="_static/mathjax/tex-chtml.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=61243dd2"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="_static/mathjax/tex-chtml.js?v=33773a5a"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -29,14 +31,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> GlobalBioIm Library
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GlobalBioIm Library
           </a>
               <div class="version">
                 1.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -91,7 +97,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Important Information</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/infos.rst.txt" rel="nofollow"> View page source</a>
@@ -103,7 +109,7 @@
            <div itemprop="articleBody">
              
   <section id="important-information">
-<h1>Important Information<a class="headerlink" href="#important-information" title="Permalink to this heading"></a></h1>
+<h1>Important Information<a class="headerlink" href="#important-information" title="Link to this heading"></a></h1>
 <div class="math notranslate nohighlight">
 \[\]</div>
 <p>This section contains useful information for developers/users who want to</p>
@@ -115,7 +121,7 @@
 </ul>
 </div></blockquote>
 <section id="general-philosophy">
-<h2>General Philosophy<a class="headerlink" href="#general-philosophy" title="Permalink to this heading"></a></h2>
+<h2>General Philosophy<a class="headerlink" href="#general-philosophy" title="Link to this heading"></a></h2>
 <p>The implementation and organization of the library is guided by</p>
 <blockquote>
 <div><ul class="simple">
@@ -127,19 +133,19 @@
 </div></blockquote>
 </section>
 <section id="hierarchy-of-classes">
-<h2>Hierarchy of Classes<a class="headerlink" href="#hierarchy-of-classes" title="Permalink to this heading"></a></h2>
+<h2>Hierarchy of Classes<a class="headerlink" href="#hierarchy-of-classes" title="Link to this heading"></a></h2>
 <p>The library is based on the four abstract classes <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>,  <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>,  <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, and  <a class="reference internal" href="opti.html#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a>. All other classes
 inherit from them. Note that nonlinear operators inherit directly from the
 <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> class since they do not require specific attributes/methods.</p>
 <figure class="align-center" id="id1">
 <a class="reference internal image-reference" href="_images/ClassesHierarchy.png"><img alt="Classes Hierarchy diagram" src="_images/ClassesHierarchy.png" style="width: 1002.4000000000001px; height: 537.6px;" /></a>
 <figcaption>
-<p><span class="caption-text">Fig 1. Hierarchy of classes within the GlobalBioIm library.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+<p><span class="caption-text">Fig 1. Hierarchy of classes within the GlobalBioIm library.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>
 <section id="interface-methods-and-core-methods">
-<h2>Interface Methods and Core Methods<a class="headerlink" href="#interface-methods-and-core-methods" title="Permalink to this heading"></a></h2>
+<h2>Interface Methods and Core Methods<a class="headerlink" href="#interface-methods-and-core-methods" title="Link to this heading"></a></h2>
 <p>Every class (except <a class="reference internal" href="opti.html#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a> classes) contains two types of methods</p>
 <blockquote>
 <div><ul class="simple">
@@ -161,7 +167,7 @@ This method calls either <code class="xref mat mat-meth docutils literal notrans
 right-hand side of the operation.</p>
 </section>
 <section id="memoize-and-precomputation-options">
-<h2>Memoize and Precomputation Options<a class="headerlink" href="#memoize-and-precomputation-options" title="Permalink to this heading"></a></h2>
+<h2>Memoize and Precomputation Options<a class="headerlink" href="#memoize-and-precomputation-options" title="Link to this heading"></a></h2>
 <p>The <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> class provides two attributes</p>
 <blockquote>
 <div><ul class="simple">
@@ -177,40 +183,40 @@ bypass precomputation steps in the presence of memory limitations.</p></li>
 </ul>
 </div></blockquote>
 <p>Let us look at some examples. Consider a convolution oprerator <code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpConv</span></code></p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="nb">fftn</span><span class="p">(</span><span class="n">psf</span><span class="p">));</span><span class="w"></span>
-<span class="n">H</span><span class="p">.</span><span class="n">memoizeOpts</span><span class="p">.</span><span class="n">apply</span><span class="p">=</span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="nb">fftn</span><span class="p">(</span><span class="n">psf</span><span class="p">));</span>
+<span class="n">H</span><span class="p">.</span><span class="n">memoizeOpts</span><span class="p">.</span><span class="n">apply</span><span class="p">=</span><span class="nb">true</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>for a given PSF (\(512\times 512 \times 256 \)) and for which we have activated the memoize option of the <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">apply()</span></code> method.
 Then, let us make the following calls to the <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">apply()</span></code> method:</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">=</span><span class="nb">rand</span><span class="p">(</span><span class="nb">size</span><span class="p">(</span><span class="n">psf</span><span class="p">));</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">y</span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span><span class="p">;</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.414025</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">y</span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span><span class="p">;</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">0.085205</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">(</span><span class="mi">5</span><span class="p">)=</span><span class="mi">2</span><span class="p">;</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">y</span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span><span class="p">;</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.465424</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">y</span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span><span class="p">;</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">0.083087</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">=</span><span class="nb">rand</span><span class="p">(</span><span class="nb">size</span><span class="p">(</span><span class="n">psf</span><span class="p">));</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">y</span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span><span class="p">;</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.414025</span><span class="w"> </span><span class="s">seconds.</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">y</span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span><span class="p">;</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">0.085205</span><span class="w"> </span><span class="s">seconds.</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">(</span><span class="mi">5</span><span class="p">)=</span><span class="mi">2</span><span class="p">;</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">y</span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span><span class="p">;</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.465424</span><span class="w"> </span><span class="s">seconds.</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">y</span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span><span class="p">;</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">0.083087</span><span class="w"> </span><span class="s">seconds.</span>
 </pre></div>
 </div>
 <p>Here, one can appreciate the effect of the <em>memoize</em> option. To observe the effect of the <em>precomputation</em> option,
 we instantiate a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostL2</span></code> object and combine it with our convolution operator. Moreover, we activate the <em>precomputation</em> option for the resulting <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostL2Composition</span></code> object.</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">y</span><span class="p">=</span><span class="nb">rand</span><span class="p">(</span><span class="nb">size</span><span class="p">(</span><span class="n">psf</span><span class="p">));</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">LS</span><span class="p">=</span><span class="n">CostL2</span><span class="p">([],</span><span class="n">y</span><span class="p">);</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">F</span><span class="p">=</span><span class="n">LS</span><span class="o">*</span><span class="n">H</span><span class="p">;</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">F</span><span class="p">.</span><span class="n">doPrecomputation</span><span class="p">=</span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">y</span><span class="p">=</span><span class="nb">rand</span><span class="p">(</span><span class="nb">size</span><span class="p">(</span><span class="n">psf</span><span class="p">));</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">LS</span><span class="p">=</span><span class="n">CostL2</span><span class="p">([],</span><span class="n">y</span><span class="p">);</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">F</span><span class="p">=</span><span class="n">LS</span><span class="o">*</span><span class="n">H</span><span class="p">;</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">F</span><span class="p">.</span><span class="n">doPrecomputation</span><span class="p">=</span><span class="mi">1</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>Let us evaluate the gradient of the cost <em>F</em> at x.</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">=</span><span class="nb">rand</span><span class="p">(</span><span class="nb">size</span><span class="p">(</span><span class="n">psf</span><span class="p">));</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">g</span><span class="p">=</span><span class="n">F</span><span class="p">.</span><span class="n">applyGrad</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="nb">toc</span><span class="p">;</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">5.236043</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">g</span><span class="p">=</span><span class="n">F</span><span class="p">.</span><span class="n">applyGrad</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="nb">toc</span><span class="p">;</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.554012</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">g</span><span class="p">=</span><span class="n">F</span><span class="p">.</span><span class="n">applyGrad</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="nb">toc</span><span class="p">;</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.572284</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">=</span><span class="nb">rand</span><span class="p">(</span><span class="nb">size</span><span class="p">(</span><span class="n">psf</span><span class="p">));</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">g</span><span class="p">=</span><span class="n">F</span><span class="p">.</span><span class="n">applyGrad</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="nb">toc</span><span class="p">;</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">5.236043</span><span class="w"> </span><span class="s">seconds.</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">g</span><span class="p">=</span><span class="n">F</span><span class="p">.</span><span class="n">applyGrad</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="nb">toc</span><span class="p">;</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.554012</span><span class="w"> </span><span class="s">seconds.</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">g</span><span class="p">=</span><span class="n">F</span><span class="p">.</span><span class="n">applyGrad</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="nb">toc</span><span class="p">;</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.572284</span><span class="w"> </span><span class="s">seconds.</span>
 </pre></div>
 </div>
 <p>For a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostL2</span></code>, when the <em>precomputation</em> option is activated, the gradient is computed using</p>
@@ -222,127 +228,127 @@ the application of \( \mathrm{H^*H}\) and requires only 2 FFT/IFFT.</p>
 <p>In this example, we computed the gradient 3 times over the same x without activating the <em>memoize</em> option
 of the <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyGrad()</span></code> method in order to show the effect of <em>precomputation</em>. Of course, doing new calls to <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyGrad()</span></code>
 with the same x after having activated the <em>memoize</em> option produces</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">F</span><span class="p">.</span><span class="n">memoizeOpts</span><span class="p">.</span><span class="n">applyGrad</span><span class="p">=</span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">g</span><span class="p">=</span><span class="n">F</span><span class="p">.</span><span class="n">applyGrad</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="nb">toc</span><span class="p">;</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.572987</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">g</span><span class="p">=</span><span class="n">F</span><span class="p">.</span><span class="n">applyGrad</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="nb">toc</span><span class="p">;</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">0.075061</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">F</span><span class="p">.</span><span class="n">memoizeOpts</span><span class="p">.</span><span class="n">applyGrad</span><span class="p">=</span><span class="nb">true</span><span class="p">;</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">g</span><span class="p">=</span><span class="n">F</span><span class="p">.</span><span class="n">applyGrad</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="nb">toc</span><span class="p">;</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.572987</span><span class="w"> </span><span class="s">seconds.</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="n">g</span><span class="p">=</span><span class="n">F</span><span class="p">.</span><span class="n">applyGrad</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="nb">toc</span><span class="p">;</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">0.075061</span><span class="w"> </span><span class="s">seconds.</span>
 </pre></div>
 </div>
 </section>
 <section id="compositions">
-<h2>Compositions<a class="headerlink" href="#compositions" title="Permalink to this heading"></a></h2>
+<h2>Compositions<a class="headerlink" href="#compositions" title="Link to this heading"></a></h2>
 <p>The library deploys an operator-algebra mechanism that allows for generic implementations. This is made possible
 by the methods prefixed by <em>make</em> (i.e., <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">makeComposition_()</span></code>, <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">makeAdjoint_()</span></code>, <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">makeHtH_()</span></code>, <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">makeHHt_()</span></code>…)
 as well as the <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">plus_()</span></code>, <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">minus_()</span></code>, and <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">mpower_()</span></code> methods. By default these methods will instanciate  <a class="reference internal" href="abstract.html#ref-op-on-maps"><span class="std std-ref">Operations on Maps</span></a> objects which may lose
 properties such as invertibility or speed of implementation (due to the genericity of these classes).
 However, developers can reimplement these <em>make</em> methods
 in derived classes. For instance, in <code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpConv</span></code>, one can find</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>M<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">plus_</span><span class="p">(</span>this,G<span class="p">)</span><span class="w"></span>
-<span class="w">   </span><span class="c">% Reimplemented from parent class :class:`LinOp`.</span><span class="w"></span>
-<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="nb">isa</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="s">&#39;LinOpDiag&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">G</span><span class="p">.</span><span class="n">isScaledIdentity</span><span class="w"></span>
-<span class="w">      </span><span class="n">M</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="n">G</span><span class="p">.</span><span class="n">diag</span><span class="o">+</span><span class="n">this</span><span class="p">.</span><span class="n">mtf</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">isReal</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">index</span><span class="p">);</span><span class="w"></span>
-<span class="w">   </span><span class="k">elseif</span><span class="w"> </span><span class="nb">isa</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="s">&#39;LinOpConv&#39;</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="n">M</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">mtf</span><span class="o">+</span><span class="n">G</span><span class="p">.</span><span class="n">mtf</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">isReal</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">index</span><span class="p">);</span><span class="w"></span>
-<span class="w">   </span><span class="k">else</span><span class="w"></span>
-<span class="w">      </span><span class="n">M</span><span class="p">=</span><span class="n">plus_</span><span class="p">@</span><span class="n">LinOp</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="n">G</span><span class="p">);</span><span class="w"></span>
-<span class="w">   </span><span class="k">end</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
-<span class="k">function</span><span class="w"> </span>M<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">minus_</span><span class="p">(</span>this,G<span class="p">)</span><span class="w"></span>
-<span class="w">   </span><span class="c">% Reimplemented from parent class :class:`LinOp`.</span><span class="w"></span>
-<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="nb">isa</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="s">&#39;LinOpDiag&#39;</span><span class="p">)</span><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">G</span><span class="p">.</span><span class="n">isScaledIdentity</span><span class="w"></span>
-<span class="w">      </span><span class="n">M</span><span class="p">=</span><span class="n">LinOpDiag</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">mtf</span><span class="o">-</span><span class="n">G</span><span class="p">.</span><span class="n">diag</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">isReal</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">index</span><span class="p">);</span><span class="w"></span>
-<span class="w">   </span><span class="k">elseif</span><span class="w"> </span><span class="nb">isa</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="s">&#39;LinOpConv&#39;</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="n">M</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">mtf</span><span class="o">-</span><span class="n">G</span><span class="p">.</span><span class="n">mtf</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">isReal</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">index</span><span class="p">);</span><span class="w"></span>
-<span class="w">   </span><span class="k">else</span><span class="w"></span>
-<span class="w">      </span><span class="n">M</span><span class="p">=</span><span class="n">minus_</span><span class="p">@</span><span class="n">LinOp</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="n">G</span><span class="p">);</span><span class="w"></span>
-<span class="w">   </span><span class="k">end</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
-<span class="k">function</span><span class="w"> </span>M<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">makeHHt_</span><span class="p">(</span>this<span class="p">)</span><span class="w"></span>
-<span class="w">   </span><span class="c">% Reimplemented from parent class :class:`LinOp`.</span><span class="w"></span>
-<span class="w">   </span><span class="n">M</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">mtf</span><span class="p">)</span><span class="o">.^</span><span class="mi">2</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">isReal</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">index</span><span class="p">);</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
-<span class="k">function</span><span class="w"> </span>M<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">makeHtH_</span><span class="p">(</span>this<span class="p">)</span><span class="w"></span>
-<span class="w">   </span><span class="c">% Reimplemented from parent class :class:`LinOp`.</span><span class="w"></span>
-<span class="w">   </span><span class="n">M</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">mtf</span><span class="p">)</span><span class="o">.^</span><span class="mi">2</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">index</span><span class="p">);</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
-<span class="k">function</span><span class="w"> </span>G<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">makeComposition_</span><span class="p">(</span>this, H<span class="p">)</span><span class="w"></span>
-<span class="w">   </span><span class="c">% Reimplemented from parent class :class:`LinOp`</span><span class="w"></span>
-<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="nb">isa</span><span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;LinOpConv&#39;</span><span class="p">)</span><span class="w"></span>
-<span class="w">       </span><span class="n">G</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">LinOpConv</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">mtf</span><span class="o">.*</span><span class="n">H</span><span class="p">.</span><span class="n">mtf</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">isReal</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">index</span><span class="p">);</span><span class="w"></span>
-<span class="w">   </span><span class="k">elseif</span><span class="w"> </span><span class="nb">isa</span><span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="s">&#39;LinOpDiag&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">H</span><span class="p">.</span><span class="n">isScaledIdentity</span><span class="w"></span>
-<span class="w">       </span><span class="n">G</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">LinOpConv</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">mtf</span><span class="o">.*</span><span class="n">H</span><span class="p">.</span><span class="n">diag</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">isReal</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">index</span><span class="p">);</span><span class="w"></span>
-<span class="w">   </span><span class="k">else</span><span class="w"></span>
-<span class="w">       </span><span class="n">G</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">makeComposition_</span><span class="p">@</span><span class="n">LinOp</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">H</span><span class="p">);</span><span class="w"></span>
-<span class="w">   </span><span class="k">end</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>M<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">plus_</span><span class="p">(</span>this,G<span class="p">)</span>
+<span class="w">   </span><span class="c">% Reimplemented from parent class :class:`LinOp`.</span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="nb">isa</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="s">&#39;LinOpDiag&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">G</span><span class="p">.</span><span class="n">isScaledIdentity</span>
+<span class="w">      </span><span class="n">M</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="n">G</span><span class="p">.</span><span class="n">diag</span><span class="o">+</span><span class="n">this</span><span class="p">.</span><span class="n">mtf</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">isReal</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">index</span><span class="p">);</span>
+<span class="w">   </span><span class="k">elseif</span><span class="w"> </span><span class="nb">isa</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="s">&#39;LinOpConv&#39;</span><span class="p">)</span>
+<span class="w">      </span><span class="n">M</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">mtf</span><span class="o">+</span><span class="n">G</span><span class="p">.</span><span class="n">mtf</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">isReal</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">index</span><span class="p">);</span>
+<span class="w">   </span><span class="k">else</span>
+<span class="w">      </span><span class="n">M</span><span class="p">=</span><span class="n">plus_</span><span class="p">@</span><span class="n">LinOp</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="n">G</span><span class="p">);</span>
+<span class="w">   </span><span class="k">end</span>
+<span class="k">end</span>
+<span class="k">function</span><span class="w"> </span>M<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">minus_</span><span class="p">(</span>this,G<span class="p">)</span>
+<span class="w">   </span><span class="c">% Reimplemented from parent class :class:`LinOp`.</span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="nb">isa</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="s">&#39;LinOpDiag&#39;</span><span class="p">)</span><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">G</span><span class="p">.</span><span class="n">isScaledIdentity</span>
+<span class="w">      </span><span class="n">M</span><span class="p">=</span><span class="n">LinOpDiag</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">mtf</span><span class="o">-</span><span class="n">G</span><span class="p">.</span><span class="n">diag</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">isReal</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">index</span><span class="p">);</span>
+<span class="w">   </span><span class="k">elseif</span><span class="w"> </span><span class="nb">isa</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="s">&#39;LinOpConv&#39;</span><span class="p">)</span>
+<span class="w">      </span><span class="n">M</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">mtf</span><span class="o">-</span><span class="n">G</span><span class="p">.</span><span class="n">mtf</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">isReal</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">index</span><span class="p">);</span>
+<span class="w">   </span><span class="k">else</span>
+<span class="w">      </span><span class="n">M</span><span class="p">=</span><span class="n">minus_</span><span class="p">@</span><span class="n">LinOp</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="n">G</span><span class="p">);</span>
+<span class="w">   </span><span class="k">end</span>
+<span class="k">end</span>
+<span class="k">function</span><span class="w"> </span>M<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">makeHHt_</span><span class="p">(</span>this<span class="p">)</span>
+<span class="w">   </span><span class="c">% Reimplemented from parent class :class:`LinOp`.</span>
+<span class="w">   </span><span class="n">M</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">mtf</span><span class="p">)</span><span class="o">.^</span><span class="mi">2</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">isReal</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">index</span><span class="p">);</span>
+<span class="k">end</span>
+<span class="k">function</span><span class="w"> </span>M<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">makeHtH_</span><span class="p">(</span>this<span class="p">)</span>
+<span class="w">   </span><span class="c">% Reimplemented from parent class :class:`LinOp`.</span>
+<span class="w">   </span><span class="n">M</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">mtf</span><span class="p">)</span><span class="o">.^</span><span class="mi">2</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">index</span><span class="p">);</span>
+<span class="k">end</span>
+<span class="k">function</span><span class="w"> </span>G<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">makeComposition_</span><span class="p">(</span>this, H<span class="p">)</span>
+<span class="w">   </span><span class="c">% Reimplemented from parent class :class:`LinOp`</span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="nb">isa</span><span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;LinOpConv&#39;</span><span class="p">)</span>
+<span class="w">       </span><span class="n">G</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">LinOpConv</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">mtf</span><span class="o">.*</span><span class="n">H</span><span class="p">.</span><span class="n">mtf</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">isReal</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">index</span><span class="p">);</span>
+<span class="w">   </span><span class="k">elseif</span><span class="w"> </span><span class="nb">isa</span><span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="s">&#39;LinOpDiag&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">H</span><span class="p">.</span><span class="n">isScaledIdentity</span>
+<span class="w">       </span><span class="n">G</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">LinOpConv</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">mtf</span><span class="o">.*</span><span class="n">H</span><span class="p">.</span><span class="n">diag</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">isReal</span><span class="p">,</span><span class="n">this</span><span class="p">.</span><span class="n">index</span><span class="p">);</span>
+<span class="w">   </span><span class="k">else</span>
+<span class="w">       </span><span class="n">G</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">makeComposition_</span><span class="p">@</span><span class="n">LinOp</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">H</span><span class="p">);</span>
+<span class="w">   </span><span class="k">end</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 <p>which all instanciate a new <code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpConv</span></code> with the proper kernel. Hence, considering a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpConv</span></code>,</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">H</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="nb">fft2</span><span class="p">(</span><span class="n">psf</span><span class="p">))</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">H</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="nb">fft2</span><span class="p">(</span><span class="n">psf</span><span class="p">))</span>
 
-<span class="n">H</span><span class="w"> </span><span class="p">=</span><span class="w"></span>
+<span class="n">H</span><span class="w"> </span><span class="p">=</span>
 
-<span class="w">  </span><span class="n">LinOpConv</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="nb">properties</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="n">LinOpConv</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="nb">properties</span><span class="p">:</span>
 
-<span class="w">             </span><span class="n">mtf</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>256<span class="n">x256</span><span class="w"> </span><span class="nb">double</span><span class="p">]</span><span class="w"></span>
-<span class="w">           </span><span class="n">index</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span><span class="w"></span>
-<span class="w">        </span><span class="n">Notindex</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
-<span class="w">            </span><span class="n">ndms</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
-<span class="w">          </span><span class="n">isReal</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">            </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LinOpConv&#39;</span><span class="w"></span>
-<span class="w">    </span><span class="n">isInvertible</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="n">isDifferentiable</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">          </span><span class="n">sizein</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">256</span><span class="w"> </span><span class="mi">256</span><span class="p">]</span><span class="w"></span>
-<span class="w">         </span><span class="n">sizeout</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">256</span><span class="w"> </span><span class="mi">256</span><span class="p">]</span><span class="w"></span>
-<span class="w">            </span><span class="nb">norm</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0000</span><span class="w"></span>
-<span class="w">     </span><span class="n">memoizeOpts</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>1<span class="n">x1</span><span class="w"> </span><span class="nb">struct</span><span class="p">]</span><span class="w"></span>
-<span class="n">doPrecomputation</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">             </span><span class="n">mtf</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>256<span class="n">x256</span><span class="w"> </span><span class="nb">double</span><span class="p">]</span>
+<span class="w">           </span><span class="n">index</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span>
+<span class="w">        </span><span class="n">Notindex</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">            </span><span class="n">ndms</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">          </span><span class="n">isReal</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">            </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LinOpConv&#39;</span>
+<span class="w">    </span><span class="n">isInvertible</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">isDifferentiable</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">          </span><span class="n">sizein</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">256</span><span class="w"> </span><span class="mi">256</span><span class="p">]</span>
+<span class="w">         </span><span class="n">sizeout</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">256</span><span class="w"> </span><span class="mi">256</span><span class="p">]</span>
+<span class="w">            </span><span class="nb">norm</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0000</span>
+<span class="w">     </span><span class="n">memoizeOpts</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>1<span class="n">x1</span><span class="w"> </span><span class="nb">struct</span><span class="p">]</span>
+<span class="n">doPrecomputation</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
 </pre></div>
 </div>
 <p>the \(\mathrm{H^*H} \) is also a <code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOpConv</span></code></p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">H</span><span class="o">&#39;*</span><span class="n">H</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">H</span><span class="o">&#39;*</span><span class="n">H</span>
 
-<span class="nb">ans</span><span class="w"> </span><span class="p">=</span><span class="w"></span>
+<span class="nb">ans</span><span class="w"> </span><span class="p">=</span>
 
-<span class="w">    </span><span class="n">LinOpConv</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="nb">properties</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">LinOpConv</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="nb">properties</span><span class="p">:</span>
 
-<span class="w">             </span><span class="n">mtf</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>256<span class="n">x256</span><span class="w"> </span><span class="nb">double</span><span class="p">]</span><span class="w"></span>
-<span class="w">           </span><span class="n">index</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span><span class="w"></span>
-<span class="w">        </span><span class="n">Notindex</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span>?<span class="mi">0</span><span class="w"> </span><span class="nb">double</span><span class="p">]</span><span class="w"></span>
-<span class="w">            </span><span class="n">ndms</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
-<span class="w">          </span><span class="n">isReal</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">            </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LinOpConv&#39;</span><span class="w"></span>
-<span class="w">    </span><span class="n">isInvertible</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="n">isDifferentiable</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">          </span><span class="n">sizein</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">256</span><span class="w"> </span><span class="mi">256</span><span class="p">]</span><span class="w"></span>
-<span class="w">         </span><span class="n">sizeout</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">256</span><span class="w"> </span><span class="mi">256</span><span class="p">]</span><span class="w"></span>
-<span class="w">            </span><span class="nb">norm</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9999</span><span class="w"></span>
-<span class="w">     </span><span class="n">memoizeOpts</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>1<span class="n">x1</span><span class="w"> </span><span class="nb">struct</span><span class="p">]</span><span class="w"></span>
-<span class="n">doPrecomputation</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">             </span><span class="n">mtf</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>256<span class="n">x256</span><span class="w"> </span><span class="nb">double</span><span class="p">]</span>
+<span class="w">           </span><span class="n">index</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span>
+<span class="w">        </span><span class="n">Notindex</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span>?<span class="mi">0</span><span class="w"> </span><span class="nb">double</span><span class="p">]</span>
+<span class="w">            </span><span class="n">ndms</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">          </span><span class="n">isReal</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">            </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LinOpConv&#39;</span>
+<span class="w">    </span><span class="n">isInvertible</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">isDifferentiable</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">          </span><span class="n">sizein</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">256</span><span class="w"> </span><span class="mi">256</span><span class="p">]</span>
+<span class="w">         </span><span class="n">sizeout</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">256</span><span class="w"> </span><span class="mi">256</span><span class="p">]</span>
+<span class="w">            </span><span class="nb">norm</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9999</span>
+<span class="w">     </span><span class="n">memoizeOpts</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>1<span class="n">x1</span><span class="w"> </span><span class="nb">struct</span><span class="p">]</span>
+<span class="n">doPrecomputation</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
 </pre></div>
 </div>
 <p>and the same holds for the \(\mathrm{H^*H + I} \) operator</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">I</span><span class="p">=</span><span class="n">LinOpIdentity</span><span class="p">(</span><span class="nb">size</span><span class="p">(</span><span class="n">psf</span><span class="p">));</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">H</span><span class="o">&#39;*</span><span class="n">H</span><span class="o">+</span><span class="n">I</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">I</span><span class="p">=</span><span class="n">LinOpIdentity</span><span class="p">(</span><span class="nb">size</span><span class="p">(</span><span class="n">psf</span><span class="p">));</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">H</span><span class="o">&#39;*</span><span class="n">H</span><span class="o">+</span><span class="n">I</span>
 
-<span class="w">    </span><span class="nb">ans</span><span class="w"> </span><span class="p">=</span><span class="w"></span>
+<span class="w">    </span><span class="nb">ans</span><span class="w"> </span><span class="p">=</span>
 
-<span class="w">        </span><span class="n">LinOpConv</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="nb">properties</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="n">LinOpConv</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="nb">properties</span><span class="p">:</span>
 
-<span class="w">             </span><span class="n">mtf</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>256<span class="n">x256</span><span class="w"> </span><span class="nb">double</span><span class="p">]</span><span class="w"></span>
-<span class="w">           </span><span class="n">index</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span><span class="w"></span>
-<span class="w">        </span><span class="n">Notindex</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span>?<span class="mi">0</span><span class="w"> </span><span class="nb">double</span><span class="p">]</span><span class="w"></span>
-<span class="w">            </span><span class="n">ndms</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
-<span class="w">          </span><span class="n">isReal</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">            </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LinOpConv&#39;</span><span class="w"></span>
-<span class="w">    </span><span class="n">isInvertible</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">isDifferentiable</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">          </span><span class="n">sizein</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">256</span><span class="w"> </span><span class="mi">256</span><span class="p">]</span><span class="w"></span>
-<span class="w">         </span><span class="n">sizeout</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">256</span><span class="w"> </span><span class="mi">256</span><span class="p">]</span><span class="w"></span>
-<span class="w">            </span><span class="nb">norm</span><span class="p">:</span><span class="w"> </span><span class="mf">1.9999</span><span class="w"></span>
-<span class="w">     </span><span class="n">memoizeOpts</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>1<span class="n">x1</span><span class="w"> </span><span class="nb">struct</span><span class="p">]</span><span class="w"></span>
-<span class="n">doPrecomputation</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">             </span><span class="n">mtf</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>256<span class="n">x256</span><span class="w"> </span><span class="nb">double</span><span class="p">]</span>
+<span class="w">           </span><span class="n">index</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span>
+<span class="w">        </span><span class="n">Notindex</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span>?<span class="mi">0</span><span class="w"> </span><span class="nb">double</span><span class="p">]</span>
+<span class="w">            </span><span class="n">ndms</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">          </span><span class="n">isReal</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">            </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LinOpConv&#39;</span>
+<span class="w">    </span><span class="n">isInvertible</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">isDifferentiable</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">          </span><span class="n">sizein</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">256</span><span class="w"> </span><span class="mi">256</span><span class="p">]</span>
+<span class="w">         </span><span class="n">sizeout</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">256</span><span class="w"> </span><span class="mi">256</span><span class="p">]</span>
+<span class="w">            </span><span class="nb">norm</span><span class="p">:</span><span class="w"> </span><span class="mf">1.9999</span>
+<span class="w">     </span><span class="n">memoizeOpts</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>1<span class="n">x1</span><span class="w"> </span><span class="nb">struct</span><span class="p">]</span>
+<span class="n">doPrecomputation</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
 </pre></div>
 </div>
 <p>which is invertible in comparison to \(\mathrm{H}\) and \(\mathrm{H^*H}\). This combination mechanism allows
@@ -352,23 +358,23 @@ semi-orthogonal linear operator (i.e., \(\mathrm{HH^*}= \nu \mathrm{I}\) for \(\
 <p>$$ \mathrm{prox}_{f(\mathrm{H}\cdot)}(\mathrm{x}) = \mathrm{x} + \nu^{-1}\mathrm{H^*} \left( \mathrm{prox}_{\nu f}(\mathrm{Hx}) -\mathrm{Hx} \right). $$</p>
 <p>Hence, at the level of <code class="xref mat mat-class docutils literal notranslate"><span class="pre">CostComposition</span></code>, one can check if \(\mathrm{H}\)  is a semi-orthogonal linear operator
 and implement in a generic way the above property. In the constructor,</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="p">=</span><span class="n">this</span><span class="p">.</span><span class="n">H2</span><span class="o">*</span><span class="n">this</span><span class="p">.</span><span class="n">H2</span><span class="o">&#39;</span><span class="p">;</span><span class="w"></span>
-<span class="k">if</span><span class="w"> </span><span class="nb">isa</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="s">&#39;LinOpDiag&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">T</span><span class="p">.</span><span class="n">isScaledIdentity</span><span class="w"></span>
-<span class="w">     </span><span class="k">if</span><span class="w"> </span><span class="n">T</span><span class="p">.</span><span class="n">diag</span><span class="o">&gt;</span><span class="mi">0</span><span class="w"></span>
-<span class="w">          </span><span class="n">this</span><span class="p">.</span><span class="n">isH2SemiOrtho</span><span class="p">=</span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
-<span class="w">          </span><span class="n">this</span><span class="p">.</span><span class="n">nu</span><span class="p">=</span><span class="n">T</span><span class="p">.</span><span class="n">diag</span><span class="p">;</span><span class="w"></span>
-<span class="w">     </span><span class="k">end</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="p">=</span><span class="n">this</span><span class="p">.</span><span class="n">H2</span><span class="o">*</span><span class="n">this</span><span class="p">.</span><span class="n">H2</span><span class="o">&#39;</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="nb">isa</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="s">&#39;LinOpDiag&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">T</span><span class="p">.</span><span class="n">isScaledIdentity</span>
+<span class="w">     </span><span class="k">if</span><span class="w"> </span><span class="n">T</span><span class="p">.</span><span class="n">diag</span><span class="o">&gt;</span><span class="mi">0</span>
+<span class="w">          </span><span class="n">this</span><span class="p">.</span><span class="n">isH2SemiOrtho</span><span class="p">=</span><span class="nb">true</span><span class="p">;</span>
+<span class="w">          </span><span class="n">this</span><span class="p">.</span><span class="n">nu</span><span class="p">=</span><span class="n">T</span><span class="p">.</span><span class="n">diag</span><span class="p">;</span>
+<span class="w">     </span><span class="k">end</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 <p>and in the <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyProx_()</span></code> implementation</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>x<span class="p">=</span><span class="nf">applyProx_</span><span class="p">(</span>this,z,alpha<span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">isConvex</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">isH2LinOp</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">isH2SemiOrtho</span><span class="w"></span>
-<span class="w">        </span><span class="n">x</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="n">this</span><span class="p">.</span><span class="n">nu</span><span class="o">*</span><span class="n">this</span><span class="p">.</span><span class="n">H2</span><span class="p">.</span><span class="n">applyAdjoint</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">H1</span><span class="p">.</span><span class="n">applyProx</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">H2</span><span class="o">*</span><span class="n">z</span><span class="p">,</span><span class="nb">alpha</span><span class="o">*</span><span class="n">this</span><span class="p">.</span><span class="n">nu</span><span class="p">)</span><span class="o">-</span><span class="n">this</span><span class="p">.</span><span class="n">H2</span><span class="o">*</span><span class="n">z</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="k">else</span><span class="w"></span>
-<span class="w">        </span><span class="n">x</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">applyProx_</span><span class="p">@</span><span class="n">Cost</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="nb">alpha</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>x<span class="p">=</span><span class="nf">applyProx_</span><span class="p">(</span>this,z,alpha<span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">isConvex</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">isH2LinOp</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">isH2SemiOrtho</span>
+<span class="w">        </span><span class="n">x</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="n">this</span><span class="p">.</span><span class="n">nu</span><span class="o">*</span><span class="n">this</span><span class="p">.</span><span class="n">H2</span><span class="p">.</span><span class="n">applyAdjoint</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">H1</span><span class="p">.</span><span class="n">applyProx</span><span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">H2</span><span class="o">*</span><span class="n">z</span><span class="p">,</span><span class="nb">alpha</span><span class="o">*</span><span class="n">this</span><span class="p">.</span><span class="n">nu</span><span class="p">)</span><span class="o">-</span><span class="n">this</span><span class="p">.</span><span class="n">H2</span><span class="o">*</span><span class="n">z</span><span class="p">);</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="n">x</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">applyProx_</span><span class="p">@</span><span class="n">Cost</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="nb">alpha</span><span class="p">);</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 <p>As a result, in the library, combining any <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a> having an implementation of <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">applyProx_()</span></code> with a <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>
@@ -379,65 +385,65 @@ a new object and may slow iterative algorithms. However, it can be
 used freely in constructor methods or in other methods as a default implementation.</p>
 </section>
 <section id="deep-copy">
-<h2>Deep Copy<a class="headerlink" href="#deep-copy" title="Permalink to this heading"></a></h2>
+<h2>Deep Copy<a class="headerlink" href="#deep-copy" title="Link to this heading"></a></h2>
 <p>By default matlab performs shallow copy of handle objects such as <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code> and inherited classes.
 It means that shallow copied object will share the same properties and memoize system cache during their whole life.
 The function <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">copy()</span></code> perform a deep copy preventing this sharing. Its behavior can be changed by overloading the
 method <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">copyElement()</span></code>.</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">H</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="nb">fftn</span><span class="p">(</span><span class="n">psf</span><span class="p">));</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">H</span><span class="p">.</span><span class="n">memoizeOpts</span><span class="p">.</span><span class="n">apply</span><span class="p">=</span><span class="nb">true</span><span class="p">;</span><span class="w">       </span><span class="c">% Activate the memoize cache</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.117364</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">0.090888</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">H</span><span class="p">;</span><span class="w">                           </span><span class="c">% Shallow copy</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">B</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="w">                     </span><span class="c">% H and B share the same memoize cache</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">0.089999</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">B</span><span class="o">*</span><span class="n">z</span><span class="p">;</span><span class="nb">toc</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.250312</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.180036</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">H</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="nb">fftn</span><span class="p">(</span><span class="n">psf</span><span class="p">));</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">H</span><span class="p">.</span><span class="n">memoizeOpts</span><span class="p">.</span><span class="n">apply</span><span class="p">=</span><span class="nb">true</span><span class="p">;</span><span class="w">       </span><span class="c">% Activate the memoize cache</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.117364</span><span class="w"> </span><span class="s">seconds.</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">0.090888</span><span class="w"> </span><span class="s">seconds.</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">H</span><span class="p">;</span><span class="w">                           </span><span class="c">% Shallow copy</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">B</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="w">                     </span><span class="c">% H and B share the same memoize cache</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">0.089999</span><span class="w"> </span><span class="s">seconds.</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">B</span><span class="o">*</span><span class="n">z</span><span class="p">;</span><span class="nb">toc</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.250312</span><span class="w"> </span><span class="s">seconds.</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.180036</span><span class="w"> </span><span class="s">seconds.</span>
 </pre></div>
 </div>
 <p>using <code class="xref mat mat-meth docutils literal notranslate"><span class="pre">copy()</span></code> deep copy:</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="w">                     </span><span class="c">% Deep Copy</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.117364</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">0.090888</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">C</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.202259</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">C</span><span class="o">*</span><span class="n">z</span><span class="p">;</span><span class="nb">toc</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.194160</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span><span class="w"></span>
-<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">0.097449</span><span class="w"> </span><span class="s">seconds.</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="w">                     </span><span class="c">% Deep Copy</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.117364</span><span class="w"> </span><span class="s">seconds.</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">0.090888</span><span class="w"> </span><span class="s">seconds.</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">C</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.202259</span><span class="w"> </span><span class="s">seconds.</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">C</span><span class="o">*</span><span class="n">z</span><span class="p">;</span><span class="nb">toc</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">2.194160</span><span class="w"> </span><span class="s">seconds.</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">tic</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">=</span><span class="n">H</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="nb">toc</span>
+<span class="n">Elapsed</span><span class="w"> </span><span class="s">time</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">0.097449</span><span class="w"> </span><span class="s">seconds.</span>
 </pre></div>
 </div>
 </section>
 <section id="auxiliary-utilities">
-<h2>Auxiliary Utilities<a class="headerlink" href="#auxiliary-utilities" title="Permalink to this heading"></a></h2>
+<h2>Auxiliary Utilities<a class="headerlink" href="#auxiliary-utilities" title="Link to this heading"></a></h2>
 <p>The library contains a folder <em>Util/</em> with several functions. These include viewers or check functions that give a
 first control that an implementation is correct. For instance, the <strong>CheckMap</strong> function verifies some basic relations
 between the different methods implemented in the given <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>.</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">H</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="nb">fft2</span><span class="p">(</span><span class="n">psf</span><span class="p">));</span><span class="w"></span>
-<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">checkMap</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="w"></span>
-<span class="o">--</span><span class="w"> </span><span class="n">Checking</span><span class="w"> </span><span class="n">Map</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="n">LinOpConv</span><span class="o">--</span><span class="w"></span>
-<span class="w">    </span><span class="n">apply</span><span class="w"> </span><span class="n">OK</span><span class="w"></span>
-<span class="w">    </span><span class="n">applyJacobianT</span><span class="w"> </span><span class="n">OK</span><span class="w"></span>
-<span class="w">    </span><span class="n">applyInverse</span><span class="w"> </span><span class="n">OK</span><span class="w"></span>
-<span class="w">        </span><span class="n">SNR</span><span class="p">:</span><span class="w"> </span><span class="mi">296</span><span class="w"> </span><span class="n">dB</span><span class="p">,</span><span class="w"> </span><span class="n">OK</span><span class="w"></span>
-<span class="o">--</span><span class="w"> </span><span class="n">LinOp</span><span class="o">-</span><span class="n">specific</span><span class="w"> </span><span class="n">checks</span><span class="w"> </span><span class="o">--</span><span class="w"></span>
-<span class="w">    </span><span class="n">applyAdjoint</span><span class="w"> </span><span class="n">OK</span><span class="w"></span>
-<span class="w">        </span><span class="n">SNR</span><span class="p">:</span><span class="w"> </span><span class="mi">306</span><span class="w"> </span><span class="n">dB</span><span class="p">,</span><span class="w"> </span><span class="n">OK</span><span class="w"></span>
-<span class="w">    </span><span class="n">applyHtH</span><span class="w"> </span><span class="n">OK</span><span class="w"></span>
-<span class="w">        </span><span class="n">SNR</span><span class="p">:</span><span class="w"> </span><span class="mi">318</span><span class="w"> </span><span class="n">dB</span><span class="p">,</span><span class="w"> </span><span class="n">OK</span><span class="w"></span>
-<span class="w">    </span><span class="n">applyHHt</span><span class="w"> </span><span class="n">OK</span><span class="w"></span>
-<span class="w">        </span><span class="n">SNR</span><span class="p">:</span><span class="w"> </span><span class="mi">331</span><span class="w"> </span><span class="n">dB</span><span class="p">,</span><span class="w"> </span><span class="n">OK</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">H</span><span class="p">=</span><span class="n">LinOpConv</span><span class="p">(</span><span class="nb">fft2</span><span class="p">(</span><span class="n">psf</span><span class="p">));</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">checkMap</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+<span class="o">--</span><span class="w"> </span><span class="n">Checking</span><span class="w"> </span><span class="n">Map</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="n">LinOpConv</span><span class="o">--</span>
+<span class="w">    </span><span class="n">apply</span><span class="w"> </span><span class="n">OK</span>
+<span class="w">    </span><span class="n">applyJacobianT</span><span class="w"> </span><span class="n">OK</span>
+<span class="w">    </span><span class="n">applyInverse</span><span class="w"> </span><span class="n">OK</span>
+<span class="w">        </span><span class="n">SNR</span><span class="p">:</span><span class="w"> </span><span class="mi">296</span><span class="w"> </span><span class="n">dB</span><span class="p">,</span><span class="w"> </span><span class="n">OK</span>
+<span class="o">--</span><span class="w"> </span><span class="n">LinOp</span><span class="o">-</span><span class="n">specific</span><span class="w"> </span><span class="n">checks</span><span class="w"> </span><span class="o">--</span>
+<span class="w">    </span><span class="n">applyAdjoint</span><span class="w"> </span><span class="n">OK</span>
+<span class="w">        </span><span class="n">SNR</span><span class="p">:</span><span class="w"> </span><span class="mi">306</span><span class="w"> </span><span class="n">dB</span><span class="p">,</span><span class="w"> </span><span class="n">OK</span>
+<span class="w">    </span><span class="n">applyHtH</span><span class="w"> </span><span class="n">OK</span>
+<span class="w">        </span><span class="n">SNR</span><span class="p">:</span><span class="w"> </span><span class="mi">318</span><span class="w"> </span><span class="n">dB</span><span class="p">,</span><span class="w"> </span><span class="n">OK</span>
+<span class="w">    </span><span class="n">applyHHt</span><span class="w"> </span><span class="n">OK</span>
+<span class="w">        </span><span class="n">SNR</span><span class="p">:</span><span class="w"> </span><span class="mi">331</span><span class="w"> </span><span class="n">dB</span><span class="p">,</span><span class="w"> </span><span class="n">OK</span>
 </pre></div>
 </div>
 </section>
 <section id="provided-templates">
-<h2>Provided Templates<a class="headerlink" href="#provided-templates" title="Permalink to this heading"></a></h2>
+<h2>Provided Templates<a class="headerlink" href="#provided-templates" title="Link to this heading"></a></h2>
 <p>Templates for the implementation of new <code class="xref mat mat-class docutils literal notranslate"><span class="pre">Map</span></code>, <a class="reference internal" href="linop.html#module-LinOp" title="LinOp"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">LinOp</span></code></a>, <a class="reference internal" href="cost.html#module-Cost" title="Cost"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Cost</span></code></a>, or <a class="reference internal" href="opti.html#module-Opti" title="Opti"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Opti</span></code></a> are provided to help developers.
 They can be found under</p>
 <blockquote>

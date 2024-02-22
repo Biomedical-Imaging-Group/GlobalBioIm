@@ -43,6 +43,7 @@ classdef OptiDouglasRachford < Opti
 	methods
 		function this = OptiDouglasRachford(F1, F2, L, gamma, lambda)
             if isempty(L), L=LinOpIdentity(F2.sizein); end;
+            this.name='OptiDouglasRachford';
 			% F1, F2
 			this.F1 = F1;
 			this.F2 = F2*L;

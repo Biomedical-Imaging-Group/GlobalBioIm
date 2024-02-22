@@ -73,42 +73,27 @@ VMLMB.maxiter=200;                             % max number of iterations
 VMLMB.m=3;                                     % number of memorized step in hessian approximation
 VMLMB.run(y);                                  % run the algorithm 
 
-% - VMLMB v2 LS +  NonNeg 
-H.memoizeOpts.applyHtH=true;
-VMLMBv2=OptiVMLMB_v2(F,0.,[]);  
-VMLMBv2.OutOp=OutputOptiSNR(1,im,10);
-VMLMBv2.CvOp=TestCvgCombine('CostRelative',1e-4, 'StepRelative',1e-4); % identical to VMLMB.CvOp=TestCvgCombine(TestCvgCostRelative(1e-4),TestCvgStepRelative(1e-5)); 
-VMLMBv2.ItUpOut=2; 
-VMLMBv2.verb = false ;
-VMLMBv2.maxiter=200;                             % max number of iterations
-VMLMBv2.mem=3;                                     % number of memorized step in hessian approximation
-VMLMBv2.run(y);                                  % run the algorithm 
-
 %% -- Display
 imdisp(FBS.xopt,'LS + NonNeg (FISTA)',1);
 imdisp(VMLMB.xopt,'LS+POS (VMLMB)',1);
-imdisp(VMLMB.xopt,'LS+POS (VMLMB v2)',1);
 imdisp(DR.xopt,'LS+POS (DR)',1);
 figure;plot(FBS.OutOp.iternum,FBS.OutOp.evolcost,'LineWidth',1.5);grid; set(gca,'FontSize',12);
 hold all;loglog(VMLMB.OutOp.iternum,VMLMB.OutOp.evolcost,'LineWidth',1.5);
-loglog(VMLMBv2.OutOp.iternum,VMLMBv2.OutOp.evolcost,'LineWidth',1.5);
 loglog(DR.OutOp.iternum,DR.OutOp.evolcost,'LineWidth',1.5);
-xlabel('Iterations');ylabel('Cost');legend('LS+POS (FISTA)','LS+POS (VMLMB)','LS+POS (VMLMB v2)','LS+POS (DR)');title('Cost evolution');
+xlabel('Iterations');ylabel('Cost');legend('LS+POS (FISTA)','LS+POS (VMLMB)','LS+POS (DR)');title('Cost evolution');
 
 figure;subplot(1,2,1); grid; hold all; title('Evolution SNR');set(gca,'FontSize',12);
 semilogy(FBS.OutOp.iternum,FBS.OutOp.evolsnr,'LineWidth',1.5);
 semilogy(VMLMB.OutOp.iternum,VMLMB.OutOp.evolsnr,'LineWidth',1.5);
-semilogy(VMLMBv2.OutOp.iternum,VMLMBv2.OutOp.evolsnr,'LineWidth',1.5);
 semilogy(DR.OutOp.iternum,DR.OutOp.evolsnr,'LineWidth',1.5);
-xlabel('Iterations');ylabel('SNR (dB)');legend('LS+POS (FISTA)','LS+POS (VMLMB)','LS+POS (VMLMB v2)','LS+POS (DR)','Location','southeast');
+xlabel('Iterations');ylabel('SNR (dB)');legend('LS+POS (FISTA)','LS+POS (VMLMB)','LS+POS (DR)','Location','southeast');
 subplot(1,2,2);hold on; grid; title('Runing Time (200 iterations)');set(gca,'FontSize',12);
 orderCol=get(gca,'ColorOrder');
 bar(1,[FBS.time],'FaceColor',orderCol(1,:),'EdgeColor','k');
 bar(2,[VMLMB.time],'FaceColor',orderCol(2,:),'EdgeColor','k');
-bar(3,[VMLMBv2.time],'FaceColor',orderCol(3,:),'EdgeColor','k');
-bar(4,[DR.time],'FaceColor',orderCol(4,:),'EdgeColor','k');
+bar(3,[DR.time],'FaceColor',orderCol(4,:),'EdgeColor','k');
 set(gca,'xtick',[1 2 3 4]);ylabel('Time (s)');
-set(gca,'xticklabels',{'LS+POS (FISTA)','LS+POS (VMLMB)','LS+POS (VMLMB v2)','LS+POS (DR)'});set(gca,'XTickLabelRotation',45)
+set(gca,'xticklabels',{'LS+POS (FISTA)','LS+POS (VMLMB)','LS+POS (DR)'});set(gca,'XTickLabelRotation',45)
 
 %% For Unitary Tests
 global generateDataUnitTests stateTest message

@@ -47,7 +47,7 @@ classdef OptiVMLMB<Opti
         xmax=[];
         m=3;                % M is the number of correction pairs to remember in order to compute the limited memory variable metric (BFGS) approximation of the inverse of the Hessian.  For large problems, M = 3 to 5 gives good results.  For small problems, M should be less or equal N.  The larger is M (and N) the more computer memory will be needed to store the workspace WS.
         epsilon=0.01;       % a small value, in the range [0,1), equals to the cosine of the maximum angle between the search direction and the anti-gradient. The BFGS recursion is restarted, whenever the search direction is not sufficiently "descending".
-        gtol=1e-5;          % Convergence occurs if the norm of gradient is lower than GTOL
+        gtol=0.;            % Convergence occurs if the norm of gradient is lower than GTOL
         impl = 'mat'
     end
     properties (SetAccess = protected,GetAccess = protected)
@@ -352,7 +352,7 @@ classdef OptiVMLMB<Opti
                     this.gtest = max(this.gatol, this.grtol*this.gnorm);
                 end
                 if this.gnorm <= this.gtest
-
+                    this.endingMessage = ['Gradient tolerance reached'];
                     % Convergence in gradient.
                     this.status = this.OPL_STATUS_GTEST_SATISFIED ; % optm_status('GTEST_SATISFIED');
                     flag=this.OPTI_STOP;
@@ -361,6 +361,7 @@ classdef OptiVMLMB<Opti
                 if this.task == this.OPL_STAGE_LNSRCH_CONV
                     % Check convergence in relative function reduction.
                     if this.cc <= this.fatol || abs(this.cc - this.f0) <= this.frtol*max(abs(this.cc), abs(this.f0))
+                        this.endingMessage = ['Relative function reduction tolerance reached'];
                         this.status = this.OPL_STATUS_FTEST_SATISFIED ; % optm_status('FTEST_SATISFIED');
                         flag=this.OPTI_STOP;
                         return;
@@ -370,6 +371,7 @@ classdef OptiVMLMB<Opti
                     snorm = optm_norm2(this.s);
                     % Check convergence in variables.
                     if snorm <= this.xatol || (this.xrtol > 0 && snorm <= this.xrtol*optm_norm2(this.xopt))
+                        this.endingMessage = ['Relative norm variable reduction tolerance reached'];
                         this.status = this.OPL_STATUS_XTEST_SATISFIED; % optm_status('XTEST_SATISFIED');
                         flag=this.OPTI_STOP;
                         return;
@@ -382,6 +384,7 @@ classdef OptiVMLMB<Opti
                 end
             end
             if this.nbeval >= this.maxeval
+                this.endingMessage = ['Max number of evaluations reached'];
                 this.status = this.OPL_STATUS_TOO_MANY_EVALUATIONS; % optm_status('TOO_MANY_EVALUATIONS');
                 flag=this.OPTI_STOP;
                 return;
@@ -530,7 +533,7 @@ classdef OptiVMLMB<Opti
                 if this.gtol>0
                     normg= sum(this.grad(:).^2);
                     if (normg< this.gtol)
-                        this.endMessage = ['Convergence: normg < gtol ',this.niter,this.nbeval,this.cc,normg,this.task];
+                        this.endingMessage = ['Convergence: normg < gtol ',this.niter,this.nbeval,this.cc,normg,this.task];
                         flag=this.OPTI_STOP;
                     end
                     

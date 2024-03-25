@@ -88,7 +88,7 @@ if isa(H, 'LinOp')
     if s.applyOK && s.applyAdjointOK
         lhs = x(:)' * HTy(:);
         rhs = Hx(:)' * y(:);
-        curSNR = snr(lhs, lhs-rhs);
+        curSNR = snr(lhs*ones(1,2), (lhs-rhs)*ones(1,2));  % The *ones(1,2) is due to the fact that since Matlab 2022 the function snr do not work on scalars anymore.
         checkSNR(curSNR);
     else
         fprintf('\tcannot assess accuracy\n');

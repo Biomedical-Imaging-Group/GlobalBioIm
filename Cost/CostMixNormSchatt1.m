@@ -108,7 +108,8 @@ classdef CostMixNormSchatt1 < Cost
                 E=max(abs(E)-alpha,0).*sign(E);
                 y=reshape(this.svdRecomp(E,V),this.sizein);
             elseif this.p==2
-                dim=floor(sqrt(2*size(x)(end)));
+                szx=size(x);
+                dim=floor(sqrt(2*szx(end)));
                 diag_inds=cumsum(dim+1:-1:2)-dim;
                 x2=x.^2;
                 Frob=sqrt(2*sum(x2,3) - sum(x2(:,:,diag_inds),3));

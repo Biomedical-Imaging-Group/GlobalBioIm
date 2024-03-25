@@ -96,7 +96,7 @@ classdef LinOpSum <  LinOp
             for n=this.index
                 x = sum(x,n);
             end
-            y = squeeze(x);
+            y = reshape(squeeze(x),this.sizeout);
         end
         function y = applyAdjoint_(this,x)
             % Reimplemented from parent class :class:`LinOp`.

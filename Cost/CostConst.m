@@ -75,5 +75,6 @@ classdef CostConst < Cost
         function y=applyProx_(~,x,~)
           % Reimplemented from parent class :class:`Cost`.
              y = x;
+        end
     end
 end

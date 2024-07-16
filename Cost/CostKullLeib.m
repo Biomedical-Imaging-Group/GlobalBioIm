@@ -68,13 +68,13 @@ classdef CostKullLeib < Cost
         function f=apply_(this,x)
         	% Reimplemented from parent class :class:`Cost`.
         	
-            if any(x(:)<0)
+            if any(x(:)<-this.bet)
                 f=Inf;
             else
                 if (this.bet~=0)
                     f=sum(-this.y(:).*log(x(:)+this.bet) + x(:));
                 else
-                    ft = zeros_(this.sz);
+                    ft = zeros_(this.sizein);
                     zidx = (x~=0);
                     ft(zidx)=-this.y(zidx).*log(x(zidx)) + x(zidx);
                     f=sum(ft(:));

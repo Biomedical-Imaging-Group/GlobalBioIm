@@ -63,7 +63,7 @@ classdef TestCvgCostRelative  < TestCvg
             
             
             if ~isempty(this.oldCost)
-                r = abs( this.oldCost - f)./this.oldCost;
+                r = abs( this.oldCost - f)./abs(this.oldCost);
                 if( r < this.costRelativeTol)
                     stop  =true;
                     endingMessage = [this.name,': Cost variation between two successive iterates below the relative tolerance : ',num2str(r),' < ',num2str(this.costRelativeTol)];

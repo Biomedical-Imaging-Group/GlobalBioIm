@@ -5,3 +5,6 @@
 *Opti/OptiUtils/MatlabOptimPack/
 .DS_Store
 *Util/UnitTest/Data/
+*Opti/OptiUtils/VMLMB/matlab/
+*Opti/OptiUtils/VMLMB/*md
+*Opti/OptiUtils/VMLMB/.*

@@ -31,6 +31,17 @@ delete('VMLMB.zip');
 % Remove VMLMB package in the other languages
 rmdir('python','s');
 rmdir('yorick','s');
-cd(pth);
 
+cd('matlab/src/')
+files = dir('.');
+for ii = 3:length(files)
+    if isunix || ismac
+        system(['sed -i ''s/zeros/zeros_/g'' ',files(ii).name]);
+        system(['sed -i ''s/ones/ones_/g'' ',files(ii).name]);
+    elseif ispc
+        system(['get-content ',files(ii).name,' | %{$_ -replace "zeros","zeros_"}']);
+        system(['get-content ',files(ii).name,' | %{$_ -replace "ones","ones_"}']);
+    end
+end
+cd(pth);
 end

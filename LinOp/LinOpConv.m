@@ -160,9 +160,9 @@ classdef LinOpConv <  LinOp
                     for n=1:ndims(psf)
                         if any(index==n)
                             padsize = zeros(size(psfsize));
-                            padsize(n) = floor(padsz(n));
+                            padsize(n) = floor(gather(padsz(n)));
                             psf = padarray(psf,padsize,padvalue,'post');
-                            padsize(n) = ceil(padsz(n));
+                            padsize(n) = ceil(gather(padsz(n)));
                             psf = padarray(psf,padsize,padvalue,'pre');
                         end
                     end

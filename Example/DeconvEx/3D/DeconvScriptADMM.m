@@ -4,7 +4,7 @@
 %    - regul: TV or Hessian-Schatten norm
 %--------------------------------------------------------------
 close all;
-help DeconvScript
+help DeconvScriptADMM
 %--------------------------------------------------------------
 %  Copyright (C) 2017 E. Soubies emmanuel.soubies@epfl.ch
 %

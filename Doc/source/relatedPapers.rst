@@ -110,6 +110,21 @@ Papers with open-source code
 Other papers
 ------------
 
+| **[38] Fourier Analysis of Interference Scanning Optical Probe Microscopy** 
+| ArXiv preprint
+  `[Paper] <https://hal.science/hal-04969247/>`_
+| E. Soubies,  and  W. Bacsa
+
+| **[37] Blind and robust estimation of adaptive optics point spread function and diffuse halo with sharp-edged objects-Application to asteroid deconvolution and moon enhancement** 
+| Astronomy & Astrophysics, 2024
+  `[Paper] <https://www.aanda.org/articles/aa/full_html/2024/08/aa47636-23/aa47636-23.html>`_
+| A. Berdeu
+
+| **[36] Inverse problems based self-calibrated reconstruction for tomographic diffractive microscopy** 
+| Unconventional Optical Imaging IV, SPIE, pp. 4--12,  2024
+  `[Paper] <https://hal.science/hal-04710951>`_
+| D. Brault, F. Momey, M. Debailleul, N. Verrier, and O. Haeberlé
+
 | **[35] Inverse Problems for Image Reconstruction in Holography** 
 | In book: Unconventional Optical Imaging for Biology, 2024
   `[Chapter] <https://books.google.fr/books?hl=fr&lr=&id=AoMCEQAAQBAJ&oi=fnd&pg=PA63&ots=yZ1Xg-xdL6&sig=vQ3de8HpDOVcNmCsFCsRt7oBE9Y&redir_esc=y#v=onepage&q&f=false>`_

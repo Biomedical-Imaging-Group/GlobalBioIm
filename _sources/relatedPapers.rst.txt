@@ -16,9 +16,9 @@ If you want to add your work in this list, do not hesitate to
 Papers with open-source code
 ----------------------------
 
-| **[15] Surpassing Challenges in Structured-Illumination Microscopy with FlexSIM** 
-| bioRxiv preprint, 
-  `[Paper] <https://www.biorxiv.org/content/10.1101/2023.12.20.572677v1>`_
+| **[15] Surpassing Light Inhomogeneities in Structured-Illumination Microscopy with FlexSIM** 
+| Journal of Microscopy, 2024
+  `[Paper] <https://onlinelibrary.wiley.com/doi/10.1111/jmi.13344>`_
   `[Code] <https://github.com/esoubies/FlexSIM>`_
 | E. Soubies, A. Nogueron, F. Pelletier,  T. Mangeat,  C. Leterrier,  M. Unser, and  D. Sage
 
@@ -110,6 +110,26 @@ Papers with open-source code
 Other papers
 ------------
 
+| **[38] Fourier Analysis of Interference Scanning Optical Probe Microscopy** 
+| ArXiv preprint
+  `[Paper] <https://hal.science/hal-04969247/>`_
+| E. Soubies,  and  W. Bacsa
+
+| **[37] Blind and robust estimation of adaptive optics point spread function and diffuse halo with sharp-edged objects-Application to asteroid deconvolution and moon enhancement** 
+| Astronomy & Astrophysics, 2024
+  `[Paper] <https://www.aanda.org/articles/aa/full_html/2024/08/aa47636-23/aa47636-23.html>`_
+| A. Berdeu
+
+| **[36] Inverse problems based self-calibrated reconstruction for tomographic diffractive microscopy** 
+| Unconventional Optical Imaging IV, SPIE, pp. 4--12,  2024
+  `[Paper] <https://hal.science/hal-04710951>`_
+| D. Brault, F. Momey, M. Debailleul, N. Verrier, and O. Haeberlé
+
+| **[35] Inverse Problems for Image Reconstruction in Holography** 
+| In book: Unconventional Optical Imaging for Biology, 2024
+  `[Chapter] <https://books.google.fr/books?hl=fr&lr=&id=AoMCEQAAQBAJ&oi=fnd&pg=PA63&ots=yZ1Xg-xdL6&sig=vQ3de8HpDOVcNmCsFCsRt7oBE9Y&redir_esc=y#v=onepage&q&f=false>`_
+| F. Soulez,  and  E. Thiebaut
+
 | **[34] A Mini-Batch Quasi-Newton Proximal Method for Constrained Total-Variation Nonlinear Image Reconstruction**
 | ArXiv preprint
   `[Paper] <https://arxiv.org/abs/2307.02043>`_
@@ -130,35 +150,36 @@ Other papers
   `[Paper] <https://arxiv.org/abs/2203.09920>`_
 | P. Bohra, P. Pla, J-F. Giovannelli, and M. Unser.
 
-| **[30] Accurate unsupervised estimation of aberrations in digital holographic microscopy for improved quantitative reconstruction**
+| **[30] TV-based spline reconstruction with Fourier measurements: Uniqueness and convergence of grid-based methods** 
+| Journal of Computational and Applied Mathematics, 422, 2023.
+  `[Paper] <https://www.sciencedirect.com/science/article/pii/S0377042722005350>`_
+| T. Debarre, Q. Denoyelle, and J. Fageot.
+
+| **[29] Accurate unsupervised estimation of aberrations in digital holographic microscopy for improved quantitative reconstruction**
 | Optics Express, 30-21, pp. 38383-38404, 2022. 
   `[Paper] <https://opg.optica.org/oe/fulltext.cfm?uri=oe-30-21-38383&id=507598###>`_
 | D. Brault, T. Olivier, F. Soulez, S. Joshi, N. Faure, and C. Fournier
 
-| **[29] An Adversarial Learning Based Approach for Unknown View Tomographic Reconstruction**
+| **[28] An Adversarial Learning Based Approach for Unknown View Tomographic Reconstruction**
 | IEEE Transactions on Computational Imaging, 8, pp. 705 - 720, 2022. 
   `[Paper] <https://arxiv.org/abs/2108.09873>`_
 | M. Zehni, and Z. Zhao.
 
-| **[28] Coupled Splines for Sparse Curve Fitting**
+| **[27] Coupled Splines for Sparse Curve Fitting**
 | IEEE Transactions on Image Processing, 31, pp. 4707 - 4718, 2022.
   `[Paper] <https://arxiv.org/abs/2202.01641>`_
 | I. L. Jover, T. Debarre, S. Aziznejad, and M. Unser.
 
-| **[27] First observation of a quadruple asteroid-Detection of a third moon around (130) Elektra with SPHERE/IFS** 
+| **[26] First observation of a quadruple asteroid-Detection of a third moon around (130) Elektra with SPHERE/IFS** 
 | Astronomy & Astrophysics, 658, 2022.
   `[Paper] <https://www.aanda.org/articles/aa/abs/2022/02/aa42623-21/aa42623-21.html>`_
 | A. Berdeu, M. Langlois, and V. Vachier.
 
-| **[26] Automatic numerical focus plane estimation in digital holographic microscopy using calibration beads** 
+| **[25] Automatic numerical focus plane estimation in digital holographic microscopy using calibration beads** 
 | Applied optics, 61-5, 2022.
   `[Paper] <https://opg.optica.org/ao/viewmedia.cfm?uri=ao-61-5-B345>`_
 | D. Brault, C. Fournier,  T. Olivier, N. Faure, S. Dixneuf, L. Thibon, L. Mees,  and L. Denis.
 
-| **[25] TV-based spline reconstruction with Fourier measurements: Uniqueness and convergence of grid-based methods** 
-| Journal of Computational and Applied Mathematics, 422, 2022.
-  `[Paper] <https://www.sciencedirect.com/science/article/pii/S0377042722005350>`_
-| T. Debarre, Q. Denoyelle, and J. Fageot.
 
 | **[24] Sparsest piecewise-linear regression of one-dimensional data** 
 | Journal of Computational and Applied Mathematics, 406, 2022.

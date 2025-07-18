@@ -16,6 +16,12 @@ If you want to add your work in this list, do not hesitate to
 Papers with open-source code
 ----------------------------
 
+| **[16] Spatially Variant Ultrasound Image Restoration with Product Convolution** 
+| IEEE Transactions on Ultrasonics, Ferroelectrics, and Frequency Control, 2025
+  `[Paper] <https://hal.science/hal-05051035>`_
+  `[Code] <https://gitlab.com/a_floquet/ultrasound-imaging-reconstruction-with-product-convolution>`_
+| A. Floquet, E. Soubies, D-H. Pham, and  D. Kouamé
+
 | **[15] Surpassing Light Inhomogeneities in Structured-Illumination Microscopy with FlexSIM** 
 | Journal of Microscopy, 2024
   `[Paper] <https://onlinelibrary.wiley.com/doi/10.1111/jmi.13344>`_

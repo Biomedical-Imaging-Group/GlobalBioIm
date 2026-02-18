@@ -16,17 +16,23 @@ If you want to add your work in this list, do not hesitate to
 Papers with open-source code
 ----------------------------
 
-| **[16] Spatially Variant Ultrasound Image Restoration with Product Convolution** 
+| **[17] Spatially Variant Ultrasound Image Restoration with Product Convolution** 
 | IEEE Transactions on Ultrasonics, Ferroelectrics, and Frequency Control, 2025
   `[Paper] <https://hal.science/hal-05051035>`_
   `[Code] <https://gitlab.com/a_floquet/ultrasound-imaging-reconstruction-with-product-convolution>`_
 | A. Floquet, E. Soubies, D-H. Pham, and  D. Kouamé
 
-| **[15] Surpassing Light Inhomogeneities in Structured-Illumination Microscopy with FlexSIM** 
+| **[16] Surpassing Light Inhomogeneities in Structured-Illumination Microscopy with FlexSIM** 
 | Journal of Microscopy, 2024
   `[Paper] <https://onlinelibrary.wiley.com/doi/10.1111/jmi.13344>`_
   `[Code] <https://github.com/esoubies/FlexSIM>`_
 | E. Soubies, A. Nogueron, F. Pelletier,  T. Mangeat,  C. Leterrier,  M. Unser, and  D. Sage
+
+| **[15] A Statistical Framework to Investigate the Optimality of Neural Networks for Inverse Problems**
+| IEEE Transactions on Signal Processing, 71, pp. 2043 - 2055, 2023.
+  `[Paper] <https://arxiv.org/abs/2203.09920>`_
+  `[Code] <https://github.com/pakshal23/benchmarking-ssp>`_
+| P. Bohra, P. Pla, J-F. Giovannelli, and M. Unser.
 
 | **[14] Mechanical artifacts in optical projection tomography: classification and automatic calibration** 
 | Optics Continuum, 1-12, pp. 2577--2589, 2022  
@@ -116,45 +122,40 @@ Papers with open-source code
 Other papers
 ------------
 
-| **[38] Fourier Analysis of Interference Scanning Optical Probe Microscopy** 
-| ArXiv preprint
+| **[37] Fourier Analysis of Interference Scanning Optical Probe Microscopy** 
+| IEEE Transactions on Computational Imaging, 11, pp. 1206--1216, 2025.
   `[Paper] <https://hal.science/hal-04969247/>`_
 | E. Soubies,  and  W. Bacsa
 
-| **[37] Blind and robust estimation of adaptive optics point spread function and diffuse halo with sharp-edged objects-Application to asteroid deconvolution and moon enhancement** 
-| Astronomy & Astrophysics, 2024
+| **[36] Blind and robust estimation of adaptive optics point spread function and diffuse halo with sharp-edged objects-Application to asteroid deconvolution and moon enhancement** 
+| Astronomy & Astrophysics, 688-18, 2024
   `[Paper] <https://www.aanda.org/articles/aa/full_html/2024/08/aa47636-23/aa47636-23.html>`_
 | A. Berdeu
 
-| **[36] Inverse problems based self-calibrated reconstruction for tomographic diffractive microscopy** 
+| **[35] Inverse problems based self-calibrated reconstruction for tomographic diffractive microscopy** 
 | Unconventional Optical Imaging IV, SPIE, pp. 4--12,  2024
   `[Paper] <https://hal.science/hal-04710951>`_
 | D. Brault, F. Momey, M. Debailleul, N. Verrier, and O. Haeberlé
 
-| **[35] Inverse Problems for Image Reconstruction in Holography** 
+| **[34] Inverse Problems for Image Reconstruction in Holography** 
 | In book: Unconventional Optical Imaging for Biology, 2024
   `[Chapter] <https://books.google.fr/books?hl=fr&lr=&id=AoMCEQAAQBAJ&oi=fnd&pg=PA63&ots=yZ1Xg-xdL6&sig=vQ3de8HpDOVcNmCsFCsRt7oBE9Y&redir_esc=y#v=onepage&q&f=false>`_
 | F. Soulez,  and  E. Thiebaut
 
-| **[34] A Mini-Batch Quasi-Newton Proximal Method for Constrained Total-Variation Nonlinear Image Reconstruction**
+| **[33] A Mini-Batch Quasi-Newton Proximal Method for Constrained Total-Variation Nonlinear Image Reconstruction**
 | ArXiv preprint
   `[Paper] <https://arxiv.org/abs/2307.02043>`_
 | T. Hong, T.-A. Pham,  I. Yavneh, and M. Unser.
 
-| **[33] Diffraction Tomography with Helmholtz Equation: Efficient and Robust Multigrid-Based Solver**
+| **[32] Diffraction Tomography with Helmholtz Equation: Efficient and Robust Multigrid-Based Solver**
 | ArXiv preprint
   `[Paper] <https://arxiv.org/abs/2107.03679>`_
 | T. Hong, T.-A. Pham, E. Treister, and M. Unser.
 
-| **[32] Multispectral in-line hologram reconstruction with aberration compensation applied to Gram-stained bacteria microscopy**
+| **[31] Multispectral in-line hologram reconstruction with aberration compensation applied to Gram-stained bacteria microscopy**
 | Scientific Reports, 13, 14437, 2023.
   `[Paper] <https://www.nature.com/articles/s41598-023-41079-4>`_
 | D. Brault, T. Olivier, N. Faure, S. Dixneuf, C. Kolytcheff, E. Charmette, F. Soulez & C. Fournier.
-
-| **[31] A Statistical Framework to Investigate the Optimality of Neural Networks for Inverse Problems**
-| IEEE Transactions on Signal Processing, 71, pp. 2043 - 2055, 2023.
-  `[Paper] <https://arxiv.org/abs/2203.09920>`_
-| P. Bohra, P. Pla, J-F. Giovannelli, and M. Unser.
 
 | **[30] TV-based spline reconstruction with Fourier measurements: Uniqueness and convergence of grid-based methods** 
 | Journal of Computational and Applied Mathematics, 422, 2023.
